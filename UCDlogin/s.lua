@@ -81,18 +81,21 @@ function loginPlayer(usr, passwd)
 			exports.UCDdx:new(client, "Please enter your password", 255, 255, 255)
 		elseif (user ~= "") and (passwd ~= "") then
 	--]]
-			if (getAccount(usr)) then
-				if (getAccount(usr, passwd)) then
-					logIn(client, getAccount(usr), passwd)
-					triggerClientEvent(client, "UCDlogin.hideLoginInterface", resourceRoot)
-					triggerClientEvent(client, "UCDlogin.destroyInterface", resourceRoot)
-					exports.UCDlogging:new(client, "login", "logged into account: "..usr, client:getIP())
-				else
-					exports.UCDdx:new(client, "Incorrect password.", 255, 255, 255)
-				end
-			else
-				exports.UCDdx:new(client, "There is no account matching this name.", 255, 255, 255)
-			end
+	
+	-- Maybe have a label that you constantly need to update instead of using UCDdx
+	
+	if (getAccount(usr)) then
+		if (getAccount(usr, passwd)) then
+			logIn(client, getAccount(usr), passwd)
+			triggerClientEvent(client, "UCDlogin.hideLoginInterface", resourceRoot)
+			triggerClientEvent(client, "UCDlogin.destroyInterface", resourceRoot)
+			exports.UCDlogging:new(client, "login", "Logged into account: "..usr, client:getIP())
+		else
+			exports.UCDdx:new(client, "Incorrect password.", 255, 255, 255)
+		end
+	else
+		exports.UCDdx:new(client, "There is no account matching this name.", 255, 255, 255)
+	end
 	--[[
 		end
 	end
@@ -104,66 +107,45 @@ addEventHandler("UCDlogin.logIn", root, loginPlayer)
 
 -- Registration here
 function registerPlayer(usr, email, passwd, conf)
-	if (not usr) or (not email) or (not passwd) or (not conf) then return end
-	if (usr == "" and passwd == "") then
-		exports.UCDdx:new(client, "Please enter your desired account credentials.", 255, 255, 255)
-	else
-		if (usr == "" and passwd ~= "") then
-			exports.UCDdx:new(client, "Please enter an account name you would like to register with", 255, 255, 255)
-		elseif (usr ~= "" and passwd == "") then
-			exports.UCDdx:new(client, "Please enter your desired password", 255, 255, 255)
-		elseif (usr ~= "" and passwd ~= "") then
-			if (conf ~= "") then
-				if (passwd ~= conf) then
-					exports.UCDdx:new(client, "Passwords do not match!", 255, 255, 255)
-					return false
-				end
-				if (not getAccount(usr)) then
-					local addedAccount = exports.UCDaccounts:registerAccount(client, usr, passwd, email)
-					if (not addedAccount) then
-						exports.UCDdx:new(client, "An unknown error has occurred! Please choose a different account name/password and try again.", 255, 255, 255)
-						return false
-					end
-					triggerClientEvent(client, "UCDlogin.hideRegistrationInterface", resourceRoot) -- Hides the window
-					triggerClientEvent(client, "UCDlogin.showLoginInterface", resourceRoot) -- Shows login window
-					exports.UCDdx:new(client, "You have successfully registered! Account name: "..usr.."", 255, 255, 255)
-					exports.UCDlogging:new(client, "register", "registered account: "..usr, client:getIP())
-					return true
-				end
-				exports.UCDdx:new(client, "An account matching this name already exists!", 255, 255, 255)
-				return false
-			end
+	if (not getAccount(usr)) then
+		local addedAccount = exports.UCDaccounts:registerAccount(client, usr, passwd, email)
+		if (not addedAccount) then
+			exports.UCDdx:new(client, "An unknown error has occurred! Please choose a different account name/password and try again.", 255, 255, 255)
+			return false
 		end
+		triggerClientEvent(client, "UCDlogin.hideRegistrationInterface", resourceRoot) -- Hides the window
+		triggerClientEvent(client, "UCDlogin.showLoginInterface", resourceRoot) -- Shows login window
+		exports.UCDdx:new(client, "You have successfully registered! Account name: "..usr.."", 255, 255, 255)
+		exports.UCDlogging:new(client, "register", "registered account: "..usr, client:getIP())
+		return true
 	end
 end
+
 addEvent("UCDlogin.register", true)
 addEventHandler("UCDlogin.register", root, registerPlayer)
 
-function showOnLogin()
+function login_handler()
 	source:setData("isLoggedIn", true)
-	setElementData(source, "isPlayerLoggedIn", true)
+	-- source:setData("isPlayerLoggedIn", true)
 	setTimer(
 		function (source)
-			--if (getResourceState(getResourceFromName("UCDhud")) == "running" or "starting") then
-				for _, v in pairs(exports.UCDhud:getDisabledHUD()) do
-					showPlayerHudComponent(source, v, false)
-				end
-				showPlayerHudComponent(source, "radar", true)
-				showPlayerHudComponent(source, "radio", true)
-				showPlayerHudComponent(source, "crosshair", true)
-			--end
+			for _, v in pairs(exports.UCDhud:getDisabledHUD()) do
+				source:setHudComponentVisible(v, false)
+			end
+			source:setHudComponentVisible("radar", true)
+			source:setHudComponentVisible("radio", true)
+			source:setHudComponentVisible("crosshair", true)
 			showChat(source, true)
-			--triggerClientEvent(source, "UCDlogin.destroyInterface", resourceRoot)
 		end, 1000, 1, source
 	)
 	
 	-- Used for debug right now
-	local pDim =  source:getDimension()
-	if (pDim ~= 0) then
+	local pDim = source:getDimension()
+	if (pDim ~= 0 and exports.UCDaccounts:isPlayerOwner(source)) then
 		outputChatBox("You are not in dimension 0!", source, 255, 255, 255)
 	end
 end
-addEventHandler("onPlayerLogin", root, showOnLogin)
+addEventHandler("onPlayerLogin", root, login_handler)
 
 function isAccount(name)
 	local send

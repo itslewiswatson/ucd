@@ -8,7 +8,7 @@
 -------------------------------------------------------------------
 
 login = {edit = {}, button = {}, label = {}, checkbox = {}}
-registration = {window = {}, edit = {}, button = {}}
+registration = {button = {}, window = {}, label = {}, edit = {}}
 
 -- Actual login
 addEventHandler("onClientResourceStart", resourceRoot, 
@@ -23,6 +23,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			login.button[1] = guiCreateButton(680, 389, 87, 34, "Login", false)
 			guiSetFont(login.button[1], "default-bold-small")
 			guiSetProperty(login.button[1], "NormalTextColour", "FFAAAAAA")
+			login.button[1]:setEnabled(false)
 
 			login.button[2] = guiCreateButton(785, 389, 87, 34, "Register", false)
 			guiSetFont(login.button[2], "default-bold-small")
@@ -46,15 +47,10 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			
 			addEventHandler("onClientGUIClick", login.button[1], onClickLogin, false)
 			addEventHandler("onClientGUIClick", login.button[2], onClickRegister, false)
+			addEventHandler("onClientGUIChanged", guiRoot, onLoginEditsChanged)
 			--addEventHandler("onClientRender", root, blackBars)
 	-----------------------------------------------------
 			
-			registration = {
-				button = {},
-				window = {},
-				label = {},
-				edit = {}
-			}
 			registration.window[1] = guiCreateWindow(667, 651, 617, 455, "UCD | Registration [Beta]", false)
 			registration.window[1]:setSizable(false)
 			registration.window[1]:setVisible(false)
@@ -76,13 +72,13 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			registration.label[2] = guiCreateLabel(10, 81, 328, 17, "Email - we will need this for account recovery", false, registration.window[1])
 			registration.label[3] = guiCreateLabel(10, 163, 328, 17, "Password - [Max 32; Min 6]", false, registration.window[1])
 			registration.label[4] = guiCreateLabel(10, 215, 328, 17, "Repeat password - so we know you wrote the right one", false, registration.window[1])
-
+			
 			registration.button[1] = guiCreateButton(102, 400, 179, 38, "Register", false, registration.window[1])
 			guiSetProperty(registration.button[1], "NormalTextColour", "FFAAAAAA")
 			registration.button[1]:setEnabled(false)
 			registration.button[2] = guiCreateButton(342, 400, 179, 38, "Cancel", false, registration.window[1])
 			guiSetProperty(registration.button[2], "NormalTextColour", "FFAAAAAA")
-						
+			
 			registration.label[5] = guiCreateLabel(348, 98, 242, 23, "Enter your email address", false, registration.window[1])
 			registration.label[5]:setColor(255, 255, 0)
 			guiLabelSetHorizontalAlign(registration.label[5], "center", false)
@@ -92,7 +88,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			registration.label[6]:setColor(255, 255, 0)
 			guiLabelSetHorizontalAlign(registration.label[6], "center", false)
 			guiLabelSetVerticalAlign(registration.label[6], "center")
-					
+			
 			registration.label[7] = guiCreateLabel(0, 127, 617, 23, "___________________________________________________________________________________________", false, registration.window[1])
 			guiLabelSetHorizontalAlign(registration.label[7], "center", false)
 			
@@ -113,9 +109,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			
 			addEventHandler("onClientGUIClick", registration.button[1], onClickRegisterConfirm)
 			addEventHandler("onClientGUIClick", registration.button[2], onClickCancel, false)
-			addEventHandler("onClientGUIChanged", registration.edit[1], onAccountNameEditChanged, false)
-			addEventHandler("onClientGUIChanged", registration.edit[2], onEmailEditChanged, false)
-			addEventHandler("onClientGUIChanged", guiRoot, onPasswordEditChanged)
+			addEventHandler("onClientGUIChanged", registration.window[1], onRegistrationEditsChanged)
 
 			--[[
 			registration.window[1] = guiCreateWindow(399, 255, 434, 290, "UCD | Registration Panel", false)
@@ -156,13 +150,45 @@ function blackBars()
 	dxDrawRectangle(0, (657 / nY) * sY, (1366 / nX) * sX, (111 / nY) * sY, tocolor(0, 0, 0, 255), false)
 end
 
--- Handle emails
--- Test thing thoroughly later [it works decently as of now]
-function onEmailEditChanged()
-	if (source == registration.edit[2]) then
-		-- registration.label[5]
+function onLoginEditsChanged()
+	if (source == login.edit[1] or source == login.edit[2]) then
+		local usr, passwd = login.edit[1]:getText(), login.edit[2]:getText()
+		if (usr:len() >= 3 and not usr:match("%W") and passwd:len() >= 6) then
+			login.button[1]:setEnabled(true)
+		else
+			login.button[1]:setEnabled(false)
+		end
+	else
+		outputDebugString("no parent")
+	end
+end
+
+function onRegistrationEditsChanged()
+	-- Account name
+	if (source == registration.edit[1]) then
+		local usr = source:getText()
+		if (not usr or usr == "") then
+			registration.label[6]:setText("Enter your desired account name")
+			registration.label[6]:setColor(255, 255, 0)
+		else
+			if (usr:match("%W")) then
+				registration.label[6]:setText("Account name can only contain A- Z, 0 - 9")
+				registration.label[6]:setColor(255, 0, 0)		
+			else 
+				if (usr:len() < 3) then
+					registration.label[6]:setText("Account name is too short")
+					registration.label[6]:setColor(255, 0, 0)
+				else
+					-- Syntax is correct, just need to check if it's an actual account
+					registration.label[6]:setText("Checking")
+					registration.label[6]:setColor(255, 255, 0)
+					triggerServerEvent("UCDlogin.isAccount", localPlayer, usr)
+				end
+			end
+		end
+	-- Emails
+	elseif (source == registration.edit[2]) then
 		local email = source:getText():lower()
-		
 		if (email == "" or not email) then
 			registration.label[5]:setText("Enter your email address")
 			registration.label[5]:setColor(255, 255, 0)
@@ -192,38 +218,8 @@ function onEmailEditChanged()
 				end
 			end
 		end
-	end
-end
-
-function onAccountNameEditChanged()
-	if (source == registration.edit[1]) then
-		local usr = source:getText()
-		
-		if (not usr or usr == "") then
-			registration.label[6]:setText("Enter your desired account name")
-			registration.label[6]:setColor(255, 255, 0)
-		else
-			if (usr:match("%W")) then
-				registration.label[6]:setText("Account name can only contain A- Z, 0 - 9")
-				registration.label[6]:setColor(255, 0, 0)		
-			else 
-				if (usr:len() < 3) then
-					registration.label[6]:setText("Account name is too short")
-					registration.label[6]:setColor(255, 0, 0)
-				else
-					-- Syntax is correct, just need to check if it's an actual account
-					registration.label[6]:setText("Checking")
-					registration.label[6]:setColor(255, 255, 0)
-					triggerServerEvent("UCDlogin.isAccount", localPlayer, usr)
-				end
-			end
-		end
-	end
-end
-
-function onPasswordEditChanged()
-	-- labels 8 and 9
-	if (source == registration.edit[3]) then
+	-- Password
+	elseif (source == registration.edit[3]) then
 		local pass = registration.edit[3]:getText()
 		if (not pass or pass == "") then
 			registration.label[8]:setText("Enter your desired password")
@@ -237,6 +233,7 @@ function onPasswordEditChanged()
 				registration.label[8]:setColor(0, 255, 0)
 			end
 		end
+	-- Password confirmation
 	elseif (source == registration.edit[4]) then
 		local conf = registration.edit[4]:getText()
 		if (not conf or conf == "") then
@@ -253,7 +250,7 @@ function onPasswordEditChanged()
 		end
 	end
 	
-		-- Since this is tied to guiRoot, we need to do the gui:getEnabled() thingo
+	-- This handles the registration button in the registration window
 	if (registration.window[1]:getVisible() == true) then
 		local ar, ag, ab = registration.label[5]:getColor()
 		local br, bg, bb = registration.label[6]:getColor()
