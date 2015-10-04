@@ -1,0 +1,126 @@
+db = exports.UCDsql:getConnection()
+accountData = {}
+
+addEventHandler("onResourceStart", resourceRoot,
+	function ()
+		db:query(cacheDatabase, {}, "SELECT * FROM `accountData`")
+	end
+)
+
+function cacheDatabase(qh)
+	local result = qh:poll(0)
+	for _, row in ipairs(result) do
+		accountData[row.id] = {}
+		for column, value in pairs(row) do
+			if (column ~= "id") then
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				if (value == nil) then value = false end
+				
+				accountData[row.id][column] = value
+			end
+		end
+	end
+	outputDebugString("Accounts successfully cached!")
+end
+
+-- The equivalent of setAccountData
+function SAD(plr, column, value)
+	if (not plr) or (not column) or (not value) or (not db) then return nil end
+	if (plr:getType() ~= "player") or (type(column) ~= "string") or (type(value) == "table") then return false end
+	if (plr:getAccount():isGuest()) then return false end
+	
+	local accountID = getPlayerAccountID(plr)
+	
+	-- We need this to cache a new user's account if they registered after the db was cached
+	if (not accountData[accountID]) then
+		accountData[accountID] = {}
+		cacheAccount(accountID)
+	end
+	
+	-- Update the table
+	accountData[accountID][column] = value
+	
+	-- Insert it into the database
+	if (accountData[accountID]) then
+		-- nil translates into NULL for SQL, but we don't want to insert NULL values
+		if (value ~= nil) then
+			db:exec("UPDATE `accountData` SET `??`=? WHERE `id`=?", column, value, accountID)
+		end
+	end
+	
+	return true
+end
+
+-- The equivalent of getAccountData
+function GAD(plr, column)
+	if (not plr) or (not column) then return nil end
+	if (plr:getType() ~= "player") or (type(column) ~= "string") then return false end
+	if (plr:getAccount():isGuest()) then return false end
+	
+	local accountID = getPlayerAccountID(plr)
+	
+	-- If the specified account has no data or the column is not valid
+	if (column == "*") then
+		return accountData[accountID]
+	else
+		if (accountData[accountID] == nil) or (accountData[accountID][column] == nil) then
+			return nil
+		end
+	end
+
+	return accountData[accountID][column]
+end
+
+function isPlayerAccountCached(plr)
+	if (not plr) then return nil end
+	if (plr:getType() ~= "player") then return false end
+	
+	local accountID = getPlayerAccountID(plr)
+	
+	if (not accountData[accountID]) then
+		return false
+	end
+	return true
+end 
+
+function cacheAccount(id)
+	if (not id) then return nil end
+	if (tonumber(id) == nil) then return false end
+	
+	local queryHandle = db:query("SELECT * FROM `accountData` WHERE `id`=?", id)
+	local result = queryHandle:poll(-1)
+	if (#result ~= 1) then return false end
+	
+	for _, row in ipairs(result) do
+		accountData[row.id] = {}
+		for column, value in pairs(row) do
+			if (column ~= "id") then
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				
+				accountData[row.id][column] = value
+			end
+		end
+	end
+	--outputDebugString("Cached player's account ["..plr:getName().."]")
+	return true
+end
+
+function getIDData(id, column)
+	if (not id) or (not column) then return nil end
+	if (type(column) ~= "string") then return false end
+	
+	id = tonumber(id)
+	
+	-- If the specified account has no data or the column is not valid
+	if (column == "*") then
+		return accountData[id]
+	else
+		if (accountData[id] == nil) or (accountData[id][column] == nil) then
+			return nil
+		end
+	end
+
+	return accountData[id][column]
+end

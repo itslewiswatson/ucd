@@ -1,0 +1,34 @@
+<meta>
+	<info author="Noki" version="2" name="UCDaccounts" type="script" />
+	<script src="s_accounts.lua" type="server" />
+	<script src="accountData.slua" type="server" />
+	
+	<script src="s_exports.lua" type="server" />
+	<script src="c_exports.lua" type="client" />
+	
+	<!-- Do not use this function (it is only for a player to change their password) Instead use changePassword -->
+	<export function="changeAccountPassword" type="server" />
+	<!-- Do not use this function (it is only for a player to change their password) Instead use changePassword -->
+	
+	<export function="isPlayerLoggedIn" type="client" />
+	<export function="isPlayerLoggedIn" type="server" />
+	<export function="getPlayerAccountID" type="server" />
+	<export function="getPlayerAccountName" type="server" />
+	<export function="registerAccount" type="server" />
+	<export function="deleteAccount" type="server" />
+	<export function="changePassword" type="server" />
+	<export function="getPlayerFromID" type="server" />
+	<export function="getIDFromAccountName" type="server" />
+	<export function="getAccountNameFromID" type="server" />
+	<export function="getAllLoggedInPlayers" type="server" />
+	
+	<export function="GAD" type="server" />
+	<export function="SAD" type="server" />
+	
+	<!-- Functions from accountData.slua -->
+	<export function="isPlayerAccountCached" type="server" />
+	<export function="cacheAccount" type="server" />
+	
+	<min_mta_version server="1.5" client="1.5" />
+	<oop>true</oop>
+</meta>
