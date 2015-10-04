@@ -11,7 +11,13 @@ db = exports.UCDsql:getConnection()
 
 -- This is so we don't get weird symbols in the db
 -- This snippet doesn't like to work in UCDsql for some reason.
-db:exec("SET NAMES `utf8mb4`")
+local charset = db:exec("SET NAMES `utf8mb4`")
+if (not charset) then
+	outputDebugString("["..getThisResource():getName().."] Failed to encode database with utf8m4")
+else
+	outputDebugString("["..getThisResource():getName().."] Successfully encoded database with utf8m4")
+end
+
 
 function getGameVersion()
 	local qh = db:query("SELECT `version` FROM `core`")
