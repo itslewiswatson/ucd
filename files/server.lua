@@ -50,7 +50,7 @@ url = string.gsub(url, "%s", " ") -- Don't remove it, or whitespace will not be 
 function fetchImage()
 	links = {}
 
-	if (string.find(url, " ")) then
+	if (url:find(" ")) then
 		whiteSpace = 0
 		
 		for i = 1, #url do
@@ -70,7 +70,7 @@ function fetchImage()
 	
 	for _, link in pairs(links) do
 		fetchRemote(link, callback_fetchImage)
-		--outputDebugString(link)
+		outputDebugString(link)
 	end
 end
 

@@ -2,4 +2,5 @@
     <script src="server.lua" type="server" />
 	
 	<export function="isFileWorkable" type="server"/>
+	<oop>true</oop>
 </meta>
