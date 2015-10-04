@@ -1,0 +1,9 @@
+<meta>
+	<script src="server.lua" type="server" />
+	
+	<!-- Exports -->
+	<export function="getAccountPlaytime" type="server" />
+	<export function="setAccountPlaytime" type="server" />
+	<min_mta_version server="1.5" client="1.5" />
+	<oop>true</oop>
+</meta>

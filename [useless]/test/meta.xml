@@ -1,0 +1,5 @@
+<meta>
+	<script src="c_world.lua" type="client"/>
+	<script src="client.lua" type="client" />
+	<script src="s.lua" type="server"/>
+</meta>

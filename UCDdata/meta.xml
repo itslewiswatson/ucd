@@ -1,0 +1,6 @@
+<meta>
+	<info author="Noki" version="1" name="data" type="script" />
+	<script src="c_scoreboard.lua" type="client" />
+	<script src="c_fps.lua" type="client" />
+	<oop>true</oop>
+</meta>

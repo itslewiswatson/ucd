@@ -1,0 +1,4 @@
+<meta>
+	<info description="Shader - Water" version="0.0.6" type="script" />
+	<script src="water.lua" />
+</meta>

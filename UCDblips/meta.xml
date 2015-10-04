@@ -1,0 +1,9 @@
+<meta>
+	<min_mta_version server="1.4" client="1.4" />
+	<info author="Noki" version="1" name="plrBlips" description="Player blips" type="script" />
+	<script src="plrBlips.lua" type="server" />
+	
+	<export function="isPlayerBlipShowing" type="server"/>
+	<export function="hidePlayerBlip" type="server"/>
+	<export function="unhidePlayerBlip" type="server"/>
+</meta>

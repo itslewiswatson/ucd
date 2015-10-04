@@ -1,0 +1,62 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity Alpha
+--// RESOURCE: UCDlogging
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 08.01.15
+--// PURPOSE: To create logs of everything for future reference.
+--// FILE: UCDlogging\logging.slua [server]
+-------------------------------------------------------------------
+
+local chatsLogged = 0
+local db = exports.UCDsql:getConnection()
+
+function new(plr, type1, action, type2)
+	if (not plr) or (not type1) or (not action) then return nil end
+	if (plr:getType() ~= "player") or (type(type1) ~= "string") or (type(action) ~= "string") then return false end
+	if (not type2) then type2 = "N/A" end
+	
+	local plrAcc = plr:getAccount()
+	--if (plrAcc:isGuest()) then return false end
+	local date, time = exports.UCDutil:getTimeStamp()
+	
+	db:exec("INSERT INTO `logging` SET `name`=?, `acc`=?, `type`=?, `type2`=?, `tick`=?, `date`=?, `time`=?, `action`=?, `serial`=?", 
+		plr:getName(),
+		plrAcc:getName(),
+		type1,
+		type2,
+		getTickCount(),
+		date,
+		time,
+		action,
+		plr:getSerial()
+	)
+	
+	chatsLogged = chatsLogged + 1
+	return true
+end
+
+function outputTotal(reset)
+	if chatsLogged ~= 0 then
+		outputDebugString("[UCDlogging] Total logs inserted in the past 5 minutes: "..chatsLogged)
+	end
+	if (reset) then
+		chatsLogged = 0
+	end
+end
+setTimer(outputTotal, 60000 * 5, 0, true)
+addCommandHandler("logged", outputTotal)
+
+-------------------
+-- Some stuff we need to log
+-------------------
+
+function logConnections()
+	-- The account will be guest, so we don't need to worry about the query not being successful
+	new(source, "join", "Joined server", source:getIP())
+end
+addEventHandler("onPlayerJoin", root, logConnections)
+
+function logDisconnections(quitType)
+	new(source, "quit", "Disconnected from server ["..quitType.."]", source:getIP())
+end
+addEventHandler("onPlayerQuit", root, logDisconnections)

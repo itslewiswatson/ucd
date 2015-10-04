@@ -1,0 +1,9 @@
+<meta>
+	<info author="Noki" version="1" name="core" type="script" />
+	<script src="core.lua" type="server" />
+	<script src="c_core.lua" type="client" />
+	
+	<export function="getGameVersion" type="server"/>
+	<export function="getGameVersion" type="client"/>
+	<oop>true</oop>
+</meta>

@@ -1,0 +1,8 @@
+<meta>
+    <script src="cruise.lua" type="client" />
+    <script src="dx_hud.lua" type="client" />
+	
+	<script src="engine.lua" type="server" />
+	<oop>true</oop>
+    <min_mta_version client="1.5"></min_mta_version>
+</meta>

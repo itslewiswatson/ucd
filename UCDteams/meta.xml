@@ -1,0 +1,8 @@
+<meta>
+	<min_mta_version server="1.3.4"></min_mta_version>
+    <info author="Noki" type="" name="" />
+	<script src="script.lua" type="server"/>
+	<export function="isPlayerInTeam" type="server" />
+	<export function="getTeamTable" type="server" />
+	<oop>true</oop>
+</meta>

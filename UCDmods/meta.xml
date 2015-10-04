@@ -1,0 +1,2 @@
+<meta>	<min_mta_version server="1.3.5" client="1.3.5"/>	<info author="NOki" version="1"/>
+	<script src="mods.lua" type="client"/>	<file src="gold.txd" />	<file src="staff.dff" /> 	<file src="staff.txd" /></meta>

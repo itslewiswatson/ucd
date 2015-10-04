@@ -1,0 +1,4 @@
+<meta>
+	<script src="s_walk.lua" type="server" />
+	<script src="c_walk.lua" type="client" />
+</meta>

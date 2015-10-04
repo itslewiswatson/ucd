@@ -1,0 +1,6 @@
+<meta>
+    <script src="admin_s.lua" type="server" />
+    <min_mta_version server="1.4" client="1.4"></min_mta_version>
+	<export function="banAccount" type="server" />
+	<export function="unbanAccount" type="server" />
+</meta>

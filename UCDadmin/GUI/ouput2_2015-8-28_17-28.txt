@@ -1,0 +1,19 @@
+
+GUIEditor = {
+    tab = {},
+    window = {},
+    tabpanel = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(381, 202, 1135, 569, "UCD | Administrative & Management Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(13, 26, 1112, 533, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Tab", GUIEditor.tabpanel[1])
+
+GUIEditor.gridlist[1] = guiCreateGridList(11, 10, 231, 488, false, GUIEditor.tab[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Name", 0.9)
+
+GUIEditor.tab[2] = guiCreateTab("Resources", GUIEditor.tabpanel[1])
+GUIEditor.tab[3] = guiCreateTab("Server Management", GUIEditor.tabpanel[1])

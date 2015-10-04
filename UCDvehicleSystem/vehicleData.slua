@@ -1,0 +1,72 @@
+vehicles = {}
+
+addEventHandler("onResourceStart", resourceRoot, 
+	function ()
+		db:query(cacheVehicles, {}, "SELECT * FROM `vehicles`")
+	end
+)
+
+function cacheVehicles(qh)
+	local result = qh:poll(-1)
+	
+	for _, row in ipairs(result) do
+		vehicles[row.vehicleID] = {}
+		for column, value in pairs(row) do
+			if (column ~= "vehicleID") then
+				vehicles[row.vehicleID][column] = value
+			end
+		end
+	end
+	
+	outputDebugString("Finished caching vehicles.")
+end
+
+function setVehicleData(vehicleID, column, data)
+	if (not vehicleID) or (not column) or (not data) or (not db) then return nil end
+	if (tonumber(vehicleID) == nil) or (type(column) ~= "string") then return false end
+	if (vehicles[vehicleID] == nil) or (vehicles[vehicleID][column] == nil) then
+		return nil
+	end
+	
+	vehicles[vehicleID][column] = data
+	
+	if (vehicles[vehicleID]) then
+		db:exec("UPDATE `vehicles` SET `??`=? WHERE `vehicleID`=?", column, data, vehicleID)
+	end
+	return true
+end
+
+function getVehicleData(vehicleID, column)
+	if (not vehicleID) or (not column) then return nil end
+	if (tonumber(vehicleID) == nil) or (type(column) ~= "string") then return false end
+	
+	if (vehicles[vehicleID] == nil) or (vehicles[vehicleID][column] == nil) then
+		return nil
+	end
+	
+	return vehicles[vehicleID][column]
+end
+
+function syncVehicleTable(plr)
+	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
+	for i, v in pairs(vehicles) do
+		if (v.ownerID == accountID) then
+			triggerLatentClientEvent(plr, "UCDvehicleSystem.syncVehicleTable", plr, i, v)
+			outputDebugString("Got sync request. Sending data for vehicleID = "..i.." client-side.")
+		end
+	end
+end
+addEvent("UCDvehicleSystem.requestVehicleTableSync", true)
+addEventHandler("UCDvehicleSystem.requestVehicleTableSync", root, function () syncVehicleTable(client) end)
+addEventHandler("onPlayerLogin", root, function () syncVehicleTable(source) end)
+
+
+-- Old method of sending all vehicles client-side
+--[[
+function syncVehicleTable()
+	triggerLatentClientEvent(client, "UCDvehicleSystem.syncVehicleTable", resourceRoot, vehicles)
+	outputDebugString("Got sync request. Sending data client-side.")
+end
+addEvent("UCDvehicleSystem.requestVehicleTableSync", true)
+addEventHandler("UCDvehicleSystem.requestVehicleTableSync", root, syncVehicleTable)
+--]]

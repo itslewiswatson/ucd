@@ -1,0 +1,40 @@
+<meta>
+	<info name="Skid marks" description="Shader for vehicle tracks" author="ccw" version="0.0.2" type="script" />
+	<min_mta_version client="1.1.0" server="1.1.0" />
+
+	<script src="util.lua" type="server" />
+	<script src="s_skidmarks.lua" type="server" />
+
+	<script src="util.lua" type="client" />
+	<script src="c_skidmarks.lua" type="client" />
+
+	<file src="skidmarks.fx" type="client" />
+	<file src="mta-helper.fx" type="client" />
+	<config src="help.xml" type="client" />
+
+	<settings>
+		<!-- *****************************************************
+			 All these settings are adjustable in the Admin Panel:
+				1. start admin
+				2. press 'p'
+				3. select Resources tab
+				4. double click on resource name
+			 ***************************************************** -->
+
+		<setting name="*presetID" value="2"
+					friendlyname="Preset ID"
+					group="Display"
+					accept="1-4"
+					examples="1"
+					desc="ID of the preset to use, between 1 and 4"
+					/>
+
+		<setting name="*admingroup" value="Admin,SuperModerator"
+					friendlyname="Admin group list"
+					group="_Advanced"
+					accept="*"
+					examples="Admin,Moderator,SuperModerator"
+					desc="To issue certain commands, the player must belong to one of the groups listed."
+					/>
+    </settings>
+</meta>

@@ -1,0 +1,24 @@
+<meta>
+	<script src="serverExports.lua" type="server"/>
+	<script src="clientExports.lua" type="client"/>
+	
+	<export function="getCityZoneFromXYZ" type="server"/>
+	<export function="getCityZoneFromXYZ" type="client"/>
+	<export function="getElementCityZone" type="server"/>
+	<export function="getElementCityZone" type="client"/>
+	<export function="getPlayerCityZone" type="server"/>
+	<export function="getPlayerCityZone" type="client"/>
+	<export function="tocomma" type="server"/>
+	<export function="tocomma" type="client"/>
+	<export function="secondsToHoursMinutes" type="server"/>
+	<export function="secondsToHoursMinutes" type="client"/>
+	<export function="getElementSpeed" type="client"/>
+	<export function="getElementSpeed" type="server"/>
+	<export function="getTimeStamp" type="client"/>
+	<export function="getTimeStamp" type="server"/>
+	<export function="mathround" type="client"/>
+	<export function="mathround" type="server"/>
+	<export function="centerWindow" type="client"/>
+	
+	<oop>true</oop>
+</meta>

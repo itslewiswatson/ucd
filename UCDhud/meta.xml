@@ -1,0 +1,54 @@
+<meta>
+	<script src="c_hud.lua" type="client" />
+	<script src="hud.lua" type="shared" />
+	<oop>true</oop>
+	
+	<export function="getDisabledHUD" type="shared"/>
+	<export function="isLocalPlayerCustomHUDEnabled" type="client"/>
+	
+	<file src="icons/ak-47.png"/>
+	<file src="icons/bat.png"/>
+	<file src="icons/bomb.png"/>
+	<file src="icons/brassknuckle.png"/>
+	<file src="icons/camera.png"/>
+	<file src="icons/cane.png"/>
+	<file src="icons/chainsaw.png"/>
+	<file src="icons/colt 45.png"/>
+	<file src="icons/deagle.png"/>
+	<file src="icons/dildo.png"/>
+	<file src="icons/fire extinguisher.png"/>
+	<file src="icons/fist.png"/>
+	<file src="icons/flamethrower.png"/>
+	<file src="icons/flower.png"/>
+	<file src="icons/golfclub.png"/>
+	<file src="icons/grenade.png"/>
+	<file src="icons/infared.png"/>
+	<file src="icons/jetpack.png"/>
+	<file src="icons/katana.png"/>
+	<file src="icons/knife.png"/>
+	<file src="icons/m4.png"/>
+	<file src="icons/minigun.png"/>
+	<file src="icons/molotov.png"/>
+	<file src="icons/mp5.png"/>
+	<file src="icons/nightstick.png"/>
+	<file src="icons/nightvision.png"/>
+	<file src="icons/parachute.png"/>
+	<file src="icons/poolstick.png"/>
+	<file src="icons/rifle.png"/>
+	<file src="icons/rocket launcher hs.png"/>
+	<file src="icons/rocket launcher.png"/>
+	<file src="icons/satchel.png"/>
+	<file src="icons/sawed-off.png"/>
+	<file src="icons/combat shotgun.png"/>
+	<file src="icons/shotgun.png"/>
+	<file src="icons/shovel.png"/>
+	<file src="icons/silenced.png"/>
+	<file src="icons/sniper.png"/>
+	<file src="icons/spraycan.png"/>
+	<file src="icons/teargas.png"/>
+	<file src="icons/tec-9.png"/>
+	<file src="icons/uzi.png"/>
+	<file src="icons/vibrator.png"/>
+	
+	<file src="star.png"/>
+</meta>

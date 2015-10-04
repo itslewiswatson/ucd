@@ -1,0 +1,8 @@
+<meta>
+    <info author="Noki" version="1" name="" description="" />
+	<min_mta_version server="1.4" client="1.4"></min_mta_version>
+	
+    <script src="client.lua" type="client" />
+    <script src="server.lua" />
+	
+</meta>

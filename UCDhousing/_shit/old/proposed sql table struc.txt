@@ -1,0 +1,5 @@
+houseID INT | owner TEXT | interiorID TINYINT | x FLOAT | y FLOAT | z FLOAT | houseName TEXT | currentPrice INT | boughtForPrice INT | initialPrice INT | sale TINYINT | open TINYINT
+
+-- Possibly auto increment houseID
+-- Primary key = houseID
+-- Or we can always make a system where houses are remade manually. Takes a lot of work however.

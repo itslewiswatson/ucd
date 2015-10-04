@@ -1,0 +1,4 @@
+<meta>
+    <script src="s_superman.lua" type="server" />
+	<script src="c_superman.lua" type="client" />
+</meta>

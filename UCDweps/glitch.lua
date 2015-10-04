@@ -1,0 +1,10 @@
+function resourceStart ()
+    setGlitchEnabled( "quickreload", true )
+    setGlitchEnabled( "fastmove", true )
+    setGlitchEnabled( "fastfire", true )
+    setGlitchEnabled( "crouchbug", true )
+    setGlitchEnabled( "highcloserangedamage", true )
+    setGlitchEnabled( "hitanim", true )
+	setGlitchEnabled( "fastsprint", true )
+end
+addEventHandler( "onResourceStart", resourceRoot, resourceStart )

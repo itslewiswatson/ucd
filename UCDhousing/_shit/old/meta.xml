@@ -1,0 +1,3 @@
+<meta>	<min_mta_version server="1.4" client="1.4"/>
+	<info author="Noki" description="Housing system" type="script" version="Alpha" />
+	<script src="server.lua" type="server"/>	<script src="make.lua" type="server"/>	<script src="houses.lua" type="server"/>	<script src="client.lua" type="client"/>	<script src="c_make.lua" type="client"/>	<script src="exports/client.lua" type="client"/>	<script src="exports/server.lua" type="server"/>		<export function="isPlayerInHouse" type="server"/>	<export function="isPlayerInHouse" type="client"/></meta>
