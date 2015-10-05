@@ -2,22 +2,21 @@
 	<info author="admins" version="1" name="" type="script" />
 	
 	<script src="s_exports.lua" type="server" />
+	<script src="adminTable.lua" type="server" />
 	<script src="s_teams.lua" type="server" />
-	<script src="admin_protection.lua" type="server" />
 	<script src="c_hacks.lua" type="client" />
 	<script src="s_hacks.lua" type="server" />
 	
 	<script src="GUI/c_panel.lua" type="client" />
-	
 	<script src="restricted/cmds.lua" type="server" />
 
-	<export function="getDeveloperRank" type="server" />
-	<export function="getModeratorRank" type="server" />
-	<export function="isPlayerModerator" type="server" />
+	<export function="setPlayerAdminRank" type="server" />
+	<export function="getPlayerAdminRank" type="server" />
+	<export function="isPlayerAdmin" type="server" />
 	<export function="isPlayerDeveloper" type="server" />
 	<export function="isPlayerOwner" type="server" />
-	<export function="setPlayerDeveloperRank" type="server" />
-	<export function="setPlayerModeratorRank" type="server" />
+	
 	<export function="isAdminOnDuty" type="server" />
+	<export function="getOnlineAdmins" type="server" />
 	<oop>true</oop>
 </meta>

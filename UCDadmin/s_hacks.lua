@@ -11,7 +11,7 @@ function fixAdminVeh( client )
 		exports.UCDdx:new( client, "Your "..getVehicleName( theVehicle ).." is at full health", 255, 255, 0 )
 	end
 end
-addCommandHandler( "fix", fixAdminVeh )
+addCommandHandler("fix", fixAdminVeh)
 
 addEvent( "staff.invis", true)
 addEventHandler( "staff.invis", root,

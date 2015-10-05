@@ -1,115 +1,83 @@
 db = exports.UCDsql:getConnection()
 
-function getModeratorRank(plr)
-	if not plr then return nil end
-	local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local adminRank = exports.UCDsql:query("SELECT `moderatorRank` FROM `admins` WHERE `id`=? LIMIT 1", id)
-	if (#adminRank == 1) then
-		return adminRank[1].moderatorRank
-	else
-		return false
+function getOnlineAdmins()
+	local onlineAdmins = {}
+	for _, plr in pairs(Element.getAllByType("player")) do
+		if (adminTable[exports.UCDaccounts:getPlayerAccountID(plr)]) then
+			table.insert(onlineAdmins, plr)
+		end
 	end
+	return onlineAdmins
 end
 
-function getDeveloperRank(plr)
-	if not plr then return nil end
+function getPlayerAdminRank(plr)
+	if (not plr) then return nil end
+	if (plr:getType() ~= "player") then return false end
 	local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local adminRank = exports.UCDsql:query("SELECT `developerRank` FROM `admins` WHERE `id`=? LIMIT 1", id)
-	if (#adminRank == 1) then
-		return adminRank[1].developerRank
-	else
-		return false
-	end
+	return adminTable[id] or false
 end
 
 -- make an admin table
 function isPlayerOwner(plr)
 	if not plr then return nil end
-	local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local adminRank = exports.UCDsql:query("SELECT `isOwner` FROM `admins` WHERE `id`=? LIMIT 1", id)
-	if (#adminRank == 1) then
-		if (adminRank[1].isOwner == 1) then
-			return true
-		elseif (adminRank[1].isOwner == 0) or (adminRank[1].isOwner == nil) then
-			return false
-		else
-			return false
-		end
-	else
-		return false
-	end
-	return true
+	if plr:getName() == "Noki" then return true else return false end
 end
 
 function isPlayerDeveloper(plr)
 	if not plr then return nil end
-	if (getElementType(plr) ~= "player") then return nil end
-	local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local adminRank = exports.UCDsql:query("SELECT `developerRank` FROM `admins` WHERE `id`=? LIMIT 1", id)
-	if (#adminRank == 1) then
-		if (adminRank[1].developerRank > 0) then
-			return true
-		else
-			return false
-		end
-	else
-		return false
-	end
-end
-
-function isPlayerModerator(plr)
-	if not plr then return nil end
-	if (getElementType(plr) ~= "player") then return nil end
-	local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local adminRank = exports.UCDsql:query("SELECT `moderatorRank` FROM `admins` WHERE `id`=?", id)
-	if (#adminRank == 1) then
-		if (adminRank[1].moderatorRank > 0) then
-			return true
-		else
-			return false
-		end
-	else
-		return false
-	end
-end
-
-function setPlayerDeveloperRank(plr, rank)
-	if not plr or not rank then return nil end
-	if (getElementType(plr) ~= "player") then return false end
-	if (tonumber(rank) == nil) then return false end
-	if (rank > 4) then
-		return false
-	elseif (rank < 0) then
-		return false
-	end
+	if (plr:getType() ~= "player") then return false end
 	
 	local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local existingDev = exports.UCDsql:query("SELECT `developerRank` FROM `admins` WHERE `id`=? LIMIT 1", id)
-	if (#existingDev == 1) then
-		dbExec(db, "UPDATE `admins` SET `developerRank`=? WHERE `id`=?", rank, id)
-	else
-		dbExec(db, "INSERT INTO `admins` VALUES (?, ?, ?, ?)", id, 0, rank, 0)
+	if (not adminTable[id] or not adminTable[id].dev) then
+		return false
 	end
 	return true
 end
 
-function setPlayerModeratorRank(plr, rank)
-	if not plr or not rank then return nil end
-	if (getElementType(plr) ~= "player") then return false end
-	if (tonumber(rank) == nil) then return false end
-	if (rank > 4) then
+function isPlayerAdmin(plr)
+	if not plr then return nil end
+	if (plr:getType() ~= "player") then return false end
+	
+	local id = exports.UCDaccounts:getPlayerAccountID(plr)
+	if (not adminTable[id]) then
 		return false
-	elseif (rank < 0) then
+	end
+	return true
+end
+
+function setPlayerAdminRank(plr, rank)
+	if (not plr or not rank) then return nil end
+	if (plr:getType() ~= "player" or tonumber(rank) == nil or rank > 5 or rank < 1) then return false end
+	
+	local id = exports.UCDaccounts:getPlayerAccountID(plr)
+	db:exec("UPDATE `admins` SET `rank`=? WHERE `id`=?", rank, id)
+	if (not adminTable[id]) then
+		db:query(createAdminTable, {}, "SELECT * FROM `admins`")
+	else
+		adminTable[id]["rank"] = rank
+	end
+	return true
+end
+
+function setPlayerDeveloper(plr, state)
+	if (not plr or not state) then return nil end
+	if (plr:getType() ~= "player" or not isPlayerAdmin(plr)) then return false end
+	
+	local id = exports.UCDaccounts:getPlayerAccountID(plr)
+	if (not adminTable[id]) then
 		return false
 	end
 	
-	local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local existingMod = exports.UCDsql:query("SELECT `moderatorRank` FROM `admins` WHERE `id`=? LIMIT 1", id)
-	if (#existingMod == 1) then
-		dbExec(db, "UPDATE `admins` SET `moderatorRank`=? WHERE `id`=?", rank, id)
-	else
-		dbExec(db, "INSERT INTO `admins` VALUES (?, ?, ?, ?)", id, 0, rank, 0)
+	-- Arg checking
+	if (state == true) then
+		state = "true"
+	elseif (state == false) then 
+		state = "false"
 	end
+	if (state ~= "true" or state ~= "false") then return false end
+	
+	db:exec("UPDATE `admins` SET `dev`=? WHERE `id`=?", state, id)
+	adminTable[id]["dev"] = state
 	return true
 end
 
