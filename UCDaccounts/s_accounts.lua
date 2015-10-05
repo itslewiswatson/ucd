@@ -8,8 +8,9 @@
 --------------------------------------------------------------------
 
 db = exports.UCDsql:getConnection()
+Accounts = {}
 
-function playerLogin(_, theCurrentAccount)
+function Accounts.Login(_, theCurrentAccount)
 	if (theCurrentAccount:isGuest()) then return end
 	
 	local accountID = getPlayerAccountID(source)
@@ -46,14 +47,14 @@ function playerLogin(_, theCurrentAccount)
 	setCameraTarget(source, source)
 	fadeCamera(source, true, 2.0)
 	db:exec("UPDATE `accounts` SET `serial`=?, `ip`=?, `lastUsedName`=? WHERE `id`=?", source:getSerial(), source:getIP(), source:getName(), accountID)
-	source:setData("accountName", tostring(result.accName), true)
+	source:setData("accountName", result.accName, true)
 	source:setData("accountID", accountID, true)
 end
-addEventHandler("onPlayerLogin", root, playerLogin)
+addEventHandler("onPlayerLogin", root, Accounts.Login)
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function saveData(plr)
+function Accounts.Save(plr)
 	if (plr:getType() ~= "player") then return nil end
 	if (plr:getAccount():isGuest()) then return false end
 	
@@ -108,19 +109,19 @@ function saveData(plr)
 	return true
 end
 
-function savePlayerData()
-	saveData(source)
+function onPlayerQuit()
+	Accounts.Save(source)
 end
-addEventHandler("onPlayerQuit", root, savePlayerData)
+addEventHandler("onPlayerQuit", root, onPlayerQuit)
 
-function saveAllPlayerData()			
+function Accounts.SaveAll()
 	for _, v in pairs(Element.getAllByType("player")) do
-		saveData(v)
+		Accounts.Save(v)
 	end
 end
-addCommandHandler("saveall", saveAllPlayerData)
+--addCommandHandler("saveall", Accounts.SaveAll)
 
-function handleResourceStop()
-	saveAllPlayerData()
+function Accounts.Stop()
+	Accounts.SaveAll()
 end
-addEventHandler("onResourceStop", resourceRoot, handleResourceStop)
+addEventHandler("onResourceStop", resourceRoot, Accounts.Stop)

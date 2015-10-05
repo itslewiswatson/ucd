@@ -3,8 +3,8 @@
 	<script src="s_accounts.lua" type="server" />
 	<script src="accountData.slua" type="server" />
 	
-	<script src="s_exports.lua" type="server" />
-	<script src="c_exports.lua" type="client" />
+	<script src="exports/s_exports.lua" type="server" />
+	<script src="exports/c_exports.lua" type="client" />
 	
 	<!-- Do not use this function (it is only for a player to change their password) Instead use changePassword -->
 	<export function="changeAccountPassword" type="server" />
