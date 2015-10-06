@@ -1,0 +1,6 @@
+<meta>
+	<script src="serverExports.lua" type="server"/>
+	<export function="getTestClass" type="server"/>
+	
+	<oop>true</oop>
+</meta>
