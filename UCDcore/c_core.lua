@@ -17,9 +17,3 @@ setCloudsEnabled(false)
 setAmbientSoundEnabled("gunfire", false)
 setOcclusionsEnabled(false)
 setBlurLevel(0)
-
--- This will make GUIs much nicer
-function guiFocus()
-	guiSetInputMode("no_binds_when_editing")
-end
-addEventHandler("onClientGUIFocus", guiRoot, guiFocus)
