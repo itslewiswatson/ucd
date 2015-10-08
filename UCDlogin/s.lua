@@ -35,7 +35,7 @@ function startMatrix()
 	setCameraMatrix(source, x, y, z, lx, ly, lz)
 	showPlayerHudComponent(source, "all", false)
 	showChat(source, false)
-	setPlayerNametagColor(source, false)	
+	setPlayerNametagColor(source, false)
 end
 addEventHandler("onPlayerJoin", root, startMatrix)
 
@@ -127,18 +127,21 @@ addEventHandler("UCDlogin.register", root, registerPlayer)
 function login_handler()
 	source:setData("isLoggedIn", true)
 	-- source:setData("isPlayerLoggedIn", true)
-	setTimer(
-		function (source)
-			for _, v in pairs(exports.UCDhud:getDisabledHUD()) do
-				source:setHudComponentVisible(v, false)
-			end
-			source:setHudComponentVisible("radar", true)
-			source:setHudComponentVisible("radio", true)
-			source:setHudComponentVisible("crosshair", true)
-			showChat(source, true)
-		end, 1000, 1, source
-	)
-	
+	if (Resource.getFromName("UCDhud"):getState() == "running" or Resource.getFromName("UCDhud"):getState() == "starting") then
+		setTimer(
+			function (source)
+				for _, v in pairs(exports.UCDhud:getDisabledHUD()) do
+					source:setHudComponentVisible(v, false)
+				end
+				source:setHudComponentVisible("radar", true)
+				source:setHudComponentVisible("radio", true)
+				source:setHudComponentVisible("crosshair", true)
+			end, 1000, 1, source
+		)
+	else
+		source:setHudComponentVisible("all", true)
+	end
+	showChat(source, true)
 	-- Used for debug right now
 	local pDim = source:getDimension()
 	if (pDim ~= 0 and exports.UCDaccounts:isPlayerOwner(source)) then
