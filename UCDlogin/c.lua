@@ -3,10 +3,11 @@
 --// RESOURCE: UCDlogin
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 13.12.2014
---// PURPOSE: A login panel.
+--// PURPOSE: A login interface.
 --// FILE: \UCDlogin\c.lua [client]
 -------------------------------------------------------------------
 
+local sX, sY = guiGetScreenSize()
 login = {edit = {}, button = {}, label = {}, checkbox = {}}
 registration = {button = {}, window = {}, label = {}, edit = {}}
 
@@ -14,33 +15,34 @@ registration = {button = {}, window = {}, label = {}, edit = {}}
 addEventHandler("onClientResourceStart", resourceRoot, 
 	function ()
 		--if (not exports.UCDutil:isPlayerLoggedIn(localPlayer)) then		
-			sX, sY = guiGetScreenSize()
-			nX, nY = 1366, 768
-			
 			guiSetInputEnabled(true)
 			showCursor(true)
 			
-			login.button[1] = guiCreateButton(680, 389, 87, 34, "Login", false)
-			guiSetFont(login.button[1], "default-bold-small")
-			guiSetProperty(login.button[1], "NormalTextColour", "FFAAAAAA")
+			login.button[1] = guiCreateButton((sX / 2) - (87 / 2) - 100, (sY / 2), 87, 34, "Login", false)
+			login.button[1]:setFont("default-bold-small")
+			login.button[1]:setProperty("NormalTextColour", "FFAAAAAA")
 			login.button[1]:setEnabled(false)
 
-			login.button[2] = guiCreateButton(785, 389, 87, 34, "Register", false)
-			guiSetFont(login.button[2], "default-bold-small")
-			guiSetProperty(login.button[2], "NormalTextColour", "FFAAAAAA")
-
-			login.button[3] = guiCreateButton(889, 389, 87, 34, "Forgot password", false)
-			guiSetFont(login.button[3], "default-bold-small")
-			guiSetProperty(login.button[3], "NormalTextColour", "FFAAAAAA")
-
-			login.label[1] = guiCreateLabel(712, 361, 108, 16, "Save account name", false)
-			login.label[2] = guiCreateLabel(855, 361, 108, 16, "Save password", false)
-
-			login.checkbox[1] = guiCreateCheckBox(690, 361, 15, 18, "", false, false)
-			login.checkbox[2] = guiCreateCheckBox(830, 361, 15, 18, "", false, false)
-
-			login.edit[1] = guiCreateEdit(680, 280, 296, 30, "", false)
-			login.edit[2] = guiCreateEdit(680, 320, 296, 30, "", false)
+			login.button[2] = guiCreateButton((sX / 2) - (87 / 2), (sY / 2), 87, 34, "Register", false)
+			login.button[2]:setFont("default-bold-small")
+			login.button[2]:setProperty("NormalTextColour", "FFAAAAAA")
+			
+			login.button[3] = guiCreateButton((sX / 2) + 100 - (87 / 2), (sY / 2), 87, 34, "Forgot password", false)
+			login.button[3]:setFont("default-bold-small")
+			login.button[3]:setProperty("NormalTextColour", "FFAAAAAA")
+			
+			login.label[1] = guiCreateLabel((sX / 2) - (87 / 2) + 8, (sY / 2) - 25, 108, 16, "Save credentials", false)
+			
+			login.checkbox[1] = guiCreateCheckBox((sX / 2) - (87 / 2) - 13, (sY / 2) - 25, 15, 18, "", false, false)
+			
+			-- 104.5
+			-- len of button[1,2,3] = 287
+			-- len of edits = 296
+			-- (296-287)/2 = 4.5
+			-- Because of the edits not being the same length as the total of buttons
+			-- Make them same length or not???
+			login.edit[1] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), 280, 296, 30, "", false)
+			login.edit[2] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), 320, 296, 30, "", false)
 			guiEditSetMasked(login.edit[2], true)    
 	
 			loginPanelElements = {login.button[1], login.button[2], login.button[3], login.edit[1], login.edit[2], login.label[1], login.label[2], login.checkbox[1], login.checkbox[2]}
@@ -48,10 +50,8 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			addEventHandler("onClientGUIClick", login.button[1], onClickLogin, false)
 			addEventHandler("onClientGUIClick", login.button[2], onClickRegister, false)
 			addEventHandler("onClientGUIChanged", guiRoot, onLoginEditsChanged)
-			--addEventHandler("onClientRender", root, blackBars)
 	-----------------------------------------------------
-			
-			registration.window[1] = guiCreateWindow(667, 651, 617, 455, "UCD | Registration [Beta]", false)
+			registration.window[1] = guiCreateWindow(667, 651, 617, 455, "UCD | Registration", false)
 			registration.window[1]:setSizable(false)
 			registration.window[1]:setVisible(false)
 			exports.UCDutil:centerWindow(registration.window[1])
@@ -110,28 +110,6 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			addEventHandler("onClientGUIClick", registration.button[1], onClickRegisterConfirm)
 			addEventHandler("onClientGUIClick", registration.button[2], onClickCancel, false)
 			addEventHandler("onClientGUIChanged", registration.window[1], onRegistrationEditsChanged)
-
-			--[[
-			registration.window[1] = guiCreateWindow(399, 255, 434, 290, "UCD | Registration Panel", false)
-			registration.window[1]:setSizable(false)
-			registration.window[1]:setMovable(false)
-			registration.window[1]:setVisible(false)
-			exports.UCDutil:centerWindow(registration.window[1])
-			
-			editRegistrationUsername = guiCreateEdit(98, 66, 242, 25, "", false, registration.window[1])
-			editRegistrationPassword = guiCreateEdit(98, 128, 242, 25, "", false, registration.window[1])
-			guiEditSetMasked(editRegistrationPassword, true)
-			editRegistrationRepeatPassword = guiCreateEdit(98, 190, 242, 25, "", false, registration.window[1])
-			guiEditSetMasked(editRegistrationRepeatPassword, true)
-			lblRUsername = guiCreateLabel(98, 39, 242, 17, "Username:", false, registration.window[1])
-			lblRPassword = guiCreateLabel(98, 101, 242, 17, "Password:", false, registration.window[1])
-			lblRepeatPassword = guiCreateLabel(98, 163, 242, 17, "Repeat password:", false, registration.window[1])
-			btnCancel = guiCreateButton(231, 225, 179, 38, "Cancel", false, registration.window[1])
-			btnConfirmRegistration = guiCreateButton(31, 225, 179, 38, "Confirm registration", false, registration.window[1])
-			
-			addEventHandler("onClientGUIClick", btnConfirmRegistration, onClickRegisterConfirm)
-			addEventHandler("onClientGUIClick", btnCancel, onClickCancel)
-			--]]
 		--end
 	end
 )
@@ -143,13 +121,6 @@ function isLoginWindowOpen()
 	return true
 end
 
-local sX, sY = guiGetScreenSize()
-local nX, nY = 1366, 768
-function blackBars()
-	dxDrawRectangle(0, 0, 1 * sX, (111 / nY) * sY, tocolor(0, 0, 0, 255), false)
-	dxDrawRectangle(0, (657 / nY) * sY, (1366 / nX) * sX, (111 / nY) * sY, tocolor(0, 0, 0, 255), false)
-end
-
 function onLoginEditsChanged()
 	if (source == login.edit[1] or source == login.edit[2]) then
 		local usr, passwd = login.edit[1]:getText(), login.edit[2]:getText()
@@ -158,8 +129,6 @@ function onLoginEditsChanged()
 		else
 			login.button[1]:setEnabled(false)
 		end
-	else
-		outputDebugString("no parent")
 	end
 end
 
@@ -417,73 +386,3 @@ function updateValidationLabel(value)
 end
 addEvent("UCDlogin.updateValidationLabel", true)
 addEventHandler("UCDlogin.updateValidationLabel", root, updateValidationLabel)
-
--- new proposed ui
---[[
-login = {
-    button = {},
-    edit = {},
-    checkbox = {},
-    label = {}
-}
-addEventHandler("onClientResourceStart", resourceRoot,
-    function()
-        login.button[1] = guiCreateButton(680, 389, 87, 34, "Login", false)
-        guiSetFont(login.button[1], "default-bold-small")
-        guiSetProperty(login.button[1], "NormalTextColour", "FFAAAAAA")
-
-
-        login.button[2] = guiCreateButton(785, 389, 87, 34, "Register", false)
-        guiSetFont(login.button[2], "default-bold-small")
-        guiSetProperty(login.button[2], "NormalTextColour", "FFAAAAAA")
-
-
-        login.button[3] = guiCreateButton(889, 389, 87, 34, "Forgot password", false)
-        guiSetFont(login.button[3], "default-bold-small")
-        guiSetProperty(login.button[3], "NormalTextColour", "FFAAAAAA")
-
-
-        login.label[1] = guiCreateLabel(712, 361, 108, 16, "Save account name", false)
-
-
-        login.label[2] = guiCreateLabel(855, 361, 108, 16, "Save password", false)
-
-
-        login.checkbox[1] = guiCreateCheckBox(690, 361, 15, 18, "", false, false)
-
-
-        login.checkbox[2] = guiCreateCheckBox(830, 361, 15, 18, "", false, false)
-
-
-        login.edit[1] = guiCreateEdit(680, 280, 296, 30, "thisis32characterslongithinkidkmaybe", false)
-
-
-        login.edit[2] = guiCreateEdit(680, 320, 296, 30, "thisis32characterslongithinkidkmaybe", false)
-        guiEditSetMasked(login.edit[2], true)    
-    end
-)
-
--- old 
-		login.button[1] = guiCreateButton((449 / nX) * sX, (368 / nY) * sY, (132 / nX) * sX, (60 / nY) * sY, "Login", false)
-			login.button[1]:setFont("default-bold-small")
-			login.button[1]:setProperty("NormalTextColour", "FFAAAAAA")
-	
-			login.button[2] = guiCreateButton((635 / nX) * sX, (368 / nY) * sY, (132 / nX) * sX, (60 / nY) * sY, "Register", false)
-			login.button[2]:setFont("default-bold-small")
-			login.button[2]:setProperty("NormalTextColour", "FFAAAAAA")
-
-			login.button[3] = guiCreateButton((827 / nX) * sX, (368 / nY) * sY, (132 / nX) * sX, (60 / nY) * sY, "Forgot password", false)
-			login.button[3]:setFont("default-bold-small")
-			login.button[3]:setProperty("NormalTextColour", "FFAAAAAA")
-	
-			-- Account name
-			login.edit[1] = guiCreateEdit((449 / nX) * sX, (275 / nY) * sY, (231 / nX) * sX, (42 / nY) * sY, "", false)
-			login.edit[1]:setMaxLength(32)
-	
-			-- Password
-			login.edit[2] = guiCreateEdit((728 / nX) * sX, (275 / nY) * sY, (231 / nX) * sX, (42 / nY) * sY, "", false)
-			login.edit[2]:setMasked(true)    
-			login.edit[2]:setMaxLength(32)
-	
-			loginPanelElements = {login.button[1], login.button[2], login.button[3], login.edit[1], login.edit[2]}
---]]
