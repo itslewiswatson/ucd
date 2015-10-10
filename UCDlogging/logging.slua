@@ -10,6 +10,18 @@
 local chatsLogged = 0
 local db = exports.UCDsql:getConnection()
 
+--[[
+function newAdminLog()
+	
+end
+
+function newStdLog(plr, type1, action, type2)
+	if (not plr) or (not type1) or (not action) then return nil end
+	if (plr:getType() ~= "player") or (type(type1) ~= "string") or (type(action) ~= "string") then return false end
+	if (not type2) then type2 = "N/A" end
+end
+--]]
+
 function new(plr, type1, action, type2)
 	if (not plr) or (not type1) or (not action) then return nil end
 	if (plr:getType() ~= "player") or (type(type1) ~= "string") or (type(action) ~= "string") then return false end
