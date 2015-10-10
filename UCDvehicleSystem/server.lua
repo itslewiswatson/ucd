@@ -208,9 +208,11 @@ addEventHandler("UCDvehicleSystem.toggleLock", root, toggleLock_)
 
 -- We need the owner's name to be synced
 function onPlayerChangeNick(old, new)
-	for _, vehicle in pairs(activeVehicles[source]) do
-		if (old == vehicle:getData("owner")) then
-			vehicle:setData("owner", new)
+	if (exports.UCDaccounts:isPlayerLoggedIn(source) and activeVehicles[source] and #activeVehicles[source] > 0) then
+		for _, vehicle in pairs(activeVehicles[source]) do
+			if (old == vehicle:getData("owner")) then
+				vehicle:setData("owner", new)
+			end
 		end
 	end
 end
