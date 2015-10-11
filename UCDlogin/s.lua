@@ -86,10 +86,15 @@ function loginPlayer(usr, passwd)
 	
 	if (getAccount(usr)) then
 		if (getAccount(usr, passwd)) then
-			logIn(client, getAccount(usr), passwd)
-			triggerClientEvent(client, "UCDlogin.hideLoginInterface", resourceRoot)
-			triggerClientEvent(client, "UCDlogin.destroyInterface", resourceRoot)
-			exports.UCDlogging:new(client, "login", "Logged into account: "..usr, client:getIP())
+			if (getAccount(usr):getPlayer()) then
+				outputChatBox(client:getName().." is trying to log into your account. They had used a correct password.", getAccount(usr):getPlayer())
+				exports.UCDdx:new(client, "This account is currently in use.", 255, 255, 255)
+				return
+			else
+				triggerClientEvent(client, "UCDlogin.saveAccountCredentials", client, usr, passwd)
+				logIn(client, getAccount(usr), passwd)
+				exports.UCDlogging:new(client, "login", "Logged into account: "..usr, client:getIP())
+			end
 		else
 			exports.UCDdx:new(client, "Incorrect password.", 255, 255, 255)
 		end
@@ -120,14 +125,14 @@ function registerPlayer(usr, email, passwd, conf)
 		return true
 	end
 end
-
 addEvent("UCDlogin.register", true)
 addEventHandler("UCDlogin.register", root, registerPlayer)
 
 function login_handler()
 	source:setData("isLoggedIn", true)
 	-- source:setData("isPlayerLoggedIn", true)
-	if (Resource.getFromName("UCDhud"):getState() == "running" or Resource.getFromName("UCDhud"):getState() == "starting") then
+	local UCDhud = Resource.getFromName("UCDhud")
+	if (UCDhud:getState() == "running" or UCDhud:getState() == "starting") then
 		setTimer(
 			function (source)
 				for _, v in pairs(exports.UCDhud:getDisabledHUD()) do
@@ -142,6 +147,8 @@ function login_handler()
 		source:setHudComponentVisible("all", true)
 	end
 	showChat(source, true)
+	triggerClientEvent(source, "UCDlogin.hideLoginInterface", source)
+	triggerClientEvent(source, "UCDlogin.destroyInterface", source)
 	-- Used for debug right now
 	local pDim = source:getDimension()
 	if (pDim ~= 0 and exports.UCDaccounts:isPlayerOwner(source)) then

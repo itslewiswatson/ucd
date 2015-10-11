@@ -7,6 +7,9 @@
 --// FILE: \UCDlogin\c.lua [client]
 -------------------------------------------------------------------
 
+-- XML is the one used to save credentials on a client's computer [We could possibly use a unique signature per person]
+-- C2S is the one used to encrypt client-to-server transfer, so we aren't passing plain text (easily snooped)
+local keys = {xml = [[7C6933A1239C7493F7F8A71A0EDA9553]], C2S = [[place_hash_here]]}
 local sX, sY = guiGetScreenSize()
 login = {edit = {}, button = {}, label = {}, checkbox = {}}
 registration = {button = {}, window = {}, label = {}, edit = {}}
@@ -41,8 +44,10 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			-- (296-287)/2 = 4.5
 			-- Because of the edits not being the same length as the total of buttons
 			-- Make them same length or not???
-			login.edit[1] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), 280, 296, 30, "", false)
-			login.edit[2] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), 320, 296, 30, "", false)
+			login.edit[1] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), (sY / 2) - 104, 296, 30, "", false)
+			login.edit[2] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), (sY / 2) - 64, 296, 30, "", false)
+			--login.edit[1] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), 280, 296, 30, "", false)
+			--login.edit[2] = guiCreateEdit((sX / 2) - 104.5 - (87 / 2), 320, 296, 30, "", false)
 			guiEditSetMasked(login.edit[2], true)    
 	
 			loginPanelElements = {login.button[1], login.button[2], login.button[3], login.edit[1], login.edit[2], login.label[1], login.label[2], login.checkbox[1], login.checkbox[2]}
@@ -110,6 +115,15 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			addEventHandler("onClientGUIClick", registration.button[1], onClickRegisterConfirm)
 			addEventHandler("onClientGUIClick", registration.button[2], onClickCancel, false)
 			addEventHandler("onClientGUIChanged", registration.window[1], onRegistrationEditsChanged)
+			
+			if (File.exists("credentials.xml")) then
+				local f = XML.load("credentials.xml")
+				login.edit[1]:setText(tostring(f:findChild("usr", 0):getValue()))
+				login.edit[2]:setText(tostring(teaDecode(f:findChild("passwd", 0):getValue(), keys.xml)))
+				f:unload()
+				
+				login.checkbox[1]:setSelected(true)
+			end
 		--end
 	end
 )
@@ -250,7 +264,7 @@ function onClickLogin(button, state)
 					elseif (usr ~= "") and (passwd == "") then
 						exports.UCDdx:new("Please enter your password", 255, 255, 255)
 					elseif (user ~= "") and (passwd ~= "") then
-						triggerServerEvent("UCDlogin.logIn", localPlayer, usr, passwd) -- need to encrypt this [do not pass plain text]
+						triggerServerEvent("UCDlogin.logIn", localPlayer, usr, passwd) -- need to 	t this [do not pass plain text]
 					end
 				end
 			end
@@ -386,3 +400,25 @@ function updateValidationLabel(value)
 end
 addEvent("UCDlogin.updateValidationLabel", true)
 addEventHandler("UCDlogin.updateValidationLabel", root, updateValidationLabel)
+
+function xmllol()
+	if guiCheckBoxGetSelected(login.checkbox[1]) then
+		local usr = login.edit[1]:getText()
+		local passwd = teaEncode(login.edit[2]:getText(), keys.xml)
+		if (not File.exists("credentials.xml")) then
+			local f = XML("credentials.xml", "login")
+			f:createChild("usr"):setValue(usr)
+			f:createChild("passwd"):setValue(passwd)
+			f:saveFile()
+			f:unload()
+		else
+			local f = XML.load("credentials.xml")
+			f:findChild("usr", 0):setValue(usr)
+			f:findChild("passwd", 0):setValue(passwd)
+			f:saveFile()
+			f:unload()
+		end
+	end
+end
+addEvent("UCDlogin.saveAccountCredentials", true)
+addEventHandler("UCDlogin.saveAccountCredentials", root, xmllol)
