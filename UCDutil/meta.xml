@@ -18,8 +18,8 @@
 	<export function="getTimeStamp" type="server"/>
 	<export function="mathround" type="client"/>
 	<export function="mathround" type="client"/>
-	<export function="GenerateString" type="server"/>
-	<export function="GenerateString" type="client"/>
+	<export function="randomstring" type="server"/>
+	<export function="randomstring" type="client"/>
 	<export function="centerWindow" type="client"/>
 	
 	<oop>true</oop>
