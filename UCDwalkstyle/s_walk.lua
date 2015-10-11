@@ -47,6 +47,26 @@ addEventHandler( "onPlayerLogin", root, onLogin )
 ]]
 ------------------------------------------------------------------
 
+-- ATROCIOUS CODE HOLY SHIT THIS IS BAD
+
+local playerStyles = {}
+
+function getPlayerWalkingStyle(plr)
+	if (not plr) then return nil end
+	if (plr:getType() ~= "player") then return false end
+	if (not playerStyles[plr] or playerStyles[plr] == nil) then return false end
+	return playerStyles[plr]
+end
+
+addEventHandler("onPlayerLogin", root, 
+	function () 
+		local ws = exports.UCDaccounts:GAD(source, "walkstyle")
+		if ws ~= nil and ws ~= false then
+			playerStyles[source] = ws
+		end
+	end
+)
+
 addEvent( "walkStyleBuy", true )
 addEventHandler( "walkStyleBuy", root, 
 	function ( id, name )
@@ -54,6 +74,7 @@ addEventHandler( "walkStyleBuy", root,
 		id = tonumber( id )
 		setPedWalkingStyle( client, id )
 		exports.dx:new( client, "You have successfully purchased the '"..name.."' walkstyle (ID "..tostring( id )..").", 60, 200, 70 )
-		setElementData( client, "walkstyle", tonumber( id ), true )
+		playerStyles[client] = id
+		--setElementData( client, "walkstyle", tonumber( id ), true )
 	end
 )
