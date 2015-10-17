@@ -1,0 +1,9 @@
+<meta>
+	<min_mta_version server="1.5"></min_mta_version>
+    <info author="Noki" type="" name="" />
+	
+	<script src="housing.lua" type="server"/>
+	<export function="getHouseRate" type="server"/>
+	
+	<oop>true</oop>
+</meta>
