@@ -3,14 +3,8 @@
 -- Rate: 888 (88.8%)
 -- Fluctuation: 100 (10%)
 
-Housing = 
-{
-	-- These will be our current variables
-	rate = 888,	fluc = 100,
-	
-	-- Thing we need for reference
-	default = {rate = 888, fluc = 100},
-	old = {},
+Housing = {
+	rate = 888,	fluc = 100,	default = {rate = 888, fluc = 100},	old = {},
 }
 
 function getHouseRate()
