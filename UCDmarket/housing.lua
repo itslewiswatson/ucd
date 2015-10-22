@@ -7,6 +7,10 @@ Housing = {
 	rate = 888,	fluc = 100,	default = {rate = 888, fluc = 100},	old = {},
 }
 
+-- Create the element for client-side syncing
+housingEle = createElement("UCDmarket.housing")
+housingEle:setParent(resourceRoot)
+
 function getHouseRate()
 	return Housing.rate, Housing.fluc
 end
@@ -34,6 +38,10 @@ end
 function onHousePriceChange()
 	outputDebugString("UCDmarket[housing] - New: r="..Housing.rate.." f="..Housing.fluc.."; Old: r="..Housing.old.rate.." f="..Housing.old.fluc)
 	exports.UCDdx:new(root, "Housing market: The new housing percentage is "..tostring(Housing.rate / 10).."%", 255, 255, 255)
+	
+	-- This is synced client-side, so we don't need to worry about a client file or manual syncing
+	housingEle:setData("rate", Housing.rate)
+	housingEle:setData("fluc", Housing.fluc)
 end
 addEvent("UCDmarket.onHousePriceChange", true)
 addEventHandler("UCDmarket.onHousePriceChange", root, onHousePriceChange)
