@@ -55,8 +55,8 @@ end
 function getPlayerFromPartialName(name)
     local name = name and name:gsub("#%x%x%x%x%x%x", ""):lower() or nil
     if name then
-        for _, player in pairs(Element.getByType("player")) do
-            local name_ = player:getName():gsub("#%x%x%x%x%x%x", ""):lower()
+        for _, player in pairs(Element.getAllByType("player")) do
+            local name_ = player.name:gsub("#%x%x%x%x%x%x", ""):lower()
             if name_:find(name, 1, true) then
                 return player
             end

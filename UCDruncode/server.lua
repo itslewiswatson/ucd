@@ -1,12 +1,12 @@
 ﻿function noki()
-	return getPlayerFromName("Noki") or getPlayerFromName("[UCD]Noki") or getPlayerFromName("UCD||Noki") or getPlayerFromPartialName("Noki")
+	return getPlayerFromName("Noki") or getPlayerFromName("[UCD]Noki") or getPlayerFromName("UCD||Noki") or exports.UCDutil:getPlayerFromPartialName("Noki")
 end
 
-function getPlayerFromPartialName( name )
+function partial(name)
     local name = name and name:gsub("#%x%x%x%x%x%x", ""):lower() or nil
     if name then
-        for _, player in ipairs(getElementsByType("player")) do
-            local name_ = getPlayerName(player):gsub("#%x%x%x%x%x%x", ""):lower()
+        for _, player in pairs(Element.getAllByType("player")) do
+            local name_ = player.name:gsub("#%x%x%x%x%x%x", ""):lower()
             if name_:find(name, 1, true) then
                 return player
             end
