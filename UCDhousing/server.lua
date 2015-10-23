@@ -93,7 +93,7 @@ function purchaseHouse(houseID)
 	setHouseData(houseID, "sale", 0)
 	setHouseData(houseID, "open", 0)
 
-	exports.UCDdx:new(client, "Congratulations! You have bought "..houseName.." for $"..housePrice.."!", 0, 255, 0)
+	exports.UCDdx:new(client, "Congratulations! You have bought '"..houseName.."' for $"..exports.UCDutil:tocomma(housePrice).."!", 0, 255, 0)
 	triggerClientEvent("UCDhousing.closeGUI", client)
 	createHouse(houseID, getHouseData(houseID, "*"))
 	
@@ -178,6 +178,29 @@ function toggleOpen(houseID, state)
 end
 addEvent("UCDhousing.toggleOpen", true)
 addEventHandler("UCDhousing.toggleOpen", root, toggleOpen)
+
+function sellHouseToBank(houseID)
+	if (exports.UCDaccounts:getPlayerAccountName(client) ~= getHouseData(houseID, "owner")) then
+		exports.UCDdx:new(client, "You are not the owner of this house, you cannot sell it to the bank.", 255, 0, 0)
+		-- possibly put an anticheat notification here in debugscript
+		return false
+	end
+	
+	local rate, fluc = exports.UCDmarket:getHouseRate()
+	local price = getHouseData(houseID, "boughtForPrice")
+	
+	setHouseData(houseID, "owner", "UCDhousing")
+	setHouseData(houseID, "sale", 1)
+	setHouseData(houseID, "open", 1)
+	triggerClientEvent("UCDhousing.closeGUI", client)
+	
+	local jewmoney = price * (rate / 1000)
+	
+	client:giveMoney(jewmoney)
+	exports.UCDdx:new(client, "You have sold your house to the bank for $"..tostring(exports.UCDutil:tocomma(exports.UCDutil:mathround(jewmoney))).." which is "..tostring(rate / 10).."% of what you bought it for!", 0, 255, 0)
+end
+addEvent("UCDhousing.sellHouseToBank", true)
+addEventHandler("UCDhousing.sellHouseToBank", root, sellHouseToBank)
 
 function warpToHouseExterior(plr, _, houseID)
 	-- Check to see if everything is valid

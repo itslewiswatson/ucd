@@ -4,7 +4,7 @@
 --]]
 
 confirmation = {window={}, label={}, button={}}
-UCDhousing = {button = {}, window = {}, edit = {}, label = {}}
+UCDhousing = {button = {}, window = {}, edit = {}, label = {}, houseID = {}, interiorID = {}}
 
 local sX, sY = guiGetScreenSize()
 local nX, nY = 1366, 768
@@ -117,17 +117,24 @@ function createGUI(houseID)
 	if (owner == nil) then exports.UCDdx:new("Whoops! We couldn't load the house data for some reason. Reconnect to fix this.", 255, 0, 0) exports.UCDdx:new("Error: table not synced - houseID: "..houseID, 255, 0, 0) return false end
 	
 	outputDebugString("Creating GUI for houseID: "..houseID)
-	outputDebugString(owner)
+	outputDebugString("Owner: "..owner)
 	
-	UCDhousing = {button = {}, window = {}, edit = {}, label = {}}
+	UCDhousing = {button = {}, window = {}, edit = {}, label = {}, houseID = {}, interiorID = {}}
 	
 	-- Create the actual GUI
 	UCDhousing.window[1] = guiCreateWindow(457, 195, 471, 336, "UCD | Housing [ID: "..houseID.."]", false)
 	UCDhousing.window[1]:setSizable(false)
 	exports.UCDutil:centerWindow(UCDhousing.window[1])
+	
+	--[[
 	UCDhousing.window[1]:setData("houseID", houseID)
 	UCDhousing.window[1]:setData("interiorID", interiorID)
-
+	--]]
+	
+	-- Set the GUI's properties (so we don't have to use element data)
+	UCDhousing.houseID[1] = houseID
+	UCDhousing.interiorID[1] = interiorID
+	
 	UCDhousing.label[1] = guiCreateLabel(10, 23, 88, 20, "House name:", false, UCDhousing.window[1])
 	UCDhousing.label[2] = guiCreateLabel(10, 43, 88, 20, "Owner:", false, UCDhousing.window[1])
 	UCDhousing.label[3] = guiCreateLabel(10, 63, 88, 20, "Initial price:", false, UCDhousing.window[1])
@@ -198,12 +205,12 @@ function createGUI(houseID)
 			UCDhousing.button[3]:setEnabled(true)
 			UCDhousing.button[4]:setEnabled(true)
 			UCDhousing.button[5]:setEnabled(true)
-			--UCDhousing.button[6]:setEnabled(true)
+			UCDhousing.button[6]:setEnabled(true)
 		else
 			UCDhousing.button[3]:setEnabled(false)
 			UCDhousing.button[4]:setEnabled(false)
 			UCDhousing.button[5]:setEnabled(false)
-			--UCDhousing.button[6]:setEnabled(false)
+			UCDhousing.button[6]:setEnabled(false)
 		end
 	end
 	
@@ -212,7 +219,7 @@ function createGUI(houseID)
 	UCDhousing.edit[1]:setMaxLength(8)
 	
 	-- This feature is not yet finished, and should be disabled until beta (sell house to bank)
-	UCDhousing.button[6]:setEnabled(false)
+	--UCDhousing.button[6]:setEnabled(false)
 	
 	showCursor(true)
 end
@@ -240,6 +247,7 @@ addEventHandler("UCDhousing.closeGUI", root, closeGUI)
 function handleGUIInput()
 	-- So we can add a universal antispam/anticlick for the whole housing UI [we can have one statement instead of lots of nested ones within in check for source]
 	if (source:getParent() ~= UCDhousing.window[1]) then return end
+	--outputDebugString(UCDhousing.houseID[1])
 	
 	--if hasClicked == true then
 	--	return
@@ -251,32 +259,32 @@ function handleGUIInput()
 	-- Enter house
 	elseif (source == UCDhousing.button[2]) then
 		if (UCDhousing.button[2]:getEnabled()) then
-			local houseID = UCDhousing.window[1]:getData("houseID")
+			local houseID = UCDhousing.houseID[1]
 			local interiorID = getHouseData(houseID, "interiorID")
 			outputDebugString("Entering house... ID = "..houseID)
 			triggerServerEvent("UCDhousing.enterHouse", localPlayer, houseID, interiorID)
 		end
 	-- Purchase house
 	elseif (source == UCDhousing.button[1]) then
-		local houseID = UCDhousing.window[1]:getData("houseID")
+		local houseID = UCDhousing.houseID[1]
 		local housePrice = getHouseData(houseID, "currentPrice")
 		if (localPlayer:getMoney() >= housePrice) then
 			-- Maybe we could make an export from this
-			createConfirmationWindow(houseID, "Are you sure you want to buy house\n "..getHouseData(houseID, "houseName").." [ID: "..houseID.."]\n for $"..housePrice.."?")
+			createConfirmationWindow(houseID, "Are you sure you want to buy house\n "..getHouseData(houseID, "houseName").." [ID: "..houseID.."]\n for $"..exports.UCDutil:tocomma(housePrice).."?", purchaseHouse)
 		else
 			exports.UCDdx:new("You don't have enough money to buy this house!", 255, 0, 0)
 		end
 	-- Set house price
 	elseif (source == UCDhousing.button[3]) then
 		if (UCDhousing.button[3]:getEnabled()) then
-			local houseID = UCDhousing.window[1]:getData("houseID")
+			local houseID = UCDhousing.houseID[1]
 			local price = UCDhousing.edit[1]:getText()
 			setHousePrice(houseID, price)
 		end
 	-- Toggle sale
 	elseif (source == UCDhousing.button[4]) then
 		if (UCDhousing.button[4]:getEnabled()) then
-			local houseID = UCDhousing.window[1]:getData("houseID")
+			local houseID = UCDhousing.houseID[1]
 			local state = getHouseData(houseID, "sale")
 			if (state == 1) then state = false else state = true end
 			toggleSale(houseID, state)
@@ -284,10 +292,19 @@ function handleGUIInput()
 	-- Toggle open
 	elseif (source == UCDhousing.button[5]) then
 		if (UCDhousing.button[5]:getEnabled()) then
-			local houseID = UCDhousing.window[1]:getData("houseID")
+			local houseID = UCDhousing.houseID[1]
 			local state = getHouseData(houseID, "open")
 			if (state == 1) then state = false else state = true end
 			toggleOpen(houseID, state)
+		end
+	-- Sell house to bank
+	elseif (source == UCDhousing.button[6]) then
+		if (UCDhousing.button[6]:getEnabled()) then
+			local houseID = UCDhousing.houseID[1]
+			local price = getHouseData(houseID, "boughtForPrice")
+			local rate = root:getData("rate")
+			createConfirmationWindow(houseID, "Current rate is "..tostring(rate / 10).."% \nDo you want to sell your house for \n"..tostring(rate / 10).."% of what it is worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", sellHouseToBank)
+			--sellHouseToBank(houseID)
 		end
 	end
 	
@@ -345,7 +362,16 @@ function purchaseHouse(houseID, plr)
 	triggerServerEvent("UCDhousing.purchaseHouse", localPlayer, houseID)
 end
 
-function createConfirmationWindow(houseID, text)
+function sellHouseToBank(houseID, plr)
+	if (plr ~= localPlayer) then return false end
+	if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end
+	triggerServerEvent("UCDhousing.sellHouseToBank", localPlayer, houseID)
+end
+
+-- If we were to put this in an export
+	-- name = sourceResource:getName()
+	-- call[name]:func()
+function createConfirmationWindow(houseID, text, func, arg1, arg2, arg3)
 	if (isElement(confirmation.window[1])) then return false end
 	confirmation = {window={}, label={}, button={}}
 	
@@ -364,7 +390,18 @@ function createConfirmationWindow(houseID, text)
 				removeEventHandler("onClientGUIClick", confirmation.window[1], confirmationWindowClick)
 				confirmation.window[1]:destroy()
 			end
-			purchaseHouse(houseID, localPlayer)
+			
+			-- Let's account for multiple functions and any additional arguments they may encounter
+			if (arg1 and not arg2) then
+				func(houseID, localPlayer, arg1)
+			elseif (arg1 and arg2 and not arg3) then
+				func(houseID, localPlayer, arg1, arg2)
+			elseif (arg1 and arg2 and arg3) then
+				func(houseID, localPlayer, arg1, arg2, arg3)
+			else
+				func(houseID, localPlayer)
+			end
+			
 			return true
 		elseif (source == confirmation.button[2]) then
 			if (isElement(confirmation.window[1])) then
