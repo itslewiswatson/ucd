@@ -205,7 +205,9 @@ function createGUI(houseID)
 			UCDhousing.button[3]:setEnabled(true)
 			UCDhousing.button[4]:setEnabled(true)
 			UCDhousing.button[5]:setEnabled(true)
-			UCDhousing.button[6]:setEnabled(true)
+			--if (not Resource("UCDmarket") or Resource("UCDmarket"):getState() ~= "running" or not root:getData("rate")) then
+				UCDhousing.button[6]:setEnabled(true)
+			--end
 		else
 			UCDhousing.button[3]:setEnabled(false)
 			UCDhousing.button[4]:setEnabled(false)
@@ -218,8 +220,10 @@ function createGUI(houseID)
 	-- May have to add extra security measures and do double checks :/
 	UCDhousing.edit[1]:setMaxLength(8)
 	
-	-- This feature is not yet finished, and should be disabled until beta (sell house to bank)
-	--UCDhousing.button[6]:setEnabled(false)
+	-- We have to disable this button regardless of whether the hit element was the owner or not
+	--if (Resource("UCDmarket") and Resource("UCDmarket"):getState() ~= "running") then
+	--	UCDhousing.button[6]:setEnabled(false)
+	--end
 	
 	showCursor(true)
 end
