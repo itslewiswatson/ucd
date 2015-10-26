@@ -1,10 +1,14 @@
 <meta>
 	<info author="Noki" version="2" name="UCDaccounts" type="script" />
+	
 	<script src="s_accounts.lua" type="server" />
 	<script src="accountData.slua" type="server" />
 	
 	<script src="exports/s_exports.lua" type="server" />
 	<script src="exports/c_exports.lua" type="client" />
+	
+	<!-- This needs to start after s_exports.lua -->
+	<script src="weapons.lua" type="server" />
 	
 	<!-- Do not use this function (it is only for a player to change their password) Instead use changePassword -->
 	<export function="changeAccountPassword" type="server" />
@@ -24,6 +28,8 @@
 	
 	<export function="GAD" type="server" />
 	<export function="SAD" type="server" />
+	
+	<export function="getPlayerWeaponString" type="server" />
 	
 	<!-- Functions from accountData.slua -->
 	<export function="isPlayerAccountCached" type="server" />

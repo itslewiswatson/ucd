@@ -87,7 +87,12 @@ function registerAccount(plr, usr, passwd, email)
 	passwd = bcrypt_digest(passwd, salt)
 	
 	db:exec("INSERT INTO `accounts` SET `accName`=?, `pw`=?, `lastUsedName`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr:getName(), plr:getIP(), plr:getSerial(), email)
-	db:exec("INSERT INTO `accountData` SET `accName`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?",
+	
+	-- Get their account id so we don't have autoincrement failures
+	local accountID = db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id
+	
+	db:exec("INSERT INTO `accountData` SET `id`=?, `accName`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?",
+		accountID,
 		usr,
 		2001,
 		-788,
@@ -107,13 +112,14 @@ function registerAccount(plr, usr, passwd, email)
 		"Homeless",
 		toJSON({Team.getFromName("Unemployed"):getColor()})
 	)
+	db:exec("INSERT INTO `playerWeapons` SET `id`=?, `weaponString`=?", accountID, toJSON({}))
 	
 	-- Clear their password out of memory
 	passwd = nil
 	
 	-- We need to cache their account
-	local result = db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id
-	cacheAccount(tonumber(result))
+	
+	cacheAccount(accountID)
 	
 	return true
 end
