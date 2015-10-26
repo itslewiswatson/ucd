@@ -11,4 +11,5 @@
 	<file src="images/sept_mask.png" type="client" />
 	<file src="images/square_mask.png" type="client" />
 	<file src="images/radar_centre.png" type="client" />
+	<oop>true</oop>
 </meta>

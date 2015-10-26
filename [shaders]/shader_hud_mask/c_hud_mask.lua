@@ -37,9 +37,9 @@ addEventHandler( "onClientRender", root,
 		--
 		-- Transform world x, y into -0.5 to 0.5
 		--
-		local x, y = getElementPosition(localPlayer)
-		x = ( x ) / 6000
-		y = ( y ) / -6000
+		local plrVector = localPlayer.position
+		x = plrVector.x / 6000
+		y = plrVector.y / -6000
 		dxSetShaderValue(hudMaskShader, "gUVPosition", x, y)
 
 		--
@@ -59,9 +59,11 @@ addEventHandler( "onClientRender", root,
 		--
 		local startX, startY = 100, 500
 		local pr = getPedRotation(localPlayer)
-		dxDrawImage(startX, startY, 250, 250, hudMaskShader, 0, 0, 0, tocolor(255, 255, 255, 210))
-		dxDrawRectangle((startX + 125) + math.rad(x * camrot), (startY + 125) + math.rad(y * camrot), 10, 10, tocolor(0, 0, 0, 255))
+		dxDrawImage(startX, startY, 250, 250, hudMaskShader, 0, 0, 0, tocolor(255, 255, 255, 210))	
+		
+		--dxDrawRectangle((startX + 125) + math.rad(x * pr), (startY + 125) + math.rad(y * pr), 10, 10, tocolor(0, 0, 0, 255))
 		--dxDrawImage((startX + 125) + math.rad(x * camrot), startY + 125, 24, 24, "images/radar_centre.png")
 		--dxDrawImage((startX + 125 - 6) + math.rad(x * -camrot), (startY + 125 - 6) + math.rad(y), 24, 24, "images/radar_centre.png", camrot - pr)
+		dxDrawImage((startX + 125 - 6) + math.rad(x * -camrot), (startY + 125 - 6) + math.rad(y), 24, 24, "images/radar_centre.png", camrot - pr)
     end
 )
