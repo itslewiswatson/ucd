@@ -43,7 +43,7 @@ triggerServerEvent("UCDvehicleSystem.loadPlayerVehicles", localPlayer)
 function onClientVehicleEnter(theVehicle, seat)
 	if (source ~= localPlayer) then return end
 	local owner = theVehicle:getData("owner")
-	if (not owner) or (seat ~= 0) or (localPlayer:getName() == owner) then return end
+	if (not owner or seat ~= 0 or localPlayer:getName() == owner) then return end
 	
 	exports.UCDdx:new("This vehicle is owned by "..owner, 0, 255, 0)
 end
@@ -123,7 +123,7 @@ function createGUI()
 	GUIEditor.button[3] = guiCreateButton(171, 247, 66, 32, "Toggle lock", false, GUIEditor.window[1])
 	GUIEditor.button[4] = guiCreateButton(251, 247, 66, 32, "Sell", false, GUIEditor.window[1])
 	
-	GUIEditor.button[5] = guiCreateButton(11, 289, 66, 32, "Pick", false, GUIEditor.window[1])
+	GUIEditor.button[5] = guiCreateButton(11, 289, 66, 32, "Spawn", false, GUIEditor.window[1])
 	GUIEditor.button[6] = guiCreateButton(91, 289, 66, 32, "Hide", false, GUIEditor.window[1])
 	GUIEditor.button[7] = guiCreateButton(171, 289, 66, 32, "Spectate", false, GUIEditor.window[1])
 	GUIEditor.button[8] = guiCreateButton(251, 290, 66, 32, "Close", false, GUIEditor.window[1])
