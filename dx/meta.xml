@@ -1,9 +1,0 @@
-<meta>
-	<script src="server.lua" type="server"/>
-	<script src="client.lua" type="client" cache="false"/>
-
-	<export function="new" type="client"/>
-	<export function="new" type="server"/>
-	<export function="createNewDxMessageBot" type="client"/>
-	<export function="createNewDxMessageBot" type="server"/>
-</meta>
