@@ -34,26 +34,27 @@ addEventHandler("onResourceStart", resourceRoot, createTeams)]]
 --------
 
 function setDefaultTeam()
-	setPlayerTeam(source, getTeamFromName("Not logged in"))
+	source:setTeam(Team.getFromName("Not logged in"))
 end
 addEventHandler("onPlayerJoin", root, setDefaultTeam)
 
 function isPlayerInTeam(plr, team)
-	if (not plr) then return nil end
-	if (getElementType(plr) ~= "player") then return false end
+	if (not plr or not team) then return nil end
+	if (plr:getType() ~= "player") then return false end
 	
-	if (not team) then return nil end
-	local team = getTeamFromName(team)
-	if (not getTeamName(team)) then
-		return false
-	end
-	if (getPlayerTeam(plr) ~= team) then
-		return false
+	if (type(team) == "string") then
+		if plr:getTeam() == Team.getFromName(team) then
+			return true
+		end
+	elseif (team:getType() == "team") then
+		if plr:getTeam() == team then
+			return true
+		end
 	end
 	
-	return true
+	return false
 end
 
-function getTeamTable()
+function getTeams()
 	return teams
 end
