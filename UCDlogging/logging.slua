@@ -7,15 +7,15 @@
 --// FILE: UCDlogging\logging.slua [server]
 -------------------------------------------------------------------
 
-local chatsLogged = 0
+local stdLogged = 0
 local db = exports.UCDsql:getConnection()
 
 --[[
-function newAdminLog()
-	
+function adminLog()
+
 end
 
-function newStdLog(plr, type1, action, type2)
+function stdLog(plr, type1, action, type2)
 	if (not plr) or (not type1) or (not action) then return nil end
 	if (plr:getType() ~= "player") or (type(type1) ~= "string") or (type(action) ~= "string") then return false end
 	if (not type2) then type2 = "N/A" end
@@ -26,12 +26,12 @@ function new(plr, type1, action, type2)
 	if (not plr) or (not type1) or (not action) then return nil end
 	if (plr:getType() ~= "player") or (type(type1) ~= "string") or (type(action) ~= "string") then return false end
 	if (not type2) then type2 = "N/A" end
-	
+
 	local plrAcc = plr:getAccount()
 	--if (plrAcc:isGuest()) then return false end
 	local date, time = exports.UCDutil:getTimeStamp()
-	
-	db:exec("INSERT INTO `logging` SET `name`=?, `acc`=?, `type`=?, `type2`=?, `tick`=?, `date`=?, `time`=?, `action`=?, `serial`=?", 
+
+	db:exec("INSERT INTO `logging` SET `name`=?, `acc`=?, `type`=?, `type2`=?, `tick`=?, `date`=?, `time`=?, `action`=?, `serial`=?",
 		plr:getName(),
 		plrAcc:getName(),
 		type1,
@@ -42,17 +42,17 @@ function new(plr, type1, action, type2)
 		action,
 		plr:getSerial()
 	)
-	
-	chatsLogged = chatsLogged + 1
+
+	stdLogged = stdLogged + 1
 	return true
 end
 
 function outputTotal(reset)
-	if chatsLogged ~= 0 then
-		outputDebugString("[UCDlogging] Total logs inserted in the past 5 minutes: "..chatsLogged)
+	if stdLogged ~= 0 then
+		outputDebugString("[UCDlogging] Total standard logs inserted in the past 5 minutes: "..stdLogged)
 	end
 	if (reset) then
-		chatsLogged = 0
+		stdLogged = 0
 	end
 end
 setTimer(outputTotal, 60000 * 5, 0, true)
