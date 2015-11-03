@@ -20,7 +20,7 @@ local matrixViewPositions = {
 	{1862.90833, -1452.45300, 140.37985, 1528.33813, -1258.09937, 215.22653},
 	{1674.29980, -895.24408, 531.87439, 1659.51709, -982.78577, 39.61652},
 	{-903.80847, 1740.82678, 171.57216, -720.15826, 2015.47437, 56.53033},
-	
+
 	-- My own bc I am god
 	{1380.4105, -748.9726, 104.6013, 1460.8162, -1051.0956, 95.9769},
 	{2139.718, 1899.7533, 12.9899, 2034.3885, 1921.8209, 14.3957},
@@ -69,7 +69,7 @@ function loginPlayer(usr, passwd)
 		end
 	else
 	--]]
-	
+
 	-- All handled client-side
 	--[[
 	if (usr == "") and (passwd == "") then
@@ -81,13 +81,13 @@ function loginPlayer(usr, passwd)
 			exports.UCDdx:new(client, "Please enter your password", 255, 255, 255)
 		elseif (user ~= "") and (passwd ~= "") then
 	--]]
-	
+
 	-- Maybe have a label that you constantly need to update instead of using UCDdx
-	
+
 	if (getAccount(usr)) then
 		if (getAccount(usr, passwd)) then
 			if (getAccount(usr):getPlayer()) then
-				outputChatBox(client:getName().." is trying to log into your account. They had used a correct password.", getAccount(usr):getPlayer())
+				outputChatBox(client:getName().." is trying to log into your account. They have used a correct password. It is recommended you change your password or contact an admin.", getAccount(usr):getPlayer())
 				exports.UCDdx:new(client, "This account is currently in use.", 255, 255, 255)
 				return
 			else
@@ -149,9 +149,9 @@ function login_handler()
 	showChat(source, true)
 	triggerClientEvent(source, "UCDlogin.hideLoginInterface", source)
 	triggerClientEvent(source, "UCDlogin.destroyInterface", source)
-	-- Used for debug right now
-	local pDim = source:getDimension()
-	if (pDim ~= 0 and exports.UCDaccounts:isPlayerOwner(source)) then
+
+	-- Used for debug purposes as of now
+	if (source:getDimension() ~= 0 and exports.UCDaccounts:isPlayerOwner(source)) then
 		outputChatBox("You are not in dimension 0!", source, 255, 255, 255)
 	end
 end
@@ -164,7 +164,7 @@ function isAccount(name)
 	else
 		send = true
 	end
-	triggerClientEvent(client, "UCDlogin.updateValidationLabel", resourceRoot, send)
+	triggerClientEvent(client, "UCDlogin.updateValidationLabel", client, send)
 end
 addEvent("UCDlogin.isAccount", true)
 addEventHandler("UCDlogin.isAccount", root, isAccount)
