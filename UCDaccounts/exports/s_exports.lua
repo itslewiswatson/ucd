@@ -108,7 +108,8 @@ function registerAccount(plr, usr, passwd, email)
 	db:exec("INSERT INTO `playerWeapons` SET `weaponString`=?", toJSON({})) -- Empty JSON string
 
 	passwd = nil -- Clear their password out of memory
-	cacheAccount(accountID) -- We need to cache their account
+	cacheAccount(db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id) -- We need to cache their account
+	-- THIS SHOULD BE THE MOST FOOL PROOF WAY TO DETECT IT
 
 	return true
 end
@@ -133,8 +134,18 @@ function deleteAccount(accountKey)
 		kickPlayer(plr, getResourceName(getThisResource()), "Your account has been deleted")
 	end
 
+	-- Important we check for this first
+	if type_ == "id" then
+		db:exec("DELETE FROM `playerWeapons` WHERE `id`=?", accountKey)
+	else
+		local newAccountKey = db:query("SELECT `id` FROM `accounts` WHERE `accName`=?", accountKey):poll(-1)[1].id
+		db:exec("DELETE FROM `playerWeapons` WHERE `id`=?", newAccountKey)
+
+	end
+
 	db:exec("DELETE FROM `accounts` WHERE `??`=?", type_, accountKey)
 	db:exec("DELETE FROM `accountData` WHERE `??`=?", type_, accountKey)
+
 	acc:remove()
 
 	return true

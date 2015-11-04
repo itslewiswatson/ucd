@@ -103,12 +103,12 @@ function cacheAccount(id)
 			end
 		end
 	end
-	--outputDebugString("Cached player's account ["..plr:getName().."]")
+	outputDebugString("Cached player's account with accountID of "..id)
 	return true
 end
 
 function getIDData(id, column)
-	if (not id) or (not column) then return nil end
+	if (not id or not column) then return nil end
 	if (type(column) ~= "string") then return false end
 	
 	id = tonumber(id)

@@ -15,6 +15,10 @@ function Accounts.Login(_, theCurrentAccount)
 	
 	local accountID = getPlayerAccountID(source)
 	local result = GAD(source, "*")
+	if result == nil then
+		exports.UCDdx:new(source, "We have encountered a database issue. Please contact an administrator.")
+		outputDebugString("Player could not log in - data is nil")
+	end
 	
 	local playerX, playerY, playerZ 			= result.x, result.y, result.z
 	local playerRot, playerDim, playerInterior 	= result.rot, result.dim, result.interior
