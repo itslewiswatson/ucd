@@ -22,7 +22,7 @@ function draw()
 			if tX and tY and isLineOfSightClear(p.x, p.y, p.z, v.x, v.y, v.z, true, false, false, true, true, false, false, target) and dist < 30 then
 				local theText = target:getData("owner")
 				local width = dxGetTextWidth(tostring(theText), 0.6, "bankgothic")
-				dxDrawText(tostring(theText).."'s vehicle", tX - width / 2, tY, resX, resY, tocolor(255, 0, 0), 1)
+				dxDrawText(tostring(theText).."'s "..target.name.." ["..tostring(exports.UCDutil:mathround(target.health / 10)).."%]", tX - width / 2, tY, resX, resY, tocolor(255, 0, 0), 1)
 			end
 		end
 	end
