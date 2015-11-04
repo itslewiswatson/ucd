@@ -205,9 +205,11 @@ function createGUI(houseID)
 			UCDhousing.button[3]:setEnabled(true)
 			UCDhousing.button[4]:setEnabled(true)
 			UCDhousing.button[5]:setEnabled(true)
-			--if (not Resource("UCDmarket") or Resource("UCDmarket"):getState() ~= "running" or not root:getData("rate")) then
+			if (not Resource.getFromName("UCDmarket") or Resource.getFromName("UCDmarket"):getState() ~= "running" or not root:getData("rate")) then
+				UCDhousing.button[6]:setEnabled(false)
+			else
 				UCDhousing.button[6]:setEnabled(true)
-			--end
+			end
 		else
 			UCDhousing.button[3]:setEnabled(false)
 			UCDhousing.button[4]:setEnabled(false)
@@ -304,6 +306,7 @@ function handleGUIInput()
 	-- Sell house to bank
 	elseif (source == UCDhousing.button[6]) then
 		if (UCDhousing.button[6]:getEnabled()) then
+			--if (not Resource.getFromName("UCDmarket"))
 			local houseID = UCDhousing.houseID[1]
 			local price = getHouseData(houseID, "boughtForPrice")
 			local rate = root:getData("rate")
