@@ -1,5 +1,10 @@
 <meta>
-	<script src="s_walk.lua" type="server" />
-	<script src="c_walk.lua" type="client" />
+	<script src="util.lua" type="server" />
+	<script src="gui_s.lua" type="server" />
+	<script src="gui_c.lua" type="client" />
+	
+	<export function="getPlayerWalkingStyle" type="server"/>
+	<export function="setPlayerWalkingStyle" type="server"/>
+	
 	<oop>true</oop>
 </meta>
