@@ -28,11 +28,15 @@ addEventHandler("onPlayerLogin", root,
 
 -- Some code while we're always restarting the resource 
 -- We might keep it, even thought it is inefficient as fuck
-for _, plr in pairs(Element.getAllByType("player")) do
-	if isPlayerLoggedIn(plr) then
-		db:query(loadPlayerWeaponString, {plr}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", getPlayerAccountID(plr))
+addEventHandler("onResourceStart", resourceRoot,
+	function ()
+		for _, plr in pairs(Element.getAllByType("player")) do
+			if isPlayerLoggedIn(plr) then
+				db:query(loadPlayerWeaponString, {plr}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", getPlayerAccountID(plr))
+			end
+		end
 	end
-end
+)
 
 function loadPlayerWeaponString(qh, plr)
 	local result = qh:poll(-1)
