@@ -60,7 +60,7 @@ function fetchImage()
 		end
 		
 		-- If this were Python....
-		for x=1, (whiteSpace + 1) do
+		for x = 1, (whiteSpace + 1) do
 			links[x] = gettok(url, x, string.byte(" "))
 		end
 	else
