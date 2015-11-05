@@ -9,6 +9,10 @@
 	
 	<!-- This needs to start after s_exports.lua -->
 	<script src="weapons.lua" type="server" />
+	
+	<!-- Login panel and handling -->
+	<script src="login/server.lua" type="server" />
+	<script src="login/client.lua" type="client" />
 		
 	<export function="isPlayerLoggedIn" type="client" />
 	<export function="isPlayerLoggedIn" type="server" />
@@ -22,12 +26,13 @@
 	<export function="getAccountNameFromID" type="server" />
 	<export function="getAllLoggedInPlayers" type="server" />
 	
-	<export function="GAD" type="server" />
-	<export function="SAD" type="server" />
-	
+	<export function="isLoginWindowOpen" type="client" />
+		
 	<export function="getPlayerWeaponString" type="server" />
 	
 	<!-- Functions from accountData.slua -->
+	<export function="GAD" type="server" />
+	<export function="SAD" type="server" />
 	<export function="isPlayerAccountCached" type="server" />
 	<export function="cacheAccount" type="server" />
 	

@@ -61,7 +61,13 @@ function getAccountNameFromID(id)
 end
 
 function getIDFromAccountName(accountName)
-
+	if (not accountName) then return nil end
+	if (type(accountName) ~= "string") then return false end
+	for i=1, #accountData do
+		if accountData[i].accName == accountName then
+			return i
+		end
+	end
 end
 
 function registerAccount(plr, usr, passwd, email)
