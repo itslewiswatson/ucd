@@ -39,7 +39,8 @@ function Accounts.Login(_, theCurrentAccount)
 			source:setWantedLevel(playerWanted)
 			source:setData("Occupation", occupation)
 			source:setData("Class", class)
-			source:setWalkingStyle(playerWalkstyle)
+			exports.UCDwalkstyle:setPlayerWalkingStyle(source, playerWalkstyle) --source:setWalkingStyle(playerWalkstyle)
+			
 		end, 1000, 1, source
 	)
 	
@@ -70,7 +71,7 @@ function Accounts.Save(plr)
 	local team = plr:getTeam():getName()
 	local money = plr:getMoney()
 	local model = plr:getModel()
-	local walkstyle = plr:getData("walkstyle")
+	local walkstyle = exports.UCDwalkstyle:getPlayerWalkingStyle(plr)
 	local wanted = plr:getWantedLevel()
 	local health = plr:getHealth()
 	local armour = plr:getArmor()
@@ -79,9 +80,9 @@ function Accounts.Save(plr)
 	local nametag = toJSON({plr:getNametagColor()})
 
 	db:exec("UPDATE `accounts` SET `lastUsedName`=?, `ip`=?, `serial`=? WHERE `id`=?", 
-		plr:getName(), 
-		plr:getIP(), 
-		plr:getSerial(), 
+		plr.name, 
+		plr.ip, 
+		plr.serial,
 		id 
 	)
 	
@@ -106,17 +107,22 @@ function Accounts.Save(plr)
 		id
 	)
 	
-	-- We cache the account here only because we didn't in the above query
-	--cachePlayerAccount(plr)
-	cacheAccount(id)
+	-- Use a timer here to reduce load on the server at once (from SQL queries and tables being accessed)
+	setTimer(
+		function (id)
+			-- We cache the account here only because we didn't in the above query
+			--cachePlayerAccount(plr)
+			cacheAccount(id) -- This is a rather inefficent method come to think of it
+		end, 1000, 1, id
+	)
 	
 	return true
 end
 
-function onPlayerQuit()
+function Accounts.OnQuit()
 	Accounts.Save(source)
 end
-addEventHandler("onPlayerQuit", root, onPlayerQuit)
+addEventHandler("onPlayerQuit", root, Accounts.OnQuit)
 
 function Accounts.SaveAll()
 	for _, v in pairs(Element.getAllByType("player")) do
