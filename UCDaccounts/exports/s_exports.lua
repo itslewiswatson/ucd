@@ -28,7 +28,7 @@ function getPlayerFromID(id)
 	if (not id) then return nil end
 	for _, plr in pairs(Element.getAllByType("player")) do
 		if (isPlayerLoggedIn(plr)) then
-			if (getPlayerAccountID(v) == id) then
+			if (getPlayerAccountID(plr) == id) then
 				return plr
 			end
 		end
