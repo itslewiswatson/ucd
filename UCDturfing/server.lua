@@ -68,8 +68,8 @@ addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		
 		for k, v in pairs(AreaPosition) do
-			--if k == 7 or k == 8 or k == 9 or k == 10 or k == 13 then
-			if lolk[k] then
+			if k == 7 or k == 8 or k == 9 or k == 10 or k == 13 then
+			--if lolk[k] then
 				local TurfArea = createRadarArea(v.cX, v.cY, v.cW, v.cD, 255, 0, 0, 175)
 				local TurfAreaCol = createColCuboid(v.cX, v.cY, v.cZ, v.cW, v.cD, v.cH)
 				TurfAreaCol:setData("id", k)
