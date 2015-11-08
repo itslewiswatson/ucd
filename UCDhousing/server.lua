@@ -99,13 +99,15 @@ function purchaseHouse(houseID)
 	
 	if (houseOwner ~= "UCDhousing") then
 		local qh = db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", houseOwner)
-		local accountID = qh:poll(-1)[1].accountID
+		local accountID = qh:poll(-1)[1].id
 		
 		local ownerPlayer = exports.UCDaccounts:getPlayerFromID(accountID)
+		--outputChatBox("Owner player: "..tostring(ownerPlayer))
 		if (ownerPlayer) then
+			
 			-- Give to the player in cash money and notify them
 			ownerPlayer:giveMoney(housePrice)
-			exports.UCDdx:new(ownerPlayer, client:getName().. " has bought your house "..getHouseData(houseID, "houseName").." for $"..exports.UCDutil:tocomma(housePrice))
+			exports.UCDdx:new(ownerPlayer, client:getName().. " has bought your house '"..getHouseData(houseID, "houseName").."' for $"..exports.UCDutil:tocomma(housePrice), 0, 255, 0)
 		else
 			-- Put in their bank account
 		end
