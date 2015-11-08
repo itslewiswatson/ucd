@@ -18,7 +18,7 @@ function localChat(player, _, ...)
 		local plrTable = {}
 		
 		for i, v in ipairs(getElementsByType("player")) do
-			if (getElementDimension(v) == getElementDimension(player)) and (exports.UCDmisc:isPlayerInRangeOfPoint(v, pX, pY, pZ, range)) then
+			if (getElementDimension(v) == getElementDimension(player)) and (exports.UCDutil:isPlayerInRangeOfPoint(v, pX, pY, pZ, range)) then
 				table.insert(plrTable, v)
 			end
 		end

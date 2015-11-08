@@ -23,7 +23,7 @@ function onPlayerChat(message, messageType)
 		local coord = source:getPosition()
 		
 		if (messageType == 0) then
-			local sourceCity = exports.UCDmisc:getPlayerCityZone(source)
+			local sourceCity = exports.UCDutil:getPlayerCityZone(source)
 			
 			outputChatBox("("..sourceCity..") "..source:getName()..":#FFFFFF "..message, root, nR, nG, nB, true)
 			antiSpam[player] = true
@@ -49,7 +49,7 @@ function onPlayerChat(message, messageType)
 			for _, v in pairs(Element.getAllByType("player")) do
 				if (v ~= source) then
 					local vCoord = v:getPosition()
-					if (exports.UCDmisc:isPlayerInRangeOfPoint(source, vCoord.x, vCoord.y, vCoord.z, 100)) then
+					if (exports.UCDutil:isPlayerInRangeOfPoint(source, vCoord.x, vCoord.y, vCoord.z, 100)) then
 						if (source:getDimension() == v:getDimension()) and (source:getInterior() == v:getInterior()) then
 							outputChatBox("* "..source:getName().." "..message, v, 200, 50, 150)
 							antiSpam[player] = true
