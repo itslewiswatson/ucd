@@ -158,6 +158,14 @@ function toggleGUI()
 				updateVehicleGrid(v)
 			end
 		end
+		local row = guiGridListGetSelectedItem(GUIEditor.gridlist[1])
+		if (row ~= -1 and row and row ~= nil) then
+			local vehicleID = guiGridListGetItemData(GUIEditor.gridlist[1], row, 1)
+			if (vehicleID and idToVehicle[vehicleID]) then
+				local x, y, z = getElementPosition(idToVehicle[vehicleID])
+				GUIEditor.label[1]:setText("Selected: "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." - "..exports.UCDutil:getCityZoneFromXYZ(x, y, z)..", "..getZoneName(x, y, z))
+			end
+		end
 	else
 		guiSetVisible(GUIEditor.window[1], false)
 	end
@@ -165,6 +173,13 @@ function toggleGUI()
 end
 addCommandHandler("vehicles", toggleGUI, false, false)
 bindKey("F3", "down", "vehicles")
+
+function lolrender()
+	local vehicleVector = vehicle:getPosition()
+	vehicleVector.z = vehicleVector.z + 10
+	local vehicleVector2 = vehicle:getPosition()
+	Camera.setMatrix(vehicleVector, vehicleVector2)
+end
 
 function handleInput(button, state)
 	if (source:getParent() == GUIEditor.gridlist[1] or source:getParent() == GUIEditor.window[1]) then
@@ -196,8 +211,8 @@ function handleInput(button, state)
 		if (source == GUIEditor.button[2]) then
 			if (button == "left") and (state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
-						exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
-						return
+					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
+					return
 				end
 				if (blip[vehicleID]) then
 					blip[vehicleID]:destroy()
@@ -211,8 +226,8 @@ function handleInput(button, state)
 		elseif (source == GUIEditor.button[3]) then
 			if (button == "left") and (state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
-						exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
-						return
+					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
+					return
 				end
 				triggerServerEvent("UCDvehicleSystem.toggleLock", localPlayer, vehicleID)
 				outputDebugString("Triggered server UCDvehicleSystem.toggleLock")
@@ -225,14 +240,56 @@ function handleInput(button, state)
 		elseif (source == GUIEditor.button[6]) then
 			if (button == "left") and (state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
-						exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
-						return
+					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
+					return
+				end
+				if (isSpectating) then
+					setCameraTarget(localPlayer)
+					isSpectating = false
+					removeEventHandler("onClientRender", root, lolrender)
+					exports.UCDdx:new("You are no longer spectating your "..idToVehicle[vehicleID].name, 0, 255, 0)
 				end
 				if (blip[vehicleID]) then
 					blip[vehicleID]:destroy()
 					blip[vehicleID] = nil
 				end
 				triggerServerEvent("UCDvehicleSystem.hideVehicle", localPlayer, vehicleID)
+			end
+		elseif (source == GUIEditor.button[7]) then
+			if (button == "left") and (state == "up") then
+				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
+						exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
+						return
+				end
+				-- add checks to see if a player was hurt in the last X seconds, add checks to see if a player is in dim and int 0 etc
+				vehicle = idToVehicle[vehicleID]
+				--if (localPlayer:isInVehicle(vehicle) or localPlayer:getOccupiedVehicle() == vehicle) then
+				--	exports.UCDdx:new("You can't spectate a vehicle you are already in", 255, 0, 0)
+				--	return
+				--end
+				if (localPlayer.dimension ~= 0 or localPlayer.interior ~= 0) then
+					exports.UCDdx:new("You cannot spectate a vehicle while not in the main world", 255, 0, 0)
+					return
+				end
+				if (isSpectating == true) then
+					setCameraTarget(localPlayer)
+					isSpectating = false
+					exports.UCDdx:new("You are no longer spectating your "..vehicle.name, 0, 255, 0)
+					removeEventHandler("onClientRender", root, lolrender)
+					return
+				end
+			
+				local vehVec = vehicle:getPosition()
+				--local vehVec2 = vehicle:getPosition()
+				vehVec.z = vehVec.z + 20
+				
+				--Camera.setMatrix(vehVec, vehVec2)
+				cp1, cp2, cp3, la1, la2, la3 = getCameraMatrix()
+				exports.UCDutil:smoothMoveCamera(cp1, cp2, cp3, la1, la2, la3, vehVec.x, vehVec.y, vehVec.z + 10, vehVec.x, vehVec.y, vehVec.z, 3000)
+				setTimer(function () addEventHandler("onClientRender", root, lolrender) end, 3000, 1) -- This allows us to smooth towards the vehicle and keep on its position afterwards
+				
+				isSpectating = true
+				exports.UCDdx:new("You are now spectating your "..vehicle.name..". Press the spectate button again to cancel.", 0, 255, 0)
 			end
 		elseif (source == GUIEditor.button[8]) then
 			if (button == "left") and (state == "up") then
@@ -254,6 +311,14 @@ addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 	end
 )
 
+-- Used for if the resource is started while people are spectating
+function onResourceStop()
+	if (isSpectating) then
+		setCameraTarget(localPlayer)
+		isSpectating = false
+	end
+end
+addEventHandler("onClientResourceStop", resourceRoot, onResourceStop)
 
 --[[
 function populateGridList(vehicleTable)

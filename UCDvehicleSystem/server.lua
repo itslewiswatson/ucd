@@ -111,7 +111,16 @@ function spawnVehicle(vehicleID)
 	vehicle:setData("owner", client:getName())
 	vehicle:setData("vehicleID", vehicleID)
 	vehicle:setRotation(0, 0, vehicles[vehicleID].rotation)
-	vehicle:setHealth(vehicles[vehicleID].health)
+	
+	if (getVehicleData(vehicleID, "health") <= 250) then
+		-- So it doesn't blow on spawning
+		-- Add future checks to see if it's in LV or not
+		vehicle:setHealth(250)
+		vehicle:setEngineState(false)
+		vehicle:setDamageProof(true)
+	else
+		vehicle:setHealth(vehicles[vehicleID].health)
+	end
 	
 	-- Do stuff with tables
 	idToVehicle[vehicleID] = vehicle
