@@ -1,6 +1,7 @@
 <meta>
 	<script src="serverExports.lua" type="server"/>
 	<script src="clientExports.lua" type="client"/>
+	<script src="smoothMoveCamera.lua" type="client"/>
 	
 	<export function="getCityZoneFromXYZ" type="server"/>
 	<export function="getCityZoneFromXYZ" type="client"/>
@@ -21,6 +22,9 @@
 	<export function="randomstring" type="server"/>
 	<export function="randomstring" type="client"/>
 	<export function="centerWindow" type="client"/>
+	<export function="isPlayerInRangeOfPoint" type="server"/>
+	<export function="isPlayerInRangeOfPoint" type="client"/>
+	<export function="smoothMoveCamera" type="client"/>
 	
 	<oop>true</oop>
 </meta>
