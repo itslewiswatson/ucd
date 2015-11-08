@@ -17,7 +17,7 @@ registration = {button = {}, window = {}, label = {}, edit = {}}
 -- Actual login
 addEventHandler("onClientResourceStart", resourceRoot, 
 	function ()
-		--if (not exports.UCDutil:isPlayerLoggedIn(localPlayer)) then		
+		if (not isPlayerLoggedIn(localPlayer)) then		
 			guiSetInputEnabled(true)
 			showCursor(true)
 			
@@ -124,7 +124,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 				
 				login.checkbox[1]:setSelected(true)
 			end
-		--end
+		end
 	end
 )
 

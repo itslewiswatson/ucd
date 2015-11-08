@@ -11,6 +11,7 @@ db = exports.UCDsql:getConnection()
 Accounts = {}
 
 function Accounts.Login(_, theCurrentAccount)
+	--outputDebugString("Accounts.Login")
 	if (theCurrentAccount:isGuest()) then return end
 	
 	local accountID = getPlayerAccountID(source)
@@ -39,8 +40,7 @@ function Accounts.Login(_, theCurrentAccount)
 			source:setWantedLevel(playerWanted)
 			source:setData("Occupation", occupation)
 			source:setData("Class", class)
-			exports.UCDwalkstyle:setPlayerWalkingStyle(source, playerWalkstyle) --source:setWalkingStyle(playerWalkstyle)
-			
+			source:setWalkingStyle(playerWalkstyle) --exports.UCDwalkstyle:setPlayerWalkingStyle(source, playerWalkstyle)			
 		end, 1000, 1, source
 	)
 	
@@ -71,7 +71,7 @@ function Accounts.Save(plr)
 	local team = plr:getTeam():getName()
 	local money = plr:getMoney()
 	local model = plr:getModel()
-	local walkstyle = exports.UCDwalkstyle:getPlayerWalkingStyle(plr)
+	local walkstyle = plr:getWalkingStyle() --exports.UCDwalkstyle:getPlayerWalkingStyle(plr)
 	local wanted = plr:getWantedLevel()
 	local health = plr:getHealth()
 	local armour = plr:getArmor()

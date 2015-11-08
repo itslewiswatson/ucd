@@ -51,37 +51,10 @@ function joinText()
 		textItemSetScale(text[i], 2)
 	end
 end
---addEventHandler("onResourceStart", root, joinText)
+addEventHandler("onPlayerJoin", root, joinText)
 
 -- Login handling
 function loginPlayer(usr, passwd)
-	--[[if (username ~= "") then
-		if (password ~= "") then
-			local mtaAccount = getAccount(username, password)
-			if (mtaAccount ~= false) then
-				logIn(client, mtaAccount, password)
-				triggerClientEvent(client, "hideLoginWindow", root)
-			else
-				exports.UCDdx:new(client, "Incorrect account name or password", 255, 255, 255)
-			end
-		else
-			exports.UCDdx:new(client, "Please enter your password", 255, 255, 255)
-		end
-	else
-	--]]
-
-	-- All handled client-side
-	--[[
-	if (usr == "") and (passwd == "") then
-		exports.UCDdx:new(client, "Please enter your account credentials", 255, 255, 255)
-	else
-		if (usr == "") and (passwd ~= "") then
-			exports.UCDdx:new(client, "Please enter your account name", 255, 255, 255)
-		elseif (usr ~= "") and (passwd == "") then
-			exports.UCDdx:new(client, "Please enter your password", 255, 255, 255)
-		elseif (user ~= "") and (passwd ~= "") then
-	--]]
-
 	-- Maybe have a label that you constantly need to update instead of using UCDdx
 
 	if (getAccount(usr)) then
@@ -107,11 +80,6 @@ function loginPlayer(usr, passwd)
 	else
 		exports.UCDdx:new(client, "There is no account matching this name.", 255, 255, 255)
 	end
-	--[[
-		end
-	end
-	--]]
-	--end
 end
 addEvent("UCDaccounts.login.logIn", true)
 addEventHandler("UCDaccounts.login.logIn", root, loginPlayer)

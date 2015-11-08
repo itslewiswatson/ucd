@@ -22,7 +22,7 @@ end
 
 addEventHandler("onPlayerLogin", root,
 	function ()
-		db:query(loadPlayerWeaponString, {source}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", getPlayerAccountID(source))
+		db:query(loadPlayerWeaponString, {source}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", exports.UCDaccounts:getPlayerAccountID(source))
 	end
 )
 
@@ -32,7 +32,7 @@ addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		for _, plr in pairs(Element.getAllByType("player")) do
 			if isPlayerLoggedIn(plr) then
-				db:query(loadPlayerWeaponString, {plr}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", getPlayerAccountID(plr))
+				db:query(loadPlayerWeaponString, {plr}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", exports.UCDaccounts:getPlayerAccountID(plr))
 			end
 		end
 	end
