@@ -1,0 +1,10 @@
+<map edf:definitions="editor_main">
+    <object id="object (paperchase_stairs) (1)" breakable="true" interior="0" alpha="255" model="14596" doublesided="false" scale="1" dimension="0" posX="1666.6" posY="-1349" posZ="36.2" rotX="0" rotY="0" rotZ="270"></object>
+    <object id="object (paperchase_stairs) (2)" breakable="true" interior="0" alpha="255" model="14596" doublesided="false" scale="1" dimension="0" posX="1668" posY="-1342.7" posZ="53.5999" rotX="0" rotY="0" rotZ="180"></object>
+    <object id="object (paperchase_stairs) (3)" breakable="true" interior="0" alpha="255" model="14596" doublesided="false" scale="1" dimension="0" posX="1674.1" posY="-1344.3" posZ="71.6" rotX="0" rotY="0" rotZ="90"></object>
+    <object id="object (paperchase_stairs) (4)" breakable="true" interior="0" alpha="255" model="14596" doublesided="false" scale="1" dimension="0" posX="1672.2" posY="-1349.3" posZ="89" rotX="0" rotY="0" rotZ="0"></object>
+    <object id="object (paperchase_stairs) (5)" breakable="true" interior="0" alpha="255" model="14596" doublesided="false" scale="1" dimension="0" posX="1666.3" posY="-1347.8" posZ="106.4" rotX="0" rotY="0" rotZ="270"></object>
+    <object id="object (paperchase_stairs) (6)" breakable="true" interior="0" alpha="255" model="14596" doublesided="false" scale="1" dimension="0" posX="1668" posY="-1341.7" posZ="124" rotX="0" rotY="0" rotZ="180"></object>
+    <object id="object (paperchase01) (1)" breakable="true" interior="0" alpha="255" model="14602" doublesided="true" scale="1" dimension="0" posX="1681.77" posY="-1351.4" posZ="30.87" rotX="0" rotY="0" rotZ="270"></object>
+    <removeWorldObject id="removeWorldObject (LAskyscrap4_LAn) (4)" radius="88.402641" interior="0" model="4602" lodModel="4580" posX="1671.5078" posY="-1343.3359" posZ="87.53906" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+</map>
