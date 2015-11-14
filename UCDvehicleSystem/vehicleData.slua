@@ -9,7 +9,7 @@ addEventHandler("onResourceStart", resourceRoot,
 function cacheVehicles(qh)
 	local result = qh:poll(-1)
 	
-	for _, row in ipairs(result) do
+	for _, row in pairs(result) do
 		vehicles[row.vehicleID] = {}
 		for column, value in pairs(row) do
 			if (column ~= "vehicleID") then
@@ -22,17 +22,19 @@ function cacheVehicles(qh)
 end
 
 function setVehicleData(vehicleID, column, data)
-	if (not vehicleID) or (not column) or (not data) or (not db) then return nil end
-	if (tonumber(vehicleID) == nil) or (type(column) ~= "string") then return false end
-	if (vehicles[vehicleID] == nil) or (vehicles[vehicleID][column] == nil) then
+	if (not vehicleID or not column or not data or not db) then return nil end
+	if (tonumber(vehicleID) == nil or type(column) ~= "string") then return false end
+	if (vehicles[vehicleID] == nil or vehicles[vehicleID][column] == nil) then
 		return nil
 	end
 	
 	vehicles[vehicleID][column] = data
 	
+	-- Rethink the automatic sync to the database
 	if (vehicles[vehicleID]) then
 		db:exec("UPDATE `vehicles` SET `??`=? WHERE `vehicleID`=?", column, data, vehicleID)
 	end
+	
 	return true
 end
 
