@@ -108,7 +108,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			
 			registration.label[10] = guiCreateLabel(0, 263, 617, 23, "___________________________________________________________________________________________", false, registration.window[1])
 			guiLabelSetHorizontalAlign(registration.label[10], "center", false)   
-			registration.label[11] = guiCreateLabel(10, 290, 597, 79, "- Account names can only contain A -Z, a - z or 0 - 9 and are case sensitive.\n- Passwords can contain symbols and even characters from languages other than English.\n- Passwords are hashed using bcrypt, which is inherently more secure than what other servers use.\n- bcrypt courtesy of pzduniak, qaisjp, Jusonex, ixjf & sbx320 (https://github.com/pzduniak/ml_bcrypt).\n- You are able to change your password or email at any time. Your account name cannot be changed.", false, registration.window[1])
+			registration.label[11] = guiCreateLabel(10, 290, 597, 79, "- Account names can only contain A -Z, a - z or 0 - 9 and are case sensitive.\n- Passwords can contain symbols and even characters from languages other than English.\n- Passwords are hashed using bcrypt, which is inherently more secure than what other servers use.\n- bcrypt courtesy of Orange, qaisjp, Jusonex, ixjf & sbx320 (https://github.com/pzduniak/ml_bcrypt).\n- You are able to change your password or email at any time. Your account name cannot be changed.", false, registration.window[1])
 			registration.label[12] = guiCreateLabel(10, 369, 617, 23, "___________________________________________________________________________________________", false, registration.window[1])
 			guiLabelSetHorizontalAlign(registration.label[12], "center", false)   
 			

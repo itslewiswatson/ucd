@@ -80,8 +80,8 @@ function Accounts.Save(plr)
 	local nametag = toJSON({plr:getNametagColor()})
 
 	db:exec("UPDATE `accounts` SET `lastUsedName`=?, `ip`=?, `serial`=? WHERE `id`=?", 
-		plr.name, 
-		plr.ip, 
+		plr.name,
+		plr.ip,
 		plr.serial,
 		id 
 	)
