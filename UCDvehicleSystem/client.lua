@@ -1,33 +1,5 @@
-local resX, resY = guiGetScreenSize()
 local blip = {}
 playerVehicles = {}
-
-function draw()
-	local target = localPlayer:getTarget()
-	if (target and target:getType() == "vehicle" and localPlayer:getControlState("aim_weapon")) then
-		if (not ((localPlayer:getWeaponSlot() ~= 0 and localPlayer:getWeaponSlot() ~= 1) and
-		(localPlayer:getWeaponSlot() ~= 7) and (localPlayer:getWeaponSlot() ~= 8) and
-		(localPlayer:getWeaponSlot() ~= 9) and (localPlayer:getWeaponSlot() ~= 11) and
-		(localPlayer:getWeaponSlot() ~= 12))) then return end
-		--local vX, vY, vZ = getElementPosition(target)
-		local v = target:getPosition()
-		--local pX, pY, pZ = getElementPosition(localPlayer)
-		local p = localPlayer:getPosition()
-		
-		if isElementOnScreen(target) then
-			--local dist = getDistanceBetweenPoints3D(vX, vY, vZ, pX, pX, pX)
-			local dist = getDistanceBetweenPoints3D(v.x, v.y, v.z, p.x, p.y, p.z)
-			--local tX, tY = getScreenFromWorldPosition(vX, vY, vZ + 1, 0, false)
-			local tX, tY = getScreenFromWorldPosition(v.x, v.y, v.z + 1, 0, false)
-			if tX and tY and isLineOfSightClear(p.x, p.y, p.z, v.x, v.y, v.z, true, false, false, true, true, false, false, target) and dist < 30 then
-				local theText = target:getData("owner")
-				local width = dxGetTextWidth(tostring(theText), 0.6, "bankgothic")
-				dxDrawText(tostring(theText).."'s "..target.name.." ["..tostring(exports.UCDutil:mathround(target.health / 10)).."%]", tX - width / 2, tY, resX, resY, tocolor(255, 0, 0), 1)
-			end
-		end
-	end
-end
-addEventHandler("onClientRender", root, draw)
 
 function syncIdToVehicle(tbl)
 	idToVehicle = tbl
@@ -35,10 +7,8 @@ end
 addEvent("UCDvehicleSystem.syncIdToVehicle", true)
 addEventHandler("UCDvehicleSystem.syncIdToVehicle", root, syncIdToVehicle)
 
--- Sync the idToVehicle table when the resource starts
-triggerServerEvent("UCDvehicleSystem.getIdToVehicleTable", localPlayer)
--- Sync the playerVehicles table when the resource starts
-triggerServerEvent("UCDvehicleSystem.loadPlayerVehicles", localPlayer)
+triggerServerEvent("UCDvehicleSystem.getIdToVehicleTable", localPlayer) -- Sync the idToVehicle table when the resource starts
+triggerServerEvent("UCDvehicleSystem.loadPlayerVehicles", localPlayer) -- Sync the playerVehicles table when the resource starts
 
 function onClientVehicleEnter(theVehicle, seat)
 	if (source ~= localPlayer) then return end
@@ -142,22 +112,14 @@ function toggleGUI()
 	end
 	if (not guiGetVisible(GUIEditor.window[1])) then
 		guiSetVisible(GUIEditor.window[1], true)
-		--[[for i, v in pairs(vehicles) do
-			if v.ownerID == localPlayer:getData("accountID") then
-				if idToVehicle[i] then
-					updateVehicleGrid(i)
-				end
-			end
-		end
-		--]]
-		-- We use more memory, but we don't have to loop through the whole vehicle table
-		-- Though we should only sync the vehicles that the player owns in the first place, so we just loop through the vehicles table regardless as it won't be massive
-		-- This is temporary until we do so
+		
 		for i, v in pairs(playerVehicles[localPlayer]) do
+			-- Should we update them regardless of whether they are spawned in or not?
 			if (idToVehicle[v]) then
 				updateVehicleGrid(v)
 			end
 		end
+		
 		local row = guiGridListGetSelectedItem(GUIEditor.gridlist[1])
 		if (row ~= -1 and row and row ~= nil) then
 			local vehicleID = guiGridListGetItemData(GUIEditor.gridlist[1], row, 1)
@@ -166,6 +128,7 @@ function toggleGUI()
 				GUIEditor.label[1]:setText("Selected: "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." - "..exports.UCDutil:getCityZoneFromXYZ(x, y, z)..", "..getZoneName(x, y, z))
 			end
 		end
+		
 	else
 		guiSetVisible(GUIEditor.window[1], false)
 	end
@@ -198,7 +161,7 @@ function handleInput(button, state)
 		local vehicleID = guiGridListGetItemData(GUIEditor.gridlist[1], row, 1)
 		
 		-- The label
-		if idToVehicle[vehicleID] then
+		if (idToVehicle[vehicleID]) then
 			local x, y, z = getElementPosition(idToVehicle[vehicleID])
 			GUIEditor.label[1]:setText("Selected: "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." - "..exports.UCDutil:getCityZoneFromXYZ(x, y, z)..", "..getZoneName(x, y, z))
 		else
@@ -207,8 +170,11 @@ function handleInput(button, state)
 		end
 		
 		-- No action can be taken on vehicles that aren't spawned in [EXCEPTION: SELLING THE VEHICLE]
-		
-		if (source == GUIEditor.button[2]) then
+		if (source == GUIEditor.button[1]) then
+			if (button == "left") and (state == "up") then
+				triggerServerEvent("UCDvehicleSystem.recoverVehicle", localPlayer, vehicleID)
+			end
+		elseif (source == GUIEditor.button[2]) then
 			if (button == "left") and (state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
 					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
@@ -258,15 +224,15 @@ function handleInput(button, state)
 		elseif (source == GUIEditor.button[7]) then
 			if (button == "left") and (state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
-						exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
-						return
+					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
+					return
 				end
 				-- add checks to see if a player was hurt in the last X seconds, add checks to see if a player is in dim and int 0 etc
 				vehicle = idToVehicle[vehicleID]
-				--if (localPlayer:isInVehicle(vehicle) or localPlayer:getOccupiedVehicle() == vehicle) then
-				--	exports.UCDdx:new("You can't spectate a vehicle you are already in", 255, 0, 0)
-				--	return
-				--end
+				if (localPlayer:isInVehicle(vehicle) or localPlayer:getOccupiedVehicle() == vehicle) then
+					exports.UCDdx:new("You can't spectate a vehicle you are already in", 255, 0, 0)
+					return
+				end
 				if (localPlayer.dimension ~= 0 or localPlayer.interior ~= 0) then
 					exports.UCDdx:new("You cannot spectate a vehicle while not in the main world", 255, 0, 0)
 					return
@@ -283,10 +249,11 @@ function handleInput(button, state)
 				--local vehVec2 = vehicle:getPosition()
 				vehVec.z = vehVec.z + 20
 				
-				--Camera.setMatrix(vehVec, vehVec2)
-				cp1, cp2, cp3, la1, la2, la3 = getCameraMatrix()
-				exports.UCDutil:smoothMoveCamera(cp1, cp2, cp3, la1, la2, la3, vehVec.x, vehVec.y, vehVec.z + 10, vehVec.x, vehVec.y, vehVec.z, 3000)
-				setTimer(function () addEventHandler("onClientRender", root, lolrender) end, 3000, 1) -- This allows us to smooth towards the vehicle and keep on its position afterwards
+				Camera.setMatrix(vehVec, vehicle:getPosition())
+				--cp1, cp2, cp3, la1, la2, la3 = getCameraMatrix()
+				--exports.UCDutil:smoothMoveCamera(cp1, cp2, cp3, la1, la2, la3, vehVec.x, vehVec.y, vehVec.z + 10, vehVec.x, vehVec.y, vehVec.z, 3000)
+				--setTimer(function () addEventHandler("onClientRender", root, lolrender) end, 3000, 1) -- This allows us to smooth towards the vehicle and keep on its position afterwards
+				addEventHandler("onClientRender", root, lolrender)
 				
 				isSpectating = true
 				exports.UCDdx:new("You are now spectating your "..vehicle.name..". Press the spectate button again to cancel.", 0, 255, 0)
@@ -310,15 +277,6 @@ addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 		playerVehicles[source] = tbl
 	end
 )
-
--- Used for if the resource is started while people are spectating
-function onResourceStop()
-	if (isSpectating) then
-		setCameraTarget(localPlayer)
-		isSpectating = false
-	end
-end
-addEventHandler("onClientResourceStop", resourceRoot, onResourceStop)
 
 --[[
 function populateGridList(vehicleTable)

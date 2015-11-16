@@ -51,9 +51,9 @@ end
 
 function syncVehicleTable(plr)
 	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
-	for i, v in pairs(vehicles) do
-		if (v.ownerID == accountID) then
-			triggerLatentClientEvent(plr, "UCDvehicleSystem.syncVehicleTable", plr, i, v)
+	for i, vehicleData in pairs(vehicles) do
+		if (vehicleData.ownerID == accountID) then
+			triggerLatentClientEvent(plr, "UCDvehicleSystem.syncVehicleTable", plr, i, vehicleData)
 			outputDebugString("Got sync request. Sending data for vehicleID = "..i.." client-side.")
 		end
 	end
@@ -62,13 +62,19 @@ addEvent("UCDvehicleSystem.requestVehicleTableSync", true)
 addEventHandler("UCDvehicleSystem.requestVehicleTableSync", root, function () syncVehicleTable(client) end)
 addEventHandler("onPlayerLogin", root, function () syncVehicleTable(source) end)
 
-
--- Old method of sending all vehicles client-side
---[[
-function syncVehicleTable()
-	triggerLatentClientEvent(client, "UCDvehicleSystem.syncVehicleTable", resourceRoot, vehicles)
-	outputDebugString("Got sync request. Sending data client-side.")
+function getPlayerVehicleTable(plr)
+	-- Avoid MySQL as much as possible
+	if (not plr or plr:getType() ~= "player") then return false end
+	
+	local vehicleTable = {}
+	vehicleTable[plr] = {}
+	
+	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
+	for i, v in pairs(vehicles) do
+		if v.ownerID == accountID then
+			vehicleTable[plr][i] = v
+		end
+	end
+	
+	return vehicleTable[plr]
 end
-addEvent("UCDvehicleSystem.requestVehicleTableSync", true)
-addEventHandler("UCDvehicleSystem.requestVehicleTableSync", root, syncVehicleTable)
---]]

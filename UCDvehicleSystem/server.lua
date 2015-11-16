@@ -21,13 +21,23 @@ idToVehicle = {}
 activeVehicles = {}
 playerVehicles = {}
 
-local recoveryLocs = {
+local recLocs = {
 	--[vehicleType] = {x, y, z, rot}
-	["Plane"] = {{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}},
-	["Helicopter"] = {{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}},
-	["Boat"] = {{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}},
-	["Bike"] = {{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}},
-	["General"] = {{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}},
+	["Plane"] = {
+		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
+	},
+	["Helicopter"] = {
+		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
+	},
+	["Boat"] = {
+		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
+	},
+	["Bike"] = {
+		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
+	},
+	["General"] = {
+		{100, 10, 5, 0}, {400, -60, 5, 0}, {0, 0, 5, 0}
+	},
 }
 
 function syncIdToVehicle()
@@ -40,9 +50,9 @@ function onPlayerQuit()
 	if (not playerVehicles[source]) then
 		return
 	end
-	for _, vehicle in pairs(playerVehicles[source]) do
-		if (idToVehicle[vehicle]) then
-			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, vehicle)
+	for _, vehicleID in pairs(playerVehicles[source]) do
+		if (idToVehicle[vehicleID]) then
+			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, vehicleID)
 		end
 	end
 	if (activeVehicles[source]) then
@@ -57,8 +67,8 @@ function loadPlayerVehicles(plr)
 	if not plr then plr = client end -- Warning: You should use the global variable client serverside instead of passing the localPlayer by parameter or source. Otherwise event faking (passing another player instead of the localPlayer) would be possible. More information at addEventHandler
 	playerVehicles[plr] = {}
 	local acccountID = exports.UCDaccounts:getPlayerAccountID(plr)
-	for i, v in pairs(vehicles) do
-		if v.ownerID == acccountID then
+	for i, vehicleData in pairs(vehicles) do
+		if (vehicleData.ownerID == acccountID) then
 			table.insert(playerVehicles[plr], i)
 		end
 	end
@@ -72,7 +82,6 @@ addEventHandler("onPlayerLogin", root, function () loadPlayerVehicles(source) en
 -- If the resource is to stop, we need to save all the vehicles
 -- That is why there are checks for 'client' in hideVehicle
 function saveAllVehicles()
-	-- Loop through all of them [we use pairs instead of ipairs because ipairs would break at the first nil pair, which means no vehicles would get saved]
 	for i, _ in pairs(idToVehicle) do
 		if (idToVehicle[i]) then
 			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, i)
@@ -80,10 +89,6 @@ function saveAllVehicles()
 	end
 end
 addEventHandler("onResourceStop", resourceRoot, saveAllVehicles)
-
-function deleteVehicle(vehicleID)
-	-- TODO
-end
 
 function spawnVehicle(vehicleID)
 	if (not vehicleID) then return end
@@ -100,12 +105,13 @@ function spawnVehicle(vehicleID)
 		return false
 	end
 	
-	local c1, c2, c3, c4 = unpack(fromJSON(getVehicleData(vehicleID, "colour")))
-	local model = getVehicleData(vehicleID, "model")
+	-- Get the car's data form the table
+	local c1, c2, c3, c4 = unpack(fromJSON(getVehicleData(vehicleID, "colour"))) -- Get the colour data
+	local model = getVehicleData(vehicleID, "model") -- Get the vehicle model
+	local vX, vY, vZ = unpack(fromJSON(getVehicleData(vehicleID, "xyz"))) -- Get the vehicle's position
+	local rot = getVehicleData(vehicleID, "rotation") -- Get its rotation
 	
-	local vX, vY, vZ = unpack(fromJSON(getVehicleData(vehicleID, "xyz")))
-	local rot = getVehicleData(vehicleID, "rotation")
-	
+	-- Spawn the vehicle and set it's properties
 	local vehicle = Vehicle(model, vX, vY, vZ + 0.5, 0, 0, rot)
 	vehicle:setColor(c1, c2, c3, c4)
 	vehicle:setData("owner", client:getName())
@@ -122,7 +128,7 @@ function spawnVehicle(vehicleID)
 		vehicle:setHealth(vehicles[vehicleID].health)
 	end
 	
-	-- Do stuff with tables
+	-- Insert necessities in the tables
 	idToVehicle[vehicleID] = vehicle
 	if (not activeVehicles[client]) then
 		activeVehicles[client] = {}
@@ -141,9 +147,9 @@ addEvent("UCDvehicleSystem.spawnVehicle", true)
 addEventHandler("UCDvehicleSystem.spawnVehicle", root, spawnVehicle)
 
 function hideVehicle(vehicleID)
-	if (not vehicleID) then return end
+	if (not vehicleID) then return nil end
 	local vehicle = idToVehicle[vehicleID]
-	if (vehicle:getData("vehicleID") ~= vehicleID) then return end
+	if (not vehicle or vehicle:getData("vehicleID") ~= vehicleID) then return end
 	
 	if (client and exports.UCDutil:getElementSpeed(vehicle) >= 100) then
 		exports.UCDdx:new(client, "You can't hide your vehicle when it's travelling faster than 100km/h!", 255, 0, 0)
@@ -161,6 +167,7 @@ function hideVehicle(vehicleID)
 	setVehicleData(vehicleID, "colour", toJSON({c1, c2, c3, c4}))
 	
 	idToVehicle[vehicleID] = nil
+	
 	if (client and activeVehicles[client]) then
 		for k, v in pairs(activeVehicles[client]) do
 			if v == vehicle then
@@ -182,16 +189,38 @@ function hideVehicle(vehicleID)
 	-- We check for client because the onResourceStop event saves all vehicles by triggering this one
 	if (client) then
 		exports.UCDdx:new(client, "You have successfully hidden your "..Vehicle.getNameFromModel(vehicles[vehicleID].model), 0, 255, 0)
-		triggerClientEvent(root, "UCDvehicleSystem.syncIdToVehicle", client, idToVehicle)
+		triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
 	end
 end
 addEvent("UCDvehicleSystem.hideVehicle", true)
 addEventHandler("UCDvehicleSystem.hideVehicle", root, hideVehicle)
 
+function recoverVehicle(vehicleID)
+	local vehicleType = _getVehicleType(vehicleID)
+	local vX, vY, vZ = unpack(fromJSON(getVehicleData(vehicleID, "xyz")))
+	
+	local distances = {}
+	for i = 1, #recLocs[vehicleType] do
+		table.insert(distances, getDistanceBetweenPoints3D(vX, vY, vZ, recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3]))
+	end
+	table.sort(distances)
+	-- print smallest
+	for k, v in ipairs(distances) do
+		outputDebugString(v) -- distances[1] should be the smallest because of the ipairs loop
+	end
+	
+	if (idToVehicle[vehicleID]) then
+		idToVehicle[vehicleID]:setPosition(Vector3(distances[1][1], distances[1][2], distances[1][3]))
+	end
+	setVehicleData(vehicleID, "xyz", toJSON({distances[1][1], distances[1][2], distances[1][3]}))
+end
+addEvent("UCDvehicleSystem.recoverVehicle", true)
+addEventHandler("UCDvehicleSystem.recoverVehicle", root, recoverVehicle)
+
 function toggleLock(enteringPlayer)
 	-- On duty admins are allowed to jack a player's car
-	if (not exports.UCDteams:isPlayerInTeam(enteringPlayer, "Admins")) or (enteringPlayer:getName() ~= source:getData("owner")) then -- If they aren't an admin or the owner
-		exports.UCDdx:new(enteringPlayer, "This "..source:getName()..", owned by "..source:getData("owner")..", is locked.", 255, 0, 0)
+	if (not exports.UCDteams:isPlayerInTeam(enteringPlayer, "Admins") or enteringPlayer:getName() ~= source:getData("owner")) then -- If they aren't an admin or the owner [debug]
+		exports.UCDdx:new(enteringPlayer, "This "..source.name..", owned by "..source:getData("owner")..", is locked.", 255, 0, 0)
 		cancelEvent()
 	end
 end
@@ -213,68 +242,3 @@ end
 addEvent("UCDvehicleSystem.toggleLock", true)
 addEventHandler("UCDvehicleSystem.toggleLock", root, toggleLock_)
 
---addCommandHandler("sv", function (plr) triggerEvent("UCDvehicleSystem.spawnVehicle", plr, 1) end)
-
--- We need the owner's name to be synced
-function onPlayerChangeNick(old, new)
-	if (exports.UCDaccounts:isPlayerLoggedIn(source) and activeVehicles[source] and #activeVehicles[source] > 0) then
-		for _, vehicle in pairs(activeVehicles[source]) do
-			if (old == vehicle:getData("owner")) then
-				vehicle:setData("owner", new)
-			end
-		end
-	end
-end
-addEventHandler("onPlayerChangeNick", root, onPlayerChangeNick)
-
-function getPlayerVehicleTable(plr)
-	-- Avoid MySQL as much as possible
-	if (not plr) or (plr:getType() ~= "player") then return false end
-	
-	local vehicleTable = {}
-	vehicleTable[plr] = {}
-	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
-	
-	for i, v in pairs(vehicles) do
-		if v.ownerID == accountID then
-			vehicleTable[plr][i] = v
-		end
-	end
-	return vehicleTable[plr]
-end
-
-
--- Used for determining the spawn location
-function _getVehicleType(vehicleID)
-	--[[
-	local vehicleType = vehicle:getVehicleType()
-	
-	if (vehicleType == "Automobile" or vehicleType == "Monster Truck") then
-		return "General"
-	elseif (vehicleType == "Bike" or vehicleType == "BMX" or vehicleType == "Quad") then
-		return "Bike"
-	elseif (vehicleType == "Helicopter") then
-		return "Helicopter"
-	elseif (vehicleType == "Plane") then
-		return vehicleType
-	elseif (vehicleType == "Boat") then
-		return vehicleType
-	else
-		return false
-	end
- 	--]]
-end
-
--- UNTESTED
--- This could also conflict with a law system of sorts
-function onVehicleStartEnter(plr, seat, jacked, door)
-	if (not source:getData("owner")) then return end
-	if (seat == 0 and door == 0 and jacked) then
-		local driver = source:getOccupant(0)
-		if (exports.UCDaccounts:getPlayerAccountName(driver) == source:getData("owner")) then
-			cancelEvent()
-		end
-	end
-	-- source is vehicle
-end
-addEventHandler("onVehicleStartEnter", root, onVehicleStartEnter)
