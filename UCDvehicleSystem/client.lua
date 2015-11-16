@@ -171,11 +171,11 @@ function handleInput(button, state)
 		
 		-- No action can be taken on vehicles that aren't spawned in [EXCEPTION: SELLING THE VEHICLE]
 		if (source == GUIEditor.button[1]) then
-			if (button == "left") and (state == "up") then
+			if (button == "left" and state == "up") then
 				triggerServerEvent("UCDvehicleSystem.recoverVehicle", localPlayer, vehicleID)
 			end
 		elseif (source == GUIEditor.button[2]) then
-			if (button == "left") and (state == "up") then
+			if (button == "left" and state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
 					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
 					return
@@ -190,7 +190,7 @@ function handleInput(button, state)
 				end
 			end
 		elseif (source == GUIEditor.button[3]) then
-			if (button == "left") and (state == "up") then
+			if (button == "left" and state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
 					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
 					return
@@ -198,13 +198,17 @@ function handleInput(button, state)
 				triggerServerEvent("UCDvehicleSystem.toggleLock", localPlayer, vehicleID)
 				outputDebugString("Triggered server UCDvehicleSystem.toggleLock")
 			end
+		elseif (source == GUIEditor.button[4]) then
+			if (button == "left" and state == "up") then
+				-- trigger a server event and make sure to despawn the vehicle and delete from database
+			end
 		elseif (source == GUIEditor.button[5]) then
-			if (button == "left") and (state == "up") then
+			if (button == "left" and state == "up") then
 				triggerServerEvent("UCDvehicleSystem.spawnVehicle", localPlayer, vehicleID)
 				outputDebugString("triggered UCDvehicleSystem.spawnVehicle with vehicleID = "..vehicleID)
 			end
 		elseif (source == GUIEditor.button[6]) then
-			if (button == "left") and (state == "up") then
+			if (button == "left" and state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
 					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
 					return
@@ -222,15 +226,19 @@ function handleInput(button, state)
 				triggerServerEvent("UCDvehicleSystem.hideVehicle", localPlayer, vehicleID)
 			end
 		elseif (source == GUIEditor.button[7]) then
-			if (button == "left") and (state == "up") then
+			if (button == "left" and state == "up") then
 				if (idToVehicle == nil or idToVehicle[vehicleID] == nil or not idToVehicle or not idToVehicle[vehicleID]) then
 					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
 					return
 				end
 				-- add checks to see if a player was hurt in the last X seconds, add checks to see if a player is in dim and int 0 etc
 				vehicle = idToVehicle[vehicleID]
-				if (localPlayer:isInVehicle(vehicle) or localPlayer:getOccupiedVehicle() == vehicle) then
-					exports.UCDdx:new("You can't spectate a vehicle you are already in", 255, 0, 0)
+				if (localPlayer:isInVehicle(vehicle)) then
+					if (localPlayer:getOccupiedVehicle() == vehicle) then
+						exports.UCDdx:new("You can't spectate a vehicle you are currently in", 255, 0, 0)
+						return
+					end
+					exports.UCDdx:new("You must be on foot to spectate a vehicle", 255, 0, 0)
 					return
 				end
 				if (localPlayer.dimension ~= 0 or localPlayer.interior ~= 0) then
@@ -259,7 +267,7 @@ function handleInput(button, state)
 				exports.UCDdx:new("You are now spectating your "..vehicle.name..". Press the spectate button again to cancel.", 0, 255, 0)
 			end
 		elseif (source == GUIEditor.button[8]) then
-			if (button == "left") and (state == "up") then
+			if (button == "left" and state == "up") then
 				toggleGUI()
 			end
 		end

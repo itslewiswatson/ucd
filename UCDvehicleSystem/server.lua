@@ -36,7 +36,7 @@ local recLocs = {
 		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
 	},
 	["General"] = {
-		{100, 10, 5, 0}, {400, -60, 5, 0}, {0, 0, 5, 0}
+		{-500, 6, 20, 0}, {80, 10, 5, 0}, {400, -60, 5, 0}, {0, 0, 5, 0}
 	},
 }
 
@@ -179,14 +179,15 @@ function hideVehicle(vehicleID)
 	
 	-- Loop through steats, check for players and manually eject them
 	for seat, occupant in pairs(vehicle:getOccupants()) do
-		if (occupant and occupant:getType() == "player") then
-			occupant:removeFromVehicle()
+		occupant:removeFromVehicle()
+		if (occupant:getType() == "player") then
+			exports.UCDdx:new("You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
 		end
 	end
 	
 	vehicle:destroy()
 	
-	-- We check for client because the onResourceStop event saves all vehicles by triggering this one
+	-- We check for client because the onResourceStop event saves all vehicles by triggering this one and we don't want lots of client events being triggered at once, especially when the resource is going to stop anyway
 	if (client) then
 		exports.UCDdx:new(client, "You have successfully hidden your "..Vehicle.getNameFromModel(vehicles[vehicleID].model), 0, 255, 0)
 		triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
@@ -196,23 +197,52 @@ addEvent("UCDvehicleSystem.hideVehicle", true)
 addEventHandler("UCDvehicleSystem.hideVehicle", root, hideVehicle)
 
 function recoverVehicle(vehicleID)
-	local vehicleType = _getVehicleType(vehicleID)
-	local vX, vY, vZ = unpack(fromJSON(getVehicleData(vehicleID, "xyz")))
-	
+	local vehicle
+	local vehicleEle
 	local distances = {}
-	for i = 1, #recLocs[vehicleType] do
-		table.insert(distances, getDistanceBetweenPoints3D(vX, vY, vZ, recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3]))
+	local points = {}
+	local vehicleType = _getVehicleType(vehicleID)
+	
+	if (idToVehicle[vehicleID]) then
+		vehicleEle = idToVehicle[vehicleID]
+		vehicle = vehicleEle:getPosition()
+	else
+		vehicle = Vector3(unpack(fromJSON(getVehicleData(vehicleID, "xyz")))) -- This looks inefficient
 	end
-	table.sort(distances)
-	-- print smallest
+	
+	-- Loop through to find the smallest distance
+	for i = 1, #recLocs[vehicleType] do
+		local distance_ = getDistanceBetweenPoints3D(vehicle.z, vehicle.y, vehicle.z, recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3])
+		table.insert(distances, distance_)
+		points[distance_] = Vector4(recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3], recLocs[vehicleType][i][4])
+	end
+	table.sort(distances) -- Sort the table to find the smallest distance
+	
+	--[[
 	for k, v in ipairs(distances) do
 		outputDebugString(v) -- distances[1] should be the smallest because of the ipairs loop
 	end
+	outputDebugString("Smallest should be ".. distances[1])
+	--]]
+		
+	local smallest = points[distances[1]] -- returns a 4D vector [x, y, z, rot]
 	
 	if (idToVehicle[vehicleID]) then
-		idToVehicle[vehicleID]:setPosition(Vector3(distances[1][1], distances[1][2], distances[1][3]))
+		-- Check for people in it
+		for seat, occupant in pairs(vehicleEle:getOccupants()) do
+			occupant:removeFromVehicle()
+			if (occupant:getType() == "player") then
+				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
+			end
+		end
+		vehicleEle:setDamageProof(true)
+		vehicleEle:setRotation(Vector3(0, 0, smallest.w))	
+		vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
+		Timer(function (vehicleEle) if (vehicleEle and isElement(vehicleEle)) then vehicleEle:setDamageProof(false) end end, 5000, 1, vehicleEle)
 	end
-	setVehicleData(vehicleID, "xyz", toJSON({distances[1][1], distances[1][2], distances[1][3]}))
+	setVehicleData(vehicleID, "xyz", toJSON({smallest.x, smallest.y, smallest.z + 2}))
+	setVehicleData(vehicleID, "rotation", smallest.w)
+	exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
 end
 addEvent("UCDvehicleSystem.recoverVehicle", true)
 addEventHandler("UCDvehicleSystem.recoverVehicle", root, recoverVehicle)
@@ -241,4 +271,3 @@ function toggleLock_(vehicleID)
 end
 addEvent("UCDvehicleSystem.toggleLock", true)
 addEventHandler("UCDvehicleSystem.toggleLock", root, toggleLock_)
-
