@@ -50,9 +50,8 @@ function Accounts.Login(_, theCurrentAccount)
 	source:setHealth(playerHealth)
 	
 	setCameraTarget(source, source)
-	fadeCamera(source, true, 2.0)
+	fadeCamera(source, true, 2)
 	db:exec("UPDATE `accounts` SET `serial`=?, `ip`=?, `lastUsedName`=? WHERE `id`=?", source:getSerial(), source:getIP(), source:getName(), accountID)
-	--source:setData("accountName", result.accName, true)
 	source:setData("accountID", accountID, true)
 end
 addEventHandler("onPlayerLogin", root, Accounts.Login)
@@ -115,17 +114,17 @@ function Accounts.Save(plr)
 			cacheAccount(id) -- This is a rather inefficent method come to think of it
 		end, 1000, 1, id
 	)
-	
-	return true
 end
 
 function Accounts.OnQuit()
+	if (source:getAccount():getName() == "guest") then return false end
 	Accounts.Save(source)
 end
 addEventHandler("onPlayerQuit", root, Accounts.OnQuit)
 
 function Accounts.SaveAll()
-	for _, v in pairs(Element.getAllByType("player")) do
+	--for _, v in pairs(Element.getAllByType("player")) do
+	for _, v in pairs(getAllLoggedInPlayers()) do
 		Accounts.Save(v)
 	end
 end
