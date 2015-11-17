@@ -170,7 +170,7 @@ function hideVehicle(vehicleID)
 	
 	if (client and activeVehicles[client]) then
 		for k, v in pairs(activeVehicles[client]) do
-			if v == vehicle then
+			if (v == vehicle) then
 				table.remove(activeVehicles[client], k) -- Remove it at its current index
 				break
 			end
@@ -178,7 +178,7 @@ function hideVehicle(vehicleID)
 	end
 	
 	-- Loop through steats, check for players and manually eject them
-	for seat, occupant in pairs(vehicle:getOccupants()) do
+	for _, occupant in pairs(vehicle:getOccupants()) do
 		occupant:removeFromVehicle()
 		if (occupant:getType() == "player") then
 			exports.UCDdx:new("You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
@@ -224,7 +224,7 @@ function recoverVehicle(vehicleID)
 	end
 	outputDebugString("Smallest should be ".. distances[1])
 	--]]
-		
+	
 	local smallest = points[distances[1]] -- returns a 4D vector [x, y, z, rot]
 	
 	if (idToVehicle[vehicleID]) then
@@ -235,9 +235,9 @@ function recoverVehicle(vehicleID)
 				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
 			end
 		end
-		vehicleEle:setDamageProof(true)
-		vehicleEle:setRotation(Vector3(0, 0, smallest.w))	
+		vehicleEle:setDamageProof(true)	
 		vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
+		vehicleEle:setRotation(Vector3(0, 0, smallest.w))
 		Timer(function (vehicleEle) if (vehicleEle and isElement(vehicleEle)) then vehicleEle:setDamageProof(false) end end, 5000, 1, vehicleEle)
 	end
 	setVehicleData(vehicleID, "xyz", toJSON({smallest.x, smallest.y, smallest.z + 2}))
@@ -262,11 +262,11 @@ function toggleLock_(vehicleID)
 	if (#getEventHandlers("onVehicleStartEnter", vehicleEle) > 0) then
 		removeEventHandler("onVehicleStartEnter", vehicleEle, toggleLock)
 		vehicleEle:setData("locked", false)
-		exports.UCDdx:new(client, "You have successfully unlocked your "..vehicleEle:getName(), 0, 255, 0)
+		exports.UCDdx:new(client, "You have successfully unlocked your "..vehicleEle.name, 0, 255, 0)
 	else
 		vehicleEle:setData("locked", true)
 		addEventHandler("onVehicleStartEnter", vehicleEle, toggleLock)
-		exports.UCDdx:new(client, "You have successfully locked your "..vehicleEle:getName(), 0, 255, 0)
+		exports.UCDdx:new(client, "You have successfully locked your "..vehicleEle.name, 0, 255, 0)
 	end
 end
 addEvent("UCDvehicleSystem.toggleLock", true)
