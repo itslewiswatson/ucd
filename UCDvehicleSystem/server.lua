@@ -209,10 +209,31 @@ function recoverVehicle(vehicleID)
 	if (idToVehicle[vehicleID]) then
 		vehicleEle = idToVehicle[vehicleID]
 		vehicle = vehicleEle:getPosition()
+		
+		-- Debug purposes, make it a VIP feature?
+		if (exports.UCDadmin:isPlayerOwner(client)) then
+			local pos = client:getPosition()
+			local _, _, r = getElementRotation(client)
+			local x = pos.x - math.sin(math.rad(r)) * 4
+			local y = pos.y + math.cos(math.rad(r)) * 4
+			local v = Vector3(x, y , pos.z + 0.3)
+			
+			for _, occupant in pairs(vehicleEle:getOccupants()) do
+				occupant:removeFromVehicle()
+				if (occupant:getType() == "player") then
+					exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
+				end
+			end
+			
+			vehicleEle:setPosition(v)
+			vehicleEle:setRotation(0, 0, r + 90)
+			exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered just in front of you!", 0, 255, 0)
+			return
+		end
 	else
 		vehicle = Vector3(unpack(fromJSON(getVehicleData(vehicleID, "xyz")))) -- This looks inefficient
 	end
-	
+		
 	-- Loop through to find the smallest distance
 	for i = 1, #recLocs[vehicleType] do
 		local distance_ = getDistanceBetweenPoints3D(vehicle.z, vehicle.y, vehicle.z, recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3])
@@ -232,7 +253,7 @@ function recoverVehicle(vehicleID)
 	
 	if (idToVehicle[vehicleID]) then
 		-- Check for people in it
-		for seat, occupant in pairs(vehicleEle:getOccupants()) do
+		for _, occupant in pairs(vehicleEle:getOccupants()) do
 			occupant:removeFromVehicle()
 			if (occupant:getType() == "player") then
 				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)

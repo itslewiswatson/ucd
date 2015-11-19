@@ -10,6 +10,7 @@
     <script src="client2.lua" type="client"/>
 	
 	<export function="getVehicleData" type="client"/>
+	<export function="callback_sellVehicle" type="client"/>
 	<export function="getVehicleData" type="server"/>
 	
 	<oop>true</oop>

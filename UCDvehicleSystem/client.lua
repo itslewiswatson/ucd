@@ -203,6 +203,9 @@ function handleInput(button, state)
 				-- trigger a server event and make sure to despawn the vehicle and delete from database
 				local price = getVehicleData(vehicleID, "price")
 				local rate = root:getData("vehicles.rate") --exports.UCDmarket:getVehicleRate()
+				local arg = vehicleID
+				exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle?", "exports.UCDvehicleSystem:callback_sellVehicle(arg)", arg)
+				
 			end
 		elseif (source == GUIEditor.button[5]) then
 			if (button == "left" and state == "up") then
@@ -254,7 +257,7 @@ function handleInput(button, state)
 					removeEventHandler("onClientRender", root, lolrender)
 					return
 				end
-			
+				
 				local vehVec = vehicle:getPosition()
 				--local vehVec2 = vehicle:getPosition()
 				vehVec.z = vehVec.z + 20
@@ -277,8 +280,8 @@ function handleInput(button, state)
 end
 addEventHandler("onClientGUIClick", guiRoot, handleInput)
 
-addEvent("UCDvehicleSystem.playerVehiclesTable", true) 
-addEventHandler("UCDvehicleSystem.playerVehiclesTable", root, 
+addEvent("UCDvehicleSystem.playerVehiclesTable", true)
+addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 	function (tbl)
 		if (type(tbl) ~= "table") then outputDebugString("playerVehicles did not pass table - ["..tostring(tbl).."]") return end
 		if (not playerVehicles[source]) then
@@ -287,6 +290,11 @@ addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 		playerVehicles[source] = tbl
 	end
 )
+
+function callback_sellVehicle(arg, arg1)
+	outputDebugString("Successfully called callback_sellVehicle")
+	outputDebugString("Argument passed = "..tostring(arg).." | "..tostring(arg1))
+end
 
 --[[
 function populateGridList(vehicleTable)
