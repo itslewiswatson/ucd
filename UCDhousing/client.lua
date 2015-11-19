@@ -205,7 +205,7 @@ function createGUI(houseID)
 			UCDhousing.button[3]:setEnabled(true)
 			UCDhousing.button[4]:setEnabled(true)
 			UCDhousing.button[5]:setEnabled(true)
-			if (not Resource.getFromName("UCDmarket") or Resource.getFromName("UCDmarket"):getState() ~= "running" or not root:getData("rate")) then
+			if (not Resource.getFromName("UCDmarket") or Resource.getFromName("UCDmarket"):getState() ~= "running" or not root:getData("housing.rate")) then
 				UCDhousing.button[6]:setEnabled(false)
 			else
 				UCDhousing.button[6]:setEnabled(true)
@@ -309,7 +309,7 @@ function handleGUIInput()
 			--if (not Resource.getFromName("UCDmarket"))
 			local houseID = UCDhousing.houseID[1]
 			local price = getHouseData(houseID, "boughtForPrice")
-			local rate = root:getData("rate")
+			local rate = root:getData("housing.rate")
 			createConfirmationWindow(houseID, "Current rate is "..tostring(rate / 10).."% \nDo you want to sell your house for \n"..tostring(rate / 10).."% of what it is worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", sellHouseToBank)
 			--sellHouseToBank(houseID)
 		end
