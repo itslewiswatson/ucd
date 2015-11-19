@@ -84,7 +84,7 @@ addEventHandler("onPlayerLogin", root, function () loadPlayerVehicles(source) en
 function saveAllVehicles()
 	for i, _ in pairs(idToVehicle) do
 		if (idToVehicle[i]) then
-			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, i)
+			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, i, false)
 		end
 	end
 end
@@ -146,7 +146,7 @@ end
 addEvent("UCDvehicleSystem.spawnVehicle", true)
 addEventHandler("UCDvehicleSystem.spawnVehicle", root, spawnVehicle)
 
-function hideVehicle(vehicleID)
+function hideVehicle(vehicleID, tosync)
 	if (not vehicleID) then return nil end
 	local vehicle = idToVehicle[vehicleID]
 	if (not vehicle or vehicle:getData("vehicleID") ~= vehicleID) then return end
@@ -161,10 +161,13 @@ function hideVehicle(vehicleID)
 	local rot = vehicle:getRotation()
 	local c1, c2, c3, c4  = vehicle:getColor()
 	
-	setVehicleData(vehicleID, "rotation", rot.z)
-	setVehicleData(vehicleID, "xyz", toJSON({pos.x, pos.y, pos.z}))
-	setVehicleData(vehicleID, "health", health)
-	setVehicleData(vehicleID, "colour", toJSON({c1, c2, c3, c4}))
+	if (tosync == false) then
+		setVehicleData(vehicleID, "rotation", rot.z)
+		setVehicleData(vehicleID, "xyz", toJSON({pos.x, pos.y, pos.z}))
+		setVehicleData(vehicleID, "health", health)
+		setVehicleData(vehicleID, "colour", toJSON({c1, c2, c3, c4}))
+		outputDebugString("hideVehicle, tosync == false")
+	end
 	
 	idToVehicle[vehicleID] = nil
 	
@@ -181,7 +184,7 @@ function hideVehicle(vehicleID)
 	for _, occupant in pairs(vehicle:getOccupants()) do
 		occupant:removeFromVehicle()
 		if (occupant:getType() == "player") then
-			exports.UCDdx:new("You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
+			exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
 		end
 	end
 	
@@ -246,6 +249,17 @@ function recoverVehicle(vehicleID)
 end
 addEvent("UCDvehicleSystem.recoverVehicle", true)
 addEventHandler("UCDvehicleSystem.recoverVehicle", root, recoverVehicle)
+
+function sellVehicle(vehicleID)
+	-- Hide the vehicle, but don't sync it to the database
+	if (idToVehicle[vehicleID]) then
+		triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, vehicleID, false)
+	end
+	
+		
+end
+addEvent("UCDvehicleSystem.sellVehicle", true)
+addEventHandler("UCDvehicleSystem.sellVehicle", root, sellVehicle)
 
 function toggleLock(enteringPlayer)
 	-- On duty admins are allowed to jack a player's car

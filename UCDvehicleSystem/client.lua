@@ -201,6 +201,8 @@ function handleInput(button, state)
 		elseif (source == GUIEditor.button[4]) then
 			if (button == "left" and state == "up") then
 				-- trigger a server event and make sure to despawn the vehicle and delete from database
+				local price = getVehicleData(vehicleID, "price")
+				local rate = root:getData("vehicles.rate") --exports.UCDmarket:getVehicleRate()
 			end
 		elseif (source == GUIEditor.button[5]) then
 			if (button == "left" and state == "up") then

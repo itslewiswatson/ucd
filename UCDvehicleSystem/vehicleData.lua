@@ -32,7 +32,7 @@ addEventHandler("onClientResourceStart", resourceRoot, requestVehicleTableSync)
 
 function getVehicleData(vehicleID, column)
 	if (not vehicleID) or (not column) then return nil end
-	if (tonumber(vehicleID) == nil) or (type(column) ~= "string") then return false end
+	if (tonumber(vehicleID) == nil or type(column) ~= "string") then return false end
 	
 	if (column == "*") then
 		return vehicles[vehicleID]
