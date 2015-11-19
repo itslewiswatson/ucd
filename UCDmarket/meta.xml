@@ -3,7 +3,9 @@
     <info author="Noki" type="" name="" />
 	
 	<script src="housing.lua" type="server"/>
+	<script src="vehicles.lua" type="server"/>
 	<export function="getHouseRate" type="server"/>
+	<export function="getVehicleRate" type="server"/>
 	
 	<oop>true</oop>
 </meta>
