@@ -4,4 +4,5 @@ function displayData()
 	localPlayer:setData("dxscoreboard_city", exports.UCDutil:getPlayerCityZone(localPlayer), true)
 	--localPlayer:setData("dxscoreboard_playtime", localPlayer:getData("playtime"), true) -- Set in UCDplaytime
 end
-addEventHandler("onClientPreRender", root, displayData)
+--addEventHandler("onClientPreRender", root, displayData)
+Timer(displayData, 1000, 0)
