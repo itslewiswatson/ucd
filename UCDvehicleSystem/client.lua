@@ -203,8 +203,7 @@ function handleInput(button, state)
 				-- trigger a server event and make sure to despawn the vehicle and delete from database
 				local price = getVehicleData(vehicleID, "price")
 				local rate = root:getData("vehicles.rate") --exports.UCDmarket:getVehicleRate()
-				local arg = vehicleID
-				exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle?", "exports.UCDvehicleSystem:callback_sellVehicle(arg)", arg)
+				exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicleSystem:callback_sellVehicle("..vehicleID..")")
 				
 			end
 		elseif (source == GUIEditor.button[5]) then
@@ -291,9 +290,9 @@ addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 	end
 )
 
-function callback_sellVehicle(arg, arg1)
+function callback_sellVehicle(arg)
 	outputDebugString("Successfully called callback_sellVehicle")
-	outputDebugString("Argument passed = "..tostring(arg).." | "..tostring(arg1))
+	outputDebugString("Argument passed = "..tostring(arg))
 end
 
 --[[
