@@ -1,4 +1,4 @@
-function createConfirmationWindow(text, callbackString, arg)
+function createConfirmationWindow(text, callbackString)
 	local confirmation = {window={}, label={}, button={}}
 	
 	local calledResource = tostring(Resource.getName(sourceResource))
@@ -25,13 +25,8 @@ function createConfirmationWindow(text, callbackString, arg)
 				confirmation.window[1]:destroy()
 			end
 			
-			
 			if (callbackString ~= "") then
-				outputDebugString("UCDutil: argument passed = "..tostring(arg))
-				local arg = arg
-				outputDebugString(callbackString)
-				loadstring(callbackString)(arg) -- This runs it straight away and allows argument passing
-				assert(loadstring(callbackString))(arg) -- This runs it straight away and allows argument passing
+				loadstring(callbackString)()
 			end
 			
 			showCursor(false)
