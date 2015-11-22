@@ -13,5 +13,7 @@
 	<export function="callback_sellVehicle" type="client"/>
 	<export function="getVehicleData" type="server"/>
 	
+	<include resource="UCDmarket"/>
+	
 	<oop>true</oop>
 </meta>
