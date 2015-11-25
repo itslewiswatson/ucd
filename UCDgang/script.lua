@@ -14,8 +14,10 @@ local settings =
 
 db = exports.UCDsql:getConnection()
 
+group = {}
 groupTable = {}
 groupMembers = {} -- We can just get their player elements from their id since more caching was introduced
+playerGroupCache = {} -- Player group cache
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
@@ -35,7 +37,7 @@ function cacheGroupTable(qh)
 		end
 	end
 	if (result and #result > 1) then
-		db:query(cacheGroupMembers, {}, "SELECT groupID, accountID FROM `groups_members`")
+		db:query(cacheGroupMembers, {}, "SELECT `groupID`, `accountID` FROM `groups_members`")
 	end
 end
 
@@ -55,18 +57,53 @@ function cacheGroupMembers(qh)
 	end
 end
 
+function getGroupData(groupID, column)
+	return groupTable[groupID][column]
+end
+
 function createGroup(name)
 	-- Need to perform preliminary checks
+	if (#name < 2 or #name > 16) then
+		-- Message
+		return
+	end
 	
 	local clientID = getPlayerAccountID(client) -- Get the client's id
-	db:exec("INSERT INTO `groups_` SET `name`=?, `leaderID`=?, `colour`=?", name, clientID, toJSON({255, 255, 255})) -- Make the inital group creation
+	db:exec("INSERT INTO `groups_` SET `name`=?, `leaderID`=?, `colour`=?", name, clientID, toJSON({255, 255, 255})) -- Perform the inital group creation
 	
 	local groupID = db:query("SELECT Max(`id`) AS `id` FROM `accounts`"):poll(0)[1].id -- Get the group's id
 	db:exec("INSERT INTO `groups_members` SET `groupID`=?, `accountID`=?, `name`=?, `rank`=?, `lastOnline`=?", groupID, clientID, client.name, 0, 0) -- Make the client's membership official and grant founder status
 	
-	-- Do a proper caching of the group
+	-- Perform a proper caching of the group
 	db:query(cacheGroupTable, {}, "SELECT * FROM `groups_` WHERE `groupID`=?", groupID)
 	
 	groupMembers[groupID] = {}
 	table.insert(groupMembers[groupID], clientID)
+end
+
+addEventHandler("onPlayerLogin", root, 
+	function (_, account)
+		local accountID = exports.UCDaccounts:getPlayerAccountID(source)
+		if (not playerGroupCache[source]) then
+			playerGroupCache[source] = {}
+			db:query(handleLogin, {source, account.name, accountID}, "SELECT `groupID`, `rank`, `joined` FROM `groups_members` WHERE `accountID`=?", accountID)
+		else
+			handleLogin(nil, source, account.name, accountID)
+		end
+	end
+)
+
+-- We do this so the we don't always query the SQL database upon login to get group data
+function handleLogin(qh, plr, accountName, accountID)
+	if (qh) then
+		local result = qh:poll(0)[1]
+		playerGroupCache[accountID] = {result.groupID, accountID, accountName, result.rank, result.joined} -- If a player is kicked while he is offline, we will need to delete the cache
+	end
+	local group = getGroupNameFromID(playerGroupCache[accountID][1])
+	plr:setData("group", group)
+	group[plr] = group
+end
+
+function getGroupNameFromID(groupID)
+	return tostring(groupTable[groupID].name)
 end
