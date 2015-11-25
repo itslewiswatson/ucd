@@ -40,7 +40,7 @@ end
 addEventHandler("onPlayerJoin", root, startMatrix)
 
 function joinText()
-	local text = {}
+	text = {}
 	plr = Player("Noki")
 	display = textCreateDisplay()
 	textDisplayAddObserver(display, plr)
@@ -52,6 +52,7 @@ function joinText()
 	end
 end
 addEventHandler("onPlayerJoin", root, joinText)
+addEventHandler("onPlayerLogin", root, function () text = nil end)
 
 -- Login handling
 function loginPlayer(usr, passwd)
