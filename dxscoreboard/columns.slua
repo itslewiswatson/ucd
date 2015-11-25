@@ -4,7 +4,7 @@
 	exports.dxscoreboard:scoreboardAddColumn( "Class", 		root, 100, "Class" )
 	exports.dxscoreboard:scoreboardAddColumn( "dxscoreboard_playtime", root, 60, "Play Time" )
 	exports.dxscoreboard:scoreboardAddColumn( "dxscoreboard_city", 		root, 20, "City" )
-	exports.dxscoreboard:scoreboardAddColumn( "dxscoreboard_group", 		root, 100, "Group" )
+	exports.dxscoreboard:scoreboardAddColumn( "group", 		root, 100, "Group" )
 	exports.dxscoreboard:scoreboardAddColumn( "dxscoreboard_money", 		root, 70, "Money" )
 	exports.dxscoreboard:scoreboardAddColumn( "FPS", 		root, 25, "FPS" )
 end
