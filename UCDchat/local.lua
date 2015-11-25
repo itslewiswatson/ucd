@@ -28,7 +28,7 @@ function localChat(player, _, ...)
 		for _, v in pairs(plrTable) do
 			if (getElementAlpha(v) == 0) then playerCount = playerCount - 1 end
 			if (playerCount < 0) then playerCount = 0 end
-			outputChatBox("(Local) ["..playerCount.."] "..playerNick..": #FFFFFF"..msg, v, pR, pG, pB, true)
+			outputChatBox("(Local) ["..playerCount.."] "..playerNick.." #FFFFFF"..msg, v, pR, pG, pB, true)
 		end
 		
 		triggerClientEvent("onMessageIncome", player, msg)

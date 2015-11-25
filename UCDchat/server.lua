@@ -25,7 +25,7 @@ function onPlayerChat(message, messageType)
 		if (messageType == 0) then
 			local sourceCity = exports.UCDutil:getPlayerCityZone(source)
 			
-			outputChatBox("("..sourceCity..") "..source:getName()..":#FFFFFF "..message, root, nR, nG, nB, true)
+			outputChatBox("("..sourceCity..") "..source.name.."#FFFFFF "..message, root, nR, nG, nB, true)
 			antiSpam[player] = true
 			setTimer(clearAntiSpam, antiSpamTime, 1, player)
 			
@@ -36,7 +36,7 @@ function onPlayerChat(message, messageType)
 			local sourceTeam = source:getTeam()
 		
 			for _, v in pairs(sourceTeam:getPlayers()) do
-				outputChatBox("("..sourceTeam:getName()..") "..source:getName()..":#FFFFFF "..message, v, nR, nG, nB, true)
+				outputChatBox("("..sourceTeam:getName()..") "..source.name.."#FFFFFF "..message, v, nR, nG, nB, true)
 			end
 			
 			antiSpam[player] = true
@@ -50,8 +50,8 @@ function onPlayerChat(message, messageType)
 				if (v ~= source) then
 					local vCoord = v:getPosition()
 					if (exports.UCDutil:isPlayerInRangeOfPoint(source, vCoord.x, vCoord.y, vCoord.z, 100)) then
-						if (source:getDimension() == v:getDimension()) and (source:getInterior() == v:getInterior()) then
-							outputChatBox("* "..source:getName().." "..message, v, 200, 50, 150)
+						if (source.dimension == v.dimension) and (source.interior == v.interior) then
+							outputChatBox("* "..source.name.." "..message, v, 200, 50, 150)
 							antiSpam[player] = true
 							setTimer(clearAntiSpam, antiSpamTime, 1, player)
 						end
