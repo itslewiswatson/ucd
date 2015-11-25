@@ -5,6 +5,8 @@
 	<script src="accountHandling.lua" type="server" />
 	
 	<script src="exports/s_exports.lua" type="server" />
+	<script src="getFromCache.lua" type="server" />
+	
 	<script src="exports/c_exports.lua" type="client" />
 	
 	<!-- This needs to start after s_exports.lua -->

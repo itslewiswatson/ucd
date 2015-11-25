@@ -60,8 +60,8 @@ addEventHandler("onPlayerLogin", root, Accounts.Login)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function Accounts.Save(plr)
-	if (plr:getType() ~= "player") then return nil end
-	if (plr:getAccount():isGuest()) then return false end
+	if (plr.type ~= "player") then return nil end
+	if (plr.account.guest) then return false end
 	
 	local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	local playerX, playerY, playerZ = plr:getPosition().x, plr:getPosition().y, plr:getPosition().z

@@ -55,7 +55,7 @@ function savePlayerWeaponString(plr)
 	db:exec("UPDATE `playerWeapons` SET `weaponString`=? WHERE `id`=?", toJSON(getPlayerWeaponTable(plr)), getPlayerAccountID(plr))
 	weaponString[plr] = toJSON(getPlayerWeaponTable(plr))
 end
-addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) weaponString[plr] = nil end)
+addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) weaponString[source] = nil end)
 addEventHandler("onPlayerWasted", root, function () savePlayerWeaponString(source)  end)
 addEventHandler("onResourceStop", root, function () for _, plr in pairs(Element.getAllByType("player")) do savePlayerWeaponString(plr) weaponString[plr] = nil end end)
 

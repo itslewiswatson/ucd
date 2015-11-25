@@ -24,50 +24,11 @@ function isPlayerLoggedIn(plr)
 	return true
 end
 
-function getPlayerFromID(id)
-	if (not id) then return nil end
-	for _, plr in pairs(Element.getAllByType("player")) do
-		if (isPlayerLoggedIn(plr)) then
-			if (getPlayerAccountID(plr) == id) then
-				return plr
-			end
-		end
-	end
-	return false
-end
-
 function getPlayerAccountName(plr)
-	local plrAccount = plr:getAccount()
-	if (not plrAccount or plrAccount:isGuest()) then
+	if (not plr or plr.type ~= "player" or not plr.account or plr.account.guest) then
 		return false
 	end
-	return plrAccount:getName()
-end
-
-function getAccountNameFromID(id)
-	if not id then return nil end
-	local accountName = accountData[id].accName
-
-	-- Not in the table, select it from the database
-	if (not accountName or accountName == nil) then
-		local accountName = db:query("SELECT `accName` FROM `accounts` WHERE `id`=? LIMIT 1", id):poll(-1)[1].accName
-		if (not accountName or accountName == nil) then
-			-- We possible have the option to cache it here if need be
-			return false
-		end
-		return accountName
-	end
-	return accountName
-end
-
-function getIDFromAccountName(accountName)
-	if (not accountName) then return nil end
-	if (type(accountName) ~= "string") then return false end
-	for i=1, #accountData do
-		if accountData[i].accName == accountName then
-			return i
-		end
-	end
+	return plr.account.name
 end
 
 function registerAccount(plr, usr, passwd, email)
