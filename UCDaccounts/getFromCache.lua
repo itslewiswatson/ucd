@@ -28,7 +28,8 @@ function getIDFromAccountName(accountName)
 	end
 	
 	-- Not in the table
-	for i=1, #accountData do
+	-- for i=1, #accountData do -- This will break at bad pairs
+	for i in pairs(accountData) do
 		if accountData[i].accName == accountName then
 			accountToID[accountName] = i -- Cache it in the table
 			return i
