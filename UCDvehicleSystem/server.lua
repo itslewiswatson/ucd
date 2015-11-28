@@ -212,6 +212,11 @@ function recoverVehicle(vehicleID)
 		
 		-- Debug purposes, make it a VIP feature?
 		if (exports.UCDadmin:isPlayerOwner(client)) then
+			--[[
+				-- A different approach
+				local position = vehicle.matrix.position + vehicle.matrix.forward * 3
+				player:setPosition(position)
+			--]]
 			local pos = client:getPosition()
 			local _, _, r = getElementRotation(client)
 			local x = pos.x - math.sin(math.rad(r)) * 4
