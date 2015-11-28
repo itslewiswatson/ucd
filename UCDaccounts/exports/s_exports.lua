@@ -10,44 +10,40 @@ end
 
 function getPlayerAccountID(plr)
 	if (not plr) then return nil end
-	if (plr:getType() ~= "player") then return false end
-
-	local plrAccount = plr:getAccount()
-	if (plrAccount:isGuest()) then return false end
-
+	if (not isElement(plr) or plr.type ~= "player") then return false end
+	if (plr.account.guest) then return false end
 	return plr:getData("accountID") or db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", plrAccount:getName()):poll(-1)[1].id
 end
 
 function isPlayerLoggedIn(plr)
 	if (not plr) then return nil end
-	if (plr:getType() ~= "player" or plr:getAccount():isGuest()) then return false end
+	if (plr.type ~= "player" or plr.account.guest) then return false end
 	return true
 end
 
 function getPlayerAccountName(plr)
-	if (not plr or plr.type ~= "player" or not plr.account or plr.account.guest) then
-		return false
-	end
+	if (not plr) then return nil end
+	if (plr.type ~= "player" or not plr.account or plr.account.guest) then return false	end
 	return plr.account.name
 end
 
 function registerAccount(plr, usr, passwd, email)
 	if (not plr or not usr or not passwd or not email) then return nil end
-	if (plr:getType() ~= "player") then return false end
+	if (plr.type ~= "player") then return false end
 
 	-- MTA's db already hashes their user passwords differently to how we do
 	-- This account going first is important, otherwise we would have a fucking mess
-	local mtaAccount = addAccount(usr, passwd)
+	local mtaAccount = Account.add(usr, passwd)
 	if (not mtaAccount) then
-		outputDebugString("Player "..plr:getName().." failed to register correctly!")
+		outputDebugString("Player "..plr.name.." failed to register correctly!")
 		return false
 	end
 
-	-- Hash the user's passwd
+	-- Hash the user's passwd [Make reconsiderations with forum account sync]
 	local salt = bcrypt_salt(6)
-	passwd = bcrypt_digest(passwd, salt)
+	local passwd = bcrypt_digest(passwd, salt)
 
-	db:exec("INSERT INTO `accounts` SET `accName`=?, `pw`=?, `lastUsedName`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr:getName(), plr:getIP(), plr:getSerial(), email)
+	db:exec("INSERT INTO `accounts` SET `accName`=?, `pw`=?, `lastUsedName`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr.name, plr.ip, plr.serial, email)
 
 	-- Get their account id so we don't have autoincrement failures
 	--local accountID = db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id
@@ -72,11 +68,18 @@ function registerAccount(plr, usr, passwd, email)
 		"Homeless",
 		toJSON({Team.getFromName("Unemployed"):getColor()})
 	)
-	db:exec("INSERT INTO `playerWeapons` SET `weaponString`=?", toJSON({})) -- Empty JSON string
-
 	passwd = nil -- Clear their password out of memory
-	cacheAccount(db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id) -- We need to cache their account
+	db:exec("INSERT INTO `playerWeapons` SET `weaponString`=?", toJSON({})) -- Empty JSON string
+	
+	if (#accountData == nil or #accountData == 0) then
+		cacheAccount(1) -- We need to cache their account
+	else
+		cacheAccount(math.max(unpack(accountData)))
+	end
 	-- THIS SHOULD BE THE MOST FOOL PROOF WAY TO DETECT IT
+	
+	-- Old way
+	--cacheAccount(db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id) -- We need to cache their account
 
 	return true
 end
