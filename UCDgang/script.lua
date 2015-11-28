@@ -4,12 +4,30 @@
 
 -- We have groups_members query to basically queue the loading in of these to avoid lag
 
+-- Move this to a dedicated exports file
+function getPlayerOnlineTime(plr)
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player") then return false end
+	if (onlineTime[plr]) then
+		return math.floor((getRealTime().timestamp - onlineTime[plr]) / 60)
+	else
+		if (playerGroupCache[plr]) then
+			return playerGroupCache[plr][7] or 0
+		end
+	end
+	return 0
+end
+
+
 local settings =
 {
 	max_members = 50,
 	max_invites = 10, -- Maxmimum number of pending invites
 	max_totalslots = 50, -- Pending invites and current members
 	max_inactive = 14, -- 14 days
+	
+	default_infoText = "Enter information about your group here!",
+	default_colour = {255, 255, 255},
 }
 
 db = exports.UCDsql:getConnection()
@@ -18,6 +36,7 @@ group = {}
 groupTable = {}
 groupMembers = {} -- We can just get their player elements from their id since more caching was introduced
 playerGroupCache = {} -- Player group cache
+onlineTime = {}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
@@ -55,6 +74,12 @@ function cacheGroupMembers(qh)
 			end
  		end
 	end
+	-- Resource should be fully loaded by now, let's load things for existing players
+	for _, plr in pairs(Element.getAllByType("player")) do
+		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+			handleLogin(plr)
+		end
+	end
 end
 
 function getGroupData(groupID, column)
@@ -62,48 +87,100 @@ function getGroupData(groupID, column)
 end
 
 function createGroup(name)
-	-- Need to perform preliminary checks
+	-- Need to perform preliminary checks [check if group name already exists, etc]
 	if (#name < 2 or #name > 16) then
 		-- Message
-		return
+		return false
 	end
 	
-	local clientID = getPlayerAccountID(client) -- Get the client's id
-	db:exec("INSERT INTO `groups_` SET `name`=?, `leaderID`=?, `colour`=?", name, clientID, toJSON({255, 255, 255})) -- Perform the inital group creation
+	if not client or client == nil then client = getPlayerFromName("Noki") end -- For runcode purposes right now
 	
-	local groupID = db:query("SELECT Max(`id`) AS `id` FROM `accounts`"):poll(0)[1].id -- Get the group's id
-	db:exec("INSERT INTO `groups_members` SET `groupID`=?, `accountID`=?, `name`=?, `rank`=?, `lastOnline`=?", groupID, clientID, client.name, 0, 0) -- Make the client's membership official and grant founder status
+	local clientID = exports.UCDaccounts:getPlayerAccountID(client) -- Get the client's id
+	db:exec("INSERT INTO `groups_` SET `name`=?, `leaderID`=?, `colour`=?, `info`=?", name, clientID, toJSON(settings.default_colour), settings.default_infoText) -- Perform the inital group creation
+	
+	local groupID
+	--local groupID = db:query("SELECT Max(`groupID`) AS `groupID` FROM `groups_`"):poll(-1)[1].groupID -- Get the group's id
+	if (#groupTable == nil or #groupTable == 0) then
+		groupID = 1
+	else
+		groupID = math.max(unpack(groupTable)) -- Gets the maximum number from the table, even if pairs break at all [less sql = better :)]
+	end
+	db:exec("INSERT INTO `groups_members` SET `groupID`=?, `accountID`=?, `name`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", groupID, clientID, client.name, 0, 0, 0) -- Make the client's membership official and grant founder status
 	
 	-- Perform a proper caching of the group
 	db:query(cacheGroupTable, {}, "SELECT * FROM `groups_` WHERE `groupID`=?", groupID)
 	
 	groupMembers[groupID] = {}
 	table.insert(groupMembers[groupID], clientID)
+	
+	client:setData("group", name)
+	group[client] = name
+	playerGroupCache[accountID] = {groupID, accountID, accountName, 0, nil, nil, 0} -- Should I even bother?
+	
+	return true
 end
 
-addEventHandler("onPlayerLogin", root, 
-	function (_, account)
+function handleLogin(plr)
+	if (not plr) then plr = source end
+	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
+	if (not playerGroupCache[plr]) then
+		playerGroupCache[plr] = {}
+		db:query(handleLogin2, {plr, plr.account.name, accountID}, "SELECT `groupID`, `rank`, `joined`, `timeOnline` FROM `groups_members` WHERE `accountID`=?", accountID)
+	else
+		handleLogin2(nil, plr, plr.account.name, accountID)
+	end
+end
+addEventHandler("onPlayerLogin", root, handleLogin)
+
+-- We do this so the we don't always query the SQL database upon login to get group data
+function handleLogin2(qh, plr, accountName, accountID)
+	if (qh) then
+		local result = qh:poll(-1)[1]
+		if (result and #result == 1) then
+			playerGroupCache[accountID] = {result.groupID, accountID, accountName, result.rank, result.joined, result.lastOnline, result.timeOnline} -- If a player is kicked while he is offline, we will need to delete the cache
+		end
+	end
+	if (not playerGroupCache[accountID]) then return end
+	local group_ = getGroupNameFromID(playerGroupCache[accountID][1])
+	plr:setData("group", group_)
+	group[plr] = group_
+	onlineTime[plr] = getRealTime().timestamp
+end
+
+addEventHandler("onPlayerQuit", root, 
+	function ()
 		local accountID = exports.UCDaccounts:getPlayerAccountID(source)
-		if (not playerGroupCache[source]) then
-			playerGroupCache[source] = {}
-			db:query(handleLogin, {source, account.name, accountID}, "SELECT `groupID`, `rank`, `joined` FROM `groups_members` WHERE `accountID`=?", accountID)
-		else
-			handleLogin(nil, source, account.name, accountID)
+		if (accountID and exports.UCDaccounts:isPlayerLoggedIn(source)) then
+			local onlineTime = getPlayerOnlineTime(source)
+			-- Put the online time in the databse
+			db:exec("UPDATE `groups_members` SET `timeOnline`=? WHERE `accountID`=?", getPlayerOnlineTime(source), accountID)
+			playerGroupCache[accountID][7] = onlineTime
+			onlineTime[source] = nil
+			group[source] = nil
 		end
 	end
 )
 
--- We do this so the we don't always query the SQL database upon login to get group data
-function handleLogin(qh, plr, accountName, accountID)
-	if (qh) then
-		local result = qh:poll(0)[1]
-		playerGroupCache[accountID] = {result.groupID, accountID, accountName, result.rank, result.joined} -- If a player is kicked while he is offline, we will need to delete the cache
-	end
-	local group = getGroupNameFromID(playerGroupCache[accountID][1])
-	plr:setData("group", group)
-	group[plr] = group
+function getGroupNameFromID(groupID)
+	return groupTable[groupID].name
 end
 
-function getGroupNameFromID(groupID)
-	return tostring(groupTable[groupID].name)
+function getGroupIDFromName(name)
+	for _, row in pairs(groupTable) do
+		if (row.name == name) then
+			return row.groupID
+		end
+	end
+	return false
 end
+
+addEventHandler("onResourceStop", resourceRoot,
+	function () 
+		for _, plr in pairs(Element.getAllByType("player")) do
+			if plr:getData("group") ~= false then 
+				plr:setData("group", false)
+				db:exec("UPDATE `groups_members` SET `timeOnline`=? WHERE `accountID`=?", getPlayerOnlineTime(plr), exports.UCDaccounts:getPlayerAccountID(plr))
+			end
+		end
+	end
+)

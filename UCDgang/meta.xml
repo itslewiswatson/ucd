@@ -3,5 +3,7 @@
     <info author="Noki" type="" name="" />
 	<script src="script.lua" type="server"/>
 	<export function="getGroupNameFromID" type="server"/>
+	<export function="getPlayerOnlineTime" type="server"/>
+	<export function="createGroup" type="server"/>
 	<oop>true</oop>
 </meta>
