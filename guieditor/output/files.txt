@@ -1,3 +1,8 @@
 
 :UCDadmin/GUI/design_2015-8-28_17-17.txt
 :UCDadmin/GUI/ouput2_2015-8-28_17-28.txt
+:guieditor/output/UCDadmin2_2015-12-2_15-8.txt
+:guieditor/output/UCDadmin3_2015-12-2_15-23.txt
+:guieditor/output/UCDadmin4_2015-12-2_18-38.txt
+:guieditor/output/UCDadmin5_2015-12-2_21-29.txt
+:guieditor/output/UCDadmin6_2015-12-2_22-29.txt
