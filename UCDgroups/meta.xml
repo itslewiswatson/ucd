@@ -1,9 +1,13 @@
 <meta>
-	<min_mta_version server="1.5"></min_mta_version>
-    <info author="Noki" type="" name="" />
+	<min_mta_version server="1.5.1"></min_mta_version>
+    <info author="Noki" type="script" name="UCDgroups" />
 	<script src="script.lua" type="server"/>
+	<script src="exports/exports_s.lua" type="server"/>
+	
 	<export function="getGroupNameFromID" type="server"/>
+	<export function="getGroupData" type="server"/>
 	<export function="getPlayerOnlineTime" type="server"/>
 	<export function="createGroup" type="server"/>
+	
 	<oop>true</oop>
 </meta>
