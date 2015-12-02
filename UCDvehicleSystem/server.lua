@@ -40,8 +40,12 @@ local recLocs = {
 	},
 }
 
-function syncIdToVehicle()
-	triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", client, client, idToVehicle)
+function syncIdToVehicle(refreshGridlist)
+	if not refreshGridlist then
+		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, idToVehicle)
+	else
+		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, idToVehicle, true)
+	end
 end
 addEvent("UCDvehicleSystem.getIdToVehicleTable", true)
 addEventHandler("UCDvehicleSystem.getIdToVehicleTable", root, syncIdToVehicle)
@@ -195,6 +199,9 @@ function hideVehicle(vehicleID, tosync)
 		exports.UCDdx:new(client, "You have successfully hidden your "..Vehicle.getNameFromModel(vehicles[vehicleID].model), 0, 255, 0)
 		triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
 	end
+	-- We need this here for if someone sells their vehicle
+	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
+	-- SELECTIVE IDTOVEHICLE SYNC
 end
 addEvent("UCDvehicleSystem.hideVehicle", true)
 addEventHandler("UCDvehicleSystem.hideVehicle", root, hideVehicle)
@@ -260,7 +267,7 @@ function recoverVehicle(vehicleID)
 		-- Check for people in it
 		for _, occupant in pairs(vehicleEle:getOccupants()) do
 			occupant:removeFromVehicle()
-			if (occupant:getType() == "player") then
+			if (occupant.type == "player") then
 				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
 			end
 		end
@@ -281,8 +288,23 @@ function sellVehicle(vehicleID)
 	if (idToVehicle[vehicleID]) then
 		triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, vehicleID, false)
 	end
+	for _, v in ipairs(playerVehicles[client]) do
+		if (v == vehicleID) then
+			table.remove(playerVehicles[client], v)
+			break
+		end
+	end
 	
-		
+	local price = getVehicleData(vehicleID, "price")
+	local rate = root:getData("vehicles.rate")
+	local newPrice = exports.UCDutil:mathround(price * (rate / 1000), 2)
+	exports.UCDdx:new(client, "You have successfully sold your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." for $"..exports.UCDutil:tocomma(newPrice), 0, 255, 0)
+	client:giveMoney(newPrice)
+	vehicles[vehicleID] = nil
+	-- Remove it from SQL, sync to player
+	triggerEvent("UCDvehicleSystem.requestVehicleTableSync", client)
+	triggerEvent("UCDvehicleSystem.getIdToVehicleTable", client, true)
+	db:exec("DELETE FROM `vehicles` WHERE `vehicleID`=?", vehicleID)
 end
 addEvent("UCDvehicleSystem.sellVehicle", true)
 addEventHandler("UCDvehicleSystem.sellVehicle", root, sellVehicle)

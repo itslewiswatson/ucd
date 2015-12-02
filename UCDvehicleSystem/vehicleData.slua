@@ -59,7 +59,7 @@ function syncVehicleTable(plr)
 	end
 end
 addEvent("UCDvehicleSystem.requestVehicleTableSync", true)
-addEventHandler("UCDvehicleSystem.requestVehicleTableSync", root, function () syncVehicleTable(client) end)
+addEventHandler("UCDvehicleSystem.requestVehicleTableSync", root, function () syncVehicleTable(source) end)
 addEventHandler("onPlayerLogin", root, function () syncVehicleTable(source) end)
 
 function getPlayerVehicleTable(plr)

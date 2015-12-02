@@ -1,8 +1,12 @@
 local blip = {}
 playerVehicles = {}
 
-function syncIdToVehicle(tbl)
+function syncIdToVehicle(tbl, _, refreshGridlist)
 	idToVehicle = tbl
+	if (refreshGridlist == true) then
+		populateGridList()
+		GUIEditor.label[1]:setText("Selected: N/A")
+	end
 end
 addEvent("UCDvehicleSystem.syncIdToVehicle", true)
 addEventHandler("UCDvehicleSystem.syncIdToVehicle", root, syncIdToVehicle)
@@ -70,7 +74,7 @@ function updateVehicleGrid(vehicleID)
 end
 
 function populateGridList()
-	--guiGridListClear(GUIEditor.gridlist[1])
+	guiGridListClear(GUIEditor.gridlist[1])
 	for i, v in pairs(vehicles) do
 		if v.ownerID == localPlayer:getData("accountID") then
 			updateVehicleGrid(i)
@@ -146,9 +150,16 @@ end
 
 function handleInput(button, state)
 	if (source:getParent() == GUIEditor.gridlist[1] or source:getParent() == GUIEditor.window[1]) then
+	
+		if (source == GUIEditor.button[8]) then
+			if (button == "left" and state == "up") then
+				toggleGUI()
+			end
+		end
+	
 		local row = guiGridListGetSelectedItem(GUIEditor.gridlist[1])
 		-- Instead of nesting this in every elseif
-		if (row == -1 or not row or row == nil) then
+		if (row == -1 or not row or row == nil and source ~= GUIEditor.button[8]) then
 			GUIEditor.label[1]:setText("Selected: N/A") -- If there is no row we don't display the data
 			if (source:getParent() == GUIEditor.window[1] and (source ~= GUIEditor.gridlist[1] and source ~= GUIEditor.button[8])) then
 				exports.UCDdx:new("You did not select a vehicle from the list", 255, 0, 0)
@@ -156,7 +167,7 @@ function handleInput(button, state)
 			end
 			return
 		end
-
+		
 		-- We use this throughout the rest of the function
 		local vehicleID = guiGridListGetItemData(GUIEditor.gridlist[1], row, 1)
 		
@@ -203,7 +214,8 @@ function handleInput(button, state)
 				-- trigger a server event and make sure to despawn the vehicle and delete from database
 				local price = getVehicleData(vehicleID, "price")
 				local rate = root:getData("vehicles.rate") --exports.UCDmarket:getVehicleRate()
-				exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicleSystem:callback_sellVehicle("..vehicleID..")")
+				--exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicleSystem:callback_sellVehicle("..vehicleID..")")
+				exports.UCDutil:createConfirmationWindow("UCDvehicleSystem.sellVehicle.client", vehicleID, nil, "UCD | Player Vehicles - Confirmation", "Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicleSystem:callback_sellVehicle("..vehicleID..")")
 				
 			end
 		elseif (source == GUIEditor.button[5]) then
@@ -270,10 +282,6 @@ function handleInput(button, state)
 				isSpectating = true
 				exports.UCDdx:new("You are now spectating your "..vehicle.name..". Press the spectate button again to cancel.", 0, 255, 0)
 			end
-		elseif (source == GUIEditor.button[8]) then
-			if (button == "left" and state == "up") then
-				toggleGUI()
-			end
 		end
 	end
 end
@@ -290,10 +298,15 @@ addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 	end
 )
 
-function callback_sellVehicle(arg)
+function sellVehicle(vehicleID)
 	outputDebugString("Successfully called callback_sellVehicle")
-	outputDebugString("Argument passed = "..tostring(arg))
+	outputDebugString("Argument passed = "..tostring(vehicleID))
+	if (vehicleID) then
+		triggerServerEvent("UCDvehicleSystem.sellVehicle", localPlayer, vehicleID)
+	end
 end
+addEvent("UCDvehicleSystem.sellVehicle.client", true)
+addEventHandler("UCDvehicleSystem.sellVehicle.client", root, sellVehicle)
 
 --[[
 function populateGridList(vehicleTable)
