@@ -1,7 +1,7 @@
 function disableAdministratorDamage(attacker, weapon, bodypart, loss)
-	if source:getTeam() then
-		if (attacker and attacker:getType() == "ped") then return end
-		if (source:getTeam():getName() == "Admins" and source:getModel() == 217 or source:getModel() == 211) then
+	if (source.team) then
+		if (attacker and attacker.type == "ped") then return end
+		if (source.team.name == "Admins" and source.model == 217 or source.model == 211) then
 			cancelEvent()
 		end
 	end
@@ -36,8 +36,9 @@ addCommandHandler("invis",
 )
 
 function onClientVehicleExit(plr, seat)
-	if (plr ~= localPlayer) or (localPlayer:getTeam():getName() ~= "Admins") then return end	
-	if (source:isDamageProof()) then
+	if (plr ~= localPlayer or localPlayer.team.name ~= "Admins") then return end	
+	if (source:isDamageProof() and seat == 0) then
+		if (source:getData("vehicleID")) then return end -- We don't want this triggering for player vehicles
 		source:setDamageProof(false)
 		exports.UCDdx:new("Your "..source:getName().." is no longer damage proof", 255, 255, 0)
 	end
