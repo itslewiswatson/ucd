@@ -13,6 +13,12 @@ local keys = {xml = [[7C6933A1239C7493F7F8A71A0EDA9553]], C2S = [[place_hash_her
 local sX, sY = guiGetScreenSize()
 login = {edit = {}, button = {}, label = {}, checkbox = {}}
 registration = {button = {}, window = {}, label = {}, edit = {}}
+function centerWindow(center_window)
+    local screenW, screenH = guiGetScreenSize()
+    local windowW, windowH = guiGetSize(center_window, false)
+    local x, y = (screenW - windowW) /2, (screenH - windowH) / 2
+    guiSetPosition(center_window, x, y, false)
+end
 
 -- Actual login
 addEventHandler("onClientResourceStart", resourceRoot, 
@@ -59,7 +65,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			registration.window[1] = guiCreateWindow(667, 651, 617, 455, "UCD | Registration", false)
 			registration.window[1]:setSizable(false)
 			registration.window[1]:setVisible(false)
-			exports.UCDutil:centerWindow(registration.window[1])
+			centerWindow(registration.window[1])
 
 			registration.edit[1] = guiCreateEdit(10, 46, 328, 25, "", false, registration.window[1])
 			registration.edit[1]:setMaxLength(16)

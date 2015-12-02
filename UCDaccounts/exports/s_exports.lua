@@ -12,7 +12,7 @@ function getPlayerAccountID(plr)
 	if (not plr) then return nil end
 	if (not isElement(plr) or plr.type ~= "player") then return false end
 	if (plr.account.guest) then return false end
-	return plr:getData("accountID") or db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", plrAccount:getName()):poll(-1)[1].id
+	return plr:getData("accountID") or db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", plr.account.name):poll(-1)[1].id
 end
 
 function isPlayerLoggedIn(plr)

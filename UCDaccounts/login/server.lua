@@ -51,8 +51,8 @@ function joinText()
 		textItemSetScale(text[i], 2)
 	end
 end
-addEventHandler("onPlayerJoin", root, joinText)
-addEventHandler("onPlayerLogin", root, function () text = nil end)
+--addEventHandler("onPlayerJoin", root, joinText)
+--addEventHandler("onPlayerLogin", root, function () text = nil end)
 
 -- Login handling
 function loginPlayer(usr, passwd)
