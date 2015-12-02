@@ -3,7 +3,6 @@
 	<script src="clientExports.lua" type="client"/>
 	<script src="smoothMoveCamera.lua" type="client"/>
 	<script src="confirmation_c.lua" type="client"/>
-	<script src="confirmation_s.lua" type="server"/>
 	
 	<export function="getCityZoneFromXYZ" type="server"/>
 	<export function="getCityZoneFromXYZ" type="client"/>
