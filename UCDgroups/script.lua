@@ -26,8 +26,37 @@ local settings =
 	max_totalslots = 50, -- Pending invites and current members
 	max_inactive = 14, -- 14 days
 	
-	default_infoText = "Enter information about your group here!",
+	default_info_text = "Enter information about your group here!",
 	default_colour = {255, 255, 255},
+}
+local forbidden = 
+{
+	whole = {
+		"ucd",
+		"noki",
+		"zorque",
+		"cunt",
+		"cunts",
+		"fuckucd",
+		"fuckserver",
+		"cit",
+		"ugc",
+		"ngc",
+		"nr7gaming",
+		"a7a",
+		"",
+	},
+	partial = {
+		"zorque",
+		"cunt",
+		"ngc",
+		"arran",
+		"cit ",
+		"admin",
+		"staff",
+		"is shit",
+		"isshit",
+	},
 }
 
 db = exports.UCDsql:getConnection()
@@ -87,16 +116,50 @@ function getGroupData(groupID, column)
 end
 
 function createGroup(name)
-	-- Need to perform preliminary checks [check if group name already exists, etc]
-	if (#name < 2 or #name > 16) then
-		-- Message
+	if (not name or name == nil) then
+		-- You need to specify a group name.
 		return false
 	end
+	if (group[client] or client:getData("group")) then
+		-- You cannot create a group because you are already in one. Leave your current group first.
+		return false
+	end
+	for index, row in pairs(groupTable) do
+		if row.name == name then
+			-- A group with this name already exists.
+			return false
+		end
+	end
+	if (#name < 2 or #name > 16) then
+		-- Your group name must be between 2 and 16 characters.
+		return false
+	end
+	for type_, row in pairs(forbidden) do
+		for _, chars in pairs(row) do
+			if type_ == whole then
+				if (name == chars) then
+					-- The specified group name is prohibited. If you believe this is a mistake, please notify an administrator.
+					return false
+				end
+			else
+				if (name:lower():find(chars) >= 1) then
+					-- The specified group name contains forbidden phrases or characters. If you believe this is a mistake, please notify an administrator.
+					return false
+				end
+			end
+		end
+	end
+	--[[
+	if name:find("%d") > name:find("%a") then
+		-- Your group name must contain more numbers than letters.
+		return false
+	end
+	--]]
 	
 	if not client or client == nil then client = getPlayerFromName("Noki") end -- For runcode purposes right now
 	
 	local clientID = exports.UCDaccounts:getPlayerAccountID(client) -- Get the client's id
-	db:exec("INSERT INTO `groups_` SET `name`=?, `leaderID`=?, `colour`=?, `info`=?", name, clientID, toJSON(settings.default_colour), settings.default_infoText) -- Perform the inital group creation
+	db:exec("INSERT INTO `groups_` SET `name`=?, `leaderID`=?, `colour`=?, `info`=?", name, clientID, toJSON(settings.default_colour), settings.default_info_text) -- Perform the inital group creation
 	
 	local groupID
 	--local groupID = db:query("SELECT Max(`groupID`) AS `groupID` FROM `groups_`"):poll(-1)[1].groupID -- Get the group's id
@@ -119,9 +182,12 @@ function createGroup(name)
 	
 	return true
 end
+addEvent("UCDgroups.createGroup", true)
+addEventHandler("UCDgroups.createGroup", root, createGroup)
 
 function handleLogin(plr)
-	if (not plr) then plr = source end
+	--setTimer( function (plr)
+	--if (not plr) then plr = source end
 	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
 	if (not playerGroupCache[plr]) then
 		playerGroupCache[plr] = {}
@@ -129,8 +195,9 @@ function handleLogin(plr)
 	else
 		handleLogin2(nil, plr, plr.account.name, accountID)
 	end
+	--end, 1000, 1, plr)
 end
-addEventHandler("onPlayerLogin", root, handleLogin)
+addEventHandler("onPlayerLogin", root, function () handleLogin(source) end)
 
 -- We do this so the we don't always query the SQL database upon login to get group data
 function handleLogin2(qh, plr, accountName, accountID)
