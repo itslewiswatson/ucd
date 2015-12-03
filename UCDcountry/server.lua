@@ -286,44 +286,48 @@ end
 
 addEventHandler("onPlayerJoin", root,
 	function ()
-		countryShort, countryLong = getCountry(source:getIP())
+		countryShort, countryLong = getCountry(source.ip)
 		
 		if (countryShort) then
 			countryShort = countryShort
 		elseif (countryShort == false) and (getPlayerFromPartialName("Noki") == source) then
-			countryShort = "au"
+			countryShort = "AU"
 		else
-			countryShort = "unknown"
+			countryShort = "Unknown"
 		end
 		
 		if (countryLong) then
 			countryLong = countryLong
+		elseif (countryLong == false) and (getPlayerFromPartialName("Noki") == source) then
+			countryLong = "AU"
 		else
 			countryLong = "Unknown"
 		end
 		
 		source:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
-		source:setData("Country", countryLong, true)
+		source:setData("Country", countryLong..", "..countryShort, true)
 	end
 )
 
 for _, v in pairs(Element.getAllByType("player")) do
-	countryShort, countryLong = getCountry(v:getIP())
+	countryShort, countryLong = getCountry(v.ip))
 	
 	if (countryShort) then
 		countryShort = countryShort
 	elseif (countryShort == false) and (getPlayerFromPartialName("Noki") == v) then
-		countryShort = "au"
+		countryShort = "AU"
 	else
-		countryShort = "unknown"
+		countryShort = "Unknown"
 	end
 	
 	if (countryLong) then
 		countryLong = countryLong
+	elseif (countryLong == false) and (getPlayerFromPartialName("Noki") == v) then
+		countryLong = "AU"
 	else
 		countryLong = "Unknown"
 	end
 	
 	v:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
-	v:setData("Country", countryLong, true)
+	v:setData("Country", countryLong..", "..countryShort, true)
 end
