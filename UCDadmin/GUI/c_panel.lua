@@ -1,4 +1,3 @@
-
 adminPanel = {
     tab = {},
     label = {},
@@ -9,6 +8,16 @@ adminPanel = {
     checkbox = {},
     button = {}
 }
+
+function getSelectedPlayer()
+	local row = guiGridListGetSelectedItem(adminGUI.GUIgrids[1])
+	if (row ~= false and row ~= nil and row ~= -1) then
+		local player = guiGridListGetItemData(adminPanel.gridlist[1], row, 1)
+		return player
+	end
+end
+
+
 addEventHandler("onClientResourceStart", resourceRoot,
     function()
         adminPanel.window[1] = guiCreateWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
@@ -25,49 +34,54 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		
 		for _, plr in pairs(Element.getAllByType("player")) do
 			local row = guiGridListAddRow(adminPanel.gridlist[1])
-			local r, g, b = plr.team:getColor()
+			local r, g, b
+			if plr.team then
+				r, g, b = plr.team:getColor()
+			else
+				r, g, b = 255, 255, 255
+			end
 			guiGridListSetItemText(adminPanel.gridlist[1], row, 1, plr.name, false, false)
 			guiGridListSetItemData(adminPanel.gridlist[1], row, 1, plr)
 			guiGridListSetItemColor(adminPanel.gridlist[1], row, 1, r, g, b)
 		end
 		
         adminPanel.edit[1] = guiCreateEdit(10, 10, 151, 26, "", false, adminPanel.tab[1])
-        adminPanel.label[1] = guiCreateLabel(170, 26, 290, 20, "Name: PA~|H|Noki>Tr", false, adminPanel.tab[1])
-        adminPanel.label[2] = guiCreateLabel(170, 86, 290, 20, "IP: 110.174.254.213", false, adminPanel.tab[1])
+        adminPanel.label[1] = guiCreateLabel(170, 26, 290, 20, "Name: ", false, adminPanel.tab[1])
+        adminPanel.label[2] = guiCreateLabel(170, 86, 290, 20, "IP: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[2], "right", false)
-        adminPanel.label[3] = guiCreateLabel(170, 66, 290, 20, "Serial: 7784D1745F2D9DD06DD223333311BEB4", false, adminPanel.tab[1])
-        adminPanel.label[4] = guiCreateLabel(171, 86, 289, 20, "Version: 1.5.1-9.0765.0", false, adminPanel.tab[1])
-        adminPanel.label[5] = guiCreateLabel(170, 46, 290, 20, "Account Name: Noki", false, adminPanel.tab[1])
-        adminPanel.label[6] = guiCreateLabel(171, 375, 289, 21, "Playtime: 1024 Hours", false, adminPanel.tab[1])
-        adminPanel.label[7] = guiCreateLabel(170, 126, 290, 22, "Country: Australia, AU", false, adminPanel.tab[1])
-        adminPanel.label[8] = guiCreateLabel(171, 128, 289, 20, "Account ID: 1", false, adminPanel.tab[1])
+        adminPanel.label[3] = guiCreateLabel(170, 66, 290, 20, "Serial: ", false, adminPanel.tab[1])
+        adminPanel.label[4] = guiCreateLabel(171, 86, 289, 20, "Version: ", false, adminPanel.tab[1])
+        adminPanel.label[5] = guiCreateLabel(170, 46, 290, 20, "Account Name: ", false, adminPanel.tab[1])
+        adminPanel.label[6] = guiCreateLabel(171, 375, 289, 21, "Playtime: ", false, adminPanel.tab[1])
+        adminPanel.label[7] = guiCreateLabel(170, 126, 290, 22, "Country: ", false, adminPanel.tab[1])
+        adminPanel.label[8] = guiCreateLabel(171, 128, 289, 20, "Account ID: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[8], "right", false)
-        adminPanel.label[9] = guiCreateLabel(170, 210, 290, 20, "Location: Redsands West, Las Venturas", false, adminPanel.tab[1])
-        adminPanel.label[10] = guiCreateLabel(170, 230, 290, 20, "Dimension: 0", false, adminPanel.tab[1])
-        adminPanel.label[11] = guiCreateLabel(170, 230, 290, 20, "Interior: 0", false, adminPanel.tab[1])
+        adminPanel.label[9] = guiCreateLabel(170, 210, 290, 20, "Location: ", false, adminPanel.tab[1])
+        adminPanel.label[10] = guiCreateLabel(170, 230, 290, 20, "Dimension: ", false, adminPanel.tab[1])
+        adminPanel.label[11] = guiCreateLabel(170, 230, 290, 20, "Interior: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[11], "right", false)
-        adminPanel.label[12] = guiCreateLabel(170, 106, 290, 20, "Email: lewis.watson@outlook.com", false, adminPanel.tab[1])
-        adminPanel.label[13] = guiCreateLabel(170, 270, 290, 20, "Health: 100", false, adminPanel.tab[1])
-        adminPanel.label[14] = guiCreateLabel(170, 270, 290, 20, "Armour: 100", false, adminPanel.tab[1])
+        adminPanel.label[12] = guiCreateLabel(170, 106, 290, 20, "Email: ", false, adminPanel.tab[1])
+        adminPanel.label[13] = guiCreateLabel(170, 270, 290, 20, "Health: ", false, adminPanel.tab[1])
+        adminPanel.label[14] = guiCreateLabel(170, 270, 290, 20, "Armour: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[14], "right", false)
-        adminPanel.label[15] = guiCreateLabel(171, 355, 289, 20, "Money: $99,999,999", false, adminPanel.tab[1])
-        adminPanel.label[16] = guiCreateLabel(170, 355, 290, 20, "Bank: $99,999,999,999", false, adminPanel.tab[1])
+        adminPanel.label[15] = guiCreateLabel(171, 355, 289, 20, "Money: ", false, adminPanel.tab[1])
+        adminPanel.label[16] = guiCreateLabel(170, 355, 290, 20, "Bank: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[16], "right", false)
-        adminPanel.label[17] = guiCreateLabel(170, 396, 291, 20, "Occupation: Pilot", false, adminPanel.tab[1])
+        adminPanel.label[17] = guiCreateLabel(170, 396, 291, 20, "Occupation: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[17], "right", false)
-        adminPanel.label[18] = guiCreateLabel(171, 396, 290, 20, "Class: Law Enforcement", false, adminPanel.tab[1])
-        adminPanel.label[19] = guiCreateLabel(171, 335, 289, 20, "Group: nR7Gaming", false, adminPanel.tab[1])
-        adminPanel.label[20] = guiCreateLabel(171, 375, 289, 21, "Team: Civilian Workers", false, adminPanel.tab[1])
+        adminPanel.label[18] = guiCreateLabel(171, 396, 290, 20, "Class: ", false, adminPanel.tab[1])
+        adminPanel.label[19] = guiCreateLabel(171, 335, 289, 20, "Group: ", false, adminPanel.tab[1])
+        adminPanel.label[20] = guiCreateLabel(171, 375, 289, 21, "Team: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[20], "right", false)
-        adminPanel.label[21] = guiCreateLabel(170, 250, 267, 20, "Skin: 150", false, adminPanel.tab[1])
-        adminPanel.label[22] = guiCreateLabel(171, 250, 290, 20, "Weapon: Sawed-off", false, adminPanel.tab[1])
+        adminPanel.label[21] = guiCreateLabel(170, 250, 267, 20, "Skin: ", false, adminPanel.tab[1])
+        adminPanel.label[22] = guiCreateLabel(171, 250, 290, 20, "Weapon: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[22], "right", false)
-        adminPanel.label[23] = guiCreateLabel(170, 26, 290, 20, "Ping: 3007", false, adminPanel.tab[1])
+        adminPanel.label[23] = guiCreateLabel(170, 26, 290, 20, "Ping: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[23], "right", false)
-        adminPanel.label[24] = guiCreateLabel(170, 416, 290, 20, "Vehicle: Andromeda", false, adminPanel.tab[1])
-        adminPanel.label[25] = guiCreateLabel(170, 416, 290, 20, "Vehicle Health: 0%", false, adminPanel.tab[1])
+        adminPanel.label[24] = guiCreateLabel(170, 416, 290, 20, "Vehicle: ", false, adminPanel.tab[1])
+        adminPanel.label[25] = guiCreateLabel(170, 416, 290, 20, "Vehicle Health: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[25], "right", false)
-        adminPanel.label[26] = guiCreateLabel(170, 190, 290, 20, "X: 1000.119; Y = 5000.995; Z = 1000.436", false, adminPanel.tab[1])
+        adminPanel.label[26] = guiCreateLabel(170, 190, 290, 20, "X = N/A; Y = N/A; Z = N/A", false, adminPanel.tab[1])
         adminPanel.label[27] = guiCreateLabel(170, 168, 49, 22, "Locality", false, adminPanel.tab[1])
         guiSetFont(adminPanel.label[27], "default-bold-small")
         guiLabelSetColor(adminPanel.label[27], 255, 0, 0)
@@ -182,34 +196,90 @@ addEventHandler("onClientResourceStart", resourceRoot,
     end
 )
 
-function updatePlayerInformation(plr)
+addEventHandler("onClientRender", root
+	function ()
+		-- Update team colours
+		for i = 1, guiGridListGetRowCount(adminPanel.gridlist[1]) do
+            local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
+			if (plr.team) then
+				guiGridListSetItemColor(adminGUI.GUIgrids[1], i, 1, plr.team:getColor)
+			end
+        end
+		updatePlayerInformation(getSelectedPlayer(), false) -- We don't want it triggering events every second, plus we don't want to repeat code
+	end
+)
+
+function updatePlayerInformation(plr, getServerSidedData)
 	-- Fetch the rest server-side
 	local name = plr.name
 	local loc = plr.position
+	loc.x = exports.UCDutil:mathround(loc.x, 3)
+	loc.y = exports.UCDutil:mathround(loc.y, 3)
+	loc.z = exports.UCDutil:mathround(loc.z, 3) -- Need to fix this
 	local accountID = plr:getData("accountID") or "N/A"
 	local accountName = plr:getData("accountName") or "N/A"
-	local skin = plr.model
-	local dim = plr.dimension
-	local int = plr.interior
-	local health = plr.health
-	local armour = plr.armor
-	local money = plr:getMoney()
-	local team = plr.team.name
+	local model = plr.model or 0
+	local dim = plr.dimension or 0
+	local int = plr.interior or 0
+	local health = plr.health or 0
+	local armour = plr.armor or 0
+	local money = plr:getMoney() or "N/A"
+	local team = plr.team.name or "Not logged in"
 	local group = plr:getData("group") or "N/A"
-	local class = plr:getData("class") or "N/A"
-	local occupation = plr:getData("occupation") or "N/A"
+	local class = plr:getData("Class") or "N/A"
+	local occupation = plr:getData("Occupation") or "N/A"
 	local ping = plr.ping
+	local suburb, city = getZoneName(loc.x, loc.y, loc.z), getZoneName(loc.x, loc.y, loc.z, true)
+	local country = plr:getData("Country") or "N/A"
+	local weaponID, weapon = plr:getWeapon(), getWeaponNameFromID(plr:getWeapon())
+	local playtime = plr:getData("playtime")
+	
+	local vehicle, vehicleHealth
+	if not plr.vehicle then 
+		vehicle = "Not in a vehicle" 
+		vehicleHealth = "N/A" 
+	else 
+		vehicle = plr.vehicle.name
+		vehicleHealth = tostring(exports.UCDutil:mathround(plr.vehicle.health / 10).."%")
+	end
 	
 	adminPanel.label[1]:setText("Name: "..name)
 	adminPanel.label[5]:setText("Account Name: "..accountName)
+	adminPanel.label[6]:setText("Playtime: "..playtime)
+	adminPanel.label[7]:setText("Country: "..country)
 	adminPanel.label[8]:setText("Account ID: "..accountID)
+	adminPanel.label[9]:setText("Location: "..suburb..", "..city)
+	adminPanel.label[10]:setText("Dimension: "..dim)
+	adminPanel.label[11]:setText("Interior: "..int)
+	adminPanel.label[13]:setText("Health: "..health)
+	adminPanel.label[14]:setText("Armour: "..armour)
 	adminPanel.label[15]:setText("Money: $"..tostring(exports.UCDutil:tocomma(money)))
+	adminPanel.label[17]:setText("Occupation: "..occupation)
+	adminPanel.label[18]:setText("Class: "..class)
 	adminPanel.label[19]:setText("Group: "..group)
 	adminPanel.label[20]:setText("Team: "..team)
+	adminPanel.label[21]:setText("Model: "..model)
+	adminPanel.label[22]:setText("Weapon: "..weapon.." ["..weaponID.."]")
 	adminPanel.label[23]:setText("Ping: "..ping)
+	adminPanel.label[24]:setText("Vehicle: "..vehicle)
+	adminPanel.label[25]:setText("Vehicle Health: "..vehicleHealth)
+	adminPanel.label[26]:setText("X: "..loc.x.."; Y: "..loc.y.."; Z: "..loc.z)
 	
-	
+	if (getServerSidedData) then
+		-- This has a callback function where the data is updated
+		triggerServerEvent("UCDadmin.requestPlayerData", localPlayer, plr)
+	end
 end
+
+function requestPlayerData_callback(sync)
+	local data = sync
+	adminPanel.label[2]:setText("IP: "..data["ip"])
+	adminPanel.label[3]:setText("Serial: "..data["serial"])
+	adminPanel.label[4]:setText("Version: "..data["version"])
+	adminPanel.label[12]:setText("Email: "..data["email"])
+	adminPanel.label[16]:setText("Bank: $"..tostring(exports.UCDutil:mathround(data["bank"])))
+end
+addEventHandler("UCDadmin.requestPlayerData:callback", root, requestPlayerData_callback)
 
 function click()
 	if (source == adminPanel.gridlist[1]) then
@@ -218,11 +288,12 @@ function click()
 			local plr = guiGridListGetItemData(adminPanel.gridlist[1], row, 1)
 			--outputChatBox("Viewing data for: "..tostring(plr))
 			updatePlayerInformation(plr)
+		else
+			-- Set everything to N/A
 		end
 	end
 end
 addEventHandler("onClientGUIClick", guiRoot, click)
-
 
 function toggleGUI()
 	if (guiGetVisible(adminPanel.window[1])) then

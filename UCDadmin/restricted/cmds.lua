@@ -1,14 +1,14 @@
 -- Should put this in a separate resource (UCDrestricted)
 
 function kickAll()
-	for i, v in ipairs(getElementsByType("player")) do
-		kickPlayer(v, "Console", "You have been kicked from the server by Console")
+	for _, plr in ipairs(Element.getAllByType("player")) do
+		kickPlayer(plr, "Console", "You have been kicked from the server by Console")
 	end
 end
 addCommandHandler("kickall", kickAll)
 
 function destVehicles()
-	for i, v in ipairs(getElementsByType("vehicle")) do
+	for _, v in pairs(Element.getAllByType("vehicle")) do
 		destroyElement(v)
 	end
 end
