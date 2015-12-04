@@ -8,18 +8,34 @@ adminPanel = {
     checkbox = {},
     button = {}
 }
+confirm = {
+    button = {},
+    window = {},
+    label = {},
+    edit = {}
+}
 
 function getSelectedPlayer()
-	local row = guiGridListGetSelectedItem(adminGUI.GUIgrids[1])
+	local row = guiGridListGetSelectedItem(adminPanel.gridlist[1])
 	if (row ~= false and row ~= nil and row ~= -1) then
 		local player = guiGridListGetItemData(adminPanel.gridlist[1], row, 1)
 		return player
 	end
 end
 
+local punishments = {
+	"#0: Removing Punishment",
+	"#0: Deathmatching",
+	"Bugged",
+}
 
-addEventHandler("onClientResourceStart", resourceRoot,
-    function()
+local punishmentTimes = {
+	-- From punishments table
+	-- ["#0: Deathmatching"] = {[1] = 300, [2] = 600, [3] = 1200, [4] = 1800, [5] = 2400, [6] = ban (21600 - 6 hrs), -- repeat 6}
+}
+
+--addEventHandler("onClientResourceStart", resourceRoot,
+--	function()
         adminPanel.window[1] = guiCreateWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
         guiWindowSetSizable(adminPanel.window[1], false)
         guiSetVisible(adminPanel.window[1], false)
@@ -31,19 +47,6 @@ addEventHandler("onClientResourceStart", resourceRoot,
         adminPanel.gridlist[1] = guiCreateGridList(10, 40, 151, 395, false, adminPanel.tab[1])
         guiGridListAddColumn(adminPanel.gridlist[1], "Player Name", 0.9)
         guiGridListSetSortingEnabled(adminPanel.gridlist[1], false)
-		
-		for _, plr in pairs(Element.getAllByType("player")) do
-			local row = guiGridListAddRow(adminPanel.gridlist[1])
-			local r, g, b
-			if plr.team then
-				r, g, b = plr.team:getColor()
-			else
-				r, g, b = 255, 255, 255
-			end
-			guiGridListSetItemText(adminPanel.gridlist[1], row, 1, plr.name, false, false)
-			guiGridListSetItemData(adminPanel.gridlist[1], row, 1, plr)
-			guiGridListSetItemColor(adminPanel.gridlist[1], row, 1, r, g, b)
-		end
 		
         adminPanel.edit[1] = guiCreateEdit(10, 10, 151, 26, "", false, adminPanel.tab[1])
         adminPanel.label[1] = guiCreateLabel(170, 26, 290, 20, "Name: ", false, adminPanel.tab[1])
@@ -73,7 +76,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
         adminPanel.label[19] = guiCreateLabel(171, 335, 289, 20, "Group: ", false, adminPanel.tab[1])
         adminPanel.label[20] = guiCreateLabel(171, 375, 289, 21, "Team: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[20], "right", false)
-        adminPanel.label[21] = guiCreateLabel(170, 250, 267, 20, "Skin: ", false, adminPanel.tab[1])
+        adminPanel.label[21] = guiCreateLabel(170, 250, 267, 20, "Model: ", false, adminPanel.tab[1])
         adminPanel.label[22] = guiCreateLabel(171, 250, 290, 20, "Weapon: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[22], "right", false)
         adminPanel.label[23] = guiCreateLabel(170, 26, 290, 20, "Ping: ", false, adminPanel.tab[1])
@@ -81,7 +84,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
         adminPanel.label[24] = guiCreateLabel(170, 416, 290, 20, "Vehicle: ", false, adminPanel.tab[1])
         adminPanel.label[25] = guiCreateLabel(170, 416, 290, 20, "Vehicle Health: ", false, adminPanel.tab[1])
         guiLabelSetHorizontalAlign(adminPanel.label[25], "right", false)
-        adminPanel.label[26] = guiCreateLabel(170, 190, 290, 20, "X = N/A; Y = N/A; Z = N/A", false, adminPanel.tab[1])
+        adminPanel.label[26] = guiCreateLabel(170, 190, 290, 20, "X: N/A; Y: N/A; Z: N/A", false, adminPanel.tab[1])
         adminPanel.label[27] = guiCreateLabel(170, 168, 49, 22, "Locality", false, adminPanel.tab[1])
         guiSetFont(adminPanel.label[27], "default-bold-small")
         guiLabelSetColor(adminPanel.label[27], 255, 0, 0)
@@ -92,70 +95,41 @@ addEventHandler("onClientResourceStart", resourceRoot,
         guiSetFont(adminPanel.label[29], "default-bold-small")
         guiLabelSetColor(adminPanel.label[29], 255, 0, 0)
         adminPanel.button[1] = guiCreateButton(488, 52, 147, 18, "Warp to player", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[1], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[2] = guiCreateButton(488, 10, 147, 36, "Punish", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[2], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[3] = guiCreateButton(488, 144, 72, 18, "Spectate", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[3], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[4] = guiCreateButton(488, 76, 147, 18, "Warp player to", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[4], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[5] = guiCreateButton(488, 100, 72, 18, "Reconnect", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[5], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[6] = guiCreateButton(563, 100, 72, 18, "Kick", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[6], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[7] = guiCreateButton(488, 122, 72, 18, "Freeze", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[7], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[8] = guiCreateButton(563, 122, 72, 18, "Shout", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[8], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[9] = guiCreateButton(563, 144, 72, 18, "Slap", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[9], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[10] = guiCreateButton(488, 167, 72, 18, "Rename", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[10], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[11] = guiCreateButton(488, 318, 147, 20, "View punishments", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[11], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[12] = guiCreateButton(563, 167, 72, 18, "Screenshot", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[12], "NormalTextColour", "FFAAAAAA")
-        adminPanel.button[13] = guiCreateButton(563, 195, 72, 18, "Set Skin", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[13], "NormalTextColour", "FFAAAAAA")
+        adminPanel.button[13] = guiCreateButton(563, 195, 72, 18, "Set Model", false, adminPanel.tab[1])
         adminPanel.button[14] = guiCreateButton(488, 195, 72, 18, "Money", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[14], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[15] = guiCreateButton(488, 220, 72, 18, "Set Health", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[15], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[16] = guiCreateButton(563, 220, 72, 18, "Set Armour", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[16], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[17] = guiCreateButton(488, 244, 72, 18, "Dimension", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[17], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[18] = guiCreateButton(563, 244, 72, 18, "Interior", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[18], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[19] = guiCreateButton(488, 369, 72, 18, "Fix", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[19], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[20] = guiCreateButton(563, 369, 72, 18, "Eject", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[20], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[21] = guiCreateButton(488, 392, 72, 18, "Destroy", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[21], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[22] = guiCreateButton(563, 392, 72, 18, "Disable", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[22], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[23] = guiCreateButton(563, 266, 72, 18, "Set Job", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[23], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[24] = guiCreateButton(488, 341, 72, 18, "Anticheat", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[24], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[25] = guiCreateButton(563, 341, 72, 18, "View Weps", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[25], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[26] = guiCreateButton(488, 290, 72, 18, "Weapons", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[26], "NormalTextColour", "FFAAAAAA")
-        adminPanel.button[27] = guiCreateButton(488, 266, 72, 18, "Last Logins", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[27], "NormalTextColour", "FFAAAAAA")
+        adminPanel.button[27] = guiCreateButton(488, 266, 72, 18, "Give Vehicle", false, adminPanel.tab[1])
         adminPanel.button[28] = guiCreateButton(488, 416, 72, 18, "Blow", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[28], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[29] = guiCreateButton(563, 416, 72, 18, "Freeze", false, adminPanel.tab[1])
-        guiSetProperty(adminPanel.button[29], "NormalTextColour", "FFAAAAAA")
+		adminPanel.button[27] = guiCreateButton(563, 290, 72, 18, "Last Logins", false, adminPanel.tab[1])
 
         adminPanel.tab[2] = guiCreateTab("Resources", adminPanel.tabpanel[1])
 
         adminPanel.gridlist[2] = guiCreateGridList(10, 48, 245, 349, false, adminPanel.tab[2])
         guiGridListAddColumn(adminPanel.gridlist[2], "Resource", 0.5)
         guiGridListAddColumn(adminPanel.gridlist[2], "State", 0.5)
-        guiGridListAddRow(adminPanel.gridlist[2])
         guiGridListSetItemText(adminPanel.gridlist[2], 0, 1, "-", false, false)
         guiGridListSetItemText(adminPanel.gridlist[2], 0, 2, "-", false, false)
         adminPanel.edit[2] = guiCreateEdit(10, 10, 245, 28, "", false, adminPanel.tab[2])
@@ -193,19 +167,124 @@ addEventHandler("onClientResourceStart", resourceRoot,
 
         adminPanel.tab[3] = guiCreateTab("Server Management", adminPanel.tabpanel[1])
         adminPanel.tab[4] = guiCreateTab("Utilities", adminPanel.tabpanel[1])    
+		
+		
+        confirm.window[1] = guiCreateWindow(792, 480, 324, 111, "UCD | Admin - <health>", false)
+        guiWindowSetSizable(confirm.window[1], false)
+        guiSetVisible(confirm.window[1], false)
+
+        confirm.button[1] = guiCreateButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
+        guiSetProperty(confirm.button[1], "NormalTextColour", "FFAAAAAA")
+        confirm.button[2] = guiCreateButton(169, 82, 101, 19, "Cancel", false, confirm.window[1])
+        guiSetProperty(confirm.button[2], "NormalTextColour", "FFAAAAAA")
+        confirm.edit[1] = guiCreateEdit(35, 47, 260, 25, "", false, confirm.window[1])
+        confirm.label[1] = guiCreateLabel(36, 21, 259, 20, "Set the motherfucking label text nigga", false, confirm.window[1])
+        guiLabelSetHorizontalAlign(confirm.label[1], "center", false)
+        guiLabelSetVerticalAlign(confirm.label[1], "center")    
+
+
+--    end
+--)
+
+for _, plr in pairs(Element.getAllByType("player")) do
+	local row = guiGridListAddRow(adminPanel.gridlist[1])
+	local r, g, b
+	if plr.team then
+		r, g, b = plr.team:getColor()
+	else
+		r, g, b = 255, 255, 255
+	end
+	guiGridListSetItemText(adminPanel.gridlist[1], row, 1, plr.name, false, false)
+	guiGridListSetItemData(adminPanel.gridlist[1], row, 1, plr)
+	guiGridListSetItemColor(adminPanel.gridlist[1], row, 1, r, g, b)
+end
+
+function searchFromPlayerList()
+	if (source ~= adminPanel.edit[1]) then return end
+	guiGridListClear(adminPanel.gridlist[1])
+	local name = adminPanel.edit[1]:getText()
+    for _, plr in pairs(Element.getAllByType("player")) do
+        if string.find(plr.name:lower(), name:lower()) then
+			local r, g, b
+			if (plr.team) then
+				r, g, b = plr.team:getColor()
+			else
+				r, g, b = 255, 255, 255
+			end
+			
+			local row = guiGridListAddRow(adminPanel.gridlist[1])
+			guiGridListSetItemText(adminPanel.gridlist[1], row, 1, plr.name, false, false)
+			guiGridListSetItemData(adminPanel.gridlist[1], row, 1, plr)
+			guiGridListSetItemColor(adminPanel.gridlist[1], row, 1, r, g, b)
+        end
+    end
+end
+addEventHandler("onClientGUIChanged", guiRoot, searchFromPlayerList)
+
+-- Add a player when they join
+addEventHandler("onClientPlayerJoin", root,
+	function ()
+		--if source.name:lower():find(adminPanel.edit[1]:getText():lower()) then
+            local row = guiGridListAddRow(adminPanel.gridlist[1])
+            guiGridListSetItemText(adminPanel.gridlist[1], row, 1, source.name, false, false)
+            guiGridListSetItemData(adminPanel.gridlist[1], row, 1, source)
+			local r, g, b
+            if source.team then
+				r, g, b = source.team:getColor()
+			else
+				r, g, b = 255, 255, 255
+            end
+			guiGridListSetItemColor(adminPanel.gridlist[1], row, 1, r, g, b)
+		--end
+	end
+)
+
+-- Remove a player when they quit
+addEventHandler("onClientPlayerQuit", root,
+	function ()
+		for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
+			if (guiGridListGetItemData(adminPanel.gridlist[1], i, 1) == source) then
+                guiGridListRemoveRow(adminPanel.gridlist[1], i)
+				break
+			end
+		end
+	end
+)
+
+-- When a player changes his nick
+addEventHandler("onClientPlayerChangeNick", root,
+    function (oldNick, newNick)
+        for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
+            if (guiGridListGetItemText(adminPanel.gridlist[1], i, 1) == oldNick) then
+                guiGridListSetItemText(adminPanel.gridlist[1], i, 1, newNick, false, false)
+			end
+        end
     end
 )
 
-addEventHandler("onClientRender", root
+addEventHandler("onClientRender", root,
 	function ()
 		-- Update team colours
-		for i = 1, guiGridListGetRowCount(adminPanel.gridlist[1]) do
+		for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
+            --local plr = Player(guiGridListGetItemText(adminPanel.gridlist[1], i, 1))
             local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
-			if (plr.team) then
-				guiGridListSetItemColor(adminGUI.GUIgrids[1], i, 1, plr.team:getColor)
+			if (plr) then
+				local r, g, b
+				if plr.team then
+					r, g, b = plr.team:getColor()
+				else
+					r, g, b = 255, 255, 255
+				end
+				guiGridListSetItemColor(adminPanel.gridlist[1], i, 1, r, g, b)
+				
+				if (plr.name ~= guiGridListGetItemText(adminPanel.gridlist[1], i, 1)) then
+					guiGridListSetItemText(adminPanel.gridlist[1], i, 1, plr.name, false, false)
+				end
 			end
         end
-		updatePlayerInformation(getSelectedPlayer(), false) -- We don't want it triggering events every second, plus we don't want to repeat code
+		if (getSelectedPlayer()) then
+			updatePlayerInformation(getSelectedPlayer(), false) -- We don't want it triggering events every second, plus we don't want to repeat code
+		end
 	end
 )
 
@@ -232,7 +311,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local suburb, city = getZoneName(loc.x, loc.y, loc.z), getZoneName(loc.x, loc.y, loc.z, true)
 	local country = plr:getData("Country") or "N/A"
 	local weaponID, weapon = plr:getWeapon(), getWeaponNameFromID(plr:getWeapon())
-	local playtime = plr:getData("playtime")
+	local playtime = plr:getData("dxscoreboard_playtime") or "N/A"
 	
 	local vehicle, vehicleHealth
 	if not plr.vehicle then 
@@ -253,7 +332,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	adminPanel.label[11]:setText("Interior: "..int)
 	adminPanel.label[13]:setText("Health: "..health)
 	adminPanel.label[14]:setText("Armour: "..armour)
-	adminPanel.label[15]:setText("Money: $"..tostring(exports.UCDutil:tocomma(money)))
+	adminPanel.label[15]:setText("Money: ".."$"..tostring(exports.UCDutil:tocomma(money)))
 	adminPanel.label[17]:setText("Occupation: "..occupation)
 	adminPanel.label[18]:setText("Class: "..class)
 	adminPanel.label[19]:setText("Group: "..group)
@@ -272,36 +351,148 @@ function updatePlayerInformation(plr, getServerSidedData)
 end
 
 function requestPlayerData_callback(sync)
+	--outputDebugString("Client callback")
 	local data = sync
 	adminPanel.label[2]:setText("IP: "..data["ip"])
 	adminPanel.label[3]:setText("Serial: "..data["serial"])
 	adminPanel.label[4]:setText("Version: "..data["version"])
 	adminPanel.label[12]:setText("Email: "..data["email"])
-	adminPanel.label[16]:setText("Bank: $"..tostring(exports.UCDutil:mathround(data["bank"])))
+	adminPanel.label[16]:setText("Bank: ".."$"..tostring(exports.UCDutil:mathround(data["bank"])))
 end
+addEvent("UCDadmin.requestPlayerData:callback", true)
 addEventHandler("UCDadmin.requestPlayerData:callback", root, requestPlayerData_callback)
 
-function click()
+function playerSelection()
 	if (source == adminPanel.gridlist[1]) then
 		local row = guiGridListGetSelectedItem(adminPanel.gridlist[1])
 		if (row and row ~= nil and row ~= -1 and row ~= false) then
 			local plr = guiGridListGetItemData(adminPanel.gridlist[1], row, 1)
 			--outputChatBox("Viewing data for: "..tostring(plr))
-			updatePlayerInformation(plr)
+			updatePlayerInformation(plr, true)
 		else
-			-- Set everything to N/A
+			-- Set everything blank
+			adminPanel.label[1]:setText("Name: ")
+			adminPanel.label[2]:setText("IP: ")
+			adminPanel.label[3]:setText("Serial: ")
+			adminPanel.label[4]:setText("Version: ")
+			adminPanel.label[5]:setText("Account Name: ")
+			adminPanel.label[6]:setText("Playtime: ")
+			adminPanel.label[7]:setText("Country: ")
+			adminPanel.label[8]:setText("Account ID: ")
+			adminPanel.label[9]:setText("Location: ")
+			adminPanel.label[10]:setText("Dimension: ")
+			adminPanel.label[12]:setText("Email: ")
+			adminPanel.label[11]:setText("Interior: ")
+			adminPanel.label[13]:setText("Health: ")
+			adminPanel.label[14]:setText("Armour: ")
+			adminPanel.label[15]:setText("Money: ")
+			adminPanel.label[16]:setText("Bank: ")
+			adminPanel.label[17]:setText("Occupation: ")
+			adminPanel.label[18]:setText("Class: ")
+			adminPanel.label[19]:setText("Group: ")
+			adminPanel.label[20]:setText("Team: ")
+			adminPanel.label[21]:setText("Model: ")
+			adminPanel.label[22]:setText("Weapon: ")
+			adminPanel.label[23]:setText("Ping: ")
+			adminPanel.label[24]:setText("Vehicle: ")
+			adminPanel.label[25]:setText("Vehicle Health: ")
+			adminPanel.label[26]:setText("X: N/A; Y: N/A; Z: N/A")
 		end
 	end
 end
-addEventHandler("onClientGUIClick", guiRoot, click)
+addEventHandler("onClientGUIClick", guiRoot, playerSelection)
+
+function adminAction()
+	if (source ~= adminPanel.gridlist[1]) then
+		local plr = getSelectedPlayer()
+		if (not plr) then
+			exports.UCDdx:new("You must select a player first!", 255, 0, 0)
+			return
+		end
+		
+		local action = source.text:lower()
+		if not action then return end
+		if (action == "punish") then
+			-- open punish gui
+		elseif (action == "warp to player") then
+			-- 
+		elseif (action == "warp player to") then
+			
+		elseif (action == "reconnect") then
+			triggerServerEvent("UCDadmin.reconnect", localPlayer, plr)
+		elseif (action == "kick") then
+			triggerServerEvent("UCDadmin.kick", localPlayer, plr, "Annoying admins and creating a negative atmosphere")
+		elseif (action == "freeze") then
+			if (source == adminPanel.button[29]) then -- If it's the vehicle one
+				triggerServerEvent("UCDadmin.freeze", localPlayer, plr.vehicle, plr)
+			else -- We're dealing with the player one
+				triggerServerEvent("UCDadmin.freeze", localPlayer, plr)
+			end
+		elseif (action == "shout") then
+			
+		elseif (action == "spectate") then
+			
+		elseif (action == "slap") then
+			
+		elseif (action == "rename") then
+			createInputBox("UCD | Admin - Rename", "Enter the desired name", exports.UCDutil:randomstring(8), "UCDadmin.rename", localPlayer, plr)
+		elseif (action == "screenshot") then
+			
+		elseif (action == "money") then
+			
+		elseif (action == "set model") then
+			createInputBox("UCD | Admin - Model", "Enter the desired model", 0, "UCDadmin.setModel", localPlayer, plr)
+		elseif (action == "set health") then
+			createInputBox("UCD | Admin - Health", "Enter the armour value", 200, "UCDadmin.setHealth", localPlayer, plr)
+		elseif (action == "set armour") then
+			-- Open another GUI with an input box
+			--triggerServerEvent("UCDadmin.setArmour", localPlayer, plr, 100)
+			createInputBox("UCD | Admin - Armour", "Enter the armour value", 100, "UCDadmin.setArmour", localPlayer, plr)
+		elseif (action == "dimension") then
+			createInputBox("UCD | Admin - Dimension", "Enter the desired dimension", 0, "UCDadmin.setDimension", localPlayer, plr)
+		elseif (action == "interior") then
+			createInputBox("UCD | Admin - Interior", "Enter the desired interior", 0, "UCDadmin.setInterior", localPlayer, plr)
+		elseif (action == "last logins") then
+			
+		elseif (action == "set job") then
+			
+		elseif (action == "weapons") then
+			
+		elseif (action == "view punishments") then
+			
+		elseif (action == "anticheat") then
+			
+		elseif (action == "view weps") then
+			
+		elseif (action == "fix") then
+			
+		elseif (action == "eject") then
+			
+		elseif (action == "destroy") then
+			
+		elseif (action == "disable") then
+			
+		elseif (action == "blow") then
+			
+		end
+	end
+end
+addEventHandler("onClientGUIClick", guiRoot, adminAction)
 
 function toggleGUI()
+	--[[
 	if (guiGetVisible(adminPanel.window[1])) then
-		guiSetVisible(adminPanel.window[1], false)
+		adminPanel.window[1]:setVisible(false)
 	else
-		guiSetVisible(adminPanel.window[1], true)
+		adminPanel.window[1]:setVisible(true)
 	end
-	showCursor(not isCursorShowing())
+	--]]
+	adminPanel.window[1]:setVisible(not adminPanel.window[1]:getVisible())
+	showCursor(adminPanel.window[1]:getVisible())
+	
+	if (confirm.window[1]) then
+		closeInputBox()
+	end
 end
 addCommandHandler("adminpanel", toggleGUI)
 bindKey("p", "down", toggleGUI)

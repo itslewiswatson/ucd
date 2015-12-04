@@ -12,16 +12,16 @@ end
 
 function getPlayerAdminRank(plr)
 	if (not plr) then return nil end
-	if (plr:getType() ~= "player") then return false end
+	if (plr.type ~= "player") then return false end
 	local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	if isPlayerOwner(plr) then return 5 end
-	return adminTable[id] or false
+	return adminTable[id].rank or false
 end
 
 -- make an admin table
 function isPlayerOwner(plr)
 	if not plr then return nil end
-	if plr:getName() == "Noki" then return true else return false end
+	if exports.UCDaccounts:getPlayerAccountID(plr) == 1 then return true else return false end
 end
 
 function isPlayerDeveloper(plr)
