@@ -292,9 +292,9 @@ function updatePlayerInformation(plr, getServerSidedData)
 	-- Fetch the rest server-side
 	local name = plr.name
 	local loc = plr.position
-	loc.x = exports.UCDutil:mathround(loc.x, 3)
-	loc.y = exports.UCDutil:mathround(loc.y, 3)
-	loc.z = exports.UCDutil:mathround(loc.z, 3) -- Need to fix this
+	--loc.x = exports.UCDutil:mathround(loc.x, 3)
+	--loc.y = exports.UCDutil:mathround(loc.y, 3)
+	--loc.z = exports.UCDutil:mathround(loc.z, 3) -- Need to fix this
 	local accountID = plr:getData("accountID") or "N/A"
 	local accountName = plr:getData("accountName") or "N/A"
 	local model = plr.model or 0
@@ -342,7 +342,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	adminPanel.label[23]:setText("Ping: "..ping)
 	adminPanel.label[24]:setText("Vehicle: "..vehicle)
 	adminPanel.label[25]:setText("Vehicle Health: "..vehicleHealth)
-	adminPanel.label[26]:setText("X: "..loc.x.."; Y: "..loc.y.."; Z: "..loc.z)
+	adminPanel.label[26]:setText("X: "..exports.UCDutil:mathround(loc.x, 3).."; Y: "..exports.UCDutil:mathround(loc.y, 3).."; Z: "..exports.UCDutil:mathround(loc.z, 3))
 	
 	if (getServerSidedData) then
 		-- This has a callback function where the data is updated
