@@ -166,12 +166,11 @@ function hideVehicle(vehicleID, tosync)
 	local c1, c2, c3, c4  = vehicle:getColor()
 	
 	
-	if (tosync ~= false and tosync ~= nil) then
+	if (tosync ~= false) then
 		setVehicleData(vehicleID, "rotation", rot.z)
 		setVehicleData(vehicleID, "xyz", toJSON({pos.x, pos.y, pos.z}))
 		setVehicleData(vehicleID, "health", health)
 		setVehicleData(vehicleID, "colour", toJSON({c1, c2, c3, c4}))
-		outputDebugString("hideVehicle, tosync == false / nil")
 	end
 	
 	idToVehicle[vehicleID] = nil
