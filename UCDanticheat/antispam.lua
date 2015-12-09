@@ -1,4 +1,4 @@
-local spam = {}
+--[[local spam = {}
 
 function antiSpam()
 	if (spam[source]) then
@@ -17,3 +17,4 @@ function clearAntiSpam()
 	spam = {}
 end
 setTimer(clearAntiSpam, 1000, 0)
+--]]
