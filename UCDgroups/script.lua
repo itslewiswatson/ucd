@@ -98,7 +98,7 @@ end
 
 
 function createGroup(name)
-	if (not name or name == nil) then
+	if (not name or name == nil or name:len() == 0) then
 		-- You need to specify a group name.
 		return false
 	end
