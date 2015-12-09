@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDhousing
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Create houses from data passed by client.
+--// FILE: \make\make.lua [server]
+-------------------------------------------------------------------
+
 -- This is used to make the actual houses
 
 db = exports.UCDsql:getConnection()

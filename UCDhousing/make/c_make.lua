@@ -1,3 +1,11 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDhousing
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Interactive window for creating houses.
+--// FILE: \make\c_make.lua [client]
+-------------------------------------------------------------------
 
 housingCreator = {
     window = {},

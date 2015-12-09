@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDhousing
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: To centralize, cache and manage housing data.
+--// FILE: \housingData_s.lua [server]
+-------------------------------------------------------------------
+
 db = exports.UCDsql:getConnection()
 -- Change this variable sometime to not cause confustion with the houseData table
 housingData = {}
@@ -31,16 +40,20 @@ function createHouse(houseID, houseTable, syncToClient)
 		end
 	end
 	
+	-- Syncing a massive table? Fuck no
+	
+	--[[
 	-- Change this as we don't need to send the whole table every time a house is created [changed to sync individual house]
 	-- Possibly reconsider this altogether as this is almost like a DoS attack [the added if statement and syncToClient param should handle this]
 	-- DONE
 	if (syncToClient == true) then
 		triggerLatentClientEvent(exports.UCDaccounts:getAllLoggedInPlayers(), "UCDhousing.syncHouse", resourceRoot, houseID, housingData[houseID])
 	end
-	--[[
-	for _, plr in pairs(Element.getAllByType("player")) do
-		triggerLatentClientEvent(plr, "UCDhousing.syncHousingTable", resourceRoot, housingData)
-	end
+	
+	-- OLD
+	--for _, plr in pairs(Element.getAllByType("player")) do
+	--	triggerLatentClientEvent(plr, "UCDhousing.syncHousingTable", resourceRoot, housingData)
+	--end
 	--]]
 end
 
@@ -67,6 +80,7 @@ function createHouses(queryHandle)
 	outputDebugString("[UCDhousing] Created and cached all houses!")
 end
 
+--[[
 function syncHousingTable(plr)
 	if not plr then plr = client end -- For triggering events
 	triggerLatentClientEvent(plr, "UCDhousing.syncHousingTable", resourceRoot, housingData)
@@ -75,6 +89,7 @@ end
 addEvent("UCDhousing.requestHousingTableSync", true)
 addEventHandler("UCDhousing.requestHousingTableSync", root, function () syncHousingTable(client) end)
 addEventHandler("onPlayerLogin", root, function () syncHousingTable(source) end)
+--]]
 
 function setHouseData(houseID, column, value)
 	if (not houseID) or (not column) or (not value) or (not db) then
@@ -98,9 +113,12 @@ function setHouseData(houseID, column, value)
 	
 	-- This should eliminate the sync issue, but it will be laggy at the most
 	-- 02/10/15 - It now syncs the individual house
+	-- 09/12/15 - We don't even need this shit :D
+	--[[
 	for _, plr in pairs(Element.getAllByType("player")) do
 		triggerLatentClientEvent(plr, "UCDhousing.syncHouse", resourceRoot, houseID, housingData[houseID])
 	end
+	--]]
 	
 	return true
 end

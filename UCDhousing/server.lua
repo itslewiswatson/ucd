@@ -1,8 +1,13 @@
---[[
--- DEV NOTES
--- The system works so the dimension you go in is the ID of your house, it's just the interior is dependent on the list below [DONE]
--- We should use a function to get the amount of houses [DONE]
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDhousing
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Process client housing requests on the server.
+--// FILE: \server.lua [server]
+-------------------------------------------------------------------
 
+--[[
 -- Maybe use a table of permissions for people using these houses
 --]]
 
@@ -45,8 +50,26 @@ local intIDs = {
 
 db = exports.UCDsql:getConnection()
 
+function fetchHouse(houseID)
+	local houseTable = {}
+	houseTable[1] = houseID
+	houseTable[2] = getHouseData(houseID, "owner")
+	houseTable[3] = getHouseData(houseID, "houseName")
+	houseTable[4] = getHouseData(houseID, "initialPrice")
+	houseTable[5] = getHouseData(houseID, "currentPrice")
+	houseTable[6] = getHouseData(houseID, "boughtForPrice")
+	houseTable[7] = getHouseData(houseID, "interiorID")
+	houseTable[8] = getHouseData(houseID, "open")
+	houseTable[9] = getHouseData(houseID, "sale")
+	
+	--triggerClientEvent("UCDhousing.createGUI", client, client, houseTable)
+	triggerClientEvent(client, "UCDhousing.createGUI", client, houseTable)
+end
+addEvent("UCDhousing.fetchHouse.server", true)
+addEventHandler("UCDhousing.fetchHouse.server", root, fetchHouse)
+
 function leaveHouse(houseID)
-	if (not client) or (not houseID) then return nil end
+	if (not source or not houseID) then return nil end
 	-- if (source:getType() ~= "player") then return false end -- Don't need this check as client is always a player
 	
 	-- Get the coordinates
@@ -56,7 +79,7 @@ function leaveHouse(houseID)
 	if (hX == nil or hY == nil or hZ == nil) then
 		-- Shit, we don't. Some sort of bug. Let the player know and make sure that it's shown in debugscript
 		outputChatBox("[UCDhousing] We could not get the coordinates for this house. Contact a developer as soon as possible.", client)
-		outputDebugString("[UCDhousing] Player ("..client:getName()..") was not able to exit house with houseID = "..houseID)
+		outputDebugString("[UCDhousing] Player ("..source.name..") was not able to exit house with houseID = "..houseID)
 		return
 	end
 	
@@ -67,15 +90,17 @@ end
 addEvent("UCDhousing.leaveHouse", true)
 addEventHandler("UCDhousing.leaveHouse", root, leaveHouse)
 
-function enterHouse(houseID, interiorID)
-	if (not houseID) or (not interiorID) then return false end
+function enterHouse(houseID)
+	if (not houseID) then return false end
 	--if (getHouseData(houseID, "open") == 0) and (not ) then return false end -- The owner needs to enter, so disregard this
 	
-	local interiorID = tonumber(interiorID)
+	local interiorID = getHouseData(houseID, "interiorID")
 	local houseInt, hX, hY, hZ = unpack(intIDs[interiorID])
-	client:setPosition(hX, hY, hZ + 1)
 	client:setInterior(houseInt)
 	client:setDimension(houseID)
+	client:setPosition(hX, hY, hZ + 1)
+	
+	--triggerClientEvent("UCDhousing.closeGUI", client) -- This can go on the client as we aren't performing important checks here anyway
 end
 addEvent("UCDhousing.enterHouse", true)
 addEventHandler("UCDhousing.enterHouse", root, enterHouse)
@@ -98,16 +123,22 @@ function purchaseHouse(houseID)
 	createHouse(houseID, getHouseData(houseID, "*"))
 	
 	if (houseOwner ~= "UCDhousing") then
+		--[[
 		local qh = db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", houseOwner)
 		local accountID = qh:poll(-1)[1].id
-		
+		--]]
+		local accountID = exports.UCDaccounts:getIDFromAccountName(houseOwner)
 		local ownerPlayer = exports.UCDaccounts:getPlayerFromID(accountID)
+		
 		--outputChatBox("Owner player: "..tostring(ownerPlayer))
 		if (ownerPlayer) then
-			
 			-- Give to the player in cash money and notify them
 			ownerPlayer:giveMoney(housePrice)
 			exports.UCDdx:new(ownerPlayer, client:getName().. " has bought your house '"..getHouseData(houseID, "houseName").."' for $"..exports.UCDutil:tocomma(housePrice), 0, 255, 0)
+			
+			if (isPlayerInHouse(ownerPlayer) and ownerPlayer.dimension == houseID) then
+				triggerEvent("UCDhousing.leaveHouse", ownerPlayer, houseID)
+			end
 		else
 			-- Put in their bank account
 		end
@@ -119,7 +150,7 @@ addEvent("UCDhousing.purchaseHouse", true)
 addEventHandler("UCDhousing.purchaseHouse", root, purchaseHouse)
 
 function setHousePrice(houseID, price)
-	if (not houseID) or (not price) then return nil end
+	if (not houseID or not price) then return end
 	if (exports.UCDaccounts:getPlayerAccountName(client) ~= getHouseData(houseID, "owner")) then
 		exports.UCDdx:new(client, "You are not the owner of this house, you cannot set its price.", 255, 0, 0)
 		return false
@@ -127,8 +158,7 @@ function setHousePrice(houseID, price)
 	
 	setHouseData(houseID, "currentPrice", tonumber(price))
 	triggerClientEvent("UCDhousing.closeGUI", client)
-	exports.UCDdx:new(client, "You have successfully set the price of your house to $"..exports.UCDutil:tocomma(price).."!", 0, 255, 0)
-	
+	exports.UCDdx:new(client, "You have successfully set the price of your house to $"..tostring(exports.UCDutil:tocomma(exports.UCDutil:mathround(price))), 0, 255, 0)
 	exports.UCDlogging:new(client, "UCDhousing", "Set price of houseID ["..houseID.."]", price)
 end
 addEvent("UCDhousing.setHousePrice", true)

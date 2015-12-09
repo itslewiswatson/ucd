@@ -1,10 +1,14 @@
---[[
--- DEV NOTES
-	-- Handle all clicks in one function or across multiple ones (buttons)????????????
---]]
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDhousing
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Player interaction with the housing system.
+--// FILE: \client.lua [client]
+-------------------------------------------------------------------
 
 confirmation = {window={}, label={}, button={}}
-UCDhousing = {button = {}, window = {}, edit = {}, label = {}, houseID = {}, interiorID = {}}
+--UCDhousing = {button = {}, window = {}, edit = {}, label = {}}
 
 local sX, sY = guiGetScreenSize()
 local nX, nY = 1366, 768
@@ -47,6 +51,7 @@ local leavingCOLs = {
 function leaveHouse(theElement)
 	if (theElement ~= localPlayer) or (localPlayer:isInVehicle()) then return false end
 	local houseID = localPlayer:getDimension()
+	--removeHouseNotification()
 	triggerServerEvent("UCDhousing.leaveHouse", localPlayer, houseID)
 end
 
@@ -61,80 +66,107 @@ function handleleavingCOLs()
 end
 addEventHandler("onClientResourceStart", resourceRoot, handleleavingCOLs)
 
-function houseNotification()
+function zToHouse(_, _, plr, thePickup)
+	if (not UCDhousing) then
+		outputDebugString(tostring(plr).." | "..tostring(thePickup:getData("houseID")))
+		triggerEvent("UCDhousing.fetchHouse.client", plr, thePickup:getData("houseID"))
+	end
+end
+function drawHouseNotification()
 	dxDrawText("Press 'Z' to open the housing GUI", (492 / nX) * sX, (658 / nY) * sY, (863 / nX) * sX, (688 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
 	dxDrawText("Press 'Z' to open the housing GUI", (494 / nX) * sX, (658 / nY) * sY, (865 / nX) * sX, (688 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
 	dxDrawText("Press 'Z' to open the housing GUI", (492 / nX) * sX, (660 / nY) * sY, (863 / nX) * sX, (690 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
 	dxDrawText("Press 'Z' to open the housing GUI", (494 / nX) * sX, (660 / nY) * sY, (865 / nX) * sX, (690 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
 	dxDrawText("Press 'Z' to open the housing GUI", (493 / nX) * sX, (659 / nY) * sY, (864 / nX) * sX, (689 / nY) * sY, tocolor(235, 105, 19, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
 end
+function addHouseNotification(plr, thePickup)
+	if (#getEventHandlers("onClientRender", root, drawHouseNotification) == 0) then
+		addEventHandler("onClientRender", root, drawHouseNotification)
+	end
+	bindKey("z", "down", zToHouse, plr, thePickup)
+end
+function removeHouseNotification()
+	if (#getEventHandlers("onClientRender", root, drawHouseNotification) > 0) then
+		removeEventHandler("onClientRender", root, drawHouseNotification)
+	end
+	unbindKey("z", "down", zToHouse)
+	--UCDhousing = nil
+end
 
 local function onHitHouseMarker(thePickup, matchingDimension)
-	if (source ~= localPlayer) or (not matchingDimension) or (localPlayer:isInVehicle()) or (thePickup:getType() ~= 3) then
+	if (source ~= localPlayer or not matchingDimension or localPlayer:isInVehicle() or thePickup.type ~= 3) then
 		return false
 	end
-	if (thePickup:getModel() ~= 1272) and (thePickup:getModel() ~= 1273) then
+	if (thePickup.model ~= 1272 and thePickup.model ~= 1273 or not thePickup:getData("houseID")) then
 		return
 	end
 	
 	-- Instead of creating the GUI, we send the houseID to the server to fetch info for the GUI
 	local houseID = thePickup:getData("houseID")
-	triggerEvent("UCDhousing.createGUI", source, houseID)
 	
-	--addEventHandler("onClientRender", root, houseNotification)
+	addHouseNotification(source, thePickup)
 	outputDebugString("houseID = "..houseID)
 end
 addEventHandler("onClientPlayerPickupHit", root, onHitHouseMarker)
 
 local function onLeaveHouseMarker(thePickup, matchingDimension)
-	if (source ~= localPlayer) or (not matchingDimension) or (localPlayer:isInVehicle()) or (thePickup:getType() ~= 3) then
+	if (source ~= localPlayer or not matchingDimension or localPlayer:isInVehicle() or thePickup.type ~= 3) then
 		return false
 	end
-	if (thePickup:getModel() ~= 1272) and (thePickup:getModel() ~= 1273) then
+	if (thePickup.model ~= 1272 and thePickup.model ~= 1273 or not thePickup:getData("houseID")) then
 		return
 	end
-	
 	triggerEvent("UCDhousing.closeGUI", source)
-	--removeEventHandler("onClientRender", root, houseNotification)
+	removeHouseNotification()
 end
 addEventHandler("onClientPlayerPickupLeave", root, onLeaveHouseMarker)
 
 -- We create the GUI each time as the player will not always be using accounts
-function createGUI(houseID)
-	if (localPlayer ~= source) or (isElement(UCDhousing.window[1])) then return false end
+function fetchHouseGUI(houseID)
+	if (localPlayer ~= source or UCDhousing ~= nil) then return false end
+	-- Trigger a server event and transfer everything over
+	triggerServerEvent("UCDhousing.fetchHouse.server", localPlayer, houseID)	
+end
+addEvent("UCDhousing.fetchHouse.client", true)
+addEventHandler("UCDhousing.fetchHouse.client", root, fetchHouseGUI)
 
+function createGUI(houseTable)
+	if (UCDhousing and UCDhousing ~= nil) then return end
+	--outputDebugString(tostring(houseTable))
 	-- Assign table values to a variable name
-	local owner = getHouseData(houseID, "owner")
-	local houseName = getHouseData(houseID, "houseName")
-	local initialPrice = getHouseData(houseID, "initialPrice")
-	local currentPrice = getHouseData(houseID, "currentPrice")
-	local boughtForPrice = getHouseData(houseID, "boughtForPrice")
-	local interiorID = getHouseData(houseID, "interiorID")
-	local open = getHouseData(houseID, "open")
-	local sale = getHouseData(houseID, "sale")
+	local houseID = houseTable[1]
+	local owner = houseTable[2]
+	local houseName = houseTable[3]
+	local initialPrice = houseTable[4]
+	local currentPrice = houseTable[5]
+	local boughtForPrice = houseTable[6]
+	local interiorID = houseTable[7]
+	local open = houseTable[8]
+	local sale = houseTable[9]
+	
 	local localPlayerAccountName = localPlayer:getData("accountName")
 	
-	if (owner == nil) then exports.UCDdx:new("Whoops! We couldn't load the house data for some reason. Reconnect to fix this.", 255, 0, 0) exports.UCDdx:new("Error: table not synced - houseID: "..houseID, 255, 0, 0) return false end
+	if (owner == nil) then 
+		exports.UCDdx:new("Whoops! We couldn't load the house data for some reason. Reconnect to fix this.", 255, 0, 0)
+		exports.UCDdx:new("Error: table not synced - houseID: "..tostring(houseID), 255, 0, 0) 
+		return 
+	end
 	
 	outputDebugString("Creating GUI for houseID: "..houseID)
-	outputDebugString("Owner: "..owner)
+	outputDebugString("Owner ["..houseID.."]: "..owner)
 	
-	UCDhousing = {button = {}, window = {}, edit = {}, label = {}, houseID = {}, interiorID = {}}
+	-- This is where things get messy. Though this is the best way of phasing out syncing the whole housing table.
+	-- Set the GUI's properties (so we don't have to use element data)
+	UCDhousing = {button = {}, window = {}, edit = {}, label = {}, houseID = houseTable[1], houseData = {}}
+	for i = 1, #houseTable do
+		UCDhousing.houseData[i] = houseTable[i]
+	end
 	
 	-- Create the actual GUI
 	UCDhousing.window[1] = guiCreateWindow(457, 195, 471, 336, "UCD | Housing [ID: "..houseID.."]", false)
 	UCDhousing.window[1]:setSizable(false)
 	exports.UCDutil:centerWindow(UCDhousing.window[1])
-	
-	--[[
-	UCDhousing.window[1]:setData("houseID", houseID)
-	UCDhousing.window[1]:setData("interiorID", interiorID)
-	--]]
-	
-	-- Set the GUI's properties (so we don't have to use element data)
-	UCDhousing.houseID[1] = houseID
-	UCDhousing.interiorID[1] = interiorID
-	
+		
 	UCDhousing.label[1] = guiCreateLabel(10, 23, 88, 20, "House name:", false, UCDhousing.window[1])
 	UCDhousing.label[2] = guiCreateLabel(10, 43, 88, 20, "Owner:", false, UCDhousing.window[1])
 	UCDhousing.label[3] = guiCreateLabel(10, 63, 88, 20, "Initial price:", false, UCDhousing.window[1])
@@ -171,7 +203,7 @@ function createGUI(houseID)
 	
 	UCDhousing.button[1] = guiCreateButton(278, 33, 161, 60, "Purchase house", false, UCDhousing.window[1])
 	UCDhousing.button[2] = guiCreateButton(278, 113, 161, 60, "Enter this house", false, UCDhousing.window[1])
-	UCDhousing.edit[1] = guiCreateEdit(20, 212, 270, 44, "", false, UCDhousing.window[1])
+	UCDhousing.edit[1]	 = guiCreateEdit(20, 212, 270, 44, "", false, UCDhousing.window[1])
 	UCDhousing.button[3] = guiCreateButton(319, 212, 120, 44, "Set price", false, UCDhousing.window[1])
 	UCDhousing.button[4] = guiCreateButton(20, 273, 94, 46, "Toggle sale", false, UCDhousing.window[1])
 	UCDhousing.button[5] = guiCreateButton(129, 273, 94, 46, "Toggle open house", false, UCDhousing.window[1])
@@ -220,7 +252,8 @@ function createGUI(houseID)
 	
 	-- We have to set this here so we don't have people trying to crash the database and fuck it up
 	-- May have to add extra security measures and do double checks :/
-	UCDhousing.edit[1]:setMaxLength(8)
+	-- 14 because we have to account for commas and billions
+	UCDhousing.edit[1]:setMaxLength(14)
 	
 	-- We have to disable this button regardless of whether the hit element was the owner or not
 	--if (Resource("UCDmarket") and Resource("UCDmarket"):getState() ~= "running") then
@@ -233,7 +266,7 @@ addEvent("UCDhousing.createGUI", true)
 addEventHandler("UCDhousing.createGUI", root, createGUI)
 
 function closeGUI()
-	if (source ~= localPlayer) or (not isElement(UCDhousing.window[1])) then return end
+	if (source ~= localPlayer or not UCDhousing or not isElement(UCDhousing.window[1])) then return end
 	if (isElement(UCDhousing.window[1])) then
 		-- We destroy the confirmation window if it's active
 		if (isElement(confirmation.window[1])) then
@@ -244,6 +277,8 @@ function closeGUI()
 	if (isCursorShowing()) then
 		showCursor(false)
 	end
+	--removeHouseNotification()
+	UCDhousing = nil
 end
 addEvent("UCDhousing.closeGUI", true)
 addEventHandler("UCDhousing.closeGUI", root, closeGUI)
@@ -265,41 +300,48 @@ function handleGUIInput()
 	-- Enter house
 	elseif (source == UCDhousing.button[2]) then
 		if (UCDhousing.button[2]:getEnabled()) then
-			local houseID = UCDhousing.houseID[1]
-			local interiorID = getHouseData(houseID, "interiorID")
+			local houseID = UCDhousing.houseID
+			--local interiorID = getHouseData(houseID, "interiorID")
 			outputDebugString("Entering house... ID = "..houseID)
-			triggerServerEvent("UCDhousing.enterHouse", localPlayer, houseID, interiorID)
+			--triggerServerEvent("UCDhousing.enterHouse", localPlayer, houseID, interiorID)
+			triggerServerEvent("UCDhousing.enterHouse", localPlayer, houseID)
+			--removeHouseNotification()
+			triggerEvent("UCDhousing.closeGUI", localPlayer)
 		end
 	-- Purchase house
 	elseif (source == UCDhousing.button[1]) then
-		local houseID = UCDhousing.houseID[1]
-		local housePrice = getHouseData(houseID, "currentPrice")
+		local houseID = UCDhousing.houseID
+		--local housePrice = getHouseData(houseID, "currentPrice")
+		local housePrice = UCDhousing.houseData[5]
 		if (localPlayer:getMoney() >= housePrice) then
 			-- Maybe we could make an export from this
-			createConfirmationWindow(houseID, "Are you sure you want to buy house\n "..getHouseData(houseID, "houseName").." [ID: "..houseID.."]\n for $"..exports.UCDutil:tocomma(housePrice).."?", purchaseHouse)
+			--createConfirmationWindow(houseID, "Are you sure you want to buy house\n "..getHouseData(houseID, "houseName").." [ID: "..houseID.."]\n for $"..exports.UCDutil:tocomma(housePrice).."?", purchaseHouse)
+			createConfirmationWindow(houseID, "Are you sure you want to buy house\n "..UCDhousing.houseData[5].." [ID: "..houseID.."]\n for $"..exports.UCDutil:tocomma(housePrice).."?", purchaseHouse)
 		else
 			exports.UCDdx:new("You don't have enough money to buy this house!", 255, 0, 0)
 		end
 	-- Set house price
 	elseif (source == UCDhousing.button[3]) then
 		if (UCDhousing.button[3]:getEnabled()) then
-			local houseID = UCDhousing.houseID[1]
+			local houseID = UCDhousing.houseID
 			local price = UCDhousing.edit[1]:getText()
 			setHousePrice(houseID, price)
 		end
 	-- Toggle sale
 	elseif (source == UCDhousing.button[4]) then
 		if (UCDhousing.button[4]:getEnabled()) then
-			local houseID = UCDhousing.houseID[1]
-			local state = getHouseData(houseID, "sale")
+			local houseID = UCDhousing.houseID
+			--local state = getHouseData(houseID, "sale")
+			local state = UCDhousing.houseData[9]
 			if (state == 1) then state = false else state = true end
 			toggleSale(houseID, state)
 		end
 	-- Toggle open
 	elseif (source == UCDhousing.button[5]) then
 		if (UCDhousing.button[5]:getEnabled()) then
-			local houseID = UCDhousing.houseID[1]
-			local state = getHouseData(houseID, "open")
+			local houseID = UCDhousing.houseID
+			--local state = getHouseData(houseID, "open")
+			local state = UCDhousing.houseData[8]
 			if (state == 1) then state = false else state = true end
 			toggleOpen(houseID, state)
 		end
@@ -307,8 +349,9 @@ function handleGUIInput()
 	elseif (source == UCDhousing.button[6]) then
 		if (UCDhousing.button[6]:getEnabled()) then
 			--if (not Resource.getFromName("UCDmarket"))
-			local houseID = UCDhousing.houseID[1]
-			local price = getHouseData(houseID, "boughtForPrice")
+			local houseID = UCDhousing.houseID
+			--local price = getHouseData(houseID, "boughtForPrice")
+			local price = UCDhousing.houseData[6]
 			local rate = root:getData("housing.rate")
 			createConfirmationWindow(houseID, "Current rate is "..tostring(rate / 10).."% \nDo you want to sell your house for \n"..tostring(rate / 10).."% of what it is worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", sellHouseToBank)
 			--sellHouseToBank(houseID)
@@ -320,24 +363,50 @@ function handleGUIInput()
 end
 addEventHandler("onClientGUIClick", guiRoot, handleGUIInput)
 
+function onClientGUIChanged()
+	if (source:getParent() ~= UCDhousing.window[1]) then return end
+	if (source == UCDhousing.edit[1]) then
+		local text = UCDhousing.edit[1]:getText()
+		--if (not text:find("%d")) then
+		--	outputDebugString("strange char found")
+		--end
+		text = text:gsub(",", "")
+		
+		if (tonumber(text)) then
+			UCDhousing.edit[1]:setText(exports.UCDutil:tocomma(tonumber(text)))
+			--if (guiEditGetCaretIndex(UCDhousing.edit[1]) == string.len(UCDhousing.edit[1]:getText())) then
+			outputDebugString(tostring(getKeyState("backspace")))
+			if (not getKeyState("backspace")) then
+				guiEditSetCaretIndex(UCDhousing.edit[1], string.len(UCDhousing.edit[1]:getText()))
+			end
+		end
+	end
+end
+addEventHandler("onClientGUIChanged", guiRoot, onClientGUIChanged)
+
 function toggleOpen(houseID, state)
 	if (not houseID) then return false end
-	if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end
+	--if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end
+	if (localPlayer:getData("accountName") ~= UCDhousing.houseData[2]) then return false end
 	
+	UCDhousing.button[5]:setEnabled(false)
 	triggerServerEvent("UCDhousing.toggleOpen", localPlayer, houseID, state)
 end
 
 function toggleSale(houseID, state)
 	if (not houseID) then return false end
-	if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end
+	--if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end
+	if (localPlayer:getData("accountName") ~= UCDhousing.houseData[2]) then return false end
 	
+	UCDhousing.button[4]:setEnabled(false)
 	triggerServerEvent("UCDhousing.toggleSale", localPlayer, houseID, state)
 end
 
 -- This is used for setting the price
 function setHousePrice(houseID, price)
-	if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end -- The GUI should be disabled if you are not the owner, but a double check can't hurt for now
-	
+	--if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end -- The GUI should be disabled if you are not the owner, but a double check can't hurt for now
+	if (localPlayer:getData("accountName") ~= UCDhousing.houseData[2]) then return false end -- The GUI should be disabled if you are not the owner, but a double check can't hurt for now
+	local price = price:gsub(",", "")
 	-- These checks are shit and should be refined
 	if (price == "") or (not price) then
 		exports.UCDdx:new("Do you really want to sell your house for nothing? I don't think so :)", 255, 0, 0)
@@ -347,13 +416,14 @@ function setHousePrice(houseID, price)
 		exports.UCDdx:new("Your new house price must be a number between 1 and 99,999,999!", 255, 0, 0)
 		return false
 	end
-	-- The first check should have covered this, but we might as well leave it in here as I'm not sure if '-1' will constittute as a negative num
+	-- The first check should have covered this, but we might as well leave it in here as I'm not sure if '-1' will constitute as a negative num
 	if (string.find(tostring(price), "-")) then
 		exports.UCDdx:new("Your new house price must be a number between 1 and 99,999,999!", 255, 0, 0)
 		return false
 	end
 
 	-- Let's add an anti spam here because people will try to flood the database as a troll (hahaha so fucking funny you stupid fucks)
+	UCDhousing.button[3]:setEnabled(false)
 	triggerServerEvent("UCDhousing.setHousePrice", localPlayer, houseID, price)
 end
 
@@ -361,17 +431,22 @@ function purchaseHouse(houseID, plr)
 	-- The plr has already been established as the owner
 	if (plr ~= localPlayer) then return false end
 	-- A double check because the player can change their money while they have the GUI open
-	if (plr:getMoney() < getHouseData(houseID, "currentPrice")) then
+	--if (plr.money < getHouseData(houseID, "currentPrice")) then
+	if (plr:getMoney() < UCDhousing.houseData[5]) then
 		exports.UCDdx:new("You don't have enough money to buy this house!", 255, 0, 0)
 		return false
 	end
 	
+	UCDhousing.button[1]:setEnabled(false)
 	triggerServerEvent("UCDhousing.purchaseHouse", localPlayer, houseID)
 end
 
 function sellHouseToBank(houseID, plr)
 	if (plr ~= localPlayer) then return false end
-	if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end
+	--if (localPlayer:getData("accountName") ~= getHouseData(houseID, "owner")) then return false end
+	if (localPlayer:getData("accountName") ~= UCDhousing.houseData[2]) then return false end
+	
+	UCDhousing.button[6]:setEnabled(false)
 	triggerServerEvent("UCDhousing.sellHouseToBank", localPlayer, houseID)
 end
 

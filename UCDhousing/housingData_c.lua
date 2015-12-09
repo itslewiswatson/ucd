@@ -1,3 +1,6 @@
+-- Congratulations, you got rid of this shit
+
+--[[
 -- Change this variable sometime to not cause confustion with the houseData table
 housingData = {}
 
@@ -46,6 +49,7 @@ function getHouseData(houseID, column)
 			return nil
 		end
 	end
-	
+	outputDebugString("Client call for getHouseData. Column: "..column.." houseID: "..houseID)
 	return housingData[houseID][column]
 end
+--]]
