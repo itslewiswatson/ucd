@@ -48,8 +48,15 @@ end
 function clickInputBox(button)
 	if (button == "left") then
 		if (source == confirm.button[1]) then
+			if (action_ == "UCDadmin.giveVehicle" and tonumber(confirm.edit[1]:getText()) == nil) then
+				if (not getVehicleModelFromName(confirm.edit[1]:getText())) then
+					exports.UCDdx:new("You must specify a valid vehicle name or ID", 255, 0, 0)
+					return
+				end
+			end
 			triggerServerEvent(action_, var[1], var[2], confirm.edit[1]:getText())
---[[		
+			
+			--[[		
 			if (action_ == "kickPlayer") then
 				triggerServerEvent("aPlayer", localPlayer, varOne, "kick", guiGetText(aInputValue))
 			elseif (action_ == "setHealth") then

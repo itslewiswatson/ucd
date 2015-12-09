@@ -37,7 +37,7 @@ end
 
 function isPlayerAdmin(plr)
 	if not plr then return nil end
-	if (plr:getType() ~= "player") then return false end
+	if (plr.type ~= "player") then return false end
 	
 	local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	if (not adminTable[id]) then

@@ -1,3 +1,5 @@
+vowels = {["a"] = true, ["e"] = true, ["i"] = true, ["o"] = true, ["u"] = true}
+
 function warpToPlayer(plr)
 	
 end
@@ -24,6 +26,12 @@ addEventHandler("UCDadmin.reconnect", root, reconnectPlayer)
 function kickPlayer_(plr, reason)
 	if (plr and client and reason and isPlayerAdmin(client)) then
 		if (isPlayerOwner(plr) and not isPlayerOwner(client)) then return end
+		if reason == " " or reason == "" then
+			exports.UCDdx:new(client, "You have kicked "..plr.name, 0, 255, 0)
+			plr:kick(client)
+			outputChatBox(plr.name.." has been kicked by "..client.name, root, 255, 140, 0)
+			return
+		end
 		exports.UCDdx:new(client, "You have kicked "..plr.name.." for '"..reason.."'", 0, 255, 0)
 		plr:kick(client, reason) -- Set char limit on client [64]
 		outputChatBox(plr.name.." has been kicked by "..client.name.." ("..reason..")", root, 255, 140, 0)
@@ -67,7 +75,7 @@ addEvent("UCDadmin.freeze", true)
 addEventHandler("UCDadmin.freeze", root, freezePlayer)
 
 function shoutToPlayer(plr, text)
-	
+	-- Have to make this post GUI
 end
 addEvent("UCDadmin.shout", true)
 addEventHandler("UCDadmin.shout", root, shoutToPlayer)
@@ -175,6 +183,35 @@ end
 addEvent("UCDadmin.setInterior", true)
 addEventHandler("UCDadmin.setInterior", root, setPlayerInterior)
 
+function giveVehicle(plr, vehicle)
+	if (plr and client and vehicle and isPlayerAdmin(client)) then
+	
+		local spawnedVehicle
+		
+		-- We're dealing with a vehicle ID
+		if tostring(vehicle):match("%d") and tonumber(vehicle) ~= false and tonumber(vehicle) ~= nil then
+			
+			-- Possibly add this vehicle to a table so he can /djv it
+			spawnedVehicle = Vehicle(vehicle, plr.position, 0, 0, getPedRotation(plr), "PEN15")
+			warpPedIntoVehicle(plr, spawnedVehicle)
+			
+		else -- We're dealing with a vehicle name
+			spawnedVehicle = Vehicle(Vehicle.getModelFromName(vehicle), plr.position, 0, 0, getPedRotation(plr), "PEN15")
+			warpPedIntoVehicle(plr, spawnedVehicle)
+		end
+		
+		if vowels[spawnedVehicle.name:sub(1, 1):lower()] then
+			exports.UCDdx:new(plr, "You have been given an "..spawnedVehicle.name.." by "..client.name, 0, 255, 0)
+			exports.UCDdx:new(client, "You have given "..plr.name.." an "..spawnedVehicle.name, 0, 255, 0)
+		else
+			exports.UCDdx:new(plr, "You have been given a "..spawnedVehicle.name.." by "..client.name, 0, 255, 0)
+			exports.UCDdx:new(client, "You have given "..plr.name.." a "..spawnedVehicle.name, 0, 255, 0)
+		end
+	end
+end
+addEvent("UCDadmin.giveVehicle", true)
+addEventHandler("UCDadmin.giveVehicle", root, giveVehicle)
+
 function fixVehicle_(plr, vehicle)
 	
 end
@@ -188,7 +225,14 @@ addEvent("UCDadmin.ejectPlayer", true)
 addEventHandler("UCDadmin.ejectPlayer", root, ejectPlayerFromVehicle)
 
 function destroyVehicle(plr, vehicle)
-	
+	if (plr and client and isPlayerAdmin(client)) then
+		-- The vehicle may have been a player vehicle and hence already destroyed client-side
+		if vehicle then
+			vehicle:destroy()
+		end
+		exports.UCDdx:new(plr, "Your vehicle has been destroyed by "..client.name, 0, 255, 0)
+		exports.UCDdx:new(client, "You have destroyed "..client.name.."'s vehicle", 0, 255, 0)
+	end
 end
 addEvent("UCDadmin.destroyVehicle", true)
 addEventHandler("UCDadmin.destroyVehicle", root, destroyVehicle)

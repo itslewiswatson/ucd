@@ -310,7 +310,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local ping = plr.ping
 	local suburb, city = getZoneName(loc.x, loc.y, loc.z), getZoneName(loc.x, loc.y, loc.z, true)
 	local country = plr:getData("Country") or "N/A"
-	local weaponID, weapon = plr:getWeapon(), getWeaponNameFromID(plr:getWeapon())
+	local ammo, weapon = getPedTotalAmmo(plr), getWeaponNameFromID(plr:getWeapon())
 	local playtime = plr:getData("dxscoreboard_playtime") or "N/A"
 	
 	local vehicle, vehicleHealth
@@ -338,7 +338,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	adminPanel.label[19]:setText("Group: "..group)
 	adminPanel.label[20]:setText("Team: "..team)
 	adminPanel.label[21]:setText("Model: "..model)
-	adminPanel.label[22]:setText("Weapon: "..weapon.." ["..weaponID.."]")
+	adminPanel.label[22]:setText("Weapon: "..weapon.." ["..ammo.."]")
 	adminPanel.label[23]:setText("Ping: "..ping)
 	adminPanel.label[24]:setText("Vehicle: "..vehicle)
 	adminPanel.label[25]:setText("Vehicle Health: "..vehicleHealth)
@@ -421,7 +421,8 @@ function adminAction()
 		elseif (action == "reconnect") then
 			triggerServerEvent("UCDadmin.reconnect", localPlayer, plr)
 		elseif (action == "kick") then
-			triggerServerEvent("UCDadmin.kick", localPlayer, plr, "Annoying admins and creating a negative atmosphere")
+			--triggerServerEvent("UCDadmin.kick", localPlayer, plr, "Annoying admins and creating a negative atmosphere")
+			createInputBox("UCD | Admin - Kick", "Enter a reason [Note: this will be logged]", "", "UCDadmin.kick", localPlayer, plr)
 		elseif (action == "freeze") then
 			if (source == adminPanel.button[29]) then -- If it's the vehicle one
 				triggerServerEvent("UCDadmin.freeze", localPlayer, plr.vehicle, plr)
@@ -469,11 +470,27 @@ function adminAction()
 		elseif (action == "eject") then
 			
 		elseif (action == "destroy") then
-			
+			if (plr.vehicle) then
+				if (plr.vehicle:getData("vehicleID")) then
+					exports.UCDdx:new(plr.name.."'s vehicle is a player vehicle. Hiding it instead...", 0, 255, 0)
+					triggerServerEvent("UCDvehicleSystem.hideVehicle", plr, plr.vehicle:getData("vehicleID"))
+					triggerServerEvent("UCDadmin.destroyVehicle", localPlayer, plr)
+					return
+				end
+				triggerServerEvent("UCDadmin.destroyVehicle", localPlayer, plr, plr.vehicle)
+			else
+				exports.UCDdx:new("This player is not in a vehicle", 255, 0, 0)
+			end
 		elseif (action == "disable") then
 			
 		elseif (action == "blow") then
-			
+		
+		elseif (action == "give vehicle") then
+			if (isPedInVehicle(plr) or plr.vehicle) then
+				exports.UCDdx:new("You can't give this player a vehicle as they are already in one", 255, 0, 0)
+				return
+			end
+			createInputBox("UCD | Admin - Give Vehicle", "Enter a vehicle ID or name", "", "UCDadmin.giveVehicle", localPlayer, plr)
 		end
 	end
 end
