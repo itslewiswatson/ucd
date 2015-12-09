@@ -33,7 +33,7 @@ end
 
 function cancelDmg()
 	if (isElementWithinSafeZone(localPlayer)) then
-		if (getPlayerWantedLevel(localPlayer) > 0) then return end
+	if (getPlayerWantedLevel(localPlayer) > 0) then return end
 	cancelEvent()
 	end
 end
