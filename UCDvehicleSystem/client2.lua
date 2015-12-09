@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDvehicleSystem
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Managing miscellanous client functions.
+--// FILE: \client2.lua [client]
+-------------------------------------------------------------------
+
 local resX, resY = guiGetScreenSize()
 
 function draw()

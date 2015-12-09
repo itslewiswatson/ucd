@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDvehicleSystem
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Handling vehicles on the server.
+--// FILE: \server.lua [server]
+-------------------------------------------------------------------
+
 -- DEV NOTES:
 -- Find efficient way to update gridlist [afaik DONE - still keeping just in case]
 -- Avoid ipairs as much as possible as the table will not always have perfect pairs
@@ -40,12 +49,33 @@ local recLocs = {
 	},
 }
 
+function getPlayerSpecificIDToVehicle(plr)
+	local plr_idToVehicle = {}
+	for i, v in pairs(vehicles) do
+		if v.ownerID == exports.UCDaccounts:getPlayerAccountID(plr) then
+			if idToVehicle[i] then
+				plr_idToVehicle[i] = idToVehicle[i]
+			end
+		end
+	end
+	return plr_idToVehicle
+end
+
 function syncIdToVehicle(refreshGridlist)
+	if not refreshGridlist then
+		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, getPlayerSpecificIDToVehicle(source))
+	else
+		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, getPlayerSpecificIDToVehicle(source), true)
+	end
+	
+	-- This part synced the whole table, let's only sync selected bits
+	--[[
 	if not refreshGridlist then
 		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, idToVehicle)
 	else
 		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, idToVehicle, true)
 	end
+	--]]
 end
 addEvent("UCDvehicleSystem.getIdToVehicleTable", true)
 addEventHandler("UCDvehicleSystem.getIdToVehicleTable", root, syncIdToVehicle)
@@ -145,7 +175,8 @@ function spawnVehicle(vehicleID)
 	end
 	
 	exports.UCDdx:new(client, "You have successfully spawned your "..vehicle:getName(), 0, 255, 0)
-	triggerClientEvent(root, "UCDvehicleSystem.syncIdToVehicle", client, idToVehicle) -- Maybe change this to only sync to the owner
+	--triggerClientEvent(root, "UCDvehicleSystem.syncIdToVehicle", client, idToVehicle) -- Maybe change this to only sync to the owner
+	triggerClientEvent(client, "UCDvehicleSystem.syncIdToVehicle", client, getPlayerSpecificIDToVehicle(client)) -- Maybe change this to only sync to the owner
 end
 addEvent("UCDvehicleSystem.spawnVehicle", true)
 addEventHandler("UCDvehicleSystem.spawnVehicle", root, spawnVehicle)
@@ -187,8 +218,10 @@ function hideVehicle(vehicleID, tosync)
 	-- Loop through steats, check for players and manually eject them
 	for _, occupant in pairs(vehicle:getOccupants()) do
 		occupant:removeFromVehicle()
-		if (occupant:getType() == "player") then
-			exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
+		if (occupant.type == "player") then
+			if (occupant ~= client) then
+				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
+			end
 		end
 	end
 	
@@ -196,8 +229,9 @@ function hideVehicle(vehicleID, tosync)
 	
 	-- We check for client because the onResourceStop event saves all vehicles by triggering this one and we don't want lots of client events being triggered at once, especially when the resource is going to stop anyway
 	if (client) then
-		exports.UCDdx:new(client, "You have successfully hidden your "..Vehicle.getNameFromModel(vehicles[vehicleID].model), 0, 255, 0)
-		triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
+		exports.UCDdx:new(client, "Your "..Vehicle.getNameFromModel(vehicles[vehicleID].model).." has been successfully hidden", 0, 255, 0)
+		--triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
+		triggerClientEvent(client, "UCDvehicleSystem.syncIdToVehicle", resourceRoot, getPlayerSpecificIDToVehicle(client))
 	end
 	-- We need this here for if someone sells their vehicle
 	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)

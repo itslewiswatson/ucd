@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDvehicleSystem
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Front end vehicle management interface.
+--// FILE: \client.lua [client]
+-------------------------------------------------------------------
+
 local blip = {}
 playerVehicles = {}
 
@@ -11,8 +20,8 @@ end
 addEvent("UCDvehicleSystem.syncIdToVehicle", true)
 addEventHandler("UCDvehicleSystem.syncIdToVehicle", root, syncIdToVehicle)
 
-triggerServerEvent("UCDvehicleSystem.getIdToVehicleTable", localPlayer) -- Sync the idToVehicle table when the resource starts
 triggerServerEvent("UCDvehicleSystem.loadPlayerVehicles", localPlayer) -- Sync the playerVehicles table when the resource starts
+triggerServerEvent("UCDvehicleSystem.getIdToVehicleTable", localPlayer) -- Sync the idToVehicle table when the resource starts
 
 function onClientVehicleEnter(theVehicle, seat)
 	if (source ~= localPlayer) then return end
@@ -117,7 +126,7 @@ function toggleGUI()
 	if (not guiGetVisible(GUIEditor.window[1])) then
 		guiSetVisible(GUIEditor.window[1], true)
 		
-		for i, v in pairs(playerVehicles[localPlayer]) do
+		for _, v in pairs(playerVehicles[localPlayer]) do
 			-- Should we update them regardless of whether they are spawned in or not?
 			if (idToVehicle[v]) then
 				updateVehicleGrid(v)
@@ -139,7 +148,7 @@ function toggleGUI()
 	showCursor(not isCursorShowing())
 end
 addCommandHandler("vehicles", toggleGUI, false, false)
-bindKey("F3", "down", "vehicles")
+bindKey("F2", "down", "vehicles")
 
 function lolrender()
 	local vehicleVector = vehicle:getPosition()

@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDvehicleSystem
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Storing miscellaneous server-side functions.
+--// FILE: \server2.lua [server]
+-------------------------------------------------------------------
+
 -- Move this to some exports file
 function getVehicleOwner(vehicle)
 	if (not vehicle) then return nil end

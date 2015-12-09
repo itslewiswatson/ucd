@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDvehicleSystem
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 09/12/2015
+--// PURPOSE: Storing data tables on the client-side for access.
+--// FILE: \vehicleData.lua [client]
+-------------------------------------------------------------------
+
 vehicles = {}
 
 function syncVehicleTable(id, sync)
