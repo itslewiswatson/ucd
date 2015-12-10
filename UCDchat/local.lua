@@ -28,7 +28,7 @@ function localChat(player, _, ...)
 		for _, v in pairs(plrTable) do
 			if (getElementAlpha(v) == 0) then playerCount = playerCount - 1 end
 			if (playerCount < 0) then playerCount = 0 end
-			outputChatBox("(Local) ["..playerCount.."] "..playerNick.." #FFFFFF"..msg, v, pR, pG, pB, true)
+			outputChatBox("(LOC) ["..playerCount.."] "..playerNick.." #FFFFFF"..msg, v, pR, pG, pB, true)
 		end
 		
 		triggerClientEvent("onMessageIncome", player, msg)
@@ -38,16 +38,18 @@ function localChat(player, _, ...)
 		antiSpam[player] = getTickCount()
 	end
 end
-addCommandHandler("local", localChat)
+addCommandHandler("local", localChat, false, false)
+addCommandHandler("loc", localChat, false, false)
+addCommandHandler("localchat", localChat, false, false)
 
 function bindKey_()
-	for i, v in pairs(getElementsByType("player")) do
-		bindKey(v, "u", "down", "chatbox", "local")
+	for _, v in pairs(Element.getAllByType("player")) do
+		bindKey(v, "u", "down", "chatbox", "loc")
 	end
 end
 addEventHandler("onResourceStart", resourceRoot, bindKey_)
 
 function bindKey_2()
-	bindKey(source, "u", "down", "chatbox", "local")
+	bindKey(source, "u", "down", "chatbox", "loc")
 end
 addEventHandler("onPlayerJoin", root, bindKey_2)
