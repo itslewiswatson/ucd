@@ -1,0 +1,6 @@
+<meta>
+	<min_mta_version server="1.5.1"></min_mta_version>
+    <info author="Noki" type="" name="" />
+	<script src="script.lua" type="server"/>
+	<oop>true</oop>
+</meta>
