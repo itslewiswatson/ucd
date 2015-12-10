@@ -8,7 +8,6 @@
 --------------------------------------------------------------------
 
 db = exports.UCDsql:getConnection()
-weaponString = {}
 
 function getPlayerWeaponTable(plr)
 	local t = {}
@@ -42,10 +41,8 @@ function loadPlayerWeaponString(qh, plr, togive)
 	local result = qh:poll(-1)
 	
 	if (result and #result ~= 0) then
-		weaponString[plr] = result[1].weaponString
-		--outputDebugString("result is actual")
 		if (togive ~= false) then
-			for i, v in pairs(fromJSON(weaponString[plr])) do
+			for i, v in pairs(fromJSON(result[1].weaponString)) do
 				giveWeapon(plr, v.weapon, v.ammo)
 			end
 		end
@@ -53,16 +50,14 @@ function loadPlayerWeaponString(qh, plr, togive)
 end
 
 function savePlayerWeaponString(plr)
-	if not weaponString[plr] then return nil end
 	db:exec("UPDATE `playerWeapons` SET `weaponString`=? WHERE `id`=?", toJSON(getPlayerWeaponTable(plr)), getPlayerAccountID(plr))
-	weaponString[plr] = toJSON(getPlayerWeaponTable(plr))
 end
 addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) weaponString[source] = nil end)
 addEventHandler("onPlayerWasted", root, function () savePlayerWeaponString(source)  end)
-addEventHandler("onResourceStop", root, function () for _, plr in pairs(Element.getAllByType("player")) do savePlayerWeaponString(plr) weaponString[plr] = nil end end)
+addEventHandler("onResourceStop", root, function () for _, plr in pairs(Element.getAllByType("player")) do savePlayerWeaponString(plr) end end)
 
 function getPlayerWeaponString(plr)
-	if (not plr or weaponString[plr] == nil) then return "lol" end
-	if (plr:getType() ~= "player") then return false end
-	return weaponString[plr]
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player") then return false end
+	return toJSON(getPlayerWeaponTable(plr))
 end

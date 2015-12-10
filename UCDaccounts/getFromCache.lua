@@ -38,20 +38,22 @@ function getIDFromAccountName(accountName)
 	return false
 end
 
-function getPlayerFromID(id)
-	if (not id) then return nil end
+function getPlayerFromID(accountID)
+	if (not accountID) then return end
 	
 	-- Select it fron the table if it's there
-	if (idToPlayer[id]) then
-		outputDebugString("getPlayerFromID: returned from idToPlayer")
-		return idToPlayer[id]
+	if (idToPlayer[accountID]) then
+		return idToPlayer[accountID]
 	end
 	
 	-- Loop
 	for _, plr in pairs(Element.getAllByType("player")) do
 		if (isPlayerLoggedIn(plr)) then
-			if (getPlayerAccountID(plr) == id) then
-				idToPlayer[id] = plr
+			if (getPlayerAccountID(plr) == accountID) then
+				if (idToPlayer[accountID]) then
+					idToPlayer[accountID] = nil
+				end
+				idToPlayer[accountID] = plr
 				return plr
 			end
 		end
@@ -62,8 +64,8 @@ end
 -- Remove them from the table to avoid element recyling and conflict
 addEventHandler("onPlayerQuit", root, 
 	function ()
-		local id = exports.UCDaccounts:getPlayerAccountID(plr)
-		idToPlayer[id] = nil
+		local accountID = exports.UCDaccounts:getPlayerAccountID(source)
+		idToPlayer[accountID] = nil
 	end
 )
 
