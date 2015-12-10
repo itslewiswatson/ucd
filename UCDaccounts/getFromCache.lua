@@ -43,6 +43,7 @@ function getPlayerFromID(id)
 	
 	-- Select it fron the table if it's there
 	if (idToPlayer[id]) then
+		outputDebugString("getPlayerFromID: returned from idToPlayer")
 		return idToPlayer[id]
 	end
 	
@@ -62,10 +63,8 @@ end
 addEventHandler("onPlayerQuit", root, 
 	function ()
 		local id = exports.UCDaccounts:getPlayerAccountID(plr)
-		if idToPlayer[id] then
-			idToPlayer[id] = nil
-		end
-	end, false, "high"
+		idToPlayer[id] = nil
+	end
 )
 
 addEventHandler("onResourceStart", resourceRoot,

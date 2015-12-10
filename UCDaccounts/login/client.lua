@@ -423,6 +423,10 @@ function xmllol()
 			f:saveFile()
 			f:unload()
 		end
+	else
+		if (File.exists("credentials.xml")) then
+			File.delete("credentials.xml")
+		end
 	end
 end
 addEvent("UCDaccounts.login.saveAccountCredentials", true)

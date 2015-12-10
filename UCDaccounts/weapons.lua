@@ -32,20 +32,22 @@ addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		for _, plr in pairs(Element.getAllByType("player")) do
 			if isPlayerLoggedIn(plr) then
-				db:query(loadPlayerWeaponString, {plr}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", exports.UCDaccounts:getPlayerAccountID(plr))
+				db:query(loadPlayerWeaponString, {plr, false}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", exports.UCDaccounts:getPlayerAccountID(plr))
 			end
 		end
 	end
 )
 
-function loadPlayerWeaponString(qh, plr)
+function loadPlayerWeaponString(qh, plr, togive)
 	local result = qh:poll(-1)
 	
 	if (result and #result ~= 0) then
 		weaponString[plr] = result[1].weaponString
 		--outputDebugString("result is actual")
-		for i, v in pairs(fromJSON(weaponString[plr])) do
-			giveWeapon(plr, v.weapon, v.ammo)
+		if (togive ~= false) then
+			for i, v in pairs(fromJSON(weaponString[plr])) do
+				giveWeapon(plr, v.weapon, v.ammo)
+			end
 		end
 	end
 end
