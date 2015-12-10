@@ -5,11 +5,15 @@
 	<script src="core.lua" type="server"/>
 	<script src="client.lua" type="client"/>
 	
-	<script src="exports/exports_s.lua" type="server"/>
+	<script src="utils.lua" type="server"/>
 	
-	<export function="getGroupNameFromID" type="server"/>
-	<export function="getGroupData" type="server"/>
+	<export function="getPlayerGroup" type="server"/>
+	<export function="getGroupFirstRank" type="server"/>
+	<export function="getGroupLastRank" type="server"/>
+	<export function="getPlayerGroupRank" type="server"/>
 	<export function="getPlayerOnlineTime" type="server"/>
+	<export function="getRankPermissions" type="server"/>
+	<export function="getMembersWithRank" type="server"/>
 	<export function="createGroup" type="server"/>
 	
 	<oop>true</oop>

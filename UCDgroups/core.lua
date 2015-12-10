@@ -77,6 +77,8 @@ db = exports.UCDsql:getConnection()
 group = {}
 groupTable = {}
 groupMembers = {} -- We can just get their player elements from their id since more caching was introduced
+groupRanks = {}
+
 playerGroupCache = {} -- Player group cache
 onlineTime = {}
 
@@ -88,7 +90,7 @@ addEventHandler("onResourceStart", resourceRoot,
 )
 
 function cacheGroupTable(qh)
-	local result = qh:poll(0)
+	local result = qh:poll(-1)
 	for _, row in pairs(result) do
 		groupTable[row.groupName] = {}
 		for column, data in pairs(row) do
@@ -103,7 +105,7 @@ function cacheGroupTable(qh)
 end
 
 function cacheGroupMembers(qh)
-	local result = qh:poll(0)
+	local result = qh:poll(-1)
 	for _, row in pairs(result) do
 		if (groupTable[row.groupName]) then
 			if (not groupMembers[row.groupName]) then
@@ -116,9 +118,26 @@ function cacheGroupMembers(qh)
 			end
  		end
 	end
-	for i in pairs(groupTable) do
-		if (not groupMembers[i] or #groupMembers[i] == 0) then
-			-- Remove group
+	for name in pairs(groupTable) do
+		if (not groupMembers[name] or #groupMembers[name] == 0) then
+			outputDebugString("Group "..name.." has 0 members")
+		end
+	end
+	db:query(cacheGroupRanks, {}, "SELECT * FROM `groups_ranks`")
+end
+
+function cacheGroupRanks(qh)
+	local result = qh:poll(-1)
+	for _, row in pairs(result) do
+		if (not groupRanks[row.groupName]) then groupRanks[row.groupName] = {} end
+		if (row.rankIndex == -1) then
+			groupRanks[row.groupName][row.rankName] = {nil, row.rankIndex}
+		else
+			local tbl = {}
+			for i, v in pairs(fromJSON(row.permissions)) do
+				tbl[tonumber(i)] = v
+			end
+			groupRanks[row.groupName][row.rankName] = {tbl, row.rankIndex}
 		end
 	end
 	-- Resource should be fully loaded by now, let's load things for existing players
@@ -132,7 +151,7 @@ end
 function createGroup(name)
 	local groupName = name
 	if (client and name) then
-		if (group[client] or client:getData("group") ~= false) then
+		if (getPlayerGroup(client) or client:getData("group") ~= false) then
 			exports.UCDdx:new(client, "You cannot create a group because you are already in one. Leave your current group first.", 255, 0, 0)
 			return false
 		end
@@ -158,57 +177,115 @@ function createGroup(name)
 				end
 			end
 		end
-		
-		if not client or client == nil then client = getPlayerFromName("Noki") end -- For runcode purposes right now
+		local playtime = math.floor(exports.UCDaccounts:GAD(client, "playtime") / (60 * 60)) or 0 -- Gets the playtime in hours
+		if (playtime < 5) then
+			exports.UCDdx:new(client, "You need at least 5 hours in-game to be able to create a group", 255, 255, 0)
+		end
 		
 		local clientID = exports.UCDaccounts:getPlayerAccountID(client) -- Get the client's id
 		db:exec("INSERT INTO `groups_` SET `groupName`=?, `leaderID`=?, `colour`=?, `info`=?", groupName, clientID, toJSON(settings.default_colour), settings.default_info_text) -- Perform the inital group creation	
-		db:exec("INSERT INTO `groups_members` SET `groupName`=?, `accountID`=?, `name`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", groupName, clientID, client.name, 0, 0, 0) -- Make the client's membership official and grant founder status
+		db:exec("INSERT INTO `groups_members` SET `groupName`=?, `accountID`=?, `name`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", groupName, clientID, client.name, "Founder", 0, 0) -- Make the client's membership official and grant founder status
 		db:query(cacheGroupTable, {}, "SELECT * FROM `groups_` WHERE `groupName`=?", groupName)
-		groupMembers[groupName] = {}
-		table.insert(groupMembers[groupName], clientID)
+		setDefaultRanks(groupName) -- Sets the default ranks for the group as defined
+		groupMembers[groupName] = {} 
+		table.insert(groupMembers[groupName], clientID) 
 		client:setData("group", groupName)
 		group[client] = groupName
-		playerGroupCache[clientID] = {groupName, clientID, accountName, 0, nil, nil, 0} -- Should I even bother?
+		playerGroupCache[clientID] = {groupName, clientID, accountName, "Founder", nil, nil, 0} -- Should I even bother?
 		exports.UCDdx:new(client, "You have successfully created "..groupName, 0, 255, 0)
+		
+		triggerEvent("UCDgroups.viewUI", client, true)
 	end
 end
 addEvent("UCDgroups.createGroup", true)
 addEventHandler("UCDgroups.createGroup", root, createGroup)
 
+function leaveGroup()
+	if (client) then
+		local group = getPlayerGroup(client)
+		if (group) then
+			local rank = getGroupLastRank(group)
+			if (getPlayerGroupRank(client) == rank) then -- If they are a founder
+				if (getMembersWithRank(group, rank) == 1) then
+					exports.UCDdx:new(client, "You can't leave your group because you're the only one with the "..rank.." rank", 255, 255, 0)
+					return
+				end							
+			end
+			
+			client:removeData("group")
+			group[client] = nil
+			playerGroupCache[exports.UCDaccounts:getPlayerAccountID(client)] = nil
+			onlineTime[client] = nil
+			exports.UCDdx:new(client, "You have left "..group, 255, 0, 0)
+			triggerEvent("UCDgroups.viewUI", client, true)
+		end
+	end
+end
+addEvent("UCDgroups.leaveGroup", true)
+addEventHandler("UCDgroups.leaveGroup", root, leaveGroup)
+
 function deleteGroup()
 	if (client) then
-		if (not group[client]) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
 			exports.UCDdx:new(client, "You are not in a group", 255, 0, 0)
 			return
 		end
-		local groupName = playerGroupCache[exports.UCDaccounts:getPlayerAccountID(client)][1]
+		
 		outputDebugString("Deleting group where groupName = "..groupName)
 		db:exec("DELETE FROM `groups_` WHERE `groupName`=?", groupName)
 		db:exec("DELETE FROM `groups_members` WHERE `groupName`=?", groupName)
-			
-		-- Find a more efficient way to do this
-		-- getMembersInGroup(groupID)
+		db:exec("DELETE FROM `groups_ranks` WHERE `groupName`=?", groupName)
+		
 		for _, id in pairs(groupMembers[groupName]) do
 			local plr = exports.UCDaccounts:getPlayerFromID(id)
-			if (plr and isElement(plr) and group[plr]) then
-				plr:setData("group", false)
+			if (plr and isElement(plr) and plr.type == "player" and getPlayerGroup(plr)) then
+				plr:removeData("group")
 				group[plr] = nil
 				playerGroupCache[exports.UCDaccounts:getPlayerAccountID(plr)] = nil
 				onlineTime[plr] = nil
 				exports.UCDdx:new(plr, client.name.." has decided to delete the group", 255, 0, 0)
-				triggerClientEvent(plr, "UCDgroups.updateGUI", plr)
+				triggerEvent("UCDgroups.viewUI", plr, true)
 			end
 		end
 		
+		-- Just to make sure
+		--client:removeData("group")
+		--triggerEvent("UCDgroups.viewUI", client, true)
+		
+		-- Clear from the table to free memory
 		groupMembers[groupName] = nil
 		groupTable[groupName] = nil
+		groupRanks[groupName] = nil
 		
-		exports.UCDdx:new(client, "You have deleted the group", 255, 0, 0)
+		-- Let the client know he did it
+		exports.UCDdx:new(client, "You have deleted the group "..groupName, 255, 0, 0)
 	end
 end
 addEvent("UCDgroups.deleteGroup", true)
 addEventHandler("UCDgroups.deleteGroup", root, deleteGroup)
+
+function updateGroupInfo(newInfo)
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (groupName) then
+			groupTable[groupName].info = newInfo
+			-- message group
+			
+		end
+	end
+end
+addEvent("UCDgroups.updateInfo", true)
+addEventHandler("UCDgroups.updateInfo", root, updateGroupInfo)
+
+function groupChat(plr, _, msg)
+	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr)) then
+		local msg = table.concat({msg}, " ")
+		messageGroup(getPlayerGroup(plr), plr.name.." #FFFFFF"..msg, "chat")
+	end
+end
+addCommandHandler("gc", groupChat, false, false)
+addCommandHandler("groupchat", groupChat, false, false)
 
 function handleLogin(plr)
 	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
@@ -265,27 +342,15 @@ addEventHandler("onResourceStop", resourceRoot,
 	end
 )
 
-function getGroupInfo(group)
-	if not group or group == "" then return end
-	if not groupTable[group].info then
-		return false
-	end
-	return groupTable[group].info
-end
-
-function getGroupMemberCount(group)
-	return #groupMembers[group] or false
-end
-
-function toggleGUI(plr, update)
-	local plr = client or plr
-	local groupName = group[plr] or ""
+function toggleGUI(update)
+	--if (source.type == "player" and not plr) then plr = source end
+	local groupName = getPlayerGroup(source) or ""
 	local groupInfo = getGroupInfo(groupName) or ""
-	local permissions = {}
-	local rank = -1
+	local rank = getPlayerGroupRank(source)
+	local permissions = getRankPermissions(groupName, rank)
 	local ranks = {}
 	
-	triggerLatentClientEvent(plr, "UCDgroups.toggleGUI", 15000, false, plr, update, groupName, groupInfo, permissions, rank, ranks)
+	triggerLatentClientEvent(source, "UCDgroups.toggleGUI", 15000, false, source, update, groupName, groupInfo, permissions, rank, ranks)
 end
 addEvent("UCDgroups.viewUI", true)
 addEventHandler("UCDgroups.viewUI", root, toggleGUI)
