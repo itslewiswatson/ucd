@@ -82,6 +82,18 @@ function updateVehicleGrid(vehicleID)
 	guiGridListSetItemData(GUIEditor.gridlist[1], row, 1, vehicleID) -- Vehicle ID
 end
 
+function updateConstant()
+	if (GUIEditor.window[1]:getVisible()) then
+		for i = 0, guiGridListGetRowCount(GUIEditor.gridlist[1]) - 1 do
+			local vehicleID = guiGridListGetItemData(GUIEditor.gridlist[1], i, 1)
+			if (idToVehicle[vehicleID]) then
+				updateVehicleGrid(vehicleID)
+			end
+		end
+	end
+end
+addEventHandler("onClientRender", root, updateConstant)
+
 function populateGridList()
 	guiGridListClear(GUIEditor.gridlist[1])
 	for i, v in pairs(vehicles) do

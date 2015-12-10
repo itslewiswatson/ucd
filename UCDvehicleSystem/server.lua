@@ -118,7 +118,7 @@ addEventHandler("onPlayerLogin", root, function () loadPlayerVehicles(source) en
 function saveAllVehicles()
 	for i, _ in pairs(idToVehicle) do
 		if (idToVehicle[i]) then
-			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, i, false)
+			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, i)
 		end
 	end
 end
@@ -219,11 +219,14 @@ function hideVehicle(vehicleID, tosync)
 	for _, occupant in pairs(vehicle:getOccupants()) do
 		occupant:removeFromVehicle()
 		if (occupant.type == "player") then
-			if (occupant ~= client) then
+			if (exports.UCDaccounts:getPlayerAccountID(occupant) ~= getVehicleData(vehicleID, "ownerID")) then
 				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
 			end
 		end
 	end
+	
+	-- This is our custom event for when a vehicle is hidden
+	triggerEvent("onVehicleHidden", vehicle)
 	
 	vehicle:destroy()
 	
@@ -234,8 +237,7 @@ function hideVehicle(vehicleID, tosync)
 		triggerClientEvent(client, "UCDvehicleSystem.syncIdToVehicle", resourceRoot, getPlayerSpecificIDToVehicle(client))
 	end
 	-- We need this here for if someone sells their vehicle
-	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
-	-- SELECTIVE IDTOVEHICLE SYNC
+	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)	
 end
 addEvent("UCDvehicleSystem.hideVehicle", true)
 addEventHandler("UCDvehicleSystem.hideVehicle", root, hideVehicle)

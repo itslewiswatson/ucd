@@ -79,3 +79,8 @@ function _getVehicleType(vehicleID)
 	end
 end
 
+function onVehicleHidden()
+	-- 
+end
+addEvent("onVehicleHidden")
+addEventHandler("onVehicleHidden", root, onVehicleHidden)
