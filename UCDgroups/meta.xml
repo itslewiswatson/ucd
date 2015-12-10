@@ -1,7 +1,10 @@
 <meta>
 	<min_mta_version server="1.5.1"></min_mta_version>
     <info author="Noki" type="script" name="UCDgroups" />
-	<script src="script.lua" type="server"/>
+	
+	<script src="core.lua" type="server"/>
+	<script src="client.lua" type="client"/>
+	
 	<script src="exports/exports_s.lua" type="server"/>
 	
 	<export function="getGroupNameFromID" type="server"/>
