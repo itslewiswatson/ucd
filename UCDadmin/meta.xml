@@ -20,6 +20,8 @@
 	<export function="isPlayerDeveloper" type="server" />
 	<export function="isPlayerOwner" type="server" />
 	
+	<export function="createInputBox" type="client" />
+	
 	<export function="isAdminOnDuty" type="server" />
 	<export function="getOnlineAdmins" type="server" />
 	<oop>true</oop>
