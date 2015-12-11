@@ -93,7 +93,7 @@ function getTimeStamp()
 		secs = "0" .. secs
 	end
 	
-	aTime = day .. "-" .. month .. "-" .. year
+	aTime = day .. "/" .. month .. "/" .. year
 	aDate = hours .. ":" .. mins .. ":" .. secs
 	return aTime, aDate--, time.timestamp
 end
