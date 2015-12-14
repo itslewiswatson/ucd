@@ -27,6 +27,8 @@
 	<export function="isPlayerInRangeOfPoint" type="client"/>
 	<export function="smoothMoveCamera" type="client"/>
 	<export function="createConfirmationWindow" type="client"/>
+	<export function="RGBToHex" type="server"/>
+	<export function="RGBToHex" type="client"/>
 		
 	<oop>true</oop>
 </meta>
