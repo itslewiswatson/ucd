@@ -2,9 +2,10 @@ function getPlayerGroup(plr)
 	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player") then return end
 	if (not group[plr]) then
-		local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
-		if (accountID and playerGroupCache[accountID] and playerGroupCache[accountID][1]) then
-			return playerGroupCache[accountID][1]
+		--local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
+		local account = plr.account.name
+		if (account and playerGroupCache[account] and playerGroupCache[account][1]) then
+			return playerGroupCache[account][1]
 		end
 		return false
 	end
@@ -12,44 +13,51 @@ function getPlayerGroup(plr)
 end
 
 -- Get a group's information
-function getGroupInfo(group)
-	if not group or group == "" then return end
-	if (not groupTable[group] or not groupTable[group].info) then
+function getGroupInfo(groupName)
+	if not groupName or groupName == "" then return end
+	if (not groupTable[groupName] or not groupTable[groupName].info) then
 		return false
 	end
-	return groupTable[group].info
+	return groupTable[groupName].info
 end
 
 -- Get the member count of a group
-function getGroupMemberCount(group)
-	return #groupMembers[group] or false
+function getGroupMemberCount(groupName)
+	return #groupMembers[groupName] or false
 end
 
 -- Get a given player's online time
 function getPlayerOnlineTime(plr)
 	if (not plr) then return end
-	if (not isElement(plr) or plr.type ~= "player") then return false end
-	if (onlineTime[plr]) then
-		return math.floor((getRealTime().timestamp - onlineTime[plr]) / 60)
+	if (isElement(plr) or plr.type == "player") then
+		if (onlineTime[plr]) then
+			--outputChatBox(tostring(math.floor((getRealTime().timestamp - onlineTime[plr]) / 60)), root)
+			outputDebugString("onlineTime = "..onlineTime[plr])
+			outputDebugString("getRealTime().timestamp = "..getRealTime().timestamp)
+			outputDebugString(getRealTime().timestamp - onlineTime[plr])
+			return math.floor((getRealTime().timestamp - onlineTime[plr]) / 60)
+		end
 	else
+		-- plr should be a number in this case
 		if (playerGroupCache[plr]) then
-			return playerGroupCache[plr][7] or 0
+			return playerGroupCache[plr][6] or 0
 		end
 	end
 	return 0
 end
 
 function getPlayerGroupRank(plr)
-	local group_ = group[plr]--getPlayerGang(plr)
-	if (not group_) then return end
-	local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
-	return playerGroupCache[accountID][4] or getGangFirstRank(group_)
+	local groupName = group[plr]--getPlayerGang(plr)
+	if (not groupName) then return end
+	--local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
+	local account = plr.account.name
+	return playerGroupCache[account][3] or getGroupFirstRank(groupName)
 end
 
 -- Get the first rank in a group, which is what will be assigned to new players who join
-function getGroupFirstRank(group)
-	if (groupRanks[group]) then
-		for k, v in pairs(groupRanks[group]) do
+function getGroupFirstRank(groupName)
+	if (groupRanks[groupName]) then
+		for k, v in pairs(groupRanks[groupName]) do
 			if (v[2] == 0) then
 				return k
 			end
@@ -58,9 +66,9 @@ function getGroupFirstRank(group)
 end
 
 -- Get the last rank of a group, usually the founder
-function getGroupLastRank(group)
-	if (groupRanks[group]) then
-		for k, v in pairs(groupRanks[group]) do
+function getGroupLastRank(groupName)
+	if (groupRanks[groupName]) then
+		for k, v in pairs(groupRanks[groupName]) do
 			if (v[2] == -1) then
 				return k
 			end
@@ -68,26 +76,26 @@ function getGroupLastRank(group)
 	end
 end
 
-function getRankPermissions(group, rank)
-	if (not group or not rank or not groupRanks[group] or not groupRanks[group][rank]) then return end
-	if (rank == getGroupLastRank(group)) then
+function getRankPermissions(groupName, rank)
+	if (not groupName or not rank or not groupRanks[groupName] or not groupRanks[groupName][rank]) then return end
+	if (rank == getGroupLastRank(groupName)) then
 		local tempranks = {}
 		for i = 1, 17 do
 			tempranks[i] = true
 		end
 		return tempranks
 	else
-		return groupRanks[group][rank][1]
+		return groupRanks[groupName][rank][1]
 	end
 end
 
 -- 
-function getMembersWithRank(group, rank)
-	if (group and rank and groupRanks[group] and groupRanks[group][rank]) then
+function getMembersWithRank(groupName, rank)
+	if (groupName and rank and groupRanks[groupName] and groupRanks[groupName][rank]) then
 		local count = 0
 		for _, v in pairs(playerGroupCache) do
-			if (v[1] == group) then
-				if (v[4] == rank) then
+			if (v[1] == groupName) then
+				if (v[3] == rank) then
 					count = count + 1
 				end
 			end
@@ -128,4 +136,129 @@ function setDefaultRanks(group)
 	db:exec("INSERT INTO `groups_ranks` (groupName, rankName, permissions, rankIndex) VALUES (?, ?, ?, ?)", group, "Leader", toJSON(defaultRanks["Leader"][1]), 4)
 	db:exec("INSERT INTO `groups_ranks` (groupName, rankName, permissions, rankIndex) VALUES (?, ?, ?, ?)", group, "Founder", toJSON(defaultRanks["Founder"][1]), -1)
 	groupRanks[group] = defaultRanks -- This table is from core.lua
+end
+
+-- Move this to UCDutil
+function getDayOfTheYear()
+	local realtime = getRealTime()
+	return realtime.yearday
+end
+
+function getAdvancedGroupMembers(groupName)
+	local temp = {}
+	local day = getDayOfTheYear()
+	local rank
+	function lol(acc)
+		if (playerGroupCache[acc]) then
+			local data = playerGroupCache[acc]
+			if (not data[2]) then
+				outputDebugString("data[2] is nil in getAdvancedGroupMembers: acc: "..tostring(acc).." group: "..groupName)
+			end
+			if (data[1] == groupName) then
+				local playername = "N/A"
+				--local plr = getAccountPlayer(data[4])
+				local plr = Account(data[2]).player
+				if (plr and isElement(plr)) then	
+					playername = plr.name
+					online = true
+				else
+					-- Probably change this
+					playername = db:query("SELECT `lastUsedName` FROM `accounts` WHERE `accName`=?", acc):poll(-1)[1].lastUsedName or "N/A"
+					online = false
+				end
+				rank = data[3]
+				days = tonumber(data[5]) or 0
+				days = day - days
+				temp[#temp + 1] = {online, playername, acc, rank, days, getPlayerOnlineTime(plr or acc)}
+			end
+		else
+			local result = db:query("SELECT `groupName`, `rank`, `joined`, `lastOnline`, `timeOnline`, `warningLevel` FROM `groups_members` WHERE `account`=? LIMIT 1", acc):poll(-1)
+			playerGroupCache[acc] = {result[1].groupName, acc, result[1].rank, result[1].joined, result[1].lastOnline, result[1].timeOnline, result[1].warningLevel}
+			lol(acc)
+		end
+	end
+	for _, acc in pairs(groupMembers[groupName]) do
+		lol(acc)
+	end
+	return temp
+end
+
+-----
+function getRankIndex(groupName, rank)
+	if (not groupName or not rank) then return end
+	if (groupRanks[groupName] and groupRanks[groupName][rank]) then
+		for i, v in pairs(groupRanks[groupName]) do
+			if (i == rank) then
+				return v[2]
+			end
+		end
+	end
+end
+
+function getRankFromIndex(groupName, rankIndex)
+	if (not groupName or not rankIndex) then return end
+	if (groupRanks[groupName]) then
+		for i, v in pairs(groupRanks[groupName]) do
+			if (v[2] == rankIndex) then
+				return i
+			end
+		end
+	end
+end
+
+function getGroupRankAmount(groupName)
+	if (not groupName or not groupRanks[groupName]) then return end
+	local count = 0
+	for k, v in pairs(groupRanks[groupName]) do
+		count = count + 1
+	end
+	return count
+end
+
+-- 
+function getNextRank(groupName, rank)
+	if (not groupName or not rank) then return end
+	local rankIndex = getRankIndex(groupName, rank)
+	if (rankIndex) then
+		local newRank = getRankFromIndex(groupName, rankIndex + 1)
+		if (newRank) then
+			return newRank
+		else
+			if ((getGroupRankAmount(groupName) - 2) == rankIndex) then
+				return getGroupLastRank(groupName)
+			end
+		end
+	end
+end
+
+function getPreviousRank(groupName, rank)
+	if (not groupName or not rank) then return end
+	local rankIndex = getRankIndex(groupName, rank)
+	if (rankIndex) then
+		if (rankIndex == -1) then
+			return getRankFromIndex(groupName, getGroupRankAmount(groupName) - 2)
+		end
+		if ((rankIndex - 1) > 0) then
+			local newRank = getRankFromIndex(groupName, rankIndex - 1)
+			if (newRank) then
+				return newRank
+			end
+		else
+			return getRankFromIndex(groupName, 0)
+		end
+	end
+end
+
+function canPlayerDoActionInGroup(plr, action)
+	local actionIndex = _permissions[action]
+	if (not actionIndex) then return end
+	local gang = getPlayerGroup(plr)
+	if (not gang) then return end
+	local playerRank = getPlayerGroupRank(plr)
+	if (not playerRank) then return end
+	local perms = getRankPermissions(gang, playerRank)
+	if (perms and perms[actionIndex]) then
+		return true
+	end
+	return false
 end

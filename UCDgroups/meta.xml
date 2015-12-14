@@ -14,7 +14,15 @@
 	<export function="getPlayerOnlineTime" type="server"/>
 	<export function="getRankPermissions" type="server"/>
 	<export function="getMembersWithRank" type="server"/>
-	<export function="createGroup" type="server"/>
+	<export function="getAdvancedGroupMembers" type="server"/>
 	
+	<export function="getRankIndex" type="server"/>
+	<export function="getRankFromIndex" type="server"/>
+	<export function="getGroupRankAmount" type="server"/>
+	<export function="getNextRank" type="server"/>
+	<export function="getPreviousRank" type="server"/>
+	<export function="canPlayerDoActionInGroup" type="server"/>
+	
+	<export function="createGroup" type="server"/>
 	<oop>true</oop>
 </meta>
