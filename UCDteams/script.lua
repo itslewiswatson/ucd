@@ -2,7 +2,7 @@
 local teams = {
 	[1] = {"Admins", 195, 195, 195},
 	[2] = {"Aviators", 255, 255, 0},
-	[3] = {"Law Enforcement", 0, 0, 0},
+	[3] = {"Law Enforcement", 30, 144, 255}, --0-191-255
 	[4] = {"Criminals", 200, 5, 5},
 	[5] = {"Unemployed", 220, 70, 240},
 	[6] = {"Not logged in", 255, 255, 255},
@@ -40,14 +40,14 @@ addEventHandler("onPlayerJoin", root, setDefaultTeam)
 
 function isPlayerInTeam(plr, team)
 	if (not plr or not team) then return nil end
-	if (plr:getType() ~= "player") then return false end
+	if (plr.type ~= "player") then return false end
 	
 	if (type(team) == "string") then
-		if plr:getTeam() == Team.getFromName(team) then
+		if plr.team == Team.getFromName(team) then
 			return true
 		end
-	elseif (team:getType() == "team") then
-		if plr:getTeam() == team then
+	elseif (team.type == "team") then
+		if plr.team == team then
 			return true
 		end
 	end
