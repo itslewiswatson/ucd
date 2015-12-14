@@ -83,11 +83,15 @@ function renderWeapons()
 		return
 	end
 	
-	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) - 1, ((110 / nY) * sY) - 1, ((1140 / nX) * sX) - 1, ((134 / nY) * sY) - 1, tocolor(0, 0, 0, 255), 1.50, "default-bold", "center", "top", false, false, false, false, false)
-	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) + 1, ((110 / nY) * sY) - 1, ((1140 / nX) * sX) + 1, ((134 / nY) * sY) - 1, tocolor(0, 0, 0, 255), 1.50, "default-bold", "center", "top", false, false, false, false, false)
-	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) - 1, ((110 / nY) * sY) + 1, ((1140 / nX) * sX) - 1, ((134 / nY) * sY) + 1, tocolor(0, 0, 0, 255), 1.50, "default-bold", "center", "top", false, false, false, false, false)
-	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) + 1, ((110 / nY) * sY) + 1, ((1140 / nX) * sX) + 1, ((134 / nY) * sY) + 1, tocolor(0, 0, 0, 255), 1.50, "default-bold", "center", "top", false, false, false, false, false)
-	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX)	, ((110 / nY) * sY), 	 ((1140 / nX) * sX), 	 ((134 / nY) * sY), 	tocolor(255, 255, 255, 255), 1.50, "default-bold", "center", "top", false, false, false, false, false)	
+	local scaleX, scaleY
+	scaleX = sX / nX
+	scaleY = sY / nY
+	
+	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) - 1, ((110 / nY) * sY) - 1, ((1140 / nX) * sX) - 1, ((134 / nY) * sY) - 1, tocolor(0, 0, 0, 255), (scaleX + scaleY) / (1 + (1 / 3)), "default-bold", "center", "top", false, false, false, false, false)
+	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) + 1, ((110 / nY) * sY) - 1, ((1140 / nX) * sX) + 1, ((134 / nY) * sY) - 1, tocolor(0, 0, 0, 255), (scaleX + scaleY) / (1 + (1 / 3)), "default-bold", "center", "top", false, false, false, false, false)
+	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) - 1, ((110 / nY) * sY) + 1, ((1140 / nX) * sX) - 1, ((134 / nY) * sY) + 1, tocolor(0, 0, 0, 255), (scaleX + scaleY) / (1 + (1 / 3)), "default-bold", "center", "top", false, false, false, false, false)
+	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX) + 1, ((110 / nY) * sY) + 1, ((1140 / nX) * sX) + 1, ((134 / nY) * sY) + 1, tocolor(0, 0, 0, 255), (scaleX + scaleY) / (1 + (1 / 3)), "default-bold", "center", "top", false, false, false, false, false)
+	dxDrawText(ammoIndicatorText, ((1078 / nX) * sX)	, ((110 / nY) * sY), 	 ((1140 / nX) * sX), 	 ((134 / nY) * sY), 	tocolor(255, 255, 255, 255), (scaleX + scaleY) / (1 + (1 / 3)), "default-bold", "center", "top", false, false, false, false, false)	
 end
 addEventHandler("onClientRender", root, renderWeapons)
 
