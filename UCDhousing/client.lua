@@ -131,7 +131,7 @@ addEvent("UCDhousing.fetchHouse.client", true)
 addEventHandler("UCDhousing.fetchHouse.client", root, fetchHouseGUI)
 
 function createGUI(houseTable)
-	if (UCDhousing and UCDhousing ~= nil) then return end
+	if (UCDhousing) then return end
 	--outputDebugString(tostring(houseTable))
 	-- Assign table values to a variable name
 	local houseID = houseTable[1]
@@ -166,7 +166,7 @@ function createGUI(houseTable)
 	UCDhousing.window[1] = guiCreateWindow(457, 195, 471, 336, "UCD | Housing [ID: "..houseID.."]", false)
 	UCDhousing.window[1]:setSizable(false)
 	exports.UCDutil:centerWindow(UCDhousing.window[1])
-		
+	
 	UCDhousing.label[1] = guiCreateLabel(10, 23, 88, 20, "House name:", false, UCDhousing.window[1])
 	UCDhousing.label[2] = guiCreateLabel(10, 43, 88, 20, "Owner:", false, UCDhousing.window[1])
 	UCDhousing.label[3] = guiCreateLabel(10, 63, 88, 20, "Initial price:", false, UCDhousing.window[1])
@@ -261,6 +261,7 @@ function createGUI(houseTable)
 	--end
 	
 	showCursor(true)
+	addEventHandler("onClientGUIClick", UCDhousing.window[1], handleGUIInput)
 end
 addEvent("UCDhousing.createGUI", true)
 addEventHandler("UCDhousing.createGUI", root, createGUI)
@@ -287,7 +288,7 @@ addEventHandler("UCDhousing.closeGUI", root, closeGUI)
 --hasClicked = false
 function handleGUIInput()
 	-- So we can add a universal antispam/anticlick for the whole housing UI [we can have one statement instead of lots of nested ones within in check for source]
-	if (source:getParent() ~= UCDhousing.window[1]) then return end
+	if (not isElement(UCDhousing.window[1]) or source:getParent() ~= UCDhousing.window[1]) then return end
 	--outputDebugString(UCDhousing.houseID[1])
 	
 	--if hasClicked == true then
@@ -361,7 +362,7 @@ function handleGUIInput()
 	--hasClicked = true
 	--setTimer(function () hasClicked = false end, 2000, 1)
 end
-addEventHandler("onClientGUIClick", guiRoot, handleGUIInput)
+--addEventHandler("onClientGUIClick", guiRoot, handleGUIInput)
 
 function onClientGUIChanged()
 	if (source:getParent() ~= UCDhousing.window[1]) then return end

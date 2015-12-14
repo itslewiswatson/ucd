@@ -30,6 +30,7 @@ end
 function close()
 	destroyElement(housingCreator.window[1])
 	showCursor(false)
+	guiSetInputEnabled(false)
 end
 
 function openPanel()
@@ -63,6 +64,7 @@ function openPanel()
 	
 	addEventHandler("onClientGUIClick", housingCreator.button[1], sendToSv, false)
 	addEventHandler("onClientGUIClick", housingCreator.button[2], close, false)
-	guiSetInputMode("no_binds_when_editing")
+	guiSetInputEnabled(true)
+	guiSetInputMode("no_binds")
 end
 addCommandHandler("chouse", openPanel)
