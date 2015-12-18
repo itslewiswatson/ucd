@@ -310,8 +310,15 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local ping = plr.ping
 	local suburb, city = getZoneName(loc.x, loc.y, loc.z), getZoneName(loc.x, loc.y, loc.z, true)
 	local country = plr:getData("Country") or "N/A"
-	local ammo, weapon = getPedTotalAmmo(plr), getWeaponNameFromID(plr:getWeapon())
 	local playtime = plr:getData("dxscoreboard_playtime") or "N/A"
+	
+	local ammo, weapon
+	if (getPedWeapon(plr)) then
+		ammo, weapon = getPedTotalAmmo(plr), getWeaponNameFromID(getPedWeapon(plr))
+	else
+		ammo = "1"
+		weapon = "Fist"
+	end
 	
 	local vehicle, vehicleHealth
 	if not plr.vehicle then 
@@ -338,7 +345,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	adminPanel.label[19]:setText("Group: "..group)
 	adminPanel.label[20]:setText("Team: "..team)
 	adminPanel.label[21]:setText("Model: "..model)
-	adminPanel.label[22]:setText("Weapon: "..weapon.." ["..ammo.."]")
+	adminPanel.label[22]:setText("Weapon: "..tostring(weapon).." ["..tostring(ammo).."]")
 	adminPanel.label[23]:setText("Ping: "..ping)
 	adminPanel.label[24]:setText("Vehicle: "..vehicle)
 	adminPanel.label[25]:setText("Vehicle Health: "..vehicleHealth)
@@ -403,10 +410,10 @@ end
 addEventHandler("onClientGUIClick", guiRoot, playerSelection)
 
 function adminAction()
-	if (source ~= adminPanel.gridlist[1]) then
+	if (source ~= adminPanel.gridlist[1] and source.parent == adminPanel.tab[1]) then
 		local plr = getSelectedPlayer()
 		if (not plr) then
-			exports.UCDdx:new("You must select a player first!", 255, 0, 0)
+			--exports.UCDdx:new("You must select a player first!", 255, 0, 0)
 			return
 		end
 		

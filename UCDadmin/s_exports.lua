@@ -11,11 +11,14 @@ function getOnlineAdmins()
 end
 
 function getPlayerAdminRank(plr)
-	if (not plr) then return nil end
+	if (not plr) then return end
 	if (plr.type ~= "player") then return false end
 	local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	if isPlayerOwner(plr) then return 5 end
-	return adminTable[id].rank or false
+	if (adminTable and adminTable[id]) then
+		return adminTable[id].rank 
+	end
+	return false
 end
 
 -- make an admin table
