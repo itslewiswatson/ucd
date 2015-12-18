@@ -75,7 +75,7 @@ function updateVehicleGrid(vehicleID)
 	guiGridListSetItemText(GUIEditor.gridlist[1], row, 1, tostring(model), false, false)
 	guiGridListSetItemText(GUIEditor.gridlist[1], row, 2, tostring(health).."%", false, false)
 	guiGridListSetItemText(GUIEditor.gridlist[1], row, 3, tostring(fuel), false, false)
-		
+	
 	guiGridListSetItemColor(GUIEditor.gridlist[1], row, 2, hR, hG, hB, 255)
 	guiGridListSetItemColor(GUIEditor.gridlist[1], row, 3, fR, fG, fB, 255)
 	
@@ -92,7 +92,8 @@ function updateConstant()
 		end
 	end
 end
-addEventHandler("onClientRender", root, updateConstant)
+--addEventHandler("onClientRender", root, updateConstant)
+Timer(updateConstant, 1000, 0)
 
 function populateGridList()
 	guiGridListClear(GUIEditor.gridlist[1])
