@@ -9,27 +9,27 @@ function getAllLoggedInPlayers()
 end
 
 function getPlayerAccountID(plr)
-	if (not plr) then return nil end
+	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player") then return false end
 	if (plr.account.guest) then return false end
 	return plr:getData("accountID") or db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", plr.account.name):poll(-1)[1].id
 end
 
 function isPlayerLoggedIn(plr)
-	if (not plr) then return nil end
-	if (plr.type ~= "player" or plr.account.guest) then return false end
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or plr.account.guest or not plr.account) then return false end
 	return true
 end
 
 function getPlayerAccountName(plr)
-	if (not plr) then return nil end
-	if (plr.type ~= "player" or not plr.account or plr.account.guest) then return false	end
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or not plr.account or plr.account.guest) then return false end
 	return plr.account.name
 end
 
 function registerAccount(plr, usr, passwd, email)
-	if (not plr or not usr or not passwd or not email) then return nil end
-	if (plr.type ~= "player") then return false end
+	if (not plr or not usr or not passwd or not email) then return end
+	if (not isElement(plr) or plr.type ~= "player") then return false end
 
 	-- MTA's db already hashes their user passwords differently to how we do
 	-- This account going first is important, otherwise we would have a fucking mess
@@ -71,15 +71,15 @@ function registerAccount(plr, usr, passwd, email)
 	passwd = nil -- Clear their password out of memory
 	db:exec("INSERT INTO `playerWeapons` SET `weaponString`=?", toJSON({})) -- Empty JSON string
 	
-	if (#accountData == nil or #accountData == 0) then
+	if (not accountData or #accountData == 0) then
 		cacheAccount(1) -- We need to cache their account
 	else
-		cacheAccount(math.max(unpack(accountData)))
+		cacheAccount(math.max(unpack(accountData)) + 1)
 	end
 	-- THIS SHOULD BE THE MOST FOOL PROOF WAY TO DETECT IT
 	
 	-- Old way
-	--cacheAccount(db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id) -- We need to cache their account
+	--cacheAccount(db:query("SELECT MAX(`id`) AS `id`"):poll(-1)[1].id) -- We need to cache their account
 
 	return true
 end

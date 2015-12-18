@@ -9,13 +9,13 @@ addEventHandler("onResourceStart", resourceRoot,
 
 function cacheDatabase(qh)
 	local result = qh:poll(0)
-	for _, row in ipairs(result) do
+	for _, row in pairs(result) do
 		accountData[row.id] = {}
 		for column, value in pairs(row) do
 			if (column ~= "id") then
-				if (value == "true") then value = true end
-				if (value == "false") then value = false end
-				if (value == nil) then value = false end
+				--if (value == "true") then value = true end
+				--if (value == "false") then value = false end
+				--if (value == nil) then value = false end
 				
 				accountData[row.id][column] = value
 			end
@@ -26,9 +26,8 @@ end
 
 -- The equivalent of setAccountData
 function SAD(plr, column, value)
-	if (not plr) or (not column) or (not value) or (not db) then return nil end
-	if (plr:getType() ~= "player") or (type(column) ~= "string") or (type(value) == "table") then return false end
-	if (plr:getAccount():isGuest()) then return false end
+	if (not plr or not column or not value or not db) then return end
+	if (not isElement(plr) or plr.type ~= "player" or type(column) ~= "string" or type(value) == "table" or plr.account.guest) then return false end
 	
 	local accountID = getPlayerAccountID(plr)
 	
@@ -54,9 +53,8 @@ end
 
 -- The equivalent of getAccountData
 function GAD(plr, column)
-	if (not plr) or (not column) then return nil end
-	if (plr:getType() ~= "player") or (type(column) ~= "string") then return false end
-	if (plr:getAccount():isGuest()) then return false end
+	if (not plr or not column) then return end
+	if (not isElement(plr) or plr.type ~= "player" or type(column) ~= "string" or plr.account.guest) then return false end
 	
 	local accountID = getPlayerAccountID(plr)
 	
@@ -64,7 +62,7 @@ function GAD(plr, column)
 	if (column == "*") then
 		return accountData[accountID]
 	else
-		if (accountData[accountID] == nil) or (accountData[accountID][column] == nil) then
+		if (accountData[accountID] == nil or accountData[accountID][column] == nil) then
 			return nil
 		end
 	end
@@ -73,8 +71,8 @@ function GAD(plr, column)
 end
 
 function isPlayerAccountCached(plr)
-	if (not plr) then return nil end
-	if (plr:getType() ~= "player") then return false end
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or plr.account.guest) then return false end
 	
 	local accountID = getPlayerAccountID(plr)
 	
@@ -85,19 +83,19 @@ function isPlayerAccountCached(plr)
 end 
 
 function cacheAccount(id)
-	if (not id) then return nil end
+	if (not id) then return end
 	if (tonumber(id) == nil) then return false end
 	
 	local queryHandle = db:query("SELECT * FROM `accountData` WHERE `id`=?", id)
 	local result = queryHandle:poll(-1)
 	if (#result ~= 1) then return false end
 	
-	for _, row in ipairs(result) do
+	for _, row in pairs(result) do
 		accountData[row.id] = {}
 		for column, value in pairs(row) do
 			if (column ~= "id") then
-				if (value == "true") then value = true end
-				if (value == "false") then value = false end
+				--if (value == "true") then value = true end
+				--if (value == "false") then value = false end
 				
 				accountData[row.id][column] = value
 			end
@@ -108,7 +106,7 @@ function cacheAccount(id)
 end
 
 function getIDData(id, column)
-	if (not id or not column) then return nil end
+	if (not id or not column) then return end
 	if (type(column) ~= "string") then return false end
 	
 	id = tonumber(id)

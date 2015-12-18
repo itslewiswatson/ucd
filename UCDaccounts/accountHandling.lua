@@ -60,15 +60,14 @@ addEventHandler("onPlayerLogin", root, Accounts.Login)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function Accounts.Save(plr)
-	if (plr.type ~= "player") then return nil end
-	if (plr.account.guest) then return false end
+	if (plr.type ~= "player" or plr.account.guest) then return end
 	
 	local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	local playerX, playerY, playerZ = plr:getPosition().x, plr:getPosition().y, plr:getPosition().z
 	local rot = getPedRotation(plr) -- I would use Element:getRotation, but that doesn't return quite correct values yet
 	local dim = plr:getDimension()
 	local interior = plr:getInterior()
-	local team = plr:getTeam():getName()
+	local team = plr.team.name or "Unemployed"
 	local money = plr:getMoney()
 	local model = plr:getModel()
 	local walkstyle = plr:getWalkingStyle() --exports.UCDwalkstyle:getPlayerWalkingStyle(plr)
@@ -118,7 +117,7 @@ function Accounts.Save(plr)
 end
 
 function Accounts.OnQuit()
-	if (source:getAccount():getName() == "guest") then return false end
+	if (source.account.guest) then return false end
 	Accounts.Save(source)
 end
 addEventHandler("onPlayerQuit", root, Accounts.OnQuit)

@@ -13,7 +13,7 @@ function getPlayerWeaponTable(plr)
 	local t = {}
 	for i=1, 12 do
 		if plr:getTotalAmmo(i) ~= 0 then
-			t[i] = {weapon = plr:getWeapon(i), ammo = plr:getTotalAmmo(i)}
+			t[i] = {plr:getWeapon(i), plr:getTotalAmmo(i)}
 		end
 	end
 	return t
@@ -43,7 +43,7 @@ function loadPlayerWeaponString(qh, plr, togive)
 	if (result and #result ~= 0) then
 		if (togive ~= false) then
 			for i, v in pairs(fromJSON(result[1].weaponString)) do
-				giveWeapon(plr, v.weapon, v.ammo)
+				giveWeapon(plr, v[1], v[2])
 			end
 		end
 	end
@@ -58,6 +58,6 @@ addEventHandler("onResourceStop", root, function () for _, plr in pairs(Element.
 
 function getPlayerWeaponString(plr)
 	if (not plr) then return end
-	if (not isElement(plr) or plr.type ~= "player") then return false end
+	if (not isElement(plr) or plr.type ~= "player" or not isPlayerLoggedIn(plr)) then return false end
 	return toJSON(getPlayerWeaponTable(plr))
 end
