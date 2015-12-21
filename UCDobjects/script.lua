@@ -3,7 +3,7 @@ local wires_and_cables = {
 	-- Objects that we replace
 	1316, 1317, -- hoop and cylinder marker types
 	
-	17455, 
+	17455, 1307,
 	
 	-- Objects to completely remove
 	1290, 1283, 1294, 1297, 1226, 3516, 1350, 1231, 3460, 3463, 643, 642, 1315,
@@ -58,6 +58,7 @@ function applyMods()
 	local island_lod = createObject(1316, -3341.5, 2086, 1.2, 0, 0, 0, true)
 	setElementDoubleSided(island, true)
 	island:setLowLOD(island_lod)
+	
 	
 end
 addEventHandler( "onClientResourceStart", resourceRoot, applyMods )
