@@ -39,6 +39,7 @@ local punishmentTimes = {
         adminPanel.window[1] = guiCreateWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
         guiWindowSetSizable(adminPanel.window[1], false)
         guiSetVisible(adminPanel.window[1], false)
+		exports.UCDutil:centerWindow(adminPanel.window[1])
 
         adminPanel.tabpanel[1] = guiCreateTabPanel(10, 24, 645, 470, false, adminPanel.window[1])
 
