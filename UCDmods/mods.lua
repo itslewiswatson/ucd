@@ -1,6 +1,6 @@
 function applyMods()	
-	local skin = engineLoadTXD( "gold.txd", true )
-	engineImportTXD(skin, 519)
+	--local skin = engineLoadTXD( "gold.txd", true )
+	--engineImportTXD(skin, 519)
 
 	local staff = engineLoadTXD( "staff.txd", true )
 	engineImportTXD(staff, 217)
