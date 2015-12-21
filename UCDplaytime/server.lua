@@ -39,13 +39,12 @@ end
 
 function onStart()
 	for _, plr in pairs(Element.getAllByType("player")) do
-		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then
-			return
+		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+			if (not playerTickCount[plr]) then
+				playerTickCount[plr] = getTickCount()
+			end
+			plr:setData("playtime", exports.UCDaccounts:GAD(plr, "playtime"), true)
 		end
-		if (not playerTickCount[plr]) then
-			playerTickCount[plr] = getTickCount()
-		end
-		plr:setData("playtime", exports.UCDaccounts:GAD(plr, "playtime"), true)
 	end
 	
 	updateScoreboard()
@@ -55,14 +54,12 @@ addEventHandler("onResourceStart", resourceRoot, onStart)
 
 function onStop()
 	for _, plr in pairs(Element.getAllByType("player")) do
-		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then
-			return false
+		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then		
+			local accPlayTime  = exports.UCDaccounts:GAD(plr, "playtime")
+			local currPlayTime = math.floor((getTickCount() - playerTickCount[plr]) / 1000)
+			exports.UCDaccounts:SAD(plr, "playtime", tonumber(accPlayTime + currPlayTime))
+			playerTickCount[plr] = nil
 		end
-		
-		local accPlayTime  = exports.UCDaccounts:GAD(plr, "playtime")
-		local currPlayTime = math.floor((getTickCount() - playerTickCount[plr]) / 1000)
-		exports.UCDaccounts:SAD(plr, "playtime", tonumber(accPlayTime + currPlayTime))
-		playerTickCount[plr] = nil
 	end
 end
 addEventHandler("onResourceStop", resourceRoot, onStop)
