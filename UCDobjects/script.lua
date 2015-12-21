@@ -48,11 +48,7 @@ function applyMods()
 	engineImportTXD(engineLoadTXD("island.txd", true), 1316 )
 	engineReplaceModel(engineLoadDFF("island.dff", 1316 ), 1316 )
 	engineSetModelLODDistance(1316, 180)
-	
-	engineReplaceCOL(engineLoadCOL("vehpad.col"), 17455)
-	engineReplaceModel(engineLoadDFF("vehpad.dff"), 17455)
-	engineImportTXD(engineLoadTXD("spawnpads.txd", true), 17455)
-	
+		
 		-- island
 	local island = createObject(1316, -3341.5, 2086, 1.2)
 	local island_lod = createObject(1316, -3341.5, 2086, 1.2, 0, 0, 0, true)

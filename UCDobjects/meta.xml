@@ -6,13 +6,6 @@
 	<file src="island.col" />
 	<file src="island.dff" />
 	<file src="island.txd" />
-	
-	
-	
-	<file src="vehpad.dff" />
-	<file src="vehpad.col" />
-	<file src="spawnpads.txd" />
-	
-	
+		
 	<oop>true</oop>
 </meta>
