@@ -52,7 +52,7 @@ local recLocs = {
 function getPlayerSpecificIDToVehicle(plr)
 	local plr_idToVehicle = {}
 	for i, v in pairs(vehicles) do
-		if v.ownerID == exports.UCDaccounts:getPlayerAccountID(plr) then
+		if v.owner == plr.account.name then
 			if idToVehicle[i] then
 				plr_idToVehicle[i] = idToVehicle[i]
 			end
@@ -100,9 +100,9 @@ addEventHandler("onPlayerQuit", root, onPlayerQuit)
 function loadPlayerVehicles(plr)
 	if not plr then plr = client end -- Warning: You should use the global variable client serverside instead of passing the localPlayer by parameter or source. Otherwise event faking (passing another player instead of the localPlayer) would be possible. More information at addEventHandler
 	playerVehicles[plr] = {}
-	local acccountID = exports.UCDaccounts:getPlayerAccountID(plr)
+	--local acccountID = exports.UCDaccounts:getPlayerAccountID(plr)
 	for i, vehicleData in pairs(vehicles) do
-		if (vehicleData.ownerID == acccountID) then
+		if (vehicleData.owner == plr.account.name) then
 			table.insert(playerVehicles[plr], i)
 		end
 	end
@@ -219,7 +219,7 @@ function hideVehicle(vehicleID, tosync)
 	for _, occupant in pairs(vehicle:getOccupants()) do
 		occupant:removeFromVehicle()
 		if (occupant.type == "player") then
-			if (exports.UCDaccounts:getPlayerAccountID(occupant) ~= getVehicleData(vehicleID, "ownerID")) then
+			if (occupant.account.name ~= getVehicleData(vehicleID, "owner")) then
 				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
 			end
 		end

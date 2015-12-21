@@ -106,8 +106,9 @@ end
 
 function createGUI()
 	GUIEditor.window[1] = guiCreateWindow(586, 330, 326, 333, "UCD | Vehicles", false)
-	guiWindowSetSizable(GUIEditor.window[1], false)
-	guiSetVisible(GUIEditor.window[1], false)
+	GUIEditor.window[1].sizable = false
+	GUIEditor.window[1].visible = false
+	exports.UCDutil:centerWindow(GUIEditor.window[1])
 	GUIEditor.gridlist[1] = guiCreateGridList(11, 31, 305, 186, false, GUIEditor.window[1])
 	guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle", 0.5)
 	guiGridListAddColumn(GUIEditor.gridlist[1], "HP", 0.2)
