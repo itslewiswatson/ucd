@@ -3,6 +3,7 @@
 	<script src="clientExports.lua" type="client"/>
 	<script src="smoothMoveCamera.lua" type="client"/>
 	<script src="confirmation_c.lua" type="client"/>
+	<script src="c_input_box.lua" type="client"/>
 	
 	<export function="getCityZoneFromXYZ" type="server"/>
 	<export function="getCityZoneFromXYZ" type="client"/>
@@ -29,6 +30,9 @@
 	<export function="createConfirmationWindow" type="client"/>
 	<export function="RGBToHex" type="server"/>
 	<export function="RGBToHex" type="client"/>
+	
+	<export function="createInputBox" type="client"/>
+
 		
 	<oop>true</oop>
 </meta>

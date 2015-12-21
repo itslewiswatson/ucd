@@ -13,8 +13,9 @@ function createConfirmationWindow(event, arugment, serverOrClient, title, text)
 	
 	if (confirmation.window[1] == nil) then
 		confirmation.window[1] = guiCreateWindow(819, 425, 282, 132, title, false)
+		centerWindow(confirmation.window[1])
 		guiWindowSetSizable(confirmation.window[1], false)
-
+		
 		confirmation.label[1] = guiCreateLabel(10, 26, 262, 44, tostring(text), false, confirmation.window[1])
 		guiLabelSetHorizontalAlign(confirmation.label[1], "center", false)
 		confirmation.button[1] = guiCreateButton(47, 85, 76, 36, "Yes", false, confirmation.window[1])
