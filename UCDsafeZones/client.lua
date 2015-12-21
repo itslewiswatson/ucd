@@ -25,7 +25,8 @@ function zoneEntry(element, matchingDimension)
 	g = Timer(controlCheck, 1500, 0)
 end
 
-function zoneExit()
+function zoneExit(element, matchingDimension)
+	if (element ~= localPlayer or not matchingDimension) then return end
 	exports.UCDdx:new("You have left a safe zone", 50, 200, 70)
 	if (not localPlayer.frozen) then
 		toggleControl("fire", true)
