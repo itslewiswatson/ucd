@@ -7,3 +7,6 @@
 :guieditor/output/UCDadmin5_2015-12-2_21-29.txt
 :guieditor/output/UCDadmin6_2015-12-2_22-29.txt
 :guieditor/output/UCDadmin7_2015-12-3_10-22.txt
+:guieditor/output/ayylmao_2015-12-17_22-23.txt
+:guieditor/output/blacklist_ucdgroups_2015-12-18_9-57.txt
+:guieditor/output/blacklist_v2_2015-12-20_19-0.txt

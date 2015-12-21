@@ -1,0 +1,47 @@
+
+GUIEditor = {
+    tab = {},
+    tabpanel = {},
+    button = {},
+    window = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(397, 191, 600, 310, "UCD | Groups - Blacklist", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 24, 581, 239, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Account", GUIEditor.tabpanel[1])
+
+GUIEditor.gridlist[1] = guiCreateGridList(9, 6, 562, 280, false, GUIEditor.tab[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Account", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Reason", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Date", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Blacklisted by", 0.2)
+GUIEditor.button[1] = guiCreateButton(156, 296, 130, 38, "Delete Selected", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.gridlist[2] = guiCreateGridList(9, 6, 562, 158, false, GUIEditor.tab[1])
+guiGridListAddColumn(GUIEditor.gridlist[2], "Serial", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[2], "Reason", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[2], "Date", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[2], "Blacklisted by", 0.2)
+GUIEditor.button[2] = guiCreateButton(10, 174, 130, 28, "Add New", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(150, 174, 130, 28, "Delete Selected", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+
+GUIEditor.tab[2] = guiCreateTab("Serial", GUIEditor.tabpanel[1])
+
+GUIEditor.gridlist[3] = guiCreateGridList(9, 6, 562, 158, false, GUIEditor.tab[2])
+guiGridListAddColumn(GUIEditor.gridlist[3], "Serial", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[3], "Reason", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[3], "Date", 0.2)
+guiGridListAddColumn(GUIEditor.gridlist[3], "Blacklisted by", 0.2)
+GUIEditor.button[4] = guiCreateButton(10, 174, 130, 28, "Add New", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[5] = guiCreateButton(150, 174, 130, 28, "Delete Selected", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+
+
+GUIEditor.button[6] = guiCreateButton(9, 269, 581, 31, "Close", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")
