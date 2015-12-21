@@ -10,14 +10,10 @@ addEventHandler("onResourceStart", resourceRoot,
 function cacheDatabase(qh)
 	local result = qh:poll(0)
 	for _, row in pairs(result) do
-		accountData[row.id] = {}
+		accountData[row.account] = {}
 		for column, value in pairs(row) do
-			if (column ~= "id") then
-				--if (value == "true") then value = true end
-				--if (value == "false") then value = false end
-				--if (value == nil) then value = false end
-				
-				accountData[row.id][column] = value
+			if (column ~= "account" and column ~= "id") then
+				accountData[row.account][column] = value
 			end
 		end
 	end
@@ -29,22 +25,22 @@ function SAD(plr, column, value)
 	if (not plr or not column or not value or not db) then return end
 	if (not isElement(plr) or plr.type ~= "player" or type(column) ~= "string" or type(value) == "table" or plr.account.guest) then return false end
 	
-	local accountID = getPlayerAccountID(plr)
+	--local accountID = getPlayerAccountID(plr)
 	
 	-- We need this to cache a new user's account if they registered after the db was cached
-	if (not accountData[accountID]) then
-		accountData[accountID] = {}
-		cacheAccount(accountID)
+	if (not accountData[plr.account.name]) then
+		accountData[plr.account.name] = {}
+		cacheAccount(plr.account.name)
 	end
 	
 	-- Update the table
-	accountData[accountID][column] = value
+	accountData[plr.account.name][column] = value
 	
 	-- Insert it into the database
-	if (accountData[accountID]) then
+	if (accountData[plr.account.name]) then
 		-- nil translates into NULL for SQL, but we don't want to insert NULL values
 		if (value ~= nil) then
-			db:exec("UPDATE `accountData` SET `??`=? WHERE `id`=?", column, value, accountID)
+			db:exec("UPDATE `accountData` SET `??`=? WHERE `account`=?", column, value, plr.account.name)
 		end
 	end
 	
@@ -56,55 +52,52 @@ function GAD(plr, column)
 	if (not plr or not column) then return end
 	if (not isElement(plr) or plr.type ~= "player" or type(column) ~= "string" or plr.account.guest) then return false end
 	
-	local accountID = getPlayerAccountID(plr)
+	--local accountID = getPlayerAccountID(plr)
 	
 	-- If the specified account has no data or the column is not valid
 	if (column == "*") then
-		return accountData[accountID]
+		return accountData[plr.account.name]
 	else
-		if (accountData[accountID] == nil or accountData[accountID][column] == nil) then
+		if (accountData[plr.account.name] == nil or accountData[plr.account.name][column] == nil) then
 			return nil
 		end
 	end
 
-	return accountData[accountID][column]
+	return accountData[plr.account.name][column]
 end
 
 function isPlayerAccountCached(plr)
 	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player" or plr.account.guest) then return false end
 	
-	local accountID = getPlayerAccountID(plr)
+	--local accountID = getPlayerAccountID(plr)
 	
-	if (not accountData[accountID]) then
+	if (not accountData[plr.account.name]) then
 		return false
 	end
 	return true
 end 
 
-function cacheAccount(id)
-	if (not id) then return end
-	if (tonumber(id) == nil) then return false end
+function cacheAccount(account)
+	if (not account) then return end
+	if (type(account) ~= "string") then return false end
 	
-	local queryHandle = db:query("SELECT * FROM `accountData` WHERE `id`=?", id)
-	local result = queryHandle:poll(-1)
-	if (#result ~= 1) then return false end
+	local result = db:query("SELECT * FROM `accountData` WHERE `account`=?", account):poll(-1)
+	if (not result or #result ~= 1) then return false end
 	
 	for _, row in pairs(result) do
-		accountData[row.id] = {}
+		accountData[row.account] = {}
 		for column, value in pairs(row) do
-			if (column ~= "id") then
-				--if (value == "true") then value = true end
-				--if (value == "false") then value = false end
-				
-				accountData[row.id][column] = value
+			if (column ~= "account") then			
+				accountData[row.account][column] = value
 			end
 		end
 	end
-	outputDebugString("Cached player's account with accountID of "..id)
+	outputDebugString("Cached player's account with account "..account)
 	return true
 end
 
+--[[
 function getIDData(id, column)
 	if (not id or not column) then return end
 	if (type(column) ~= "string") then return false end
@@ -122,3 +115,4 @@ function getIDData(id, column)
 
 	return accountData[id][column]
 end
+--]]

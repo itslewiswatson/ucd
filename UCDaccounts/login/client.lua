@@ -291,11 +291,20 @@ function onClickRegisterConfirm(button, state)
 					exports.UCDdx:new("Your passwords do not match", 255, 255, 255)
 					return
 				end
+				triggerEvent("UCDaccounts.login.toggleRegisterConfirm", localPlayer, false)
 				triggerServerEvent("UCDaccounts.login.register", localPlayer, usr, email, passwd, conf)
 			end
 		end
 	end
 end
+
+function toggleRegisterConfirm(state)
+	if (source) then
+		login.button[2].enabled = state
+	end
+end
+addEvent("UCDaccounts.login.toggleRegisterConfirm", true)
+addEventHandler("UCDaccounts.login.toggleRegisterConfirm", root, toggleRegisterConfirm)
 
 -- Open registration window
 function onClickRegister(button, state)

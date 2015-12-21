@@ -14,7 +14,8 @@ function Accounts.Login(_, theCurrentAccount)
 	--outputDebugString("Accounts.Login")
 	if (theCurrentAccount:isGuest()) then return end
 	
-	local accountID = getPlayerAccountID(source)
+	--local accountID = getPlayerAccountID(source)
+	
 	local result = GAD(source, "*")
 	if result == nil then
 		exports.UCDdx:new(source, "We have encountered a database issue. Please contact an administrator.")
@@ -51,9 +52,9 @@ function Accounts.Login(_, theCurrentAccount)
 	
 	setCameraTarget(source, source)
 	fadeCamera(source, true, 2)
-	db:exec("UPDATE `accounts` SET `serial`=?, `ip`=?, `lastUsedName`=? WHERE `id`=?", source:getSerial(), source:getIP(), source:getName(), accountID)
-	source:setData("accountID", accountID, true)
-	source:setData("accountName", result.accName, true)
+	db:exec("UPDATE `accounts` SET `serial`=?, `ip`=?, `lastUsedName`=? WHERE `account`=?", source.serial, source.ip, source.name, source.account.name)
+	--source:setData("accountID", accountID, true)
+	source:setData("accountName", result.account, true)
 end
 addEventHandler("onPlayerLogin", root, Accounts.Login)
 
@@ -62,7 +63,7 @@ addEventHandler("onPlayerLogin", root, Accounts.Login)
 function Accounts.Save(plr)
 	if (plr.type ~= "player" or plr.account.guest) then return end
 	
-	local id = exports.UCDaccounts:getPlayerAccountID(plr)
+	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	local playerX, playerY, playerZ = plr:getPosition().x, plr:getPosition().y, plr:getPosition().z
 	local rot = getPedRotation(plr) -- I would use Element:getRotation, but that doesn't return quite correct values yet
 	local dim = plr:getDimension()
@@ -78,15 +79,16 @@ function Accounts.Save(plr)
 	local class = plr:getData("Class")
 	local nametag = toJSON({plr:getNametagColor()})
 
-	db:exec("UPDATE `accounts` SET `lastUsedName`=?, `ip`=?, `serial`=? WHERE `id`=?", 
+	db:exec("UPDATE `accounts` SET `lastUsedName`=?, `ip`=?, `serial`=? WHERE `account`=?", 
 		plr.name,
 		plr.ip,
 		plr.serial,
-		id 
+		--id
+		plr.account.name
 	)
 	
 	-- It's more efficient here to have one query and not 16 different ones that would come from using SAD
-	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=? WHERE `id`=?",
+	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=? WHERE `account`=?",
 		playerX,
 		playerY,
 		playerZ,
@@ -103,16 +105,17 @@ function Accounts.Save(plr)
 		occupation,
 		class,
 		nametag,
-		id
+		--id
+		plr.account.name
 	)
 	
 	-- Use a timer here to reduce load on the server at once (from SQL queries and tables being accessed)
 	setTimer(
-		function (id)
+		function (account)
 			-- We cache the account here only because we didn't in the above query
 			--cachePlayerAccount(plr)
-			cacheAccount(id) -- This is a rather inefficent method come to think of it
-		end, 1000, 1, id
+			cacheAccount(account) -- This is a rather inefficent method come to think of it
+		end, 1000, 1, plr.account.name
 	)
 end
 

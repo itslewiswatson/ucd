@@ -21,7 +21,7 @@ end
 
 addEventHandler("onPlayerLogin", root,
 	function ()
-		db:query(loadPlayerWeaponString, {source}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", exports.UCDaccounts:getPlayerAccountID(source))
+		db:query(loadPlayerWeaponString, {source}, "SELECT `weaponString` FROM `playerWeapons` WHERE `account`=? LIMIT 1", source.account.name)
 	end
 )
 
@@ -31,7 +31,7 @@ addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		for _, plr in pairs(Element.getAllByType("player")) do
 			if isPlayerLoggedIn(plr) then
-				db:query(loadPlayerWeaponString, {plr, false}, "SELECT `weaponString` FROM `playerWeapons` WHERE `id`=? LIMIT 1", exports.UCDaccounts:getPlayerAccountID(plr))
+				db:query(loadPlayerWeaponString, {plr, false}, "SELECT `weaponString` FROM `playerWeapons` WHERE `account`=? LIMIT 1", plr.account.name)
 			end
 		end
 	end
@@ -50,7 +50,7 @@ function loadPlayerWeaponString(qh, plr, togive)
 end
 
 function savePlayerWeaponString(plr)
-	db:exec("UPDATE `playerWeapons` SET `weaponString`=? WHERE `id`=?", toJSON(getPlayerWeaponTable(plr)), getPlayerAccountID(plr))
+	db:exec("UPDATE `playerWeapons` SET `weaponString`=? WHERE `account`=?", toJSON(getPlayerWeaponTable(plr)), plr.account.name)
 end
 addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) end)
 addEventHandler("onPlayerWasted", root, function () savePlayerWeaponString(source)  end)

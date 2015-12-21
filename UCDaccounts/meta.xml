@@ -5,7 +5,6 @@
 	<script src="accountHandling.lua" type="server" />
 	
 	<script src="exports/s_exports.lua" type="server" />
-	<script src="getFromCache.lua" type="server" />
 	
 	<script src="exports/c_exports.lua" type="client" />
 	
@@ -24,8 +23,6 @@
 	<export function="deleteAccount" type="server" />
 	<export function="changePassword" type="server" />
 	<export function="getPlayerFromID" type="server" />
-	<export function="getIDFromAccountName" type="server" />
-	<export function="getAccountNameFromID" type="server" />
 	<export function="getAllLoggedInPlayers" type="server" />
 	
 	<export function="isLoginWindowOpen" type="client" />

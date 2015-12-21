@@ -12,7 +12,13 @@ function getPlayerAccountID(plr)
 	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player") then return false end
 	if (plr.account.guest) then return false end
-	return plr:getData("accountID") or db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", plr.account.name):poll(-1)[1].id
+	--return plr:getData("accountID") or db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", plr.account.name):poll(-1)[1].id
+	if (sourceResource) then
+		outputDebugString(tostring(sourceResource.name).." called getPlayerAccountID...")
+		return 1
+	end
+	outputDebugString("Called getPlayerAccountID...")
+	return 1
 end
 
 function isPlayerLoggedIn(plr)
@@ -68,8 +74,9 @@ function registerAccount(plr, usr, passwd, email)
 		"Homeless",
 		toJSON({Team.getFromName("Unemployed"):getColor()})
 	)
+	--accountData[usr] = {}
 	passwd = nil -- Clear their password out of memory
-	db:exec("INSERT INTO `playerWeapons` SET `weaponString`=?", toJSON({})) -- Empty JSON string
+	db:exec("INSERT INTO `playerWeapons` SET `account`=?, `weaponString`=?", usr, toJSON({})) -- Empty JSON string
 	
 	if (not accountData or #accountData == 0) then
 		cacheAccount(1) -- We need to cache their account

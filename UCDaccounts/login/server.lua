@@ -66,7 +66,8 @@ function loginPlayer(usr, passwd)
 				return
 			else
 				-- If we have a database error or table error, DO NOT FUCKING LOG THEM IN
-				if (not getIDFromAccountName(usr)) then
+				--if (not getIDFromAccountName(usr)) then
+				if (not accountData[usr]) then
 					exports.UCDdx:new(client, "We have encountered a database issue. Please contact an administrator.", 255, 255, 255)
 					outputDebugString("Player "..client.name.." could not log in - data is nil")
 					return false
@@ -91,6 +92,7 @@ function registerPlayer(usr, email, passwd, conf)
 		local addedAccount = exports.UCDaccounts:registerAccount(client, usr, passwd, email)
 		if (not addedAccount) then
 			exports.UCDdx:new(client, "An unknown error has occurred! Please choose a different account name/password and try again.", 255, 255, 255)
+			triggerClientEvent(client, "UCDaccounts.login.toggleRegisterConfirm", client, true)
 			return false
 		end
 		triggerClientEvent(client, "UCDaccounts.login.hideRegistrationInterface", resourceRoot) -- Hides the window
