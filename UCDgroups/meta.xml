@@ -22,6 +22,9 @@
 	<export function="getNextRank" type="server"/>
 	<export function="getPreviousRank" type="server"/>
 	<export function="canPlayerDoActionInGroup" type="server"/>
+	<export function="getGroupMemberCount" type="server"/>
+	<export function="isRankHigherThan" type="server"/>
+	
 	
 	<export function="createGroup" type="server"/>
 	<oop>true</oop>

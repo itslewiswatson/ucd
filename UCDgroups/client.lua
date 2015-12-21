@@ -5,6 +5,10 @@ groupList = {window = {}, button = {}, gridlist = {}}
 banking = {button = {}, window = {}, edit = {}, label = {}}
 sendInviteGUI = {gridlist = {}, window = {}, button = {}}
 plrInvites = {gridlist = {}, window = {}, button = {}}
+warningAdjust = {progressbar = {}, edit = {}, button = {}, window = {}, label = {}}
+blacklistGUI = {tab = {}, tabpanel = {}, button = {}, window = {}, gridlist = {}}
+addBL = {button = {}, window = {}, edit = {}, label = {}}
+original = {}
 
 _permissions = {
 	[1] = "Ability to demote players",
@@ -178,8 +182,88 @@ function createGUI()
 	plrInvites.button[2] = guiCreateButton(128, 203, 106, 35, "Deny", false, plrInvites.window[1])
 	plrInvites.button[3] = guiCreateButton(244, 203, 106, 35, "Close", false, plrInvites.window[1])
 	
+	-- Warning
+	--[[
+	warningAdjust.window[1] = guiCreateWindow(810, 453, 285, 164, "UCD | Groups - Warnings", false)
+	warningAdjust.window[1].visible = false
+	warningAdjust.window[1].sizable = false
+	warningAdjust.progressbar[1] = guiCreateProgressBar(10, 30, 261, 25, false, warningAdjust.window[1])
+	guiProgressBarSetProgress(warningAdjust.progressbar[1], 0)
+	warningAdjust.button[1] = guiCreateButton(10, 114, 126, 37, "Set Warning", false, warningAdjust.window[1])
+	warningAdjust.edit[1] = guiCreateEdit(89, 82, 105, 22, "", false, warningAdjust.window[1])
+	warningAdjust.label[1] = guiCreateLabel(10, 59, 261, 18, "Enter the new warning level", false, warningAdjust.window[1])
+	guiLabelSetHorizontalAlign(warningAdjust.label[1], "center", false)
+	guiLabelSetVerticalAlign(warningAdjust.label[1], "center")
+	warningAdjust.label[2] = guiCreateLabel(10, 31, 261, 24, "50% (+30)", false, warningAdjust.window[1])
+	guiLabelSetColor(warningAdjust.label[2], 0, 0, 0)
+	guiLabelSetHorizontalAlign(warningAdjust.label[2], "center", false)
+	guiLabelSetVerticalAlign(warningAdjust.label[2], "center")
+	warningAdjust.button[2] = guiCreateButton(146, 114, 126, 37, "Close", false, warningAdjust.window[1])  
+	--]]
+	
+	warningAdjust.window[1] = guiCreateWindow(814, 393, 285, 220, "UCD | Groups - Warnings", false)
+	warningAdjust.window[1].sizable = false
+	warningAdjust.window[1].visible = false
+	warningAdjust.progressbar[1] = guiCreateProgressBar(10, 30, 261, 25, false, warningAdjust.window[1])
+	warningAdjust.button[1] = guiCreateButton(10, 173, 126, 37, "Set Warning", false, warningAdjust.window[1])
+	warningAdjust.edit[1] = guiCreateEdit(89, 82, 105, 22, "", false, warningAdjust.window[1])
+	warningAdjust.edit[2] = guiCreateEdit(10, 141, 262, 22, "", false, warningAdjust.window[1])   
+	warningAdjust.label[1] = guiCreateLabel(10, 59, 261, 18, "Enter the new warning level", false, warningAdjust.window[1])
+	guiLabelSetHorizontalAlign(warningAdjust.label[1], "center", false)
+	warningAdjust.label[2] = guiCreateLabel(10, 31, 261, 24, "0% (+0)", false, warningAdjust.window[1])
+	guiLabelSetColor(warningAdjust.label[2], 0, 0, 0)
+	guiLabelSetHorizontalAlign(warningAdjust.label[2], "center", false)
+	guiLabelSetVerticalAlign(warningAdjust.label[2], "center")
+	warningAdjust.button[1] = guiCreateButton(10, 173, 126, 37, "Set Warning", false, warningAdjust.window[1])
+	warningAdjust.button[2] = guiCreateButton(146, 173, 126, 37, "Close", false, warningAdjust.window[1])
+	warningAdjust.label[3] = guiCreateLabel(10, 119, 261, 18, "Enter the reason", false, warningAdjust.window[1])
+	guiLabelSetHorizontalAlign(warningAdjust.label[3], "center", false)
+	
+	-- Blacklist
+	blacklistGUI.window[1] = guiCreateWindow(397, 191, 600, 310, "UCD | Groups - Blacklist", false)
+	blacklistGUI.window[1].sizable = false
+	blacklistGUI.window[1].visible = false
+	blacklistGUI.tabpanel[1] = guiCreateTabPanel(9, 24, 581, 239, false, blacklistGUI.window[1])
+	blacklistGUI.tab[1] = guiCreateTab("Account", blacklistGUI.tabpanel[1])
+	blacklistGUI.gridlist[1] = guiCreateGridList(9, 6, 562, 158, false, blacklistGUI.tab[1])
+	guiGridListAddColumn(blacklistGUI.gridlist[1], "Account", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[1], "Reason", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[1], "Date", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[1], "Blacklisted by", 0.2)
+	blacklistGUI.button[1] = guiCreateButton(10, 174, 130, 28, "Add New", false, blacklistGUI.tab[1])
+	blacklistGUI.button[2] = guiCreateButton(150, 174, 130, 28, "Delete Selected", false, blacklistGUI.tab[1])
+	blacklistGUI.tab[2] = guiCreateTab("Serial", blacklistGUI.tabpanel[1])
+	blacklistGUI.gridlist[2] = guiCreateGridList(9, 6, 562, 158, false, blacklistGUI.tab[2])
+	guiGridListAddColumn(blacklistGUI.gridlist[2], "Serial", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[2], "Reason", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[2], "Date", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[2], "Blacklisted by", 0.2)
+	blacklistGUI.button[3] = guiCreateButton(10, 174, 130, 28, "Add New", false, blacklistGUI.tab[2])
+	blacklistGUI.button[4] = guiCreateButton(150, 174, 130, 28, "Delete Selected", false, blacklistGUI.tab[2])
+	blacklistGUI.button[5] = guiCreateButton(9, 269, 581, 31, "Close", false, blacklistGUI.window[1])
+	
+	-- Blacklist add
+	addBL.window[1] = guiCreateWindow(516, 288, 346, 148, "UCD | Groups - New Blacklist Item", false)
+	addBL.window[1].sizable = false
+	addBL.window[1].visible = false
+	addBL.label[1] = guiCreateLabel(10, 30, 124, 23, "Account name", false, addBL.window[1])
+	guiLabelSetHorizontalAlign(addBL.label[1], "center", false)
+	guiLabelSetVerticalAlign(addBL.label[1], "center")
+	addBL.label[2] = guiCreateLabel(10, 59, 124, 23, "Reason", false, addBL.window[1])
+	guiLabelSetHorizontalAlign(addBL.label[2], "center", false)
+	guiLabelSetVerticalAlign(addBL.label[2], "center")
+	addBL.button[1] = guiCreateButton(24, 99, 132, 36, "Confirm", false, addBL.window[1])
+	addBL.edit[1] = guiCreateEdit(134, 30, 190, 23, "", false, addBL.window[1])
+	addBL.edit[2] = guiCreateEdit(134, 59, 190, 23, "", false, addBL.window[1])
+	addBL.button[2] = guiCreateButton(176, 99, 132, 36, "Cancel", false, addBL.window[1])
+	
 	-- All the group GUI windows
-	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1]}
+	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1]}
+	for _, gui in pairs(windows) do
+		if (gui and isElement(gui)) then
+			exports.UCDutil:centerWindow(gui)
+		end
+	end
 	
 	-- Event handlers
 	addEventHandler("onClientGUIClick", mainGUI.button[1], createGroup, false)
@@ -192,6 +276,7 @@ function createGUI()
 	addEventHandler("onClientGUIClick", mainGUI.button[6], viewInviteTo, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[9], function () triggerEvent("UCDgroups.inviteList", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[10], viewGroupInfo, false)
+	addEventHandler("onClientGUIClick", mainGUI.button[11], function () triggerEvent("UCDgroups.blacklist", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[13], function () triggerServerEvent("UCDgroups.requestBalance", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[16], function () executeCommandHandler("groups") end, false) 
 	addEventHandler("onClientGUIClick", infoGUI.button[1], saveGroupInfo, false)
@@ -205,6 +290,13 @@ function createGUI()
 	addEventHandler("onClientGUIClick", plrInvites.button[1], handleInvite, false)
 	addEventHandler("onClientGUIClick", plrInvites.button[2], handleInvite, false)
 	addEventHandler("onClientGUIClick", plrInvites.button[3], function () triggerEvent("UCDgroups.inviteList", localPlayer) end, false)
+	addEventHandler("onClientGUIClick", warningAdjust.button[1], warnMember, false)
+	addEventHandler("onClientGUIClick", warningAdjust.button[2], function () triggerEvent("UCDgroups.warningLevelGUI", localPlayer, 0) end, false)
+	addEventHandler("onClientGUIClick", blacklistGUI.button[5], function () triggerEvent("UCDgroups.blacklist", localPlayer) end, false)
+	addEventHandler("onClientGUIClick", blacklistGUI.button[1], handleBlacklist, false)
+	addEventHandler("onClientGUIClick", blacklistGUI.button[3], handleBlacklist, false)
+	addEventHandler("onClientGUIClick", addBL.button[2], handleBlacklist, false)
+	addEventHandler("onClientGUIClick", addBL.button[1], handleBlacklist, false)
 end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
@@ -307,14 +399,18 @@ function viewMemberList(members)
 			return
 		end
 	end
+	-- If a player closes his/her group GUI while the latent event is in progress, we need to not show this
+	if (not mainGUI.window[1].visible) then
+		return
+	end
 	memberList.window[1] = guiCreateWindow(690, 369, 566, 330, "UCD | Groups - Members", false)
 	guiWindowSetSizable(memberList.window[1], false)
-
+	exports.UCDutil:centerWindow(memberList.window[1])
 	memberList.gridlist[1] = guiCreateGridList(9, 25, 547, 266, false, memberList.window[1])
 	guiGridListAddColumn(memberList.gridlist[1], "Name", 0.3)
 	guiGridListAddColumn(memberList.gridlist[1], "Rank", 0.2)
-	guiGridListAddColumn(memberList.gridlist[1], "Last Online", 0.2)
-	guiGridListAddColumn(memberList.gridlist[1], "WL", 0.2)
+	guiGridListAddColumn(memberList.gridlist[1], "Last Online", 0.3)
+	guiGridListAddColumn(memberList.gridlist[1], "WL", 0.1)
 	memberList.button[1] = guiCreateButton(10, 296, 94, 24, "Promote", false, memberList.window[1])
 	memberList.button[2] = guiCreateButton(120, 296, 94, 24, "Demote", false, memberList.window[1])
 	memberList.button[3] = guiCreateButton(233, 296, 94, 24, "Kick", false, memberList.window[1])
@@ -336,7 +432,7 @@ function viewMemberList(members)
 		guiGridListSetItemText(memberList.gridlist[1], row, 2, tostring(info[4]), false, false)
 		guiGridListSetItemText(memberList.gridlist[1], row, 3, tostring(info[5]).." "..tostring(getOnlineTimeString(info[6])), false, false)
 		--guiGridListSetItemText(memberList.gridlist[1], row, 3, tostring(info[5]).." "..tostring((info[6])), false, false)
-		guiGridListSetItemText(memberList.gridlist[1], row, 4, tostring(info[8] or 0).."%", false, true)
+		guiGridListSetItemText(memberList.gridlist[1], row, 4, tostring(info[7] or 0).."%", false, true)
 		guiGridListSetItemData(memberList.gridlist[1], row, 1, tostring(info[3])) -- Sets it to their account name for access
 		
 		if (info[1]) then -- The player is online
@@ -411,7 +507,7 @@ function sendInvite()
 			return
 		end
 		triggerServerEvent("UCDgroups.sendInvite", localPlayer, plr)
-		outputDebugString("triggerd")
+		outputDebugString("sent invite to.. "..plr.name)
 	end
 end
 
@@ -443,6 +539,121 @@ end
 addEvent("UCDgroups.inviteList", true)
 addEventHandler("UCDgroups.inviteList", root, viewInviteList)
 
+function warningLevelGUI(level)
+	original = {level}
+	warningAdjust.window[1].visible = not warningAdjust.window[1].visible
+	if (warningAdjust.window[1].visible) then
+		guiBringToFront(warningAdjust.window[1])
+		guiProgressBarSetProgress(warningAdjust.progressbar[1], level)
+		warningAdjust.label[2].text = level.."% (+0)"
+		addEventHandler("onClientGUIChanged", warningAdjust.edit[1], updateEditForWarning)
+	else
+		warningAdjust.edit[1].text = ""
+		warningAdjust.edit[2].text = ""
+		removeEventHandler("onClientGUIChanged", warningAdjust.edit[1], updateEditForWarning)
+		guiProgressBarSetProgress(warningAdjust.progressbar[1], 0)
+	end
+end
+addEvent("UCDgroups.warningLevelGUI", true)
+addEventHandler("UCDgroups.warningLevelGUI", root, warningLevelGUI)
+
+function updateEditForWarning()
+	if (warningAdjust.window[1].visible) then
+		if (tonumber(warningAdjust.edit[1].text) ~= nil) then
+			if (tonumber(warningAdjust.edit[1].text) >= 0 and tonumber(warningAdjust.edit[1].text) <= 100) then
+				guiProgressBarSetProgress(warningAdjust.progressbar[1], tonumber(warningAdjust.edit[1].text))
+				if (original[1] >= tonumber(warningAdjust.edit[1].text)) then
+					warningAdjust.label[2].text = tonumber(warningAdjust.edit[1].text).."% (-"..tostring(original[1] - tonumber(warningAdjust.edit[1].text))..")"
+				else
+					warningAdjust.label[2].text = tonumber(warningAdjust.edit[1].text).."% (+"..tostring(original[1] + tonumber(warningAdjust.edit[1].text))..")"
+				end
+			end
+		end
+	end
+end
+
+function warnMember()
+	local warningLvl = guiProgressBarGetProgress(warningAdjust.progressbar[1])
+	local reason = warningAdjust.edit[2].text
+	if (reason:gsub(" ", "") == "") then reason = "No Reason" end
+	triggerServerEvent("UCDgroups.warnMember", localPlayer, accounToBeWarned, warningLvl, reason)
+	triggerEvent("UCDgroups.warningLevelGUI", localPlayer, 0)
+end
+
+function viewBlackList(blacklist)
+	guiGridListClear(blacklistGUI.gridlist[1])
+	guiGridListClear(blacklistGUI.gridlist[2])
+	if (blacklist and type(blacklist) == "table") then
+		if (not blacklistGUI.window[1].visible) then
+			blacklistGUI.window[1].visible = true
+			guiBringToFront(blacklistGUI.window[1])
+		end
+		--	Update regardless
+		--for i = 1, #blacklist do
+		for i, data in pairs(blacklist) do
+			local type_
+			if (data.serialAccount:len() == 32) then -- it's a serial
+				type_ = 2
+			else
+				type_ = 1
+			end
+			local row = guiGridListAddRow(blacklistGUI.gridlist[type_])
+			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 1, data.serialAccount, false, false)
+			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 2, data.reason, false, false)
+			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 3, data.datum, false, false)
+			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 3, data.by, false, false)
+		end
+	else
+		if (blacklistGUI.window[1].visible) then
+			blacklistGUI.window[1].visible = false
+		else
+			-- request from the server then call this function back from the server
+			triggerServerEvent("UCDgroups.requestBlacklist", localPlayer)
+		end
+	end
+end
+addEvent("UCDgroups.blacklist", true)
+addEventHandler("UCDgroups.blacklist", root, viewBlackList)
+
+function handleBlacklist()
+	-- Removing an in-place blacklist
+	
+	-- Adding a new blacklist item
+	if (source == blacklistGUI.button[1]) then
+		addBL.label[1].text = "Account name"
+	elseif (source == blacklistGUI.button[3]) then
+		addBL.label[1].text = "Serial"
+	end
+	
+	if (source == addBL.button[1]) then
+		local a, b = addBL.edit[1].text, addBL.edit[2].text
+		
+		if (a == "" or a:gsub(" ", "") == "") then
+			exports.UCDdx:new("You need to specify an account name or serial", 255, 0, 0)
+			return
+		end
+		if (addBL.label[1].text == "Account name") then -- account
+			if (a:len() < 2 or a:len() > 20) then
+				exports.UCDdx:new("Please enter a valid account name", 255, 0, 0)
+				return
+			end
+		else -- serial
+			if (a:len() ~= 32) then
+				exports.UCDdx:new("Please enter a valid serial", 255, 0, 0)
+				return
+			end
+		end
+		if (b:gsub(" ", "") == "") then exports.UCDdx:new("You must provide a reason for this blacklisting", 255, 0, 0) return end
+		triggerServerEvent("UCDgroups.addBlacklistEntry", localPlayer, a, b)
+	end
+	addBL.window[1].visible = not addBL.window[1].visible
+	if (addBL.window[1].visible) then
+		guiBringToFront(addBL.window[1])
+		addBL.edit[1].text = ""
+		addBL.edit[2].text = ""
+	end
+end
+
 function getOnlineTimeString(seconds)
 	local str = ""
 	local hours = math.floor(seconds / 60)
@@ -457,13 +668,42 @@ end
 
 function memberListClick()
 	local row = guiGridListGetSelectedItem(memberList.gridlist[1])
-	-- If they don't have a row selected 
-	if ((not row or row == -1 or row == nil) and source ~= source == memberList.button[5]) then
+	-- If they don't have a row selected
+	if ((not row or row == -1 or row == nil) and source ~= memberList.button[5]) then
 		return
 	end
-	if (source == memberList.button[5]) then
-		--viewMemberList() -- This will hide it
+	
+	if (source == memberList.button[5]) then -- close
 		triggerEvent("UCDgroups.memberList", localPlayer)
+		return
+	end
+	
+	local account
+	account = split(tostring(guiGridListGetItemText(memberList.gridlist[1], row, 1)), " ")[2]
+	account = account:gsub("%)", "")
+	account = account:gsub("%(", "")
+	
+	for i = 1, #memberList.button do
+		if (memberList.button[i] == source) then
+			if (account:match("%W")) then
+				exports.UCDdx:new("An error with this account has occured. Please notify an administrator", 255, 0, 0)
+				return
+			end
+		end
+	end
+	
+	if (account == localPlayer:getData("accountName") and localPlayer.name ~= "Noki") then return end
+	
+	if (source == memberList.button[1]) then -- promote
+		exports.UCDutil:createInputBox("UCD | Groups - Promote", "Enter the reason for promotion", "", "UCDgroups.promoteMember", localPlayer, account)
+	elseif (source == memberList.button[2]) then -- demote
+		exports.UCDutil:createInputBox("UCD | Groups - Demote", "Enter the reason for demotion", "", "UCDgroups.demoteMember", localPlayer, account) -- The reason will be passed by the GUI
+	elseif (source == memberList.button[3]) then -- kick
+		exports.UCDutil:createInputBox("UCD | Groups - Kick", "Enter the reason for kick", "", "UCDgroups.kickMember", localPlayer, account) 
+	elseif (source == memberList.button[4]) then -- warn
+		local level = guiGridListGetItemText(memberList.gridlist[1], row, 4):gsub("%%", "")
+		triggerEvent("UCDgroups.warningLevelGUI", localPlayer, tonumber(level))
+		accounToBeWarned = account
 	end
 end
 
@@ -491,17 +731,14 @@ function createGroup()
 end
 
 function leaveGroup()
-	-- Add a reason here
 	if (localPlayer:getData("group")) then
 		exports.UCDutil:createConfirmationWindow("UCDgroups.leaveGroup", nil, true, "UCD | Groups - Leave", "Are you sure you want to leave this group?")
 	end
 end
 
 function deleteGroup()
-	-- Create a confirmation window
+	-- Add some sort of account confirmation
 	if (localPlayer:getData("group")) then
-		--triggerServerEvent("mainGUI.deleteGroup", localPlayer)
 		exports.UCDutil:createConfirmationWindow("UCDgroups.deleteGroup", nil, true, "UCD | Groups - Delete", "Are you sure you want to delete this group?")
 	end
 end
-

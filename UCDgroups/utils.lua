@@ -23,7 +23,8 @@ end
 
 -- Get the member count of a group
 function getGroupMemberCount(groupName)
-	return #groupMembers[groupName] or false
+	if (not groupMembers[groupName] or not groupTable[groupName].memberCount) then return end
+	return #groupMembers[groupName] or groupTable[groupName].memberCount
 end
 
 -- Get a given player's online time
@@ -148,6 +149,7 @@ function getAdvancedGroupMembers(groupName)
 	local temp = {}
 	local day = getDayOfTheYear()
 	local rank
+	local wl
 	function lol(acc)
 		if (playerGroupCache[acc]) then
 			local data = playerGroupCache[acc]
@@ -169,9 +171,11 @@ function getAdvancedGroupMembers(groupName)
 				rank = data[3]
 				days = tonumber(data[5]) or 0
 				days = day - days
-				temp[#temp + 1] = {online, playername, acc, rank, days, getPlayerOnlineTime(plr or acc)}
+				wl = data[7]
+				temp[#temp + 1] = {online, playername, acc, rank, days, getPlayerOnlineTime(plr or acc), wl}
 			end
 		else
+			outputDebugString("acc = "..acc)
 			local result = db:query("SELECT `groupName`, `rank`, `joined`, `lastOnline`, `timeOnline`, `warningLevel` FROM `groups_members` WHERE `account`=? LIMIT 1", acc):poll(-1)
 			playerGroupCache[acc] = {result[1].groupName, acc, result[1].rank, result[1].joined, result[1].lastOnline, result[1].timeOnline, result[1].warningLevel}
 			lol(acc)
@@ -252,13 +256,29 @@ end
 function canPlayerDoActionInGroup(plr, action)
 	local actionIndex = _permissions[action]
 	if (not actionIndex) then return end
-	local gang = getPlayerGroup(plr)
-	if (not gang) then return end
+	local groupName = getPlayerGroup(plr)
+	if (not groupName) then return end
 	local playerRank = getPlayerGroupRank(plr)
 	if (not playerRank) then return end
-	local perms = getRankPermissions(gang, playerRank)
+	local perms = getRankPermissions(groupName, playerRank)
 	if (perms and perms[actionIndex]) then
 		return true
 	end
 	return false
+end
+
+function isRankHigherThan(groupName, rank1, rank2)
+	if (groupTable[groupName] and groupRanks[groupName] and groupRanks[groupName][rank1] and groupRanks[groupName][rank2]) then
+		local rankIndex1 = groupRanks[groupName][rank1][2]
+		local rankIndex2 = groupRanks[groupName][rank2][2]
+		if (rankIndex1 and rankIndex2) then
+			if (rankIndex1 == -1 and rankIndex2 ~= -1) then return true end
+			if (rankIndex2 == -1 and rankIndex1 ~= -1) then return false end
+			if (rankIndex2 == 0 and rankIndex1 ~= 0) then return true end
+			if (rankIndex1 == 0 and rankIndex2 ~= 0) then return false end
+			if (rankIndex1 > rankIndex2) then return true end
+			if (rankIndex2 > rankIndex1) then return false end
+			if (rankIndex2 == rankIndex1) then return "equal" end
+		end
+	end
 end
