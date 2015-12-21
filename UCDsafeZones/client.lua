@@ -14,16 +14,23 @@ function isElementWithinSafeZone(element)
 	return false
 end
 
+function controlCheck()
+	toggleControl("fire", false)
+end
+
 function zoneEntry(element, matchingDimension)
 	if (element ~= localPlayer or not matchingDimension) then return end
-	if (getElementDimension(element) ~= 0) then return end
-	if (getTeamName(getPlayerTeam(localPlayer)) == "Admins") then exports.UCDdx:new("You have entered a safe zone", 50, 200, 70) return end
-	setPedWeaponSlot(localPlayer, 0)
 	exports.UCDdx:new("You have entered a safe zone", 50, 200, 70)
+	toggleControl("fire", false)
+	g = Timer(controlCheck, 1500, 0)
 end
 
 function zoneExit()
 	exports.UCDdx:new("You have left a safe zone", 50, 200, 70)
+	if (not localPlayer.frozen) then
+		toggleControl("fire", true)
+	end
+	if (isTimer(g)) then killTimer(g) end
 end
 	
 for i, sZone in pairs(sZone) do
@@ -33,19 +40,9 @@ end
 
 function cancelDmg()
 	if (isElementWithinSafeZone(localPlayer)) then
-	if (getPlayerWantedLevel(localPlayer) > 0) then return end
-	cancelEvent()
+		if (getPlayerWantedLevel(localPlayer) > 0) then return end
+		cancelEvent()
 	end
 end
 addEventHandler("onClientPlayerDamage", root, cancelDmg)
 
-
-function cancelWepSwitch(_, currentWeaponSlot)
-	if (not isElementWithinSafeZone(localPlayer)) then return end
-	if (getElementDimension(localPlayer) ~= 0) then return end
-	if (getTeamName(getPlayerTeam(localPlayer)) == "Admins") then return end
-	if (currentWeaponSlot ~= 0) then
-		setPedWeaponSlot(localPlayer, 0)
-	end
-end
-addEventHandler("onClientPlayerWeaponSwitch", root, cancelWepSwitch)
