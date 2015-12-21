@@ -165,7 +165,7 @@ function getAdvancedGroupMembers(groupName)
 					online = true
 				else
 					-- Probably change this
-					playername = db:query("SELECT `lastUsedName` FROM `accounts` WHERE `accName`=?", acc):poll(-1)[1].lastUsedName or "N/A"
+					playername = db:query("SELECT `lastUsedName` FROM `accounts` WHERE `account`=?", acc):poll(-1)[1].lastUsedName or "N/A"
 					online = false
 				end
 				rank = data[3]
