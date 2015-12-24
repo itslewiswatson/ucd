@@ -30,6 +30,8 @@
 	<export function="createConfirmationWindow" type="client"/>
 	<export function="RGBToHex" type="server"/>
 	<export function="RGBToHex" type="client"/>
+	<export function="getPlayerFromPartialName" type="server"/>
+	<export function="getPlayerFromPartialName" type="client"/>
 	
 	<export function="createInputBox" type="client"/>
 
