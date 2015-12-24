@@ -10,12 +10,17 @@ function localChat(player, _, ...)
 		return false
 	else
 		local msg = table.concat({...}, " ")
-		if msg == "" or msg == " " then return end
+		if (msg == "" or msg == " " or msg:gsub(" ", "") == "") then return end
 		if (not exports.UCDaccounts:isPlayerLoggedIn(player)) then return end
 		local pX, pY, pZ = getElementPosition(player)
 		local playerNick = getPlayerName(player)
 		local pR, pG, pB = getPlayerNametagColor(player)
 		local plrTable = {}
+		
+		if (msg:sub(1, 1) == "/") then
+			executeCommandHandler(msg:sub(2, #msg), player)
+			return
+		end
 		
 		for i, v in ipairs(getElementsByType("player")) do
 			if (getElementDimension(v) == getElementDimension(player)) and (exports.UCDutil:isPlayerInRangeOfPoint(v, pX, pY, pZ, range)) then

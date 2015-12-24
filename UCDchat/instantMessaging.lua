@@ -25,7 +25,7 @@ function instantMessage(plr, _, target, ...)
 	end
 	-- Actual messaging function
 	if (not target) then exports.UCDdx:new(plr, "You must specify a player", 255, 0, 0) return end
-    local recipient = exports.UCDmisc:getPlayerFromPartialName(target)
+    local recipient = exports.UCDutil:getPlayerFromPartialName(target)
 	-- If we found a recipient
 	if recipient then
 		local msg = table.concat({...}, " ")

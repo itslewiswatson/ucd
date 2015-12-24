@@ -33,15 +33,19 @@ function onPlayerChat(message, messageType)
 		
 		-- if team chat
 		elseif (messageType == 2) then
-			local sourceTeam = source:getTeam()
-		
-			for _, v in pairs(sourceTeam:getPlayers()) do
-				outputChatBox("("..sourceTeam:getName()..") "..source.name.."#FFFFFF "..message, v, nR, nG, nB, true)
+			
+			if (message:sub(1, 1) == "/") then
+				executeCommandHandler(message:sub(2, #message), source)
+				return
+			end
+			
+			for _, v in pairs(source.team:getPlayers()) do
+				outputChatBox("("..source.team.name..") "..source.name.."#FFFFFF "..message, v, nR, nG, nB, true)
 			end
 			
 			antiSpam[player] = true
 			setTimer(clearAntiSpam, antiSpamTime, 1, player)
-			exports.UCDlogging:new(source, "Teamchat", message, sourceTeam:getName())
+			exports.UCDlogging:new(source, "Teamchat", message, source.team.name)
 		
 		-- if /me chat
 		elseif (messageType == 1) then
