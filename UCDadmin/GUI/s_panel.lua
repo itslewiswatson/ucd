@@ -6,7 +6,7 @@ function requestPlayerData(plr)
 	end
 	local version = plr.version or "N/A"
 	local bank = 500 -- Need bank thingo
-	local email = exports.UCDsql:getConnection():query("SELECT `email` FROM `accounts` WHERE `account`=?", plr.account.name):poll(-1)[1].email or "N/A" -- lol
+	local email = exports.UCDaccounts:getPlayerEmail() or "N/A" -- lol
 	
 	local data = {["ip"] = ip, ["serial"] = serial, ["version"] = version, ["email"] = email or "N/A", ["bank"] = bank}
 	triggerLatentClientEvent(client, "UCDadmin.requestPlayerData:callback", client, data)
