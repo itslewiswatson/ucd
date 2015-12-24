@@ -23,6 +23,7 @@
 	<export function="deleteAccount" type="server" />
 	<export function="changePassword" type="server" />
 	<export function="getPlayerFromID" type="server" />
+	<export function="getAccountEmail" type="server" />
 	<export function="getAllLoggedInPlayers" type="server" />
 	
 	<export function="isLoginWindowOpen" type="client" />

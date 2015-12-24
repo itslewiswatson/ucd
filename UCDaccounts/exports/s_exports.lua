@@ -33,6 +33,17 @@ function getPlayerAccountName(plr)
 	return plr.account.name
 end
 
+emailCache = {}
+function getAccountEmail(account)
+	if (not account) then return end
+	if (not Account(account) or account == "guest") then return false end
+	if (not emailCache[account]) then
+		local email = db:query("SELECT `email` FROM `accounts` WHERE `account`=? LIMIT 1", account):poll(-1)[1].email
+		emailCache[account] = email
+	end
+	return emailCache[account]
+end
+
 function registerAccount(plr, usr, passwd, email)
 	if (not plr or not usr or not passwd or not email) then return end
 	if (not isElement(plr) or plr.type ~= "player") then return false end
@@ -49,12 +60,12 @@ function registerAccount(plr, usr, passwd, email)
 	local salt = bcrypt_salt(6)
 	local passwd = bcrypt_digest(passwd, salt)
 
-	db:exec("INSERT INTO `accounts` SET `accName`=?, `pw`=?, `lastUsedName`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr.name, plr.ip, plr.serial, email)
+	db:exec("INSERT INTO `accounts` SET `account`=?, `pw`=?, `lastUsedName`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr.name, plr.ip, plr.serial, email)
 
 	-- Get their account id so we don't have autoincrement failures
 	--local accountID = db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id
 
-	db:exec("INSERT INTO `accountData` SET `accName`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?",
+	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?",
 		usr,
 		2001,
 		-788,
@@ -74,7 +85,7 @@ function registerAccount(plr, usr, passwd, email)
 		"Homeless",
 		toJSON({Team.getFromName("Unemployed"):getColor()})
 	)
-	--accountData[usr] = {}
+	accountData[usr] = {x = 2001, y = -788, z = 134, rot = 0, dim = 0, interior = 0, playtime = 1, team = "Unemployed", money = 500, model = 61, walkstyle = 0, wanted = 0, health = 200, armour = 0, occupation = "Unemployed", class = "Homeless", nametag = toJSON({Team.getFromName("Unemployed"):getColor()})}
 	passwd = nil -- Clear their password out of memory
 	db:exec("INSERT INTO `playerWeapons` SET `account`=?, `weaponString`=?", usr, toJSON({})) -- Empty JSON string
 	
