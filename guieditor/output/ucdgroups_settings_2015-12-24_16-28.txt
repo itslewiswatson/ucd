@@ -1,0 +1,54 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    combobox = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(1099, 370, 297, 340, "UCD | Groups - Settings", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.edit[1] = guiCreateEdit(134, 34, 43, 24, "255", false, GUIEditor.window[1])
+        GUIEditor.edit[2] = guiCreateEdit(187, 34, 43, 24, "255", false, GUIEditor.window[1])
+        GUIEditor.edit[3] = guiCreateEdit(240, 34, 43, 24, "255", false, GUIEditor.window[1])
+        GUIEditor.edit[4] = guiCreateEdit(134, 68, 43, 24, "255", false, GUIEditor.window[1])
+        GUIEditor.edit[5] = guiCreateEdit(187, 68, 43, 24, "255", false, GUIEditor.window[1])
+        GUIEditor.edit[6] = guiCreateEdit(240, 68, 43, 24, "255", false, GUIEditor.window[1])
+        GUIEditor.label[1] = guiCreateLabel(10, 34, 114, 24, "Group colour", false, GUIEditor.window[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+        GUIEditor.label[2] = guiCreateLabel(10, 68, 114, 24, "Group chat colour", false, GUIEditor.window[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[2], "center")
+        GUIEditor.label[3] = guiCreateLabel(10, 92, 273, 15, "________________________________________", false, GUIEditor.window[1])
+        GUIEditor.button[1] = guiCreateButton(10, 117, 129, 32, "Edit base info", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(154, 117, 129, 32, "Edit job info", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(10, 159, 129, 32, "Modify spawner permissions", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[4] = guiCreateButton(154, 159, 129, 32, "Change group name", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.label[4] = guiCreateLabel(10, 191, 273, 15, "________________________________________", false, GUIEditor.window[1])
+        GUIEditor.combobox[1] = guiCreateComboBox(154, 216, 129, 19, "", false, GUIEditor.window[1])
+        guiComboBoxAddItem(GUIEditor.combobox[1], "No")
+        guiComboBoxAddItem(GUIEditor.combobox[1], "Yes")
+        GUIEditor.label[5] = guiCreateLabel(10, 216, 129, 19, "Lock invites", false, GUIEditor.window[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[5], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[5], "center")
+        GUIEditor.label[6] = guiCreateLabel(11, 245, 129, 19, "Group staff chat", false, GUIEditor.window[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[6], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[6], "center")
+        GUIEditor.combobox[2] = guiCreateComboBox(154, 245, 129, 19, "", false, GUIEditor.window[1])
+        guiComboBoxAddItem(GUIEditor.combobox[2], "Yes")
+        guiComboBoxAddItem(GUIEditor.combobox[2], "No")
+        GUIEditor.button[5] = guiCreateButton(10, 292, 128, 36, "Save", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[6] = guiCreateButton(154, 292, 128, 36, "Close", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.label[7] = guiCreateLabel(10, 264, 273, 15, "________________________________________", false, GUIEditor.window[1])    
+    end
+)

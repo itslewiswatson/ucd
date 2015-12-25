@@ -10,3 +10,8 @@
 :guieditor/output/ayylmao_2015-12-17_22-23.txt
 :guieditor/output/blacklist_ucdgroups_2015-12-18_9-57.txt
 :guieditor/output/blacklist_v2_2015-12-20_19-0.txt
+:guieditor/output/groups_history_2015-12-24_10-37.txt
+:guieditor/output/ucdgroups_settings_2015-12-24_16-28.txt
+:guieditor/output/ucdgroups_ranks_v1_2015-12-24_16-44.txt
+:guieditor/output/ucdgroups_ranks_v2_2015-12-24_17-8.txt
+:guieditor/output/ucdgroups_ranks_v3_2015-12-24_17-22.txt
