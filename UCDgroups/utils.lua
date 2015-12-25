@@ -52,7 +52,10 @@ function getPlayerGroupRank(plr)
 	if (not groupName) then return end
 	--local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
 	local account = plr.account.name
-	return playerGroupCache[account][3] or getGroupFirstRank(groupName)
+	if (not playerGroupCache or not playerGroupCache[account] or not playerGroupCache[account][3]) then	
+		return getGroupFirstRank(groupName)
+	end
+	return playerGroupCache[account][3] 
 end
 
 -- Get the first rank in a group, which is what will be assigned to new players who join

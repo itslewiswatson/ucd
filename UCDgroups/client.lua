@@ -1,33 +1,39 @@
 mainGUI = {button = {}, window = {}, label = {}, edit = {}}
 infoGUI = {button = {}, window = {}, memo = {}}
 memberList = {gridlist = {}, window = {}, button = {}}
-groupList = {window = {}, button = {}, gridlist = {}}
+groupList = {window = {}, button = {}, gridlist = {}, edit = {}}
 banking = {button = {}, window = {}, edit = {}, label = {}}
 sendInviteGUI = {gridlist = {}, window = {}, button = {}}
 plrInvites = {gridlist = {}, window = {}, button = {}}
 warningAdjust = {progressbar = {}, edit = {}, button = {}, window = {}, label = {}}
 blacklistGUI = {tab = {}, tabpanel = {}, button = {}, window = {}, gridlist = {}}
 addBL = {button = {}, window = {}, edit = {}, label = {}}
+historyGUI = {edit = {}, button = {}, window = {}, label = {}, gridlist = {}}
+ranksGUI = {checkbox = {}, scrollpane = {}, label = {}, button = {}, window = {}, gridlist = {}}
+
 original = {}
+groupList_ = {}
 
 _permissions = {
-	[1] = "Ability to demote players",
-	[2] = "Ability to promote players",
-	[3] = "Abilty to kick players",
-	[4] = "Able to promote players until their own rank",
-	[5] = "Able to edit group info",
-	[6] = "Able to invite players to group",
-	[7] = "Able to delete the group",
-	[8] = "Able to edit the group whitelist",
-	[9] = "Able to edit the group blacklist",
-	[10] = "Able to view the group history",
-	[11] = "Able to demote players with same rank",
-	[12] = "Able to deposit money in group bank",
-	[13] = "Able to withdraw money from group bank",
-	[14] = "Able to change the group color",
-	[15] = "Able to join/create alliances",
-	[16] = "Able to change the group chat color",
-	[17] = "Able to warn group members",
+	[1] = "Ability to demote members",
+	[2] = "Ability to promote members",
+	[3] = "Abilty to kick members",
+	[4] = "Abilty to promote members until own rank",
+	[5] = "Abilty to edit group info",
+	[6] = "Abilty to invite players to group",
+	[7] = "Abilty to delete the group",
+	[8] = "Abilty to edit the group whitelist",
+	[9] = "Abilty to edit the group blacklist",
+	[10] = "Abilty to view the group's history",
+	[11] = "Abilty to demote members with same rank",
+	[12] = "Abilty to deposit into group bank",
+	[13] = "Abilty to withdraw from group bank",
+	[14] = "Abilty to change the group color",
+	[15] = "Abilty to manage alliances",
+	[16] = "Abilty to change the group chat color",
+	[17] = "Abilty to warn group members",
+	----------------------------------------------------
+	--[18] = "Can take group job",
 }
 forbiddenPermsForTrial = {[1] = true, [2] = true, [3] = true, [4] = true, [7] = true, [11] = true}
 
@@ -140,6 +146,7 @@ function createGUI()
 	infoGUI.button[2] = guiCreateButton(291, 349, 270, 21, "Close", false, infoGUI.window[1])   
 	
 	-- Group list
+	--[[
 	groupList.window[1] = guiCreateWindow(825, 319, 298, 346, "UCD | Groups - List", false)
 	guiWindowSetSizable(groupList.window[1], false)
 	groupList.window[1].visible = false
@@ -148,7 +155,16 @@ function createGUI()
 	groupList.gridlist[1] = guiCreateGridList(12, 26, 276, 276, false, groupList.window[1])
 	guiGridListAddColumn(groupList.gridlist[1], "Group", 0.6)
 	guiGridListAddColumn(groupList.gridlist[1], "Members", 0.3)
-	
+	--]]
+	groupList.window[1] = guiCreateWindow(812, 336, 298, 346, "UCD | Groups - List", false)
+	groupList.window[1].sizable = false
+	groupList.window[1].visible = false
+	groupList.button[1] = guiCreateButton(209, 307, 79, 29, "Close", false, groupList.window[1])
+	groupList.gridlist[1] = guiCreateGridList(12, 26, 276, 276, false, groupList.window[1])
+	guiGridListAddColumn(groupList.gridlist[1], "Group", 0.65)
+	guiGridListAddColumn(groupList.gridlist[1], "Members", 0.25)
+	groupList.edit[1] = guiCreateEdit(12, 307, 187, 29, "", false, groupList.window[1])
+
 	-- Banking
 	banking.window[1] = guiCreateWindow(805, 430, 316, 161, "UCD | Groups - Banking", false)
 	guiWindowSetSizable(banking.window[1], false)
@@ -227,7 +243,7 @@ function createGUI()
 	blacklistGUI.tab[1] = guiCreateTab("Account", blacklistGUI.tabpanel[1])
 	blacklistGUI.gridlist[1] = guiCreateGridList(9, 6, 562, 158, false, blacklistGUI.tab[1])
 	guiGridListAddColumn(blacklistGUI.gridlist[1], "Account", 0.2)
-	guiGridListAddColumn(blacklistGUI.gridlist[1], "Reason", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[1], "Reason", 0.3)
 	guiGridListAddColumn(blacklistGUI.gridlist[1], "Date", 0.2)
 	guiGridListAddColumn(blacklistGUI.gridlist[1], "Blacklisted by", 0.2)
 	blacklistGUI.button[1] = guiCreateButton(10, 174, 130, 28, "Add New", false, blacklistGUI.tab[1])
@@ -235,7 +251,7 @@ function createGUI()
 	blacklistGUI.tab[2] = guiCreateTab("Serial", blacklistGUI.tabpanel[1])
 	blacklistGUI.gridlist[2] = guiCreateGridList(9, 6, 562, 158, false, blacklistGUI.tab[2])
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Serial", 0.2)
-	guiGridListAddColumn(blacklistGUI.gridlist[2], "Reason", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[2], "Reason", 0.3)
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Date", 0.2)
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Blacklisted by", 0.2)
 	blacklistGUI.button[3] = guiCreateButton(10, 174, 130, 28, "Add New", false, blacklistGUI.tab[2])
@@ -257,8 +273,66 @@ function createGUI()
 	addBL.edit[2] = guiCreateEdit(134, 59, 190, 23, "", false, addBL.window[1])
 	addBL.button[2] = guiCreateButton(176, 99, 132, 36, "Cancel", false, addBL.window[1])
 	
+	-- History
+	historyGUI.window[1] = guiCreateWindow(684, 343, 589, 350, "UCD | Groups - History", false)
+	historyGUI.window[1].sizable = false
+	historyGUI.window[1].visible = false
+	historyGUI.gridlist[1] = guiCreateGridList(9, 24, 570, 277, false, historyGUI.window[1])
+	guiGridListAddColumn(historyGUI.gridlist[1], "Log", 1.5)
+	historyGUI.button[1] = guiCreateButton(455, 310, 124, 30, "Close", false, historyGUI.window[1])
+	historyGUI.label[1] = guiCreateLabel(15, 310, 199, 15, "Group:", false, historyGUI.window[1])
+	historyGUI.label[2] = guiCreateLabel(15, 325, 199, 15, "Viewing:", false, historyGUI.window[1])
+	historyGUI.edit[1] = guiCreateEdit(194, 310, 176, 35, "", false, historyGUI.window[1])
+	
+	-- Custom ranks
+	ranksGUI.window[1] = guiCreateWindow(698, 408, 519, 286, "UCD | Groups - Ranks", false)
+	ranksGUI.window[1].sizable = false
+	ranksGUI.window[1].visible = false
+	ranksGUI.gridlist[1] = guiCreateGridList(10, 25, 186, 201, false, ranksGUI.window[1])
+	ranksGUI.button[1] = guiCreateButton(10, 236, 117, 35, "Add Rank", false, ranksGUI.window[1])
+	ranksGUI.button[2] = guiCreateButton(137, 236, 117, 34, "Edit Rank", false, ranksGUI.window[1])
+	ranksGUI.button[3] = guiCreateButton(264, 236, 117, 34, "Remove Rank", false, ranksGUI.window[1])
+	ranksGUI.button[4] = guiCreateButton(391, 236, 117, 34, "Close", false, ranksGUI.window[1])
+	ranksGUI.scrollpane[1] = guiCreateScrollPane(206, 25, 302, 201, false, ranksGUI.window[1])
+	ranksGUI.checkbox[1] = guiCreateCheckBox(0, 5, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[1] = guiCreateLabel(21, 5, 266, 15, "Ability to demote members", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[2] = guiCreateCheckBox(0, 25, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[2] = guiCreateLabel(21, 25, 266, 15, "Ability to promote members", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[3] = guiCreateCheckBox(0, 45, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[3] = guiCreateLabel(21, 45, 266, 15, "Ability to kick members", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[4] = guiCreateCheckBox(0, 65, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[4] = guiCreateLabel(21, 65, 266, 15, "Ability to promote members until own rank", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[5] = guiCreateCheckBox(0, 86, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[5] = guiCreateLabel(21, 86, 266, 15, "Ability to edit group info", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[6] = guiCreateCheckBox(0, 105, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[6] = guiCreateLabel(21, 105, 266, 15, "Ability to invite players to the group", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[7] = guiCreateCheckBox(0, 126, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[7] = guiCreateLabel(21, 126, 266, 15, "Ability to delete the group", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[8] = guiCreateCheckBox(0, 146, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[8] = guiCreateLabel(21, 146, 266, 15, "Ability to edit the group whitelist", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[9] = guiCreateCheckBox(0, 166, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[9] = guiCreateLabel(21, 166, 266, 15, "Ability to edit the group blacklist", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[10] = guiCreateCheckBox(0, 187, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[10] = guiCreateLabel(21, 187, 266, 15, "Ability to view the group's history", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[11] = guiCreateCheckBox(0, 208, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[11] = guiCreateLabel(21, 208, 266, 15, "Ability to demote members with same rank", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[12] = guiCreateCheckBox(0, 228, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[12] = guiCreateLabel(21, 228, 266, 15, "Ability to deposit into group bank", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[13] = guiCreateCheckBox(0, 249, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[13] = guiCreateLabel(21, 249, 266, 15, "Ability to withdraw from group bank", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[14] = guiCreateCheckBox(0, 270, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[14] = guiCreateLabel(21, 270, 266, 15, "Ability to change group colour", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[15] = guiCreateCheckBox(0, 290, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[15] = guiCreateLabel(21, 290, 266, 15, "Ability to manage alliances", false, ranksGUI.scrollpane[1])
+	ranksGUI.label[16] = guiCreateLabel(21, 309, 266, 15, "Ability to change group chat colour", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[16] = guiCreateCheckBox(0, 309, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[17] = guiCreateCheckBox(0, 328, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[17] = guiCreateLabel(21, 328, 266, 15, "Ability to manage alliances", false, ranksGUI.scrollpane[1])
+	ranksGUI.checkbox[18] = guiCreateCheckBox(0, 349, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[18] = guiCreateLabel(21, 349, 266, 15, "Ability to warn members", false, ranksGUI.scrollpane[1])
+	
 	-- All the group GUI windows
-	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1]}
+	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1]}
 	for _, gui in pairs(windows) do
 		if (gui and isElement(gui)) then
 			exports.UCDutil:centerWindow(gui)
@@ -269,11 +343,10 @@ function createGUI()
 	addEventHandler("onClientGUIClick", mainGUI.button[1], createGroup, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[2], leaveGroup, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[3], deleteGroup, false)
-	--addEventHandler("onClientGUIClick", mainGUI.button[4], function () triggerServerEvent("UCDgroups.requestMemberList", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[4], function () triggerEvent("UCDgroups.memberList", localPlayer) end, false)
-	--addEventHandler("onClientGUIClick", mainGUI.button[5], function () triggerServerEvent("UCDgroups.requestGroupList", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[5], function () triggerEvent("UCDgroups.groupList", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[6], viewInviteTo, false)
+	addEventHandler("onClientGUIClick", mainGUI.button[8], viewGroupHistory, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[9], function () triggerEvent("UCDgroups.inviteList", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[10], viewGroupInfo, false)
 	addEventHandler("onClientGUIClick", mainGUI.button[11], function () triggerEvent("UCDgroups.blacklist", localPlayer) end, false)
@@ -292,13 +365,45 @@ function createGUI()
 	addEventHandler("onClientGUIClick", plrInvites.button[3], function () triggerEvent("UCDgroups.inviteList", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", warningAdjust.button[1], warnMember, false)
 	addEventHandler("onClientGUIClick", warningAdjust.button[2], function () triggerEvent("UCDgroups.warningLevelGUI", localPlayer, 0) end, false)
-	addEventHandler("onClientGUIClick", blacklistGUI.button[5], function () triggerEvent("UCDgroups.blacklist", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", blacklistGUI.button[1], handleBlacklist, false)
+	addEventHandler("onClientGUIClick", blacklistGUI.button[2], handleBlacklist, false)
 	addEventHandler("onClientGUIClick", blacklistGUI.button[3], handleBlacklist, false)
+	addEventHandler("onClientGUIClick", blacklistGUI.button[4], handleBlacklist, false)
+	addEventHandler("onClientGUIClick", blacklistGUI.button[5], function () triggerEvent("UCDgroups.blacklist", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", addBL.button[2], handleBlacklist, false)
 	addEventHandler("onClientGUIClick", addBL.button[1], handleBlacklist, false)
+	addEventHandler("onClientGUIClick", historyGUI.button[1], viewGroupHistory, false)
+	addEventHandler("onClientGUITabSwitched", guiRoot, blacklistTabSwitch)
+	addEventHandler("onClientGUIChanged", guiRoot, onClientGUIChanged)
 end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
+
+function viewGroupHistory(hist, logNum, logCount)
+	guiGridListClear(historyGUI.gridlist[1])
+	historyGUI.edit[1].text = ""
+	if (hist and type(hist) == "table" and #hist) then
+		if (not historyGUI.window[1].visible) then
+			historyGUI.window[1].visible = true
+			guiBringToFront(historyGUI.window[1])
+		end
+		for _, data in pairs(hist) do
+			local row = guiGridListAddRow(historyGUI.gridlist[1])
+			guiGridListSetItemText(historyGUI.gridlist[1], row, 1, tostring(data.log_), false, false)
+			guiGridListSetItemColor(historyGUI.gridlist[1], row, 1, 0, 206, 209)
+		end
+		historyGUI.label[1].text = "Group: "..source:getData("group")
+		historyGUI.label[2].text = "Viewing: "..logNum.." of "..logCount
+	else
+		if (historyGUI.window[1].visible) then
+			historyGUI.window[1].visible = false
+		else
+			-- request from the server then call this function back from the server
+			triggerServerEvent("UCDgroups.requestGroupHistory", localPlayer)
+		end
+	end
+end
+addEvent("UCDgroups.history", true)
+addEventHandler("UCDgroups.history", root, viewGroupHistory)
 
 function bankingHandler(action, groupBalance)
 	if (action == "toggle") then
@@ -332,7 +437,7 @@ addEvent("UCDgroups.balanceWindow", true)
 addEventHandler("UCDgroups.balanceWindow", root, bankingHandler)
 
 function onClientGUIChanged()
-	if (source.parent ~= banking.window[1]) then return end
+	-- Banking edit
 	if (source == banking.edit[1]) then
 		local text = banking.edit[1].text
 		text = text:gsub(",", "")
@@ -343,9 +448,33 @@ function onClientGUIChanged()
 				guiEditSetCaretIndex(banking.edit[1], string.len(banking.edit[1].text))
 			end
 		end
+	-- Group list search
+	elseif (source == groupList.edit[1]) then
+		local text = groupList.edit[1].text
+		if (text == "" or text == " " or text:gsub(" ", "") == "") then
+			guiGridListClear(groupList.gridlist[1])
+			for name_, data_ in pairs(groupList_) do
+				if (name_:lower():find(text:lower())) then
+					local row = guiGridListAddRow(groupList.gridlist[1])
+					guiGridListSetItemText(groupList.gridlist[1], row, 1, name_, false, false)
+					guiGridListSetItemText(groupList.gridlist[1], row, 2, tostring(data_.members).."/"..tostring(data_.slots), false, false)
+					end
+			end
+			return
+		end
+		guiGridListClear(groupList.gridlist[1])
+		for name_, data_ in pairs(groupList_) do
+			if (name_:lower():find(text:lower())) then
+				local row = guiGridListAddRow(groupList.gridlist[1])
+				guiGridListSetItemText(groupList.gridlist[1], row, 1, name_, false, false)
+				guiGridListSetItemText(groupList.gridlist[1], row, 2, tostring(data_.members).."/"..tostring(data_.slots), false, false)
+			end
+		end
+	-- Group log search
+	elseif (source == historyGUI.edit[1]) then
+		
 	end
 end
-addEventHandler("onClientGUIChanged", guiRoot, onClientGUIChanged)
 
 function boolean(var)
 	return (not (not var))
@@ -452,17 +581,20 @@ addEventHandler("UCDgroups.memberList", root, viewMemberList)
 
 function viewGroupList(groups)
 	guiGridListClear(groupList.gridlist[1])
+	groupList.edit[1].text = ""
 	if (groups and type(groups) == "table" and #groups) then
 		if (not groupList.window[1].visible) then
 			groupList.window[1].visible = true
 			guiBringToFront(groupList.window[1])
 		end
 		--	Update regardless
-		for i = 1, #groups do
+		--for i = 1, #groups do
+		for name, data in pairs(groups) do
 			local row = guiGridListAddRow(groupList.gridlist[1])
-			guiGridListSetItemText(groupList.gridlist[1], row, 1, groups[i].name, false, false)
-			guiGridListSetItemText(groupList.gridlist[1], row, 2, tostring(groups[i].members).."/"..tostring(groups[i].slots), false, false)
+			guiGridListSetItemText(groupList.gridlist[1], row, 1, name, false, false)
+			guiGridListSetItemText(groupList.gridlist[1], row, 2, tostring(data.members).."/"..tostring(data.slots), false, false)
 		end
+		groupList_ = groups -- So we can search it later
 	else
 		if (groupList.window[1].visible) then
 			groupList.window[1].visible = false
@@ -601,7 +733,7 @@ function viewBlackList(blacklist)
 			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 1, data.serialAccount, false, false)
 			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 2, data.reason, false, false)
 			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 3, data.datum, false, false)
-			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 3, data.by, false, false)
+			guiGridListSetItemText(blacklistGUI.gridlist[type_], row, 4, data.by, false, false)
 		end
 	else
 		if (blacklistGUI.window[1].visible) then
@@ -616,8 +748,6 @@ addEvent("UCDgroups.blacklist", true)
 addEventHandler("UCDgroups.blacklist", root, viewBlackList)
 
 function handleBlacklist()
-	-- Removing an in-place blacklist
-	
 	-- Adding a new blacklist item
 	if (source == blacklistGUI.button[1]) then
 		addBL.label[1].text = "Account name"
@@ -639,18 +769,45 @@ function handleBlacklist()
 			end
 		else -- serial
 			if (a:len() ~= 32) then
-				exports.UCDdx:new("Please enter a valid serial", 255, 0, 0)
+				exports.UCDdx:new("Please enter a valid serial (32 characters in length)", 255, 0, 0)
 				return
 			end
 		end
 		if (b:gsub(" ", "") == "") then exports.UCDdx:new("You must provide a reason for this blacklisting", 255, 0, 0) return end
 		triggerServerEvent("UCDgroups.addBlacklistEntry", localPlayer, a, b)
+		
+	elseif (source == blacklistGUI.button[2] or source == blacklistGUI.button[4]) then
+		local accountRow, serialRow = guiGridListGetSelectedItem(blacklistGUI.gridlist[1]), guiGridListGetSelectedItem(blacklistGUI.gridlist[2])
+		local selected
+		if (accountRow == -1 or not accountRow or accountRow == nil) then
+			if (serialRow == -1 or not serialRow or serialRow == nil) then
+				exports.UCDdx:new("You need to select a row from the blacklist", 255, 0, 0)
+				return
+			end
+			selected = 2
+		else
+			selected = 1
+		end
+		local row = guiGridListGetSelectedItem(blacklistGUI.gridlist[selected])
+		local serialAccount = guiGridListGetItemText(blacklistGUI.gridlist[selected], row, 1)
+		triggerServerEvent("UCDgroups.removeBlacklistEntry", localPlayer, serialAccount)
 	end
-	addBL.window[1].visible = not addBL.window[1].visible
-	if (addBL.window[1].visible) then
-		guiBringToFront(addBL.window[1])
-		addBL.edit[1].text = ""
-		addBL.edit[2].text = ""
+	
+	if (source == blacklistGUI.button[1] or source == blacklistGUI.button[3] or source == addBL.button[2]) then
+		addBL.window[1].visible = not addBL.window[1].visible
+		if (addBL.window[1].visible) then
+			guiBringToFront(addBL.window[1])
+			addBL.edit[1].text = ""
+			addBL.edit[2].text = ""
+		end
+	end
+end
+
+function blacklistTabSwitch(ele)
+	if (ele == blacklistGUI.tab[1]) then
+		guiGridListSetSelectedItem(blacklistGUI.gridlist[2], 0, 0)
+	elseif (ele == blacklistGUI.tab[2]) then
+		guiGridListSetSelectedItem(blacklistGUI.gridlist[1], 0, 0)
 	end
 end
 
