@@ -1,3 +1,6 @@
+local antiSpam = {}
+local range = 100
+
 function doChat( plr, _, ... )
 	local player = plr
 	if ( antiSpam[ player ] ) then 
@@ -10,7 +13,7 @@ function doChat( plr, _, ... )
 	local pX, pY, pZ = getElementPosition( plr )
 	local plrNick = getPlayerName( plr )
 	for _, v in pairs( getElementsByType( "player" ) ) do
-		if ( exports.UCDmisc:isPlayerInRangeOfPoint( plr, pX, pY, pZ, range ) ) then
+		if ( exports.UCDutil:isPlayerInRangeOfPoint( v, pX, pY, pZ, range ) ) then
 			if ( getElementDimension( plr ) == ( getElementDimension( v ) ) ) then
 				if ( getElementInterior( plr ) == ( getElementInterior( v ) ) ) then
 					outputChatBox( "* "..msg.." ("..plrNick..")", v, 200, 50, 150 )
