@@ -54,7 +54,7 @@ function Accounts.Login(_, theCurrentAccount)
 	fadeCamera(source, true, 2)
 	db:exec("UPDATE `accounts` SET `serial`=?, `ip`=?, `lastUsedName`=? WHERE `account`=?", source.serial, source.ip, source.name, source.account.name)
 	--source:setData("accountID", accountID, true)
-	source:setData("accountName", result.account, true)
+	source:setData("accountName", source.account.name, true)
 end
 addEventHandler("onPlayerLogin", root, Accounts.Login)
 
