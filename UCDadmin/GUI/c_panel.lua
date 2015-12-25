@@ -58,8 +58,8 @@ local punishmentTimes = {
         adminPanel.label[5] = guiCreateLabel(170, 46, 290, 20, "Account Name: ", false, adminPanel.tab[1])
         adminPanel.label[6] = guiCreateLabel(171, 375, 289, 21, "Playtime: ", false, adminPanel.tab[1])
         adminPanel.label[7] = guiCreateLabel(170, 126, 290, 22, "Country: ", false, adminPanel.tab[1])
-        adminPanel.label[8] = guiCreateLabel(171, 128, 289, 20, "Account ID: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[8], "right", false)
+      --  adminPanel.label[8] = guiCreateLabel(171, 128, 289, 20, "Account ID: ", false, adminPanel.tab[1])
+       -- guiLabelSetHorizontalAlign(adminPanel.label[8], "right", false)
         adminPanel.label[9] = guiCreateLabel(170, 210, 290, 20, "Location: ", false, adminPanel.tab[1])
         adminPanel.label[10] = guiCreateLabel(170, 230, 290, 20, "Dimension: ", false, adminPanel.tab[1])
         adminPanel.label[11] = guiCreateLabel(170, 230, 290, 20, "Interior: ", false, adminPanel.tab[1])
@@ -334,7 +334,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	adminPanel.label[5]:setText("Account Name: "..accountName)
 	adminPanel.label[6]:setText("Playtime: "..playtime)
 	adminPanel.label[7]:setText("Country: "..country)
-	adminPanel.label[8]:setText("Account ID: "..accountID)
+	--adminPanel.label[8]:setText("Account ID: "..accountID)
 	adminPanel.label[9]:setText("Location: "..suburb..", "..city)
 	adminPanel.label[10]:setText("Dimension: "..dim)
 	adminPanel.label[11]:setText("Interior: "..int)
@@ -386,7 +386,7 @@ function playerSelection()
 			adminPanel.label[5]:setText("Account Name: ")
 			adminPanel.label[6]:setText("Playtime: ")
 			adminPanel.label[7]:setText("Country: ")
-			adminPanel.label[8]:setText("Account ID: ")
+			--adminPanel.label[8]:setText("Account ID: ")
 			adminPanel.label[9]:setText("Location: ")
 			adminPanel.label[10]:setText("Dimension: ")
 			adminPanel.label[12]:setText("Email: ")
@@ -423,7 +423,8 @@ function adminAction()
 		if (action == "punish") then
 			-- open punish gui
 		elseif (action == "warp to player") then
-			-- 
+			--
+			triggerServerEvent("UCDadmin.warpToPlayer", localPlayer, plr)
 		elseif (action == "warp player to") then
 			
 		elseif (action == "reconnect") then

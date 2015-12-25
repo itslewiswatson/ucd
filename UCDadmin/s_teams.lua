@@ -1,3 +1,18 @@
+serials = {
+	["7784D1745F2D9DD06DD223333311BEB4"] = true, -- me
+	["BC75E981B2E6D61589F7F88BC6968282"] = true, -- vlad
+	["674F07092F0E31C8CE71B31AC7E69FA2"] = true, -- luke
+	["C9FB384CCFFFAE0A04A8B6094CDDAB93"] = true,
+}
+
+addEventHandler("onPlayerConnect", root,
+	function (_, _, _, s)
+		if (not serials[s]) then
+			cancelEvent(true, "You ain't allowed here my nigga")
+		end
+	end
+)
+
 local adminRanks = {
 	[1] = "Trial Administrator",
 	[2] = "Administrator",

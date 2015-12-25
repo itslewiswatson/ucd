@@ -1,13 +1,42 @@
 vowels = {["a"] = true, ["e"] = true, ["i"] = true, ["o"] = true, ["u"] = true}
 
 function warpToPlayer(plr)
-	
+	if (plr and client and isPlayerAdmin(client)) then
+		if (client == plr) then return end
+		if (plr.dimension ~= client.dimension) then
+			client.dimension = plr.dimension
+		end
+		if (plr.interior ~= client.interior) then
+			client.interior = plr.interior
+		end
+		if (plr.vehicle) then
+			local seats = plr.vehicle.maxPassengers + 100
+			local i = 0
+			while (i < seats) do
+				if (not getVehicleOccupant(plr.vehicle, i)) then
+   					warpPedIntoVehicle(client, plr.vehicle, i)
+					break
+				end
+				i = i + 1
+			end
+			if (i >= seats) then
+				exports.UCDdx:new(client, "This player's vehicle is full", 255, 0, 0)
+				return
+			end
+		end
+		
+		local position = plr.matrix.position + plr.matrix.forward * 2
+		client:setPosition(position)
+		exports.UCDdx:new(client, "You have warped to "..plr.name, 0, 255, 0)
+	end
 end
 addEvent("UCDadmin.warpToPlayer", true)
 addEventHandler("UCDadmin.warpToPlayer", root, warpToPlayer)
 
 function warpPlayerTo(plr, warpTo)
-	
+	if (plr and client and warpTo and isPlayerAdmin(client)) then
+		-- warpTo should be a player element
+	end
 end
 addEvent("UCDadmin.warpPlayerTo", true)
 addEventHandler("UCDadmin.warpPlayerTo", root, warpPlayerTo)
@@ -167,7 +196,7 @@ function setPlayerDimension(plr, dimension)
 	if (plr and client and isPlayerAdmin(client)) then
 		plr:setDimension(dimension)
 		exports.UCDdx:new(client, "You have set "..plr.name.."'s dimension to "..dimension, 0, 255, 0)
-		exports.UCDdx:new(client, "Your dimension has been set to "..dimension.." by "..plr.name, 0, 255, 0)
+		exports.UCDdx:new(plr, "Your dimension has been set to "..dimension.." by "..client.name, 0, 255, 0)
 	end
 end
 addEvent("UCDadmin.setDimension", true)
