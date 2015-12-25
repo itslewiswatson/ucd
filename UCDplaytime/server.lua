@@ -24,16 +24,15 @@ addEventHandler("onPlayerQuit", root, onQuit)
 
 function updateScoreboard()
 	for _, plr in pairs(Element.getAllByType("player")) do
-		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then 
-			return
+		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then 
+			if (not playerTickCount[plr]) then
+				playerTickCount[plr] = getTickCount()
+			end
+			
+			local currentTime = math.floor((getTickCount() - playerTickCount[plr]) / 1000)
+			local totalTime   = plr:getData("playtime") + currentTime
+			plr:setData("dxscoreboard_playtime", exports.UCDutil:secondsToHoursMinutes(totalTime))
 		end
-		if (not playerTickCount[plr]) then
-			playerTickCount[plr] = getTickCount()
-		end
-		
-		local currentTime = math.floor((getTickCount() - playerTickCount[plr]) / 1000)
-		local totalTime   = plr:getData("playtime") + currentTime
-		plr:setData("dxscoreboard_playtime", exports.UCDutil:secondsToHoursMinutes(totalTime))
 	end
 end
 
@@ -54,7 +53,7 @@ addEventHandler("onResourceStart", resourceRoot, onStart)
 
 function onStop()
 	for _, plr in pairs(Element.getAllByType("player")) do
-		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then		
+		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then		
 			local accPlayTime  = exports.UCDaccounts:GAD(plr, "playtime")
 			local currPlayTime = math.floor((getTickCount() - playerTickCount[plr]) / 1000)
 			exports.UCDaccounts:SAD(plr, "playtime", tonumber(accPlayTime + currPlayTime))
