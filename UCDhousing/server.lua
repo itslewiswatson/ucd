@@ -132,14 +132,13 @@ function purchaseHouse(houseID)
 		local qh = db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", houseOwner)
 		local accountID = qh:poll(-1)[1].id
 		--]]
-		local accountID = exports.UCDaccounts:getIDFromAccountName(houseOwner)
-		local ownerPlayer = exports.UCDaccounts:getPlayerFromID(accountID)
+		local ownerPlayer = Account(getHouseData(houseID, "owner")).player
 		
 		--outputChatBox("Owner player: "..tostring(ownerPlayer))
 		if (ownerPlayer) then
 			-- Give to the player in cash money and notify them
 			ownerPlayer:giveMoney(housePrice)
-			exports.UCDdx:new(ownerPlayer, client:getName().. " has bought your house '"..getHouseData(houseID, "houseName").."' for $"..exports.UCDutil:tocomma(housePrice), 0, 255, 0)
+			exports.UCDdx:new(ownerPlayer, client.name.. " has bought your house '"..getHouseData(houseID, "houseName").."' for $"..exports.UCDutil:tocomma(housePrice), 0, 255, 0)
 			
 			if (isPlayerInHouse(ownerPlayer) and ownerPlayer.dimension == houseID) then
 				triggerEvent("UCDhousing.leaveHouse", ownerPlayer, houseID)

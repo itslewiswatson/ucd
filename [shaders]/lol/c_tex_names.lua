@@ -8,7 +8,12 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		engineApplyShaderToWorldTexture(wires, 'telewireslong')
 		engineApplyShaderToWorldTexture(wires, 'telewireslong2')
 		engineApplyShaderToWorldTexture(wires, 'antenna1')
+		
 		dxSetShaderValue(wires, 'gColor', 255, 0, 0, 0)
+		
+		dd = dxCreateShader('tex_names.fx', 0, 0, false)
+		engineApplyShaderToWorldTexture(dd, 'waterclear256')
+		dxSetShaderValue(dd, 'gColor', 255, 255, 0, 255)
 	end
 )
 	

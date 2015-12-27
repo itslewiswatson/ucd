@@ -314,8 +314,8 @@ function joinGroup(group_)
 			--db:exec("INSERT INTO `groups_members` SET `groupName`=?, `account`=?, `name`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", group_, account, source.name, rank, getRealTime().yearday, onlineTime[plr])
 			db:exec("INSERT INTO `groups_members` SET `groupName`=?, `account`=?, `name`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", group_, account, source.name, rank, getRealTime().yearday, getPlayerOnlineTime(plr))
 			
-			groupInfo[group_].memberCount = groupInfo[group_].memberCount + 1
-			db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupInfo[group_].memberCount), group_)
+			groupTable[group_].memberCount = groupTable[group_].memberCount + 1
+			db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
 			
 			table.insert(groupMembers[group_], account)
 			source:setData("group", group_)
@@ -360,7 +360,7 @@ function sendInvite(plr)
 				table.insert(playerInvites[plr.account.name], {group_, client.name})
 				db:exec("INSERT INTO `groups_invites` SET `account`=?, `groupName`=?, `by`=?", plr.account.name, group_, client.name)
 				
-				messageGroup(group_, client.name.." has invited "..plr.name.." to the group", info)
+				messageGroup(group_, client.name.." has invited "..plr.name.." to the group", "info")
 				exports.UCDdx:new(plr, "You have been invited to "..group_.." by "..client.name..". Press F6 -> 'Group Invites' to view your invites", 0, 255, 0)
 			else
 				exports.UCDdx:new(client, "You don't have permission to do this action (invite)", 200, 0, 0)
@@ -503,28 +503,39 @@ function kickMember(accName, reason)
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
 		
 		if (canPlayerDoActionInGroup(client, "kick")) then
-			if (isRankHigherThan(gang, clientRank, plrRank)) then
+			if (isRankHigherThan(group_, clientRank, plrRank)) then
 				if (plrRank == clientRank and not canPlayerDoActionInGroup(client, "demotePlayersWithSameRank")) then
 					exports.UCDdx:new(client, "You are not allowed to kick players with the same rank as you", 255, 0, 0)
 					return
 				end
 				
-				db:exec("DELETE FROM `groups_members` WHERE `account`=?", accName)
-				table.remove(groupMembers[group_], accName)
+				for k, v in pairs(groupMembers[group_]) do
+					outputDebugString(tostring(k).." || "..tostring(v))
+					if v == accName then
+						table.remove(groupMembers[group_], k)
+						--groupMembers[group_][k] = nil
+						outputDebugString("Removed "..tostring(v).." at index "..tostring(k))
+						break
+					end	
+				end
+				
 				playerGroupCache[accName] = nil
 				groupTable[group_].memberCount = groupTable[group_].memberCount - 1
 				db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
+				db:exec("DELETE FROM `groups_members` WHERE `account`=?", accName)
 				
 				if (acc.player) then
 					acc.player:removeData("group")
 					triggerEvent("UCDgroups.viewUI", acc.player)
 					exports.UCDdx:new(acc.player, "You have been kicked from "..group_.." by "..client.name.." ("..reason..")")
+					group[acc.player] = nil
 					messageGroup(group_, client.name.." has kicked "..acc.player.name.." ("..reason..")", "info")
 				else
 					messageGroup(group_, client.name.." has kicked "..accName.." ("..reason..")", "info")
 				end
 				triggerEvent("UCDgroups.viewUI", client, true)
 				triggerEvent("UCDgroups.requestMemberList", client)
+				--]]
 			else
 				exports.UCDdx:new(client, "You can't kick players with a higher rank than you", 255, 0, 0)
 			end
@@ -533,6 +544,13 @@ function kickMember(accName, reason)
 end
 addEvent("UCDgroups.kickMember", true)
 addEventHandler("UCDgroups.kickMember", root, kickMember)
+
+function laa()
+	for k, v in pairs(groupMembers["Zedd"]) do
+		outputDebugString(tostring(k).." || "..tostring(v))
+	end
+end
+addCommandHandler("x", laa)
 
 function warnMember(accName, level, reason)
 	if (client and accName and level and reason) then
@@ -654,11 +672,9 @@ addEventHandler("UCDgroups.requestMemberList", root, requestMemberList)
 function requestGroupList()
 	if (client) then
 		local temp = {}
-		local i = 1
 		for groupName, data in pairs(groupTable) do
 			if (getGroupMemberCount(groupName) and getGroupMemberCount(groupName) >= 1) then
-				temp[i] = {name = groupName, members = getGroupMemberCount(groupName), slots = data.slots or 20}
-				i = i + 1
+				temp[groupName] = {members = getGroupMemberCount(groupName), slots = data.slots or 20}
 			end
 		end
 		if (temp) then
@@ -668,6 +684,23 @@ function requestGroupList()
 end
 addEvent("UCDgroups.requestGroupList", true)
 addEventHandler("UCDgroups.requestGroupList", root, requestGroupList)
+
+function requestGroupHistory()
+	if (client) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			if (canPlayerDoActionInGroup(client, "history")) then
+				local history = db:query("SELECT `log` AS `log_` FROM `groups_logs` WHERE `groupName`=? LIMIT 100", group_):poll(-1)
+				local count = db:query("SELECT Count(`log`) AS `count_` FROM `groups_logs` WHERE `groupName`=?", group_):poll(-1)[1].count_
+				triggerLatentClientEvent(client, "UCDgroups.history", client, history or {}, count or 0, #history or 0)
+			else
+				exports.UCDdx:new(client, "You are not allowed to view the group history", 255, 0, 0)
+			end
+		end
+	end
+end
+addEvent("UCDgroups.requestGroupHistory", true)
+addEventHandler("UCDgroups.requestGroupHistory", root, requestGroupHistory)
 
 function requestBlacklist()
 	if (source) then
@@ -682,31 +715,69 @@ addEvent("UCDgroups.requestBlacklist", true)
 addEventHandler("UCDgroups.requestBlacklist", root, requestBlacklist)
 
 function addBlacklistEntry(serialAccount, reason)
-	if (client and serialAccount and reason) then
+	if (client and serialAccount and reason and db) then
 		local group_ = getPlayerGroup(client)
 		if (group_) then
-			local result = db:query("SELECT `uniqueID` FROM `groups_blacklist` WHERE `serialAccount`=? AND `groupName`=?", serialAccount, group_):poll(-1)
-			if (result and #result > 0) then
-				exports.UCDdx:new(client, "This serial or account is already blacklisted", 255, 0, 0)
-				return
-			end
-			if (not Account(serialAccount) and serialAccount:len() ~= 32) then
-				exports.UCDdx:new(client, "This specified account does not exist", 255, 0, 0)
-				return
-			end
-			-- Should be good to go
-			db:exec("INSERT INTO `groups_blacklist` SET `groupName`=?, `serialAccount`=?, `by`=?, `reason`=?", group_, serialAccount, client.account.name, reason)
-			if (serialAccount:len() ~= 32) then
-				exports.UCDdx:new("You have added a blacklisting on account "..serialAccount, 0, 255, 0)
+			if (canPlayerDoActionInGroup(client, "editBlacklist")) then
+				local result = db:query("SELECT `uniqueID` FROM `groups_blacklist` WHERE `serialAccount`=? AND `groupName`=?", serialAccount, group_):poll(-1)
+				if (result and #result > 0) then
+					exports.UCDdx:new(client, "This serial or account is already blacklisted", 255, 0, 0)
+					return
+				end
+				if (not Account(serialAccount) and serialAccount:len() ~= 32) then
+					exports.UCDdx:new(client, "This specified account does not exist", 255, 0, 0)
+					return
+				end
+				-- Should be good to go
+				--db:exec("INSERT INTO `groups_blacklist` SET `groupName`=?, `serialAccount`=?, `by`=?, `reason`=?", group_, serialAccount, client.account.name, reason)
+				db:exec("INSERT INTO `groups_blacklist` (`groupName`, `serialAccount`, `by`, `reason`, `datum`) VALUES (?, ?, ?, ?, CURDATE())", group_, serialAccount, client.account.name, reason)
+				if (serialAccount:len() ~= 32) then
+					exports.UCDdx:new(client, "You have added a blacklisting on account "..serialAccount, 255, 0, 0)
+				else
+					exports.UCDdx:new(client, "You have added a blacklisting on serial "..serialAccount, 255, 0, 0)
+				end
+				triggerEvent("UCDgroups.requestBlacklist", client)
 			else
-				exports.UCDdx:new("You have added a blacklisting on serial "..serialAccount, 0, 255, 0)
+				exports.UCDdx:new(client, "You are not allowed to edit the group's blacklist", 255, 0, 0)
 			end
-			triggerEvent("UCDgroups.requestBlacklist", client)
 		end
 	end
 end
 addEvent("UCDgroups.addBlacklistEntry", true)
 addEventHandler("UCDgroups.addBlacklistEntry", root, addBlacklistEntry)
+
+function removeBlacklistEntry(serialAccount)
+	if (client and serialAccount and db) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			if (canPlayerDoActionInGroup(client, "editBlacklist")) then
+				local result = db:query("SELECT * FROM `groups_blacklist` WHERE `serialAccount`=? AND `groupName`=?", serialAccount, group_):poll(-1)
+				if (not result or result == nil or #result >= 1) then
+					local type1
+					if (serialAccount:len() == 32) then -- serial
+						type1 = "serial"
+					else
+						type1 = "account"
+					end
+					db:exec("DELETE FROM `groups_blacklist` WHERE `serialAccount`=? AND `groupName`=?", serialAccount, group_)
+					exports.UCDdx:new(client, "You have removed the blacklisting on "..serialAccount, 255, 0, 0)
+					triggerEvent("UCDgroups.requestBlacklist", client)
+				else
+					if (serialAccount:len() == 32) then
+						exports.UCDdx:new(client, "This serial is not blacklisted", 255, 0, 0)
+					else
+						exports.UCDdx:new(client, "This account is not blacklisted", 255, 0, 0)
+					end
+					triggerEvent("UCDgroups.requestBlacklist", client)
+				end
+			else
+				exports.UCDdx:new(client, "You are not allowed to edit the group's blacklist", 255, 0, 0)
+			end
+		end
+	end
+end
+addEvent("UCDgroups.removeBlacklistEntry", true)
+addEventHandler("UCDgroups.removeBlacklistEntry", root, removeBlacklistEntry)
 
 function groupChat(plr, _, ...)
 	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr)) then

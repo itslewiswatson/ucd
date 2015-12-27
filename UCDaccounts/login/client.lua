@@ -194,7 +194,7 @@ function onRegistrationEditsChanged()
 				local sitename = gettok(domain, 1, ".")
 				local extension = gettok(domain, 2, ".")
 				if (not extension or extension:len() == 0 or extension:match("%W") or sitename:match("%W") or usrname:match("%W")) then
-					if usrname:match("%W") ~= "." then
+					if usrname:match("%W") ~= "." and usrname:match("%W") ~= "_" then
 						registration.label[5]:setText("Invalid email address")
 						registration.label[5]:setColor(255, 0, 0)
 					else
@@ -202,8 +202,18 @@ function onRegistrationEditsChanged()
 						registration.label[5]:setColor(0, 255, 0)
 					end
 				else
-					registration.label[5]:setText("Valid email address")
-					registration.label[5]:setColor(0, 255, 0)
+					if (extension:find("%_") or domain:find("%_") or sitename:find("%_")) then
+						registration.label[5]:setText("Invalid email address")
+						registration.label[5]:setColor(255, 0, 0)
+					else	
+						if (usrname:find("%_")) then
+							registration.label[5]:setText("Valid email address")
+							registration.label[5]:setColor(0, 255, 0)
+						else
+							registration.label[5]:setText("Valid email address")
+							registration.label[5]:setColor(0, 255, 0)
+						end
+					end
 				end
 			end
 		end

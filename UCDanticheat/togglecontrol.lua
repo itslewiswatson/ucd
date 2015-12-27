@@ -15,12 +15,12 @@ function aimCheck(button, state)
 		if (exceptedSlots[localPlayer.weaponSlot] or exceptedWeapons[localPlayer:getWeapon()]) then
 			return
 		end
-		outputDebugString("fire")
+		--outputDebugString("fire")
 		if (getControlState("aim_weapon")) then
-			outputDebugString("is aiming")
+			--outputDebugString("is aiming")
 		else
 			toggleControl("fire", false)
-			outputDebugString("not aiming")
+			--outputDebugString("not aiming")
 		end
 	end
 	if (fireKeys[button] and state == false) then
