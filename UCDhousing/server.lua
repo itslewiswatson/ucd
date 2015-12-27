@@ -111,6 +111,11 @@ function purchaseHouse(houseID)
 	local housePrice, houseName = getHouseData(houseID, "currentPrice"), getHouseData(houseID, "houseName")
 	local houseOwner = getHouseData(houseID, "owner")
 	
+	if (getHouseData(houseID, "sale") ~= 1) then
+		exports.UCDdx:new(client, "You can't buy this house because it is no longer for sale", 255, 255, 0)
+		return
+	end
+	
 	client:takeMoney(housePrice)
 	-- By default we'll make the player choose to open their house or not
 	setHouseData(houseID, "owner", accountName)
