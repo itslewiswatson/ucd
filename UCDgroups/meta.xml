@@ -5,6 +5,7 @@
 	<script src="core.lua" type="server"/>
 	<script src="client.lua" type="client"/>
 	
+	<script src="utils_c.lua" type="client"/>
 	<script src="utils.lua" type="server"/>
 	
 	<export function="getPlayerGroup" type="server"/>
@@ -15,7 +16,6 @@
 	<export function="getRankPermissions" type="server"/>
 	<export function="getMembersWithRank" type="server"/>
 	<export function="getAdvancedGroupMembers" type="server"/>
-	
 	<export function="getRankIndex" type="server"/>
 	<export function="getRankFromIndex" type="server"/>
 	<export function="getGroupRankAmount" type="server"/>
@@ -24,8 +24,7 @@
 	<export function="canPlayerDoActionInGroup" type="server"/>
 	<export function="getGroupMemberCount" type="server"/>
 	<export function="isRankHigherThan" type="server"/>
-	
-	
 	<export function="createGroup" type="server"/>
+	
 	<oop>true</oop>
 </meta>

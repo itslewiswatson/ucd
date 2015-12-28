@@ -337,15 +337,12 @@ function createGUI()
 	groupSettings.window[1] = guiCreateWindow(930, 213, 297, 396, "UCD | Groups - Settings", false)
 	groupSettings.window[1].sizable = false
 	groupSettings.window[1].visible = false
-	--
 	groupSettings.edit[1] = guiCreateEdit(134, 34, 43, 24, "255", false, groupSettings.window[1])
 	groupSettings.edit[2] = guiCreateEdit(187, 34, 43, 24, "255", false, groupSettings.window[1])
 	groupSettings.edit[3] = guiCreateEdit(240, 34, 43, 24, "255", false, groupSettings.window[1])
-	--
 	groupSettings.edit[4] = guiCreateEdit(134, 68, 43, 24, "255", false, groupSettings.window[1])
 	groupSettings.edit[5] = guiCreateEdit(187, 68, 43, 24, "255", false, groupSettings.window[1])
 	groupSettings.edit[6] = guiCreateEdit(240, 68, 43, 24, "255", false, groupSettings.window[1])
-	--
 	groupSettings.label[1] = guiCreateLabel(10, 34, 114, 24, "Group colour", false, groupSettings.window[1])
 	guiLabelSetHorizontalAlign(groupSettings.label[1], "center", false)
 	guiLabelSetVerticalAlign(groupSettings.label[1], "center")
@@ -354,32 +351,30 @@ function createGUI()
 	guiLabelSetVerticalAlign(groupSettings.label[2], "center")
 	groupSettings.label[3] = guiCreateLabel(10, 92, 273, 15, "________________________________________", false, groupSettings.window[1])
 	groupSettings.button[1] = guiCreateButton(10, 117, 129, 32, "Edit base info", false, groupSettings.window[1])
+	guiSetProperty(groupSettings.button[1], "NormalTextColour", "FFAAAAAA")
 	groupSettings.button[2] = guiCreateButton(154, 117, 129, 32, "Edit job info", false, groupSettings.window[1])
+	guiSetProperty(groupSettings.button[2], "NormalTextColour", "FFAAAAAA")
 	groupSettings.button[3] = guiCreateButton(10, 159, 129, 32, "Modify spawner permissions", false, groupSettings.window[1])
+	guiSetProperty(groupSettings.button[3], "NormalTextColour", "FFAAAAAA")
 	groupSettings.button[4] = guiCreateButton(154, 159, 129, 32, "Change group name", false, groupSettings.window[1])
-	for i = 1, 4 do
-		groupSettings.button[i].enabled = false
-	end
+	guiSetProperty(groupSettings.button[4], "NormalTextColour", "FFAAAAAA")
 	groupSettings.label[4] = guiCreateLabel(10, 191, 273, 15, "________________________________________", false, groupSettings.window[1])
-	--
-	groupSettings.combobox[1] = guiCreateComboBox(154, 216, 129, 65, "", false, groupSettings.window[1])
+	groupSettings.combobox[1] = guiCreateComboBox(154, 216, 129, 19, "", false, groupSettings.window[1])
 	guiComboBoxAddItem(groupSettings.combobox[1], "No")
 	guiComboBoxAddItem(groupSettings.combobox[1], "Yes")
-	groupSettings.combobox[2] = guiCreateComboBox(154, 245, 129, 65, "", false, groupSettings.window[1])
-	guiComboBoxAddItem(groupSettings.combobox[2], "Yes")
-	guiComboBoxAddItem(groupSettings.combobox[2], "No")
-	-- default setting
-	guiComboBoxSetSelected(groupSettings.combobox[1], 0)
-	guiComboBoxSetSelected(groupSettings.combobox[2], 0)
-	--
 	groupSettings.label[5] = guiCreateLabel(10, 216, 129, 19, "Lock invites", false, groupSettings.window[1])
 	guiLabelSetHorizontalAlign(groupSettings.label[5], "center", false)
 	guiLabelSetVerticalAlign(groupSettings.label[5], "center")
 	groupSettings.label[6] = guiCreateLabel(11, 245, 129, 19, "Group staff chat", false, groupSettings.window[1])
 	guiLabelSetHorizontalAlign(groupSettings.label[6], "center", false)
 	guiLabelSetVerticalAlign(groupSettings.label[6], "center")
+	groupSettings.combobox[2] = guiCreateComboBox(154, 245, 129, 19, "", false, groupSettings.window[1])
+	guiComboBoxAddItem(groupSettings.combobox[2], "Yes")
+	guiComboBoxAddItem(groupSettings.combobox[2], "No")
 	groupSettings.button[5] = guiCreateButton(10, 350, 128, 36, "Save", false, groupSettings.window[1])
+	guiSetProperty(groupSettings.button[5], "NormalTextColour", "FFAAAAAA")
 	groupSettings.button[6] = guiCreateButton(154, 350, 128, 36, "Close", false, groupSettings.window[1])
+	guiSetProperty(groupSettings.button[6], "NormalTextColour", "FFAAAAAA")
 	groupSettings.label[7] = guiCreateLabel(10, 264, 273, 15, "________________________________________", false, groupSettings.window[1])
 	groupSettings.edit[7] = guiCreateEdit(10, 318, 273, 22, "", false, groupSettings.window[1])
 	groupSettings.label[8] = guiCreateLabel(11, 289, 272, 19, "Group message of the day (GMOTD)", false, groupSettings.window[1])
@@ -490,6 +485,50 @@ function bankingHandler(action, groupBalance)
 end
 addEvent("UCDgroups.balanceWindow", true)
 addEventHandler("UCDgroups.balanceWindow", root, bankingHandler)
+
+function onClientGUIChanged()
+	-- Banking edit
+	if (source == banking.edit[1]) then
+		local text = banking.edit[1].text
+		text = text:gsub(",", "")
+		if (tonumber(text)) then
+			banking.edit[1]:setText(exports.UCDutil:tocomma(tonumber(text)))
+			--if (guiEditGetCaretIndex(UCDhousing.edit[1]) == string.len(UCDhousing.edit[1]:getText())) then
+			if (not getKeyState("backspace")) then
+				guiEditSetCaretIndex(banking.edit[1], string.len(banking.edit[1].text))
+			end
+		end
+	-- Group list search
+	elseif (source == groupList.edit[1]) then
+		local text = groupList.edit[1].text
+		if (text == "" or text == " " or text:gsub(" ", "") == "") then
+			guiGridListClear(groupList.gridlist[1])
+			for name_, data_ in pairs(groupList_) do
+				if (name_:lower():find(text:lower())) then
+					local row = guiGridListAddRow(groupList.gridlist[1])
+					guiGridListSetItemText(groupList.gridlist[1], row, 1, name_, false, false)
+					guiGridListSetItemText(groupList.gridlist[1], row, 2, tostring(data_.members).."/"..tostring(data_.slots), false, false)
+					end
+			end
+			return
+		end
+		guiGridListClear(groupList.gridlist[1])
+		for name_, data_ in pairs(groupList_) do
+			if (name_:lower():find(text:lower())) then
+				local row = guiGridListAddRow(groupList.gridlist[1])
+				guiGridListSetItemText(groupList.gridlist[1], row, 1, name_, false, false)
+				guiGridListSetItemText(groupList.gridlist[1], row, 2, tostring(data_.members).."/"..tostring(data_.slots), false, false)
+			end
+		end
+	-- Group log search
+	elseif (source == historyGUI.edit[1]) then
+		
+	end
+end
+
+function boolean(var)
+	return (not (not var))
+end
 
 function toggleGUI()
 	if (mainGUI.window[1] and mainGUI.window[1].visible) then
@@ -634,6 +673,35 @@ function viewInviteTo()
 	end
 end
 
+function sendInvite()
+	if (sendInviteGUI.window[1] and isElement(sendInviteGUI.window[1]) and guiGridListGetRowCount(sendInviteGUI.gridlist[1]) >= 1) then
+		local row = guiGridListGetSelectedItem(sendInviteGUI.gridlist[1])
+		if (not row or row == nil or row == -1) then
+			return
+		end
+		local plr = guiGridListGetItemData(sendInviteGUI.gridlist[1], row, 1)
+		if (not plr or not isElement(plr) or plr.type ~= "player") then -- a player could have disconnected or sth
+			exports.UCDdx:new("This player has disconnected", 255, 255, 0)
+			return
+		end
+		if (plr:getData("group")) then -- They could have already joined a group double checks just to be sure
+			exports.UCDdx:new("This player is already in a group - re-open this GUI to refresh", 255, 255, 0)
+			return
+		end
+		triggerServerEvent("UCDgroups.sendInvite", localPlayer, plr)
+		outputDebugString("sent invite to.. "..plr.name)
+	end
+end
+
+function handleInvite()
+	if (source ~= plrInvites.button[1] and source ~= plrInvites.button[2]) then return end
+	local row = guiGridListGetSelectedItem(plrInvites.gridlist[1])
+	if (row and row ~= false and row ~= -1 and row ~= nil) then
+		local group_ = guiGridListGetItemText(plrInvites.gridlist[1], row, 1)
+		triggerServerEvent("UCDgroups.handleInvite", localPlayer, group_, source.text:lower())
+	end
+end
+
 function viewInviteList(invites)
 	if (invites) then
 		guiGridListClear(plrInvites.gridlist[1])
@@ -671,6 +739,21 @@ end
 addEvent("UCDgroups.warningLevelGUI", true)
 addEventHandler("UCDgroups.warningLevelGUI", root, warningLevelGUI)
 
+function updateEditForWarning()
+	if (warningAdjust.window[1].visible) then
+		if (tonumber(warningAdjust.edit[1].text) ~= nil) then
+			if (tonumber(warningAdjust.edit[1].text) >= 0 and tonumber(warningAdjust.edit[1].text) <= 100) then
+				guiProgressBarSetProgress(warningAdjust.progressbar[1], tonumber(warningAdjust.edit[1].text))
+				if (original[1] >= tonumber(warningAdjust.edit[1].text)) then
+					warningAdjust.label[2].text = tonumber(warningAdjust.edit[1].text).."% (-"..tostring(original[1] - tonumber(warningAdjust.edit[1].text))..")"
+				else
+					warningAdjust.label[2].text = tonumber(warningAdjust.edit[1].text).."% (+"..tostring(original[1] + tonumber(warningAdjust.edit[1].text))..")"
+				end
+			end
+		end
+	end
+end
+
 function warnMember()
 	local warningLvl = guiProgressBarGetProgress(warningAdjust.progressbar[1])
 	local reason = warningAdjust.edit[2].text
@@ -678,24 +761,6 @@ function warnMember()
 	triggerServerEvent("UCDgroups.warnMember", localPlayer, accounToBeWarned, warningLvl, reason)
 	triggerEvent("UCDgroups.warningLevelGUI", localPlayer, 0)
 end
-
-function viewGroupSettings(settings)
-	if (settings and type(settings) == "table") then
-		if (not groupSettings.window[1].visible) then
-			groupSettings.window[1].visible = true
-			guiBringToFront(groupSettings.window[1])
-		end
-		groupSettings.edit[7].text = settings.gmotd
-	else
-		if (groupSettings.window[1].visible) then
-			groupSettings.window[1].visible = false
-		else
-			triggerServerEvent("UCDgroups.requestGroupSettings", localPlayer)
-		end
-	end
-end
-addEvent("UCDgroups.settings", true)
-addEventHandler("UCDgroups.settings", root, viewGroupSettings)
 
 function viewBlackList(blacklist)
 	guiGridListClear(blacklistGUI.gridlist[1])
@@ -864,6 +929,26 @@ function handleBlacklist()
 	end
 end
 
+function blacklistTabSwitch(ele)
+	if (ele == blacklistGUI.tab[1]) then
+		guiGridListSetSelectedItem(blacklistGUI.gridlist[2], 0, 0)
+	elseif (ele == blacklistGUI.tab[2]) then
+		guiGridListSetSelectedItem(blacklistGUI.gridlist[1], 0, 0)
+	end
+end
+
+function getOnlineTimeString(seconds)
+	local str = ""
+	local hours = math.floor(seconds / 60)
+	local minutes = math.ceil(seconds - (hours * 60))
+	if (hours > 0) then
+		str = "("..hours.."h "..minutes.."m)"
+	else
+		str = "("..minutes.."m)"
+	end
+	return str
+end
+
 function memberListClick()
 	local row = guiGridListGetSelectedItem(memberList.gridlist[1])
 	-- If they don't have a row selected
@@ -938,34 +1023,5 @@ function deleteGroup()
 	-- Add some sort of account confirmation
 	if (localPlayer:getData("group")) then
 		exports.UCDutil:createConfirmationWindow("UCDgroups.deleteGroup", nil, true, "UCD | Groups - Delete", "Are you sure you want to delete this group?")
-	end
-end
-
-function sendInvite()
-	if (sendInviteGUI.window[1] and isElement(sendInviteGUI.window[1]) and guiGridListGetRowCount(sendInviteGUI.gridlist[1]) >= 1) then
-		local row = guiGridListGetSelectedItem(sendInviteGUI.gridlist[1])
-		if (not row or row == nil or row == -1) then
-			return
-		end
-		local plr = guiGridListGetItemData(sendInviteGUI.gridlist[1], row, 1)
-		if (not plr or not isElement(plr) or plr.type ~= "player") then -- a player could have disconnected or sth
-			exports.UCDdx:new("This player has disconnected", 255, 255, 0)
-			return
-		end
-		if (plr:getData("group")) then -- They could have already joined a group double checks just to be sure
-			exports.UCDdx:new("This player is already in a group - re-open this GUI to refresh", 255, 255, 0)
-			return
-		end
-		triggerServerEvent("UCDgroups.sendInvite", localPlayer, plr)
-		outputDebugString("sent invite to.. "..plr.name)
-	end
-end
-
-function handleInvite()
-	if (source ~= plrInvites.button[1] and source ~= plrInvites.button[2]) then return end
-	local row = guiGridListGetSelectedItem(plrInvites.gridlist[1])
-	if (row and row ~= false and row ~= -1 and row ~= nil) then
-		local group_ = guiGridListGetItemText(plrInvites.gridlist[1], row, 1)
-		triggerServerEvent("UCDgroups.handleInvite", localPlayer, group_, source.text:lower())
 	end
 end

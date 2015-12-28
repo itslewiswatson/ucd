@@ -206,6 +206,7 @@ function createGroup(name)
 			["colour"] = toJSON(settings.default_colour),
 			["balance"] = 0,
 			["chatColour"] = toJSON(settings.default_chat_colour),
+			["gmotd"] = "lol",
 		}
 		
 		groupMembers[groupName] = {}
@@ -701,6 +702,35 @@ function requestGroupHistory()
 end
 addEvent("UCDgroups.requestGroupHistory", true)
 addEventHandler("UCDgroups.requestGroupHistory", root, requestGroupHistory)
+
+function requestGroupRanks()
+	if (client) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			triggerLatentClientEvent(client, "UCDgroups.groupRanks", client, groupRanks[group_])
+		end
+	end
+end
+addEvent("UCDgroups.requestGroupRanks", true)
+addEventHandler("UCDgroups.requestGroupRanks", root, requestGroupRanks)
+
+function requestGroupSettings()
+	if (client) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			local temp = {
+				["groupColour"] = fromJSON(groupTable[group_].colour) or settings.default_colour,
+				["chatColour"] = fromJSON(groupTable[group_].chatColour) or settings.default_chat_colour,
+				["gmotd"] = groupTable[group_].gmotd or "",
+				["gsc"] = true, -- Add setting somewhere
+				["lockInvites"] = false, --	Add setting somewhere
+			}
+			triggerLatentClientEvent(client, "UCDgroups.settings", client, temp)
+		end
+	end
+end
+addEvent("UCDgroups.requestGroupSettings", true)
+addEventHandler("UCDgroups.requestGroupSettings", root, requestGroupSettings)
 
 function requestBlacklist()
 	if (source) then
