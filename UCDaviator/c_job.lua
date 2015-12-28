@@ -3,7 +3,7 @@ jobUI = {
     window = {},
     button = {},
 	column = {},
-}
+}  
 
 validSkinID = {
 	{ "Male Pilot", 61 },
