@@ -8,22 +8,40 @@
 -------------------------------------------------------------------
 
 db = exports.UCDsql:getConnection()
+count = 0
 
-function isPlayerInHouse(plr)
+function isPlayerInHouse(plr, houseID)
 	if (not plr or not isElement(plr)) then return end
-	if (plr.type ~= "player") then return false end
+	if (plr.type ~= "player" or not isElement(plr) or tonumber(houseID) == nil) then return false end
 	
-	if (plr.interior > 0 and plr.interior <= 32 and plr.dimension > 0 and plr.dimension <= getHighestHouseID()) then -- Put number of houses here
-		return true
+	if (houseID) then
+		if (plr.interior == getHouseData(houseID, "interiorID") and plr.dimension == houseID) then
+			return true
+		end
+	else
+		if (plr.interior > 0 and plr.interior <= 32 and plr.dimension > 0 and plr.dimension <= getHouseCount) then -- Put number of houses here
+			return true
+		end
 	end
 	return false
 end
 
-function getHighestHouseID()
+function getHouseCount()
 	local result
 	result = #housingData
 	if (not result or result == nil) then
-		result = db:query("SELECT MAX(`housing`) AS `houseID`"):poll(-1)[1].houseID
+		result = db:query("SELECT Count(*) AS `foo` FROM `housing`"):poll(-1)[1].foo
 	end
-	return result or nil
+	count = result
+	return result or false
 end
+
+function getHighestHouseID()
+	local result
+	result = math.max(unpack(housingData))
+	if (not result or result == nil) then
+		result = db:query("SELECT MAX(`houseID`) AS `houseID` FROM `housing`"):poll(-1)[1].houseID
+	end
+	return result or false
+end
+
