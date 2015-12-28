@@ -23,6 +23,7 @@ function onPlayerChat(message, messageType)
 		local coord = source:getPosition()
 		
 		if (messageType == 0) then
+			if (message:find("ucd")) then message = message:gsub("ucd", "UCD") end
 			local sourceCity = exports.UCDutil:getPlayerCityZone(source)
 			
 			outputChatBox("("..sourceCity..") "..source.name.."#FFFFFF "..message, root, nR, nG, nB, true)
@@ -33,23 +34,31 @@ function onPlayerChat(message, messageType)
 		
 		-- if team chat
 		elseif (messageType == 2) then
+			local t
 			
+			if (message:find("ucd")) then message = message:gsub("ucd", "UCD") end
 			if (message:sub(1, 1) == "/") then
 				executeCommandHandler(message:sub(2, #message), source)
 				return
 			end
 			
+			if (source.team.name == "Law Enforcement") then 
+				t = "Law"
+			else
+				t = source.team.name
+			end
+			
 			for _, v in pairs(source.team:getPlayers()) do
-				outputChatBox("("..source.team.name..") "..source.name.."#FFFFFF "..message, v, nR, nG, nB, true)
+				outputChatBox("("..t..") "..source.name.."#FFFFFF "..message, v, nR, nG, nB, true)
 			end
 			
 			antiSpam[player] = true
 			setTimer(clearAntiSpam, antiSpamTime, 1, player)
-			exports.UCDlogging:new(source, "Teamchat", message, source.team.name)
+			exports.UCDlogging:new(source, "Teamchat", message, t)
 		
 		-- if /me chat
 		elseif (messageType == 1) then
-			
+			if (message:find("ucd")) then message = message:gsub("ucd", "UCD") end
 			for _, v in pairs(Element.getAllByType("player")) do
 				if (v ~= source) then
 					local vCoord = v:getPosition()

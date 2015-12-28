@@ -29,11 +29,12 @@ function instantMessage(plr, _, target, ...)
 	-- If we found a recipient
 	if recipient then
 		local msg = table.concat({...}, " ")
-        local playerName = getPlayerName(plr)
-		local recipientName = getPlayerName(recipient)
-		if (recipientName == playerName) then exports.UCDdx:new(plr, "You cannot send an IM to yourself", 255, 0, 0) return end
-        local imTo = outputChatBox("[IM to "..recipientName.."] "..msg, plr, 200, 30, 200, true)
-        local imFrom = outputChatBox("[IM from "..playerName.."] " .. msg, recipient, 200, 30, 200, true)
+		if (msg == "" or msg == " " or msg:gsub(" ", "") == "") then return end
+		if (msg:find("ucd")) then msg = msg:gsub("ucd", "UCD") end
+		
+		if (recipient.name == player.name) then exports.UCDdx:new(plr, "You cannot send an IM to yourself", 255, 0, 0) return end
+        local imTo = outputChatBox("[IM to "..recipient.name.."] "..msg, plr, 200, 30, 200, true)
+        local imFrom = outputChatBox("[IM from "..plr.name.."] " .. msg, recipient, 200, 30, 200, true)
 
 		--exports.UCDlogging:new(plr, "IM", msg, )
     else

@@ -1,27 +1,25 @@
 local antiSpam = {}
 local range = 100
 
-function doChat( plr, _, ... )
-	local player = plr
-	if ( antiSpam[ player ] ) then 
-		exports.UCDdx:new( player, "Your last sent message was less than one second ago!", 255, 0, 0 )
-		return false
+function doChat(plr, _, ...)
+	if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return end
+	if (antiSpam[plr] ) then 
+		exports.UCDdx:new(plr, "Your last sent message was less than one second ago!", 255, 0, 0)
+		return
 	end
-	local msg = table.concat( { ... }, " " )
-	if msg == "" or msg == " " then return end
-	if ( not exports.UCDaccounts:isPlayerLoggedIn( plr ) ) then return false end
-	local pX, pY, pZ = getElementPosition( plr )
-	local plrNick = getPlayerName( plr )
-	for _, v in pairs( getElementsByType( "player" ) ) do
-		if ( exports.UCDutil:isPlayerInRangeOfPoint( v, pX, pY, pZ, range ) ) then
-			if ( getElementDimension( plr ) == ( getElementDimension( v ) ) ) then
-				if ( getElementInterior( plr ) == ( getElementInterior( v ) ) ) then
-					outputChatBox( "* "..msg.." ("..plrNick..")", v, 200, 50, 150 )
-				end
+	local msg = table.concat({...}, " ")
+	if (msg == "" or msg == " " or msg:gsub(" ", "") == "") then return end
+	if (msg:find("ucd")) then msg = msg:gsub("ucd", "UCD") end
+	local p = plr.position
+	
+	for _, v in pairs(Element.getAllByType("player")) do
+		if (exports.UCDutil:isPlayerInRangeOfPoint(v, p.x, p.y, p.z, range)) then
+			if (plr.dimension == v.dimension and plr.interior == v.interior) then
+				outputChatBox("* "..msg.." ("..plr.name..")", v, 200, 50, 150)
 			end
 		end
 	end
 end
-addCommandHandler( "do", doChat )
+addCommandHandler("do", doChat)
 
 -- /me is handled in server.lua
