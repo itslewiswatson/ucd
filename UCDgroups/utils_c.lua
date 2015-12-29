@@ -20,7 +20,7 @@ function onClientGUIChanged()
 					local row = guiGridListAddRow(groupList.gridlist[1])
 					guiGridListSetItemText(groupList.gridlist[1], row, 1, name_, false, false)
 					guiGridListSetItemText(groupList.gridlist[1], row, 2, tostring(data_.members).."/"..tostring(data_.slots), false, false)
-					end
+				end
 			end
 			return
 		end
@@ -34,7 +34,6 @@ function onClientGUIChanged()
 		end
 	-- Group log search
 	elseif (source == historyGUI.edit[1]) then
-		
 	end
 end
 

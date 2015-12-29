@@ -16,29 +16,10 @@ local settings = {
 }
 local forbidden = {
 	whole = {
-		"ucd",
-		"noki",
-		"zorque",
-		"cunt",
-		"cunts",
-		"fuckucd",
-		"fuckserver",
-		"cit",
-		"ugc",
-		"ngc",
-		"nr7gaming",
-		"a7a",
+		"ucd", "noki", "zorque", "cunt", "cunts", "fuckserver", "cit", "ugc", "ngc", "nr7gaming", "a7a", 
 	},
 	partial = {
-		"zorque",
-		"cunt",
-		"ngc",
-		"arran",
-		"cit ",
-		"admin",
-		"staff",
-		"is shit",
-		"isshit",
+		"zorque", "cunt", "ngc", "arran", "cit ", "admin", "staff", "is shit", "isshit",
 	},
 }
 
@@ -60,6 +41,15 @@ _permissions = {
 	["alliance"] = 15,
 	["chatColour"] = 16,
 	["warn"] = 17,
+	["gsc"] = 18,
+	["gmotd"] = 19,
+	--
+	--[[
+	["groupJob"] = 20,
+	["editBaseInfo"] = 21,
+	["editJobInfo"] = 22,
+	["modifySpawners"] = 23,
+	--]]
 }
 
 defaultRanks = {
@@ -74,19 +64,18 @@ defaultRanks = {
 
 db = exports.UCDsql:getConnection()
 
-group = {}
-groupTable = {}
+group = {} -- Resolves a player to a group (nil otherwise)
+groupTable = {} -- Contains information from the groups_ table with the group name as the index
 groupMembers = {} -- We can just get their player elements from their id since more caching was introduced
-groupRanks = {}
-
+groupRanks = {} -- Contains group ranks from groups_ranks with the rank name as the index
 playerInvites = {} -- When a player gets invited ([accName] = group_)
-
-playerGroupCache = {} -- Player group cache
-onlineTime = {}
+playerGroupCache = {} -- Player group cache with the account name as the key
+onlineTime = {} -- Resolves player online time
+blacklistCache = {} -- Cache's a group's blacklist
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
-		if (not db) then outputDebugString("["..Resource.getName(resourceRoot).."] Unable to establish connection with MySQL database.") return false end
+		if (not db) then outputDebugString("["..Resource.getName(resourceRoot).."] Unable to load groups") return end
 		db:query(cacheGroupTable, {}, "SELECT * FROM `groups_`")
 	end
 )
@@ -193,28 +182,23 @@ function createGroup(name)
 		if (playtime < 5) then
 			exports.UCDdx:new(client, "You need at least 5 hours in-game to be able to create a group", 255, 255, 0)
 		end
-		local d, t = exports.UCDutil:getTimeStamp()
 		
+		local d, t = exports.UCDutil:getTimeStamp()
 		db:exec("INSERT INTO `groups_` SET `groupName`=?, `colour`=?, `info`=?, `created`=?", groupName, toJSON(settings.default_colour), settings.default_info_text, d) -- Perform the inital group creation	
 		db:exec("INSERT INTO `groups_members` VALUES (?, ?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, client.name, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
 		setDefaultRanks(groupName)
 		
 		groupTable[groupName] = { 
-			["info"] = settings.default_info_text, 
-			["memberCount"] = 1, 
-			["created"] = nil,
-			["colour"] = toJSON(settings.default_colour),
-			["balance"] = 0,
-			["chatColour"] = toJSON(settings.default_chat_colour),
-			["gmotd"] = "lol",
+			["info"] = settings.default_info_text, ["memberCount"] = 1, ["created"] = nil, ["colour"] = toJSON(settings.default_colour),
+			["balance"] = 0, ["chatColour"] = toJSON(settings.default_chat_colour), ["gmotd"] = "",
 		}
 		
+		createGroupLog(group_, client.name.." ("..client.account.name..") has created "..group_)
 		groupMembers[groupName] = {}
 		table.insert(groupMembers[groupName], client.account.name)
 		client:setData("group", groupName)
 		group[client] = groupName
 		playerGroupCache[client.account.name] = {groupName, client.account.name, "Founder", d, getRealTime().yearday, 0, 0} -- Should I even bother?
-		
 		exports.UCDdx:new(client, "You have successfully created "..groupName, 0, 255, 0)
 		
 		triggerEvent("UCDgroups.viewUI", client, true)
@@ -232,17 +216,27 @@ function leaveGroup(reason)
 				if (getMembersWithRank(group_, rank) == 1) then
 					exports.UCDdx:new(client, "You can't leave your group because you're the only one with the "..rank.." rank", 255, 255, 0)
 					return
-				end							
+				end
 			end
-			--local accountID = exports.UCDaccounts:getPlayerAccountID(client)
-			if (not reason or reason == " " or reason == "") then
-				reason = "No reason"
+			if (not reason or reason == " " or reason == "" or reason:gsub(" ", "") == "") then
+				reason = "No Reason"
 			end
+			
+			createGroupLog(group_, client.name.." ("..client.account.name..") has left "..group_.." ("..reason..")")
+			
+			for k, v in pairs(groupMembers[group_]) do
+				--outputDebugString(tostring(k).." || "..tostring(v))
+				if v == client.account.name then
+					table.remove(groupMembers[group_], k)
+					--outputDebugString("Removed "..tostring(v).." at index "..tostring(k))
+					break
+				end	
+			end
+			
 			client:removeData("group")
 			group[client] = nil
-			--onlineTime[client] = nil
-			playerGroupCache[account] = nil
-			db:exec("DELETE FROM `groups_members` WHERE `account`=?", account)
+			playerGroupCache[client.account.name] = nil
+			db:exec("DELETE FROM `groups_members` WHERE `account`=?", client.account.name)
 			exports.UCDdx:new(client, "You have left "..group_.." ("..reason..")", 255, 0, 0)
 			messageGroup(group_, " has left the group ("..reason..")")
 			triggerEvent("UCDgroups.viewUI", client, true)
@@ -260,11 +254,15 @@ function deleteGroup()
 			return
 		end
 		
+		createGroupLog(group_, client.name.." ("..client.account.name..") has deleted "..groupName)
+		
 		outputDebugString("Deleting group where groupName = "..groupName)
 		db:exec("DELETE FROM `groups_` WHERE `groupName`=?", groupName)
 		db:exec("DELETE FROM `groups_members` WHERE `groupName`=?", groupName)
 		db:exec("DELETE FROM `groups_ranks` WHERE `groupName`=?", groupName)
 		db:exec("DELETE FROM `groups_invites` WHERE `groupName`=?", groupName)
+		db:exec("DELETE FROM `groups_blacklist` WHERE `groupName`=?", groupName)
+		db:exec("DELETE FROM `groups_whitelist` WHERE `groupName`=?", groupName)
 		
 		-- Remove the invite from the table
 		for acc, row in pairs(playerInvites) do
@@ -276,7 +274,6 @@ function deleteGroup()
 		end
 		
 		for _, account in pairs(groupMembers[groupName]) do
-			--local plr = exports.UCDaccounts:getPlayerFromID(id)
 			local plr = Account(account).player
 			if (plr and isElement(plr) and plr.type == "player" and getPlayerGroup(plr)) then
 				plr:removeData("group")
@@ -307,7 +304,6 @@ function joinGroup(group_)
 				outputDebugString("You're in a group")
 				return
 			end
-			--local accountID = exports.UCDaccounts:getPlayerAccountID(source)
 			local account = source.account.name
 			local rank = getGroupFirstRank(group_)
 			local d, t = exports.UCDutil:getTimeStamp()
@@ -317,6 +313,8 @@ function joinGroup(group_)
 			
 			groupTable[group_].memberCount = groupTable[group_].memberCount + 1
 			db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
+			
+			createGroupLog(group_, source.name.." ("..source.account.name..") has joined "..group_)
 			
 			table.insert(groupMembers[group_], account)
 			source:setData("group", group_)
@@ -344,10 +342,33 @@ function sendInvite(plr)
 		local group_ = getPlayerGroup(client)
 		if (group_) then
 			if (canPlayerDoActionInGroup(client, "invite")) then
+				if (groupTable[group_].lockInvites == 1) then
+					exports.UCDdx:new(client, "The group is currently locked - no invites may be sent", 255, 0, 0)
+					return
+				end
 				-- send invite, tell plr, tell group, add to queue, put in sql
 				--playerInvites[plr.account.name] = {group_, client.name}
 				if (not playerInvites[plr.account.name]) then
 					playerInvites[plr.account.name] = {}
+				end
+				local result
+				-- SQL will do less looping but it is inherently slower
+				if (blacklistCache[group_]) then
+					result = blacklistCache[group_]
+				else
+					result = db:query("SELECT `serialAccount` FROM `groups_blacklist` WHERE `groupName`=?", group_):poll(-1)
+				end
+				if (result and #result > 0) then
+					for _, ent in ipairs(result) do
+						if (ent.serialAccount == plr.account.name) then
+							exports.UCDdx:new(client, "You cannot invite this player as their account is blacklisted", 255, 255, 0)
+							return
+						end
+						if (ent.serialAccount == plr.serial) then
+							exports.UCDdx:new(client, "You cannot invite this player as their serial is blacklisted", 255, 255, 0)
+							return
+						end
+					end
 				end
 				for index, row in pairs(playerInvites[plr.account.name]) do
 					for _, data in pairs(row) do
@@ -385,8 +406,35 @@ function handleInvite(groupName, state)
 		db:exec("DELETE FROM `groups_invites` WHERE `groupName`=? AND `account`=?", groupName, client.account.name)
 		
 		if (state == "accept") then
+		
+			if (groupTable[groupName].lockInvites == 1) then
+				exports.UCDdx:new(client, "Unable to accept the invite - this group is locked", 255, 0, 0)
+				triggerEvent("UCDgroups.requestInviteList", client)
+				return
+			end
+			
+			local result
+			if (blacklistCache[groupName]) then
+				result = blacklistCache[groupName]
+			else
+				result = db:query("SELECT `serialAccount` FROM `groups_blacklist` WHERE `groupName`=?", groupName):poll(-1)
+			end
+			if (result and #result > 0) then
+				for _, ent in ipairs(result) do
+					if (ent.serialAccount == client.serial) then
+						exports.UCDdx:new(client, "You cannot join this group as your serial is blacklisted", 255, 0, 0)
+						triggerEvent("UCDgroups.requestInviteList", client)
+						return
+					end
+					if (ent.serialAccount == client.account.name) then
+						exports.UCDdx:new(client, "You cannot join this group as your account is blacklisted", 255, 0, 0)
+						triggerEvent("UCDgroups.requestInviteList", client)
+						return
+					end
+				end
+			end
 			-- Make the player join the group
-			messageGroup(groupName, client.name.." has accepted the invitation to join the group", "info")
+			messageGroup(groupName, client.name.." has joined the group", "info")
 			triggerEvent("UCDgroups.joinGroup", client, groupName)
 		elseif (state == "deny") then
 			messageGroup(groupName, client.name.." has declined the invitation to join the group", "info")
@@ -414,9 +462,6 @@ function promoteMember(accName, reason)
 	if (client and accName and reason) then
 		local group_ = getPlayerGroup(client)
 		local acc = Account(accName)
-		
-		-- Check for shit
-		
 		local clientRank = getPlayerGroupRank(client)
 		local plrRank = playerGroupCache[accName][3]
 		local newRank = getNextRank(group_, plrRank)
@@ -425,15 +470,17 @@ function promoteMember(accName, reason)
 		if (plrRank == getGroupLastRank(group_)) then return end
 		if (group_ and acc) then
 			if (canPlayerDoActionInGroup(client, "promote")) then
-				if (isRankHigherThan(group_, clientRank, plrRank)) then
+				if (isRankHigherThan(group_, clientRank, plrRank) == true) then
 					if (newRank == clientRank and not canPlayerDoActionInGroup(client, "promoteUntilOwnRank")) then
 						return
 					end
-					if (not isRankHigherThan(group_, clientRank, newRank)) then return end
+					if (isRankHigherThan(group_, clientRank, newRank) == false) then return end
 					playerGroupCache[accName][3] = newRank
 					db:exec("UPDATE `groups_members` SET `rank`=? WHERE `account`=?", newRank, accName)
 					triggerEvent("UCDgroups.viewUI", client, true)
 					triggerEvent("UCDgroups.requestMemberList", client)
+					
+					createGroupLog(group_, client.name.." ("..client.account.name..") has promoted "..exports.UCDaccounts:GAD(accName, "lastUsedName").." ("..accName..") to "..newRank.." ("..reason..")")
 					
 					if (acc.player) then
 						messageGroup(group_, client.name.." is promoting "..acc.player.name.." to "..newRank.." ("..reason..")", "info")
@@ -469,7 +516,7 @@ function demoteMember(accName, reason)
 					exports.UCDdx:new(client, "You are not allowed to demote players with the same rank as you", 255, 0, 0)
 					return
 				end
-				if (not isRankHigherThan(group_, clientRank, newRank)) then return end
+				if (isRankHigherThan(group_, clientRank, newRank) == false) then return end
 				if (plrRank == getGroupFirstRank(group_)) then
 					exports.UCDdx:new(client, "You cannot demote this player as they have the lowest rank already", 255, 0, 0)
 					return
@@ -478,6 +525,8 @@ function demoteMember(accName, reason)
 				db:exec("UPDATE `groups_members` SET `rank`=? WHERE `account`=?", newRank, accName)
 				triggerEvent("UCDgroups.viewUI", client, true)
 				triggerEvent("UCDgroups.requestMemberList", client)
+				
+				createGroupLog(group_, client.name.." ("..client.account.name..") has demoted "..exports.UCDaccounts:GAD(accName, "lastUsedName").." ("..accName..") to "..newRank.." ("..reason..")")
 				
 				if (acc.player) then
 					messageGroup(group_, client.name.." is demoting "..acc.player.name.." to "..newRank.." ("..reason..")", "info")
@@ -525,10 +574,13 @@ function kickMember(accName, reason)
 				db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
 				db:exec("DELETE FROM `groups_members` WHERE `account`=?", accName)
 				
+				createGroupLog(group_, client.name.." ("..client.account.name..") has kicked "..exports.UCDaccounts:GAD(accName, "lastUsedName").." ("..accName..") ("..reason..")")
+				
 				if (acc.player) then
 					acc.player:removeData("group")
-					triggerEvent("UCDgroups.viewUI", acc.player)
-					exports.UCDdx:new(acc.player, "You have been kicked from "..group_.." by "..client.name.." ("..reason..")")
+					triggerEvent("UCDgroups.viewUI", acc.player, true)
+					local r, g, b = getGroupChatColour(group_)
+					exports.UCDdx:new(acc.player, "You have been kicked from "..group_.." by "..client.name.." ("..reason..")", r, g, b)
 					group[acc.player] = nil
 					messageGroup(group_, client.name.." has kicked "..acc.player.name.." ("..reason..")", "info")
 				else
@@ -545,13 +597,6 @@ function kickMember(accName, reason)
 end
 addEvent("UCDgroups.kickMember", true)
 addEventHandler("UCDgroups.kickMember", root, kickMember)
-
-function laa()
-	for k, v in pairs(groupMembers["Zedd"]) do
-		outputDebugString(tostring(k).." || "..tostring(v))
-	end
-end
-addCommandHandler("x", laa)
 
 function warnMember(accName, level, reason)
 	if (client and accName and level and reason) then
@@ -576,6 +621,7 @@ function warnMember(accName, level, reason)
 				end
 				db:exec("UPDATE `groups_members` SET `warningLevel`=? WHERE `account`=?", level, accName)
 				playerGroupCache[accName][7] = level
+				createGroupLog(group_, client.name.." ("..client.account.name..") has warned "..exports.UCDaccounts:GAD(accName, "lastUsedName").." ("..accName..") ("..change..") ["..level.."] ("..reason..")")
 				
 				triggerEvent("UCDgroups.viewUI", client, true)
 				triggerEvent("UCDgroups.requestMemberList", client)
@@ -607,7 +653,8 @@ function changeGroupBalance(type_, balanceChange)
 				groupTable[group_].balance = groupTable[group_].balance + balanceChange
 				client.money = client.money - balanceChange
 				db:exec("UPDATE `groups_` SET `balance`=? WHERE `groupName`=?", tonumber(groupTable[group_].balance), group_)
-				messageGroup(group_, client.name.." has deposited $"..exports.UCDutil:tocomma(balanceChange).." into the group bank", "info")		
+				messageGroup(group_, client.name.." has deposited $"..exports.UCDutil:tocomma(balanceChange).." into the group bank", "info")
+				createGroupLog(group_, client.name.." ("..client.account.name..") has deposited $"..exports.UCDutil:tocomma(balanceChange).." into the group bank")
 				triggerLatentClientEvent(client, "UCDgroups.balanceWindow", client, "update", groupTable[group_].balance)
 			elseif (type_ == "withdraw") then
 				if ((currentBalance - balanceChange) < 0) then
@@ -622,6 +669,7 @@ function changeGroupBalance(type_, balanceChange)
 				client.money = client.money + balanceChange
 				db:exec("UPDATE `groups_` SET `balance`=? WHERE `groupName`=?", tonumber(groupTable[group_].balance), group_)
 				messageGroup(group_, client.name.." has withdrawn $"..exports.UCDutil:tocomma(balanceChange).." from the group bank", "info")
+				createGroupLog(group_, client.name.." ("..client.account.name..") has withdrawn $"..exports.UCDutil:tocomma(balanceChange).." from the group bank")
 				triggerLatentClientEvent(client, "UCDgroups.balanceWindow", client, "update", groupTable[group_].balance)
 			end
 		end
@@ -649,6 +697,7 @@ function updateGroupInfo(newInfo)
 			groupTable[groupName].info = newInfo
 			db:exec("UPDATE `groups_` SET `info`=? WHERE `groupName`=?", newInfo, groupName)
 			messageGroup(groupName, client.name.." has updated the group information", "info")
+			createGroupLog(group_, client.name.." ("..client.account.name..") has updated the group information")
 			for _, plr in pairs(getGroupOnlineMembers(groupName)) do
 				triggerEvent("UCDgroups.viewUI", plr, true)
 			end
@@ -715,17 +764,17 @@ addEvent("UCDgroups.requestGroupRanks", true)
 addEventHandler("UCDgroups.requestGroupRanks", root, requestGroupRanks)
 
 function requestGroupSettings()
-	if (client) then
-		local group_ = getPlayerGroup(client)
+	if (source) then
+		local group_ = getPlayerGroup(source)
 		if (group_) then
 			local temp = {
 				["groupColour"] = fromJSON(groupTable[group_].colour) or settings.default_colour,
 				["chatColour"] = fromJSON(groupTable[group_].chatColour) or settings.default_chat_colour,
 				["gmotd"] = groupTable[group_].gmotd or "",
-				["gsc"] = true, -- Add setting somewhere
-				["lockInvites"] = false, --	Add setting somewhere
+				["enableGSC"] = groupTable[group_].enableGSC or 1,
+				["lockInvites"] = groupTable[group_].lockInvites or 0,
 			}
-			triggerLatentClientEvent(client, "UCDgroups.settings", client, temp)
+			triggerLatentClientEvent(source, "UCDgroups.settings", source, temp)
 		end
 	end
 end
@@ -736,7 +785,15 @@ function requestBlacklist()
 	if (source) then
 		local group_ = getPlayerGroup(source)
 		if (group_) then
-			local blacklist = db:query("SELECT * FROM `groups_blacklist` WHERE `groupName`=?", group_):poll(-1) or {}
+			local blacklist
+			if (blacklistCache[group_]) then
+				blacklist = blacklistCache[group_]
+			else
+				blacklist = db:query("SELECT * FROM `groups_blacklist` WHERE `groupName`=?", group_):poll(-1)
+				if (blacklist and #blacklist > 0) then
+					blacklistCache[group_] = blacklist
+				end
+			end
 			triggerLatentClientEvent(source, "UCDgroups.blacklist", source, blacklist or {})
 		end
 	end
@@ -749,10 +806,20 @@ function addBlacklistEntry(serialAccount, reason)
 		local group_ = getPlayerGroup(client)
 		if (group_) then
 			if (canPlayerDoActionInGroup(client, "editBlacklist")) then
-				local result = db:query("SELECT `uniqueID` FROM `groups_blacklist` WHERE `serialAccount`=? AND `groupName`=?", serialAccount, group_):poll(-1)
-				if (result and #result > 0) then
-					exports.UCDdx:new(client, "This serial or account is already blacklisted", 255, 0, 0)
-					return
+				if (blacklistCache[group_]) then
+					local result = blacklistCache[group_]
+					for i = 1, #result do
+						if (result[i].serialAccount == serialAccount) then
+							exports.UCDdx:new(client, "This serial or account is already blacklisted", 255, 0, 0)
+							return
+						end
+					end
+				else
+					local result = db:query("SELECT `uniqueID` FROM `groups_blacklist` WHERE `serialAccount`=? AND `groupName`=?", serialAccount, group_):poll(-1)
+					if (result and #result > 0) then
+						exports.UCDdx:new(client, "This serial or account is already blacklisted", 255, 0, 0)
+						return
+					end
 				end
 				if (not Account(serialAccount) and serialAccount:len() ~= 32) then
 					exports.UCDdx:new(client, "This specified account does not exist", 255, 0, 0)
@@ -760,11 +827,18 @@ function addBlacklistEntry(serialAccount, reason)
 				end
 				-- Should be good to go
 				--db:exec("INSERT INTO `groups_blacklist` SET `groupName`=?, `serialAccount`=?, `by`=?, `reason`=?", group_, serialAccount, client.account.name, reason)
-				db:exec("INSERT INTO `groups_blacklist` (`groupName`, `serialAccount`, `by`, `reason`, `datum`) VALUES (?, ?, ?, ?, CURDATE())", group_, serialAccount, client.account.name, reason)
+				local d, t = exports.UCDutil:getTimeStamp()
+				db:exec("INSERT INTO `groups_blacklist` (`groupName`, `serialAccount`, `by`, `reason`, `datum`) VALUES (?, ?, ?, ?, NOW())", group_, serialAccount, client.account.name, reason) -- CONCAT(CURDATE(), ' ', CURTIME())
+				if (not blacklistCache[group_]) then
+					blacklistCache[group_] = {}
+				end 
+				table.insert(blacklistCache[group_], {["groupName"] = group_, ["serialAccount"] = serialAccount, ["by"] = client.account.name, ["reason"] = reason, ["datum"] = tostring(d.." "..t)})
 				if (serialAccount:len() ~= 32) then
 					exports.UCDdx:new(client, "You have added a blacklisting on account "..serialAccount, 255, 0, 0)
+					createGroupLog(group_, client.name.." ("..client.account.name..") has added a blacklisting on account "..serialAccount)
 				else
 					exports.UCDdx:new(client, "You have added a blacklisting on serial "..serialAccount, 255, 0, 0)
+					createGroupLog(group_, client.name.." ("..client.account.name..") has added a blacklisting on serial "..serialAccount)
 				end
 				triggerEvent("UCDgroups.requestBlacklist", client)
 			else
@@ -790,7 +864,16 @@ function removeBlacklistEntry(serialAccount)
 						type1 = "account"
 					end
 					db:exec("DELETE FROM `groups_blacklist` WHERE `serialAccount`=? AND `groupName`=?", serialAccount, group_)
+					if (blacklistCache[group_]) then
+						for i = 1, #blacklistCache[group_] do
+							if (blacklistCache[group_][i].serialAccount == serialAccount) then
+								table.remove(blacklistCache[group_], i)
+								break
+							end
+						end
+					end
 					exports.UCDdx:new(client, "You have removed the blacklisting on "..serialAccount, 255, 0, 0)
+					createGroupLog(group_, client.name.." ("..client.account.name..") has removed the blacklisting on "..serialAccount)
 					triggerEvent("UCDgroups.requestBlacklist", client)
 				else
 					if (serialAccount:len() == 32) then
@@ -811,13 +894,33 @@ addEventHandler("UCDgroups.removeBlacklistEntry", root, removeBlacklistEntry)
 
 function groupChat(plr, _, ...)
 	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr)) then
-		--local msg = table.concat({msg}, " ")
 		local msg = table.concat({...}, " ")
-		messageGroup(getPlayerGroup(plr), plr.name.." #FFFFFF"..msg, "chat")
+		messageGroup(getPlayerGroup(plr), "("..tostring(getPlayerGroup(plr))..") "..plr.name.." #FFFFFF"..msg, "chat")
 	end
 end
 addCommandHandler("gc", groupChat, false, false)
 addCommandHandler("groupchat", groupChat, false, false)
+
+function groupStaffChat(plr, _, ...)
+	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr) and canPlayerDoActionInGroup(plr, "gsc")) then
+		local r, g, b = getGroupChatColour(getPlayerGroup(plr))
+		if (groupTable[getPlayerGroup(plr)].enableGSC == 0) then
+			exports.UCDdx:new(plr, "Group staff chat has been disabled", r, g, b)
+			return
+		end
+		local msg = table.concat({...}, " ")
+		for _, ent in ipairs(groupMembers[getPlayerGroup(plr)]) do
+			local plr_ = Account(ent).player
+			if (plr_ and isElement(plr_) and canPlayerDoActionInGroup(plr_, "gsc")) then
+				outputChatBox("(GSC) "..plr.name.." #FFFFFF"..msg, plr_, r, g, b, true)
+			end
+		end
+	end
+end
+addCommandHandler("gsc", groupStaffChat, false, false)
+addCommandHandler("groupstaffchat", groupStaffChat, false, false)
+addCommandHandler("gschat", groupStaffChat, false, false)
+addCommandHandler("gstaff", groupStaffChat, false, false)
 
 function handleLogin(plr)
 	--local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
@@ -841,19 +944,25 @@ function handleLogin2(qh, plr, account)
 			playerGroupCache[account] = {result[1].groupName, account, result[1].rank, result[1].joined, getRealTime().yearday, result[1].timeOnline, result[1].warningLevel} -- If a player is kicked while he is offline, we will need to delete the cache
 		end
 	end
-	if (not playerGroupCache[account]) then return end
+	if (not playerGroupCache[account] or not playerGroupCache[account][1]) then return end
 	local group_ = playerGroupCache[account][1]
+	local r, g, b = getGroupChatColour(group_)
+	local gmotd = groupTable[group_].gmotd
+	
 	outputDebugString("handleLogin2: groupName = "..tostring(group_))
 	plr:setData("group", group_)
 	group[plr] = group_
+	
+	if (gmotd) then
+		--outputDebugString(tostring(r).." "..tostring(g).." "..tostring(b))
+		outputChatBox("(GMOTD) #FFFFFF"..gmotd, plr, r, g, b, true)
+	end
 end
 
 addEventHandler("onPlayerQuit", root, 
 	function ()
-		--local accountID = exports.UCDaccounts:getPlayerAccountID(source)
 		local account = source.account.name
 		if (account and exports.UCDaccounts:isPlayerLoggedIn(source)) then
-			-- Put the online time in the databse
 			db:exec("UPDATE `groups_members` SET `timeOnline`=?, `lastOnline`=? WHERE `account`=?", getPlayerOnlineTime(source), getRealTime().yearday, account)
 			playerGroupCache[account][6] = getPlayerOnlineTime(source)
 			onlineTime[source] = nil
@@ -886,3 +995,90 @@ end
 addEvent("UCDgroups.viewUI", true)
 addEventHandler("UCDgroups.viewUI", root, toggleGUI)
 
+function updateGroupSettings(newSettings)
+	if (client and newSettings) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			local rank = getPlayerGroupRank(client)
+			local c = fromJSON(groupTable[group_].colour)
+			local chat = fromJSON(groupTable[group_].chatColour)
+			
+			if (newSettings.chatColour[1] ~= chat[1] or newSettings.chatColour[2] ~= chat[2] or newSettings.chatColour[3] ~= chat[3]) then
+				if (canPlayerDoActionInGroup(client, "chatColour")) then
+					groupTable[group_].chatColour = toJSON(newSettings.chatColour)
+					db:exec("UPDATE `groups_` SET `chatColour`=? WHERE `groupName`=?", toJSON(newSettings.chatColour), group_)
+					messageGroup(group_, client.name.." has updated the group chat colour", "info")
+					createGroupLog(group_, client.name.." ("..client.account.name..") has updated the group chat colour ("..newSettings.chatColour[1]..", "..newSettings.chatColour[2]..", "..newSettings.chatColour[3]..")")
+				else
+					exports.UCDdx:new(client, "You are not allowed to edit the group chat colour", 255, 0, 0)
+				end
+			end
+			
+			if (newSettings.groupColour[1] ~= c[1] or newSettings.groupColour[2] ~= c[2] or newSettings.groupColour[3] ~= c[3]) then
+				if (canPlayerDoActionInGroup(client, "groupColour")) then
+					groupTable[group_].colour = toJSON(newSettings.groupColour)
+					db:exec("UPDATE `groups_` SET `colour`=? WHERE `groupName`=?", toJSON(newSettings.groupColour), group_)
+					messageGroup(group_, client.name.." has updated the group colour", "info")
+					createGroupLog(group_, client.name.." ("..client.account.name..") has updated the group colour ("..newSettings.groupColour[1]..", "..newSettings.groupColour[2]..", "..newSettings.groupColour[3]..")")
+					-- need an event here for things like turf etc
+				else
+					exports.UCDdx:new(client, "You are not allowed to edit the group colour", 255, 0, 0)
+				end
+			end
+			
+			if (newSettings.lockInvites ~= groupTable[group_].lockInvites) then
+				if (getGroupLastRank(group_) == rank) then
+					groupTable[group_].lockInvites = newSettings.lockInvites
+					db:exec("UPDATE `groups_` SET `lockInvites`=? WHERE `groupName`=?", newSettings.lockInvites, group_)
+					if (groupTable[group_].lockInvites == 1) then
+						messageGroup(group_, client.name.." has locked group invites", "info")
+						createGroupLog(group_, client.name.." ("..client.account.name..") has unlocked group invites")
+					else
+						messageGroup(group_, client.name.." has unlocked group invites", "info")
+						createGroupLog(group_, client.name.." ("..client.account.name..") has locked group invites")
+					end
+				else
+					exports.UCDdx:new(client, "You are not allowed to lock/unlock group invites", 255, 0, 0)
+				end
+			end
+			
+			if (newSettings.enableGSC ~= groupTable[group_].enableGSC) then
+				if (getGroupLastRank(group_) == rank) then
+					local r, g, b = getGroupChatColour(group_)
+					groupTable[group_].enableGSC = newSettings.enableGSC
+					db:exec("UPDATE `groups_` SET `enableGSC`=? WHERE `groupName`=?", newSettings.enableGSC, group_)
+					for _, acc in ipairs(groupMembers[group_]) do
+						if (Account(acc).player) then
+							if (canPlayerDoActionInGroup(Account(acc).player, "gsc")) then
+								if (groupTable[group_].enableGSC == 1) then
+									exports.UCDdx:new(Account(acc).player, client.name.." has enabled group staff chat /gsc", r, g, b)
+									createGroupLog(group_, client.name.." ("..client.account.name..") has enabled group staff chat")
+								else
+									exports.UCDdx:new(Account(acc).player, client.name.." has disabled group staff chat /gsc", r, g, b)
+									createGroupLog(group_, client.name.." ("..client.account.name..") has disabled group staff chat")
+								end
+							end
+						end
+					end
+				else
+					exports.UCDdx:new(client, "You are not allowed to toggle group staff chat", 255, 0, 0)
+				end
+			end
+			
+			if (newSettings.gmotd ~= groupTable[group_].gmotd) then
+				if (canPlayerDoActionInGroup(client, "gmotd")) then
+					groupTable[group_].gmotd = newSettings.gmotd
+					db:exec("UPDATE `groups_` SET `gmotd`=? WHERE `groupName`=?", newSettings.gmotd, group_)
+					messageGroup(group_, client.name.." has changed the group MOTD", "info")
+					createGroupLog(group_, client.name.." ("..client.account.name..") has changed the group MOTD")
+				else
+					exports.UCDdx:new(client, "You are not allowed to set the GMOTD", 255, 0, 0)
+				end
+			end
+			
+			triggerEvent("UCDgroups.requestGroupSettings", client)
+		end
+	end
+end
+addEvent("UCDgroups.updateSettings", true)
+addEventHandler("UCDgroups.updateSettings", root, updateGroupSettings)

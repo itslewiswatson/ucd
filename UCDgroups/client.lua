@@ -14,6 +14,8 @@ groupSettings = {edit = {}, button = {}, window = {}, label = {}, combobox = {}}
 
 original = {}
 groupList_ = {}
+settings_ = {}
+permissions_ = {}
 
 _permissions = {
 	[1] = "Ability to demote members",
@@ -33,8 +35,15 @@ _permissions = {
 	[15] = "Abilty to manage alliances",
 	[16] = "Abilty to change the group chat color",
 	[17] = "Abilty to warn group members",
+	[18] = "Ability to use group staff chat (/gsc)",
+	[19] = "Ability to set GMOTD",
 	----------------------------------------------------
-	--[18] = "Can take group job",
+	--[[
+	[20] = "Ability to take the group job",
+	[21] = "Ability to edit the base information",
+	[22] = "Ability to edit the job information",
+	[23] = "Ability to modify group spawners",
+	--]]	
 }
 forbiddenPermsForTrial = {[1] = true, [2] = true, [3] = true, [4] = true, [7] = true, [11] = true}
 
@@ -57,6 +66,7 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		end
 	end
 	if (groupName ~= "") then
+		permissions_ = permissions
 		mainGUI.window[1].text = "UCD | Groups - "..groupName
 		mainGUI.edit[1].text = groupName
 		mainGUI.edit[1].enabled = false
@@ -75,7 +85,7 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		mainGUI.button[11].enabled = boolean(permissions[9])
 		mainGUI.button[12].enabled = boolean(permissions[8])
 		mainGUI.button[13].enabled = boolean(permissions[12]) or boolean(permissions[13])
-		mainGUI.button[14].enabled = boolean(permissions[16]) or boolean(permissions[14])
+		mainGUI.button[14].enabled = boolean(permissions[16]) or boolean(permissions[14]) or boolean(permissions[19])
 		mainGUI.button[15].enabled = boolean(permissions[15])
 		mainGUI.button[16].enabled = true
 		
@@ -147,16 +157,6 @@ function createGUI()
 	infoGUI.button[2] = guiCreateButton(291, 349, 270, 21, "Close", false, infoGUI.window[1])   
 	
 	-- Group list
-	--[[
-	groupList.window[1] = guiCreateWindow(825, 319, 298, 346, "UCD | Groups - List", false)
-	guiWindowSetSizable(groupList.window[1], false)
-	groupList.window[1].visible = false
-	exports.UCDutil:centerWindow(groupList.window[1])
-	groupList.button[1] = guiCreateButton(86, 307, 128, 29, "Close", false, groupList.window[1])
-	groupList.gridlist[1] = guiCreateGridList(12, 26, 276, 276, false, groupList.window[1])
-	guiGridListAddColumn(groupList.gridlist[1], "Group", 0.6)
-	guiGridListAddColumn(groupList.gridlist[1], "Members", 0.3)
-	--]]
 	groupList.window[1] = guiCreateWindow(812, 336, 298, 346, "UCD | Groups - List", false)
 	groupList.window[1].sizable = false
 	groupList.window[1].visible = false
@@ -199,25 +199,7 @@ function createGUI()
 	plrInvites.button[2] = guiCreateButton(128, 203, 106, 35, "Deny", false, plrInvites.window[1])
 	plrInvites.button[3] = guiCreateButton(244, 203, 106, 35, "Close", false, plrInvites.window[1])
 	
-	-- Warning
-	--[[
-	warningAdjust.window[1] = guiCreateWindow(810, 453, 285, 164, "UCD | Groups - Warnings", false)
-	warningAdjust.window[1].visible = false
-	warningAdjust.window[1].sizable = false
-	warningAdjust.progressbar[1] = guiCreateProgressBar(10, 30, 261, 25, false, warningAdjust.window[1])
-	guiProgressBarSetProgress(warningAdjust.progressbar[1], 0)
-	warningAdjust.button[1] = guiCreateButton(10, 114, 126, 37, "Set Warning", false, warningAdjust.window[1])
-	warningAdjust.edit[1] = guiCreateEdit(89, 82, 105, 22, "", false, warningAdjust.window[1])
-	warningAdjust.label[1] = guiCreateLabel(10, 59, 261, 18, "Enter the new warning level", false, warningAdjust.window[1])
-	guiLabelSetHorizontalAlign(warningAdjust.label[1], "center", false)
-	guiLabelSetVerticalAlign(warningAdjust.label[1], "center")
-	warningAdjust.label[2] = guiCreateLabel(10, 31, 261, 24, "50% (+30)", false, warningAdjust.window[1])
-	guiLabelSetColor(warningAdjust.label[2], 0, 0, 0)
-	guiLabelSetHorizontalAlign(warningAdjust.label[2], "center", false)
-	guiLabelSetVerticalAlign(warningAdjust.label[2], "center")
-	warningAdjust.button[2] = guiCreateButton(146, 114, 126, 37, "Close", false, warningAdjust.window[1])  
-	--]]
-	
+	-- Warnings
 	warningAdjust.window[1] = guiCreateWindow(814, 393, 285, 220, "UCD | Groups - Warnings", false)
 	warningAdjust.window[1].sizable = false
 	warningAdjust.window[1].visible = false
@@ -245,7 +227,7 @@ function createGUI()
 	blacklistGUI.gridlist[1] = guiCreateGridList(9, 6, 562, 158, false, blacklistGUI.tab[1])
 	guiGridListAddColumn(blacklistGUI.gridlist[1], "Account", 0.2)
 	guiGridListAddColumn(blacklistGUI.gridlist[1], "Reason", 0.3)
-	guiGridListAddColumn(blacklistGUI.gridlist[1], "Date", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[1], "Date", 0.23)
 	guiGridListAddColumn(blacklistGUI.gridlist[1], "Blacklisted by", 0.2)
 	blacklistGUI.button[1] = guiCreateButton(10, 174, 130, 28, "Add New", false, blacklistGUI.tab[1])
 	blacklistGUI.button[2] = guiCreateButton(150, 174, 130, 28, "Delete Selected", false, blacklistGUI.tab[1])
@@ -253,7 +235,7 @@ function createGUI()
 	blacklistGUI.gridlist[2] = guiCreateGridList(9, 6, 562, 158, false, blacklistGUI.tab[2])
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Serial", 0.2)
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Reason", 0.3)
-	guiGridListAddColumn(blacklistGUI.gridlist[2], "Date", 0.2)
+	guiGridListAddColumn(blacklistGUI.gridlist[2], "Date", 0.23)
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Blacklisted by", 0.2)
 	blacklistGUI.button[3] = guiCreateButton(10, 174, 130, 28, "Add New", false, blacklistGUI.tab[2])
 	blacklistGUI.button[4] = guiCreateButton(150, 174, 130, 28, "Delete Selected", false, blacklistGUI.tab[2])
@@ -326,8 +308,8 @@ function createGUI()
 	ranksGUI.label[14] = guiCreateLabel(21, 270, 266, 15, "Ability to change group colour", false, ranksGUI.scrollpane[1])
 	ranksGUI.checkbox[15] = guiCreateCheckBox(0, 290, 15, 15, "", false, false, ranksGUI.scrollpane[1])
 	ranksGUI.label[15] = guiCreateLabel(21, 290, 266, 15, "Ability to manage alliances", false, ranksGUI.scrollpane[1])
-	ranksGUI.label[16] = guiCreateLabel(21, 309, 266, 15, "Ability to change group chat colour", false, ranksGUI.scrollpane[1])
 	ranksGUI.checkbox[16] = guiCreateCheckBox(0, 309, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+	ranksGUI.label[16] = guiCreateLabel(21, 309, 266, 15, "Ability to change group chat colour", false, ranksGUI.scrollpane[1])
 	ranksGUI.checkbox[17] = guiCreateCheckBox(0, 328, 15, 15, "", false, false, ranksGUI.scrollpane[1])
 	ranksGUI.label[17] = guiCreateLabel(21, 328, 266, 15, "Ability to manage alliances", false, ranksGUI.scrollpane[1])
 	ranksGUI.checkbox[18] = guiCreateCheckBox(0, 349, 15, 15, "", false, false, ranksGUI.scrollpane[1])
@@ -337,14 +319,18 @@ function createGUI()
 	groupSettings.window[1] = guiCreateWindow(930, 213, 297, 396, "UCD | Groups - Settings", false)
 	groupSettings.window[1].sizable = false
 	groupSettings.window[1].visible = false
-	--
-	groupSettings.edit[1] = guiCreateEdit(134, 34, 43, 24, "255", false, groupSettings.window[1])
-	groupSettings.edit[2] = guiCreateEdit(187, 34, 43, 24, "255", false, groupSettings.window[1])
-	groupSettings.edit[3] = guiCreateEdit(240, 34, 43, 24, "255", false, groupSettings.window[1])
-	--
-	groupSettings.edit[4] = guiCreateEdit(134, 68, 43, 24, "255", false, groupSettings.window[1])
-	groupSettings.edit[5] = guiCreateEdit(187, 68, 43, 24, "255", false, groupSettings.window[1])
-	groupSettings.edit[6] = guiCreateEdit(240, 68, 43, 24, "255", false, groupSettings.window[1])
+	-- group colour
+	groupSettings.edit[1] = guiCreateEdit(134, 34, 43, 24, "", false, groupSettings.window[1])
+	groupSettings.edit[2] = guiCreateEdit(187, 34, 43, 24, "", false, groupSettings.window[1])
+	groupSettings.edit[3] = guiCreateEdit(240, 34, 43, 24, "", false, groupSettings.window[1])
+	-- group chat colour
+	groupSettings.edit[4] = guiCreateEdit(134, 68, 43, 24, "", false, groupSettings.window[1])
+	groupSettings.edit[5] = guiCreateEdit(187, 68, 43, 24, "", false, groupSettings.window[1])
+	groupSettings.edit[6] = guiCreateEdit(240, 68, 43, 24, "", false, groupSettings.window[1])
+	for i = 1, 6 do
+		guiEditSetMaxLength(groupSettings.edit[i], 3)
+	end
+	
 	--
 	groupSettings.label[1] = guiCreateLabel(10, 34, 114, 24, "Group colour", false, groupSettings.window[1])
 	guiLabelSetHorizontalAlign(groupSettings.label[1], "center", false)
@@ -366,11 +352,11 @@ function createGUI()
 	guiComboBoxAddItem(groupSettings.combobox[1], "No")
 	guiComboBoxAddItem(groupSettings.combobox[1], "Yes")
 	groupSettings.combobox[2] = guiCreateComboBox(154, 245, 129, 65, "", false, groupSettings.window[1])
-	guiComboBoxAddItem(groupSettings.combobox[2], "Yes")
 	guiComboBoxAddItem(groupSettings.combobox[2], "No")
+	guiComboBoxAddItem(groupSettings.combobox[2], "Yes")
 	-- default setting
 	guiComboBoxSetSelected(groupSettings.combobox[1], 0)
-	guiComboBoxSetSelected(groupSettings.combobox[2], 0)
+	guiComboBoxSetSelected(groupSettings.combobox[2], 1)
 	--
 	groupSettings.label[5] = guiCreateLabel(10, 216, 129, 19, "Lock invites", false, groupSettings.window[1])
 	guiLabelSetHorizontalAlign(groupSettings.label[5], "center", false)
@@ -382,12 +368,16 @@ function createGUI()
 	groupSettings.button[6] = guiCreateButton(154, 350, 128, 36, "Close", false, groupSettings.window[1])
 	groupSettings.label[7] = guiCreateLabel(10, 264, 273, 15, "________________________________________", false, groupSettings.window[1])
 	groupSettings.edit[7] = guiCreateEdit(10, 318, 273, 22, "", false, groupSettings.window[1])
+	guiEditSetMaxLength(groupSettings.edit[7], 96)
 	groupSettings.label[8] = guiCreateLabel(11, 289, 272, 19, "Group message of the day (GMOTD)", false, groupSettings.window[1])
 	guiLabelSetHorizontalAlign(groupSettings.label[8], "center", false)
 	guiLabelSetVerticalAlign(groupSettings.label[8], "center")
+	for i = 1, #groupSettings.edit do
+		groupSettings.edit[i].enabled = false
+	end
 	
 	-- All the group GUI windows
-	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1]}
+	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1]}
 	for _, gui in pairs(windows) do
 		if (gui and isElement(gui)) then
 			exports.UCDutil:centerWindow(gui)
@@ -432,11 +422,18 @@ function createGUI()
 	addEventHandler("onClientGUIClick", addBL.button[1], handleBlacklist, false)
 	addEventHandler("onClientGUIClick", historyGUI.button[1], viewGroupHistory, false)
 	addEventHandler("onClientGUIClick", ranksGUI.button[4], viewGroupRanks, false)
-	
+	-- Edit this
 	addEventHandler("onClientGUIClick", ranksGUI.gridlist[1], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", groupSettings.button[6], viewGroupSettings, false)
+	addEventHandler("onClientGUIClick", groupSettings.button[5], settingsHandler, false)
 	
 	addEventHandler("onClientGUITabSwitched", guiRoot, blacklistTabSwitch)
 	addEventHandler("onClientGUIChanged", guiRoot, onClientGUIChanged)
+	
+	-- Need these to properly check changes
+	addEventHandler("onClientGUIChanged", groupSettings.window[1], onSettingsChange)
+	addEventHandler("onClientGUIFocus", groupSettings.window[1], onSettingsChange)
+	addEventHandler("onClientGUIComboBoxAccepted", groupSettings.window[1], onSettingsChange)
 end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
@@ -453,10 +450,47 @@ function groupRankHandler()
 				ranksGUI.checkbox[i].selected = boolean(groupRanks_[rank][1][i])
 			end
 		end
-		
-		--for i = 1, #groupRanks_[rank] do
-		--	ranksGUI.checkbox[i].selected = boolean(groupRanks_[rank][1][i])
-		--end
+	end
+end
+
+function settingsHandler()
+	-- Will add support for other things later [edit base, spawners, etc]
+	-- Save button
+	if (source == groupSettings.button[5]) then
+		if (tostring(settings_.groupColour[1]) ~= groupSettings.edit[1].text or tostring(settings_.groupColour[2]) ~= groupSettings.edit[2].text or tostring(settings_.groupColour[3]) ~= groupSettings.edit[3].text
+		or tostring(settings_.chatColour[1]) ~= groupSettings.edit[4].text or tostring(settings_.chatColour[2]) ~= groupSettings.edit[5].text or tostring(settings_.chatColour[3]) ~= groupSettings.edit[6].text
+		or settings_.lockInvites ~= guiComboBoxGetSelected(groupSettings.combobox[1]) or settings_.enableGSC ~= guiComboBoxGetSelected(groupSettings.combobox[2])
+		or settings_.gmotd ~= groupSettings.edit[7].text) then
+			outputDebugString("something has changed")
+			for i = 1, 6 do -- First 6 edits should be numbers
+				if (tonumber(groupSettings.edit[i].text) == nil) then
+					exports.UCDdx:new("You need to enter a number from 0 to 255 in the boxes", 255, 0, 0)
+					return
+				end
+				if (tonumber(groupSettings.edit[i].text) < 0 or tonumber(groupSettings.edit[i].text) > 255) then
+					exports.UCDdx:new("You need to enter a number from 0 to 255 in the boxes", 255, 0, 0)
+					return
+				end
+			end
+			local temp = {
+				["groupColour"] = {tonumber(groupSettings.edit[1].text), tonumber(groupSettings.edit[2].text), tonumber(groupSettings.edit[3].text)},
+				["chatColour"] = {tonumber(groupSettings.edit[4].text), tonumber(groupSettings.edit[5].text), tonumber(groupSettings.edit[6].text)},
+				["lockInvites"] = guiComboBoxGetSelected(groupSettings.combobox[1]),
+				["enableGSC"] = guiComboBoxGetSelected(groupSettings.combobox[2]),
+				["gmotd"] = groupSettings.edit[7].text,
+ 			}
+			triggerServerEvent("UCDgroups.updateSettings", localPlayer, temp)
+		end
+	end
+end
+function onSettingsChange()
+	if (tostring(settings_.groupColour[1]) ~= groupSettings.edit[1].text or tostring(settings_.groupColour[2]) ~= groupSettings.edit[2].text or tostring(settings_.groupColour[3]) ~= groupSettings.edit[3].text
+	or tostring(settings_.chatColour[1]) ~= groupSettings.edit[4].text or tostring(settings_.chatColour[2]) ~= groupSettings.edit[5].text or tostring(settings_.chatColour[3]) ~= groupSettings.edit[6].text
+	or settings_.lockInvites ~= guiComboBoxGetSelected(groupSettings.combobox[1]) or settings_.enableGSC ~= guiComboBoxGetSelected(groupSettings.combobox[2])
+	or settings_.gmotd ~= groupSettings.edit[7].text) then
+		groupSettings.button[5].enabled = true
+	else
+		groupSettings.button[5].enabled = false
 	end
 end
 
@@ -519,8 +553,8 @@ end
 
 function saveGroupInfo()
 	if (infoGUI.window[1].visible) then
-		if (infoGUI.memo[1].text:len() > 3000) then
-			exports.UCDdx:new("The group information can't be more than 3000 characters.", 200, 0, 0)
+		if (infoGUI.memo[1].text:len() > 10000) then
+			exports.UCDdx:new("The group information can't be more than 10000 characters.", 200, 0, 0)
 			return
 		end
 		triggerServerEvent("UCDgroups.updateInfo", localPlayer, infoGUI.memo[1].text)
@@ -558,6 +592,13 @@ function viewMemberList(members)
 	memberList.button[5] = guiCreateButton(462, 296, 94, 24, "Close", false, memberList.window[1])
 	addEventHandler("onClientGUIClick", memberList.window[1], memberListClick) -- Handle all clicks on this GUI in one function
 	outputDebugString("Members: "..#members)
+	
+	-- Permissions
+	memberList.button[1].enabled = boolean(permissions_[2]) or boolean(permissions_[11])
+	memberList.button[2].enabled = boolean(permissions_[1])
+	memberList.button[3].enabled = boolean(permissions_[3])
+	memberList.button[4].enabled = boolean(permissions_[17])
+	
 	for _, info in pairs(members) do
 		info[5] = (info[5] or "Unknown").." days ago"
 		if (info[5] == "0 days ago") then
@@ -681,14 +722,35 @@ end
 
 function viewGroupSettings(settings)
 	if (settings and type(settings) == "table") then
+		settings_ = settings
 		if (not groupSettings.window[1].visible) then
 			groupSettings.window[1].visible = true
 			guiBringToFront(groupSettings.window[1])
 		end
+		for i = 1, #groupSettings.edit do
+			groupSettings.edit[i].enabled = true
+		end
+		groupSettings.button[5].enabled = false
+		-- gmotd
 		groupSettings.edit[7].text = settings.gmotd
+		-- group colour
+		groupSettings.edit[1].text = settings.groupColour[1]
+		groupSettings.edit[2].text = settings.groupColour[2]
+		groupSettings.edit[3].text = settings.groupColour[3]
+		-- chat colour
+		groupSettings.edit[4].text = settings.chatColour[1]
+		groupSettings.edit[5].text = settings.chatColour[2]
+		groupSettings.edit[6].text = settings.chatColour[3]
+		-- other settings
+		guiComboBoxSetSelected(groupSettings.combobox[1], settings.lockInvites)
+		guiComboBoxSetSelected(groupSettings.combobox[2], settings.enableGSC)
 	else
 		if (groupSettings.window[1].visible) then
 			groupSettings.window[1].visible = false
+			groupSettings.button[5].enabled = false
+			for i = 1, #groupSettings.edit do
+				groupSettings.edit[i].enabled = false
+			end
 		else
 			triggerServerEvent("UCDgroups.requestGroupSettings", localPlayer)
 		end
@@ -836,6 +898,9 @@ function handleBlacklist()
 		end
 		if (b:gsub(" ", "") == "") then exports.UCDdx:new("You must provide a reason for this blacklisting", 255, 0, 0) return end
 		triggerServerEvent("UCDgroups.addBlacklistEntry", localPlayer, a, b)
+		addBL.edit[1].text = ""
+		addBL.edit[2].text = ""
+		addBL.window[1].visible = false
 		
 	elseif (source == blacklistGUI.button[2] or source == blacklistGUI.button[4]) then
 		local accountRow, serialRow = guiGridListGetSelectedItem(blacklistGUI.gridlist[1]), guiGridListGetSelectedItem(blacklistGUI.gridlist[2])
@@ -930,7 +995,8 @@ end
 
 function leaveGroup()
 	if (localPlayer:getData("group")) then
-		exports.UCDutil:createConfirmationWindow("UCDgroups.leaveGroup", nil, true, "UCD | Groups - Leave", "Are you sure you want to leave this group?")
+		--exports.UCDutil:createConfirmationWindow("UCDgroups.leaveGroup", nil, true, "UCD | Groups - Leave", "Are you sure you want to leave this group?")
+		exports.UCDutil:createInputBox("UCD | Groups - Leave", "Enter the reason for leaving (can be left blank)", "", "UCDgroups.leaveGroup", localPlayer)
 	end
 end
 
@@ -967,5 +1033,6 @@ function handleInvite()
 	if (row and row ~= false and row ~= -1 and row ~= nil) then
 		local group_ = guiGridListGetItemText(plrInvites.gridlist[1], row, 1)
 		triggerServerEvent("UCDgroups.handleInvite", localPlayer, group_, source.text:lower())
+		plrInvites.window[1].visible = false
 	end
 end

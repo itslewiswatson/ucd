@@ -84,7 +84,7 @@ function getRankPermissions(groupName, rank)
 	if (not groupName or not rank or not groupRanks[groupName] or not groupRanks[groupName][rank]) then return end
 	if (rank == getGroupLastRank(groupName)) then
 		local tempranks = {}
-		for i = 1, 17 do
+		for i = 1, 25 do
 			tempranks[i] = true
 		end
 		return tempranks
@@ -121,11 +121,12 @@ end
 
 function messageGroup(groupName, msg, type_)
 	if (not groupName or not msg) then return end
+	local r, g, b = getGroupChatColour(groupName)
 	for _, plr in ipairs(getGroupOnlineMembers(groupName) or {}) do
 		if (type_ == "chat") then
-			outputChatBox("("..groupName..") "..msg, plr, 200, 0, 0, true) -- Group chat colours
+			outputChatBox(msg, plr, r, g, b, true) -- Group chat colours
 		elseif (type_ == "info") then
-			exports.UCDdx:new(plr, msg, 200, 0, 0)
+			exports.UCDdx:new(plr, msg, r, g, b)
 		end
 	end
 end
@@ -168,7 +169,7 @@ function getAdvancedGroupMembers(groupName)
 					online = true
 				else
 					-- Probably change this
-					playername = db:query("SELECT `lastUsedName` FROM `accounts` WHERE `account`=?", acc):poll(-1)[1].lastUsedName or "N/A"
+					playername = exports.UCDaccounts:GAD(acc, "lastUsedName") --db:query("SELECT `lastUsedName` FROM `accounts` WHERE `account`=?", acc):poll(-1)[1].lastUsedName or "N/A"
 					online = false
 				end
 				rank = data[3]
@@ -282,6 +283,38 @@ function isRankHigherThan(groupName, rank1, rank2)
 			if (rankIndex1 > rankIndex2) then return true end
 			if (rankIndex2 > rankIndex1) then return false end
 			if (rankIndex2 == rankIndex1) then return "equal" end
+		end
+	end
+end
+
+function getGroupColour(groupName)
+	if (not groupName or not groupTable or not groupTable[groupName]) then
+		return false
+	end
+	if (groupTable[groupName].colour ~= nil) then
+		return unpack(fromJSON(groupTable[groupName].colour))
+	end
+	return 200, 0, 0
+end
+
+function getGroupChatColour(groupName)
+	if (not groupName or not groupTable or not groupTable[groupName]) then
+		return false
+	end
+	if (groupTable[groupName].chatColour ~= nil) then
+		return unpack(fromJSON(groupTable[groupName].chatColour))
+	end
+	return 200, 0, 0
+end
+
+function createGroupLog(groupName, log_)
+	if (groupName and log_) then
+		if (groupTable[groupName]) then
+			db:exec("INSERT INTO `groups_logs` (`groupName`, `log`) VALUES (?, CONCAT('[', CURDATE(), '] [', CURTIME(), '] ', ?))", groupName, log_)
+			return true
+		else
+			outputDebugString("createGroupLog: could not create log - group does not exist")
+			return false
 		end
 	end
 end
