@@ -60,12 +60,12 @@ function registerAccount(plr, usr, passwd, email)
 	local salt = bcrypt_salt(6)
 	local passwd = bcrypt_digest(passwd, salt)
 
-	db:exec("INSERT INTO `accounts` SET `account`=?, `pw`=?, `lastUsedName`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr.name, plr.ip, plr.serial, email)
+	db:exec("INSERT INTO `accounts` SET `account`=?, `pw`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr.name, plr.ip, plr.serial, email)
 
 	-- Get their account id so we don't have autoincrement failures
 	--local accountID = db:query("SELECT LAST_INSERT_ID() AS `id`"):poll(-1)[1].id
 
-	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?",
+	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?, `lastUsedName`=?",
 		usr,
 		2001,
 		-788,
@@ -83,7 +83,8 @@ function registerAccount(plr, usr, passwd, email)
 		0,
 		"Unemployed",
 		"Homeless",
-		toJSON({Team.getFromName("Unemployed"):getColor()})
+		toJSON({Team.getFromName("Unemployed"):getColor()}),
+		plr.name
 	)
 	accountData[usr] = {x = 2001, y = -788, z = 134, rot = 0, dim = 0, interior = 0, playtime = 1, team = "Unemployed", money = 500, model = 61, walkstyle = 0, wanted = 0, health = 200, armour = 0, occupation = "Unemployed", class = "Homeless", nametag = toJSON({Team.getFromName("Unemployed"):getColor()})}
 	passwd = nil -- Clear their password out of memory
