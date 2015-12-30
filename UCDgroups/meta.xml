@@ -25,6 +25,7 @@
 	<export function="getGroupMemberCount" type="server"/>
 	<export function="isRankHigherThan" type="server"/>
 	<export function="createGroupLog" type="server"/>
+	<export function="setDefaultRanks" type="server"/>
 	
 	<oop>true</oop>
 </meta>

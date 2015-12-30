@@ -11,6 +11,8 @@ addBL = {button = {}, window = {}, edit = {}, label = {}}
 historyGUI = {edit = {}, button = {}, window = {}, label = {}, gridlist = {}}
 ranksGUI = {checkbox = {}, scrollpane = {}, label = {}, button = {}, window = {}, gridlist = {}}
 groupSettings = {edit = {}, button = {}, window = {}, label = {}, combobox = {}}
+addRankGUI = {checkbox = {}, scrollpane = {}, edit = {}, button = {}, window = {}, label = {}, combobox = {}}
+editRankGUI = {checkbox = {}, scrollpane = {}, edit = {}, button = {}, window = {}, label = {}}
 
 original = {}
 groupList_ = {}
@@ -78,7 +80,7 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		mainGUI.button[4].enabled = true
 		mainGUI.button[5].enabled = true -- Should always be true
 		mainGUI.button[6].enabled = boolean(permissions[6])
-		mainGUI.button[7].enabled = boolean(permissions[7]) -- Only founders can edit ranks
+		mainGUI.button[7].enabled = true -- Everyone should be able to view ranks, though not everyone should be able to edit them
 		mainGUI.button[8].enabled = boolean(permissions[10])
 		mainGUI.button[9].enabled = true
 		mainGUI.button[10].enabled = true
@@ -95,6 +97,18 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		
 		banking.button[1].enabled = boolean(permissions[12])
 		banking.button[2].enabled = boolean(permissions[13])
+		
+		-- Group colour
+		for i = 1, 3 do
+			groupSettings.edit[i].readOnly = not boolean(permissions[14])
+		end
+		-- Group chat colour
+		for i = 3, 6 do
+			groupSettings.edit[i].readOnly = not boolean(permissions[16])
+		end
+		-- Combobox for highest ranks only
+		groupSettings.combobox[1].enabled = boolean(permissions[-1])
+		groupSettings.combobox[2].enabled = boolean(permissions[-1])
 	else
 		-- If they get kicked, leave or delete the group, this should trigger
 		mainGUI.window[1].text = "UCD | Groups"
@@ -272,48 +286,61 @@ function createGUI()
 	ranksGUI.window[1].sizable = false
 	ranksGUI.window[1].visible = false
 	ranksGUI.gridlist[1] = guiCreateGridList(10, 25, 186, 201, false, ranksGUI.window[1])
+	guiGridListSetSortingEnabled(ranksGUI.gridlist[1], false)
 	guiGridListAddColumn(ranksGUI.gridlist[1], "Group Ranks", 0.9)
 	ranksGUI.button[1] = guiCreateButton(10, 236, 117, 35, "Add Rank", false, ranksGUI.window[1])
 	ranksGUI.button[2] = guiCreateButton(137, 236, 117, 34, "Edit Rank", false, ranksGUI.window[1])
 	ranksGUI.button[3] = guiCreateButton(264, 236, 117, 34, "Remove Rank", false, ranksGUI.window[1])
 	ranksGUI.button[4] = guiCreateButton(391, 236, 117, 34, "Close", false, ranksGUI.window[1])
 	ranksGUI.scrollpane[1] = guiCreateScrollPane(206, 25, 302, 201, false, ranksGUI.window[1])
-	ranksGUI.checkbox[1] = guiCreateCheckBox(0, 5, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[1] = guiCreateLabel(21, 5, 266, 15, "Ability to demote members", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[2] = guiCreateCheckBox(0, 25, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[2] = guiCreateLabel(21, 25, 266, 15, "Ability to promote members", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[3] = guiCreateCheckBox(0, 45, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[3] = guiCreateLabel(21, 45, 266, 15, "Ability to kick members", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[4] = guiCreateCheckBox(0, 65, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[4] = guiCreateLabel(21, 65, 266, 15, "Ability to promote members until own rank", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[5] = guiCreateCheckBox(0, 86, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[5] = guiCreateLabel(21, 86, 266, 15, "Ability to edit group info", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[6] = guiCreateCheckBox(0, 105, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[6] = guiCreateLabel(21, 105, 266, 15, "Ability to invite players to the group", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[7] = guiCreateCheckBox(0, 126, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[7] = guiCreateLabel(21, 126, 266, 15, "Ability to delete the group", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[8] = guiCreateCheckBox(0, 146, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[8] = guiCreateLabel(21, 146, 266, 15, "Ability to edit the group whitelist", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[9] = guiCreateCheckBox(0, 166, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[9] = guiCreateLabel(21, 166, 266, 15, "Ability to edit the group blacklist", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[10] = guiCreateCheckBox(0, 187, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[10] = guiCreateLabel(21, 187, 266, 15, "Ability to view the group's history", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[11] = guiCreateCheckBox(0, 208, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[11] = guiCreateLabel(21, 208, 266, 15, "Ability to demote members with same rank", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[12] = guiCreateCheckBox(0, 228, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[12] = guiCreateLabel(21, 228, 266, 15, "Ability to deposit into group bank", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[13] = guiCreateCheckBox(0, 249, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[13] = guiCreateLabel(21, 249, 266, 15, "Ability to withdraw from group bank", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[14] = guiCreateCheckBox(0, 270, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[14] = guiCreateLabel(21, 270, 266, 15, "Ability to change group colour", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[15] = guiCreateCheckBox(0, 290, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[15] = guiCreateLabel(21, 290, 266, 15, "Ability to manage alliances", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[16] = guiCreateCheckBox(0, 309, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[16] = guiCreateLabel(21, 309, 266, 15, "Ability to change group chat colour", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[17] = guiCreateCheckBox(0, 328, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[17] = guiCreateLabel(21, 328, 266, 15, "Ability to manage alliances", false, ranksGUI.scrollpane[1])
-	ranksGUI.checkbox[18] = guiCreateCheckBox(0, 349, 15, 15, "", false, false, ranksGUI.scrollpane[1])
-	ranksGUI.label[18] = guiCreateLabel(21, 349, 266, 15, "Ability to warn members", false, ranksGUI.scrollpane[1])
+	local cbc = 0
+	for i, ent in ipairs(_permissions) do
+		ranksGUI.label[i] = guiCreateLabel(21, cbc * 19, 266, 15, ent, false, ranksGUI.scrollpane[1])
+		ranksGUI.checkbox[i] = guiCreateCheckBox(0, 19 * cbc, 15, 15, "", false, false, ranksGUI.scrollpane[1])
+		cbc = cbc + 1
+	end
+	
+	-- Add rank
+	addRankGUI.window[1] = guiCreateWindow(82, 118, 319, 368, "UCD | Groups - Add Rank", false)
+	addRankGUI.window[1].sizable = false
+	addRankGUI.window[1].visible = false
+	addRankGUI.button[1] = guiCreateButton(10, 329, 141, 29, "Add Rank", false, addRankGUI.window[1])
+	addRankGUI.button[2] = guiCreateButton(168, 330, 141, 28, "Close", false, addRankGUI.window[1])
+	addRankGUI.label[1] = guiCreateLabel(10, 23, 71, 22, "Rank Name:", false, addRankGUI.window[1])
+	guiLabelSetHorizontalAlign(addRankGUI.label[1], "center", false)
+	guiLabelSetVerticalAlign(addRankGUI.label[1], "center")
+	addRankGUI.edit[1] = guiCreateEdit(87, 23, 222, 22, "", false, addRankGUI.window[1])
+	addRankGUI.label[2] = guiCreateLabel(10, 50, 71, 22, "Create After:", false, addRankGUI.window[1])
+	guiLabelSetHorizontalAlign(addRankGUI.label[2], "center", false)
+	guiLabelSetVerticalAlign(addRankGUI.label[2], "center")
+	addRankGUI.combobox[1] = guiCreateComboBox(94, 51, 215, 172, "", false, addRankGUI.window[1])
+	addRankGUI.scrollpane[1] = guiCreateScrollPane(10, 79, 299, 240, false, addRankGUI.window[1])
+	--addRankGUI.checkbox[1] = guiCreateCheckBox(0, 0, 15, 15, "", false, false, addRankGUI.scrollpane[1])
+	--addRankGUI.label[3] = guiCreateLabel(20, 0, 279, 15, "Ability to demote members", false, addRankGUI.scrollpane[1])
+	local cbc = 0
+	for i, ent in ipairs(_permissions) do
+		addRankGUI.label[i] = guiCreateLabel(20, cbc * 19, 279, 15, ent, false, addRankGUI.scrollpane[1])
+		addRankGUI.checkbox[i] = guiCreateCheckBox(0, 19 * cbc, 15, 15, "", false, false, addRankGUI.scrollpane[1])
+		cbc = cbc + 1
+	end
+	
+	-- Edit rank
+	editRankGUI.window[1] = guiCreateWindow(774, 393, 319, 368, "UCD | Groups - Edit Rank", false)
+	editRankGUI.window[1].sizable = false
+	editRankGUI.window[1].visible = false
+	editRankGUI.button[1] = guiCreateButton(10, 329, 141, 29, "Update Rank", false, editRankGUI.window[1])
+	editRankGUI.button[2] = guiCreateButton(168, 330, 141, 28, "Close", false, editRankGUI.window[1])
+	editRankGUI.label[1] = guiCreateLabel(10, 23, 71, 22, "Rank Name:", false, editRankGUI.window[1])
+	guiLabelSetHorizontalAlign(editRankGUI.label[1], "center", false)
+	guiLabelSetVerticalAlign(editRankGUI.label[1], "center")
+	editRankGUI.edit[1] = guiCreateEdit(87, 23, 222, 22, "", false, editRankGUI.window[1])
+	editRankGUI.scrollpane[1] = guiCreateScrollPane(10, 55, 299, 264, false, editRankGUI.window[1])
+	local cbc = 0
+	for i, ent in ipairs(_permissions) do
+		editRankGUI.label[i] = guiCreateLabel(20, cbc * 19, 279, 15, ent, false, editRankGUI.scrollpane[1])
+		editRankGUI.checkbox[i] = guiCreateCheckBox(0, 19 * cbc, 15, 15, "", false, false, editRankGUI.scrollpane[1])
+		cbc = cbc + 1
+	end
 	
 	-- Settings
 	groupSettings.window[1] = guiCreateWindow(930, 213, 297, 396, "UCD | Groups - Settings", false)
@@ -377,7 +404,7 @@ function createGUI()
 	end
 	
 	-- All the group GUI windows
-	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1]}
+	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1], addRankGUI.window[1], editRankGUI.window[1]}
 	for _, gui in pairs(windows) do
 		if (gui and isElement(gui)) then
 			exports.UCDutil:centerWindow(gui)
@@ -423,7 +450,19 @@ function createGUI()
 	addEventHandler("onClientGUIClick", historyGUI.button[1], viewGroupHistory, false)
 	addEventHandler("onClientGUIClick", ranksGUI.button[4], viewGroupRanks, false)
 	-- Edit this
+	--addEventHandler("onClientGUIClick", guiRoot, pieceofshit, false)
+	
+	--addEventHandler("onClientGUIClick", guiRoot, groupRankHandler, false)
 	addEventHandler("onClientGUIClick", ranksGUI.gridlist[1], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", ranksGUI.button[1], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", ranksGUI.button[2], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", ranksGUI.button[3], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", ranksGUI.button[4], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", addRankGUI.button[1], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", addRankGUI.button[2], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", editRankGUI.button[1], groupRankHandler, false)
+	addEventHandler("onClientGUIClick", editRankGUI.button[2], groupRankHandler, false)
+	
 	addEventHandler("onClientGUIClick", groupSettings.button[6], viewGroupSettings, false)
 	addEventHandler("onClientGUIClick", groupSettings.button[5], settingsHandler, false)
 	
@@ -438,18 +477,146 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
 function groupRankHandler()
-	local row = guiGridListGetSelectedItem(ranksGUI.gridlist[1])
-	if (row and row ~= nil and row ~= false and row ~= -1) then
-		local rank = guiGridListGetItemText(ranksGUI.gridlist[1], row, 1)
-		if (groupRanks_[rank][2] == -1) then
-			for i = 1, #ranksGUI.checkbox do
-				ranksGUI.checkbox[i].selected = true
+	if (source == ranksGUI.gridlist[1] or source.parent == ranksGUI.gridlist[1] or source == ranksGUI.button[3] or source == ranksGUI.button[2] or source == editRankGUI.button[2]) then
+		local row = guiGridListGetSelectedItem(ranksGUI.gridlist[1])
+		if (row and row ~= -1) then
+			outputDebugString(tostring(row))
+			local rank = guiGridListGetItemText(ranksGUI.gridlist[1], row, 1)
+			
+			-- Set permissions of specified rank in the GUI
+			if (groupRanks_[rank][2] == -1) then
+				for i = 1, #ranksGUI.checkbox do
+					ranksGUI.checkbox[i].selected = true
+				end
+			else
+				for i = 1, #ranksGUI.checkbox do
+					ranksGUI.checkbox[i].selected = boolean(groupRanks_[rank][1][i])
+				end
+			end
+			
+			-- Delete rank
+			if (source == ranksGUI.button[3]) then
+				-- A row should already be selected
+				exports.UCDutil:createConfirmationWindow("UCDgroups.deleteRank", rank, true, "UCD | Groups - Delete Rank", "Are you sure you want to delete this rank?\n Anyone with this rank will be demoted")
+			-- Edit rank
+			elseif (source == ranksGUI.button[2] or source == editRankGUI.button[2]) then
+				rankToChange = rank
+				editRankGUI.window[1].visible = not editRankGUI.window[1].visible
+				if (editRankGUI.window[1].visible) then
+					guiBringToFront(editRankGUI.window[1])
+					editRankGUI.edit[1].text = rank
+					for i = 1, #editRankGUI.checkbox do
+						if (groupRanks_[rank][2] == -1) then
+							editRankGUI.checkbox[i].selected = true
+							editRankGUI.checkbox[i].enabled = false
+						elseif (groupRanks_[rank][2] == 0) then
+							for i in pairs(forbiddenPermsForTrial) do
+								editRankGUI.checkbox[i].enabled = false
+							end
+						else
+							editRankGUI.checkbox[i].selected = boolean(groupRanks_[rank][1][i])
+							editRankGUI.checkbox[i].enabled = true
+						end
+					end
+				else
+					editRankGUI.edit[1].text = ""
+					for i = 1, #editRankGUI.checkbox do
+						editRankGUI.checkbox[i].selected = false
+						editRankGUI.checkbox[i].enabled = true
+					end
+				end
 			end
 		else
-			for i = 1, #ranksGUI.checkbox do
-				ranksGUI.checkbox[i].selected = boolean(groupRanks_[rank][1][i])
+			-- if there is no row selected
+			editRankGUI.window[1].visible = false
+			editRankGUI.edit[1].text = ""
+			for i = 1, #editRankGUI.checkbox do
+				editRankGUI.checkbox[i].selected = false
+				editRankGUI.checkbox[i].enabled = true
 			end
 		end
+	end
+	-- Opening/closing the add rank gui
+	if (source == ranksGUI.button[1] or source == addRankGUI.button[2]) then
+		addRankGUI.window[1].visible = not addRankGUI.window[1].visible
+		addRankGUI.edit[1].text = ""
+		guiComboBoxClear(addRankGUI.combobox[1])
+		guiBringToFront(addRankGUI.window[1])
+		for i = 1, #addRankGUI.checkbox do
+			addRankGUI.checkbox[i].selected = false
+		end
+		local curIndex = 0
+		for k, v in pairs(groupRanks_) do
+			if (v[2] > -1) then
+				for key, val in pairs(groupRanks_) do
+					if (val[2] == curIndex) then
+						guiComboBoxAddItem(addRankGUI.combobox[1], key)
+					end
+				end
+				curIndex = curIndex + 1
+			end
+		end	
+	-- Adding a rank
+	elseif (source == addRankGUI.button[1]) then
+		if (addRankGUI.window[1].visible) then
+			local rankName = addRankGUI.edit[1].text
+			if (not rankName or rankName == "" or rankName == " " or rankName:gsub(" ", "") == "") then
+				exports.UCDdx:new("Please enter a valid rank name", 255, 255, 0)
+				return
+			end
+			if (rankName:len() < 2 or rankName:len() > 30) then
+				exports.UCDdx:new("A rank name must be between 2 and 30 characters", 255, 255, 0)
+				return
+			end
+			local row = guiComboBoxGetSelected(addRankGUI.combobox[1])
+			local prevRank 
+			if (row and row ~= -1 and row ~= nil) then
+				prevRank = guiComboBoxGetItemText(addRankGUI.combobox[1], row)
+			end
+			outputDebugString("prevRank = "..prevRank)
+			
+			if (not groupRanks_[prevRank] or prevRank == "" or not prevRank) then
+				exports.UCDdx:new("Invalid previous rank selected", 255, 255, 0)
+				return
+			end
+			-- Gather permissions
+			local temp = {}
+			for i = 1, #addRankGUI.checkbox do
+				if (addRankGUI.checkbox[i].selected) then
+					temp[i] = true
+ 				end
+			end
+			triggerServerEvent("UCDgroups.addRank", localPlayer, rankName, prevRank, temp)
+		end
+	-- Edit rank
+	elseif (source == editRankGUI.button[1]) then
+		local rank = editRankGUI.edit[1].text
+		if (rank ~= rankToChange) then
+			if (not rank or rank == "" or rank == " " or rank:gsub(" ", "") == "") then
+				exports.UCDdx:new("Please enter a valid rank name", 255, 255, 0)
+				return
+			end
+			if (rank:len() < 2 or rank:len() > 30) then
+				exports.UCDdx:new("A rank name must be between 2 and 30 characters", 255, 255, 0)
+				return
+			end
+			
+		end
+		-- Gather permissions
+		local temp = {}
+		if (groupRanks_[rankToChange][2] == -1) then
+			for i = 1, 30 do
+				temp[i] = true
+			end
+		else
+			for i = 1, #editRankGUI.checkbox do
+				if (editRankGUI.checkbox[i].selected) then
+					temp[i] = true
+				end
+			end
+		end
+		triggerServerEvent("UCDgroups.editRank", localPlayer, rankToChange, rank, temp or {})
+		outputDebugString("trigger")
 	end
 end
 
@@ -1003,7 +1170,9 @@ end
 function deleteGroup()
 	-- Add some sort of account confirmation
 	if (localPlayer:getData("group")) then
-		exports.UCDutil:createConfirmationWindow("UCDgroups.deleteGroup", nil, true, "UCD | Groups - Delete", "Are you sure you want to delete this group?")
+		if (boolean(permissions_[-1]) == true) then
+			exports.UCDutil:createConfirmationWindow("UCDgroups.deleteGroup", nil, true, "UCD | Groups - Delete", "Are you sure you want to delete this group?")
+		end
 	end
 end
 
@@ -1023,7 +1192,6 @@ function sendInvite()
 			return
 		end
 		triggerServerEvent("UCDgroups.sendInvite", localPlayer, plr)
-		outputDebugString("sent invite to.. "..plr.name)
 	end
 end
 

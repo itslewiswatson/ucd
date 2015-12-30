@@ -4,6 +4,9 @@ function onClientGUIChanged()
 		local text = banking.edit[1].text
 		text = text:gsub(",", "")
 		if (tonumber(text)) then
+			if (tonumber(text) > 99999999) then
+				banking.edit[1].text = "99,999,999"
+			end
 			banking.edit[1]:setText(exports.UCDutil:tocomma(tonumber(text)))
 			--if (guiEditGetCaretIndex(UCDhousing.edit[1]) == string.len(UCDhousing.edit[1]:getText())) then
 			if (not getKeyState("backspace")) then
@@ -44,6 +47,10 @@ end
 function updateEditForWarning()
 	if (warningAdjust.window[1].visible) then
 		if (tonumber(warningAdjust.edit[1].text) ~= nil) then
+			if (tonumber(warningAdjust.edit[1].text) > 100) then
+				warningAdjust.edit[1].text = "100"
+				guiProgressBarSetProgress(warningAdjust.progressbar[1], 100)
+			end
 			if (tonumber(warningAdjust.edit[1].text) >= 0 and tonumber(warningAdjust.edit[1].text) <= 100) then
 				guiProgressBarSetProgress(warningAdjust.progressbar[1], tonumber(warningAdjust.edit[1].text))
 				if (original[1] >= tonumber(warningAdjust.edit[1].text)) then

@@ -84,6 +84,7 @@ function getRankPermissions(groupName, rank)
 	if (not groupName or not rank or not groupRanks[groupName] or not groupRanks[groupName][rank]) then return end
 	if (rank == getGroupLastRank(groupName)) then
 		local tempranks = {}
+		tempranks[-1] = true
 		for i = 1, 25 do
 			tempranks[i] = true
 		end

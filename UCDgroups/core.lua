@@ -57,8 +57,8 @@ defaultRanks = {
 	["Trial"] 	= {{}, 0},
 	["Regular"] = {{[12] = true}, 1},
 	["Trusted"] = {{[8] = true, [10] = true, [12] = true}, 2},
-	["Deputy"] 	= {{[1] = true, [2] = true, [3] = true, [6] = true, [8] = true, [9] = true, [10] = true, [12] = true, [17] = true}, 3},
-	["Leader"] 	= {{[1] = true, [2] = true, [3] = true, [4] = true, [6] = true, [8] = true, [9] = true, [10] = true, [12] = true, [15] = true, [17] = true}, 4},
+	["Deputy"] 	= {{[1] = true, [2] = true, [3] = true, [6] = true, [8] = true, [9] = true, [10] = true, [12] = true, [17] = true, [18] = true, [19] = true}, 3},
+	["Leader"] 	= {{[1] = true, [2] = true, [3] = true, [4] = true, [6] = true, [8] = true, [9] = true, [10] = true, [12] = true, [15] = true, [16] = true, [17] = true, [18] = true, [19] = true}, 4},
 	["Founder"] = {{}, -1},
 }
 
@@ -72,6 +72,7 @@ playerInvites = {} -- When a player gets invited ([accName] = group_)
 playerGroupCache = {} -- Player group cache with the account name as the key
 onlineTime = {} -- Resolves player online time
 blacklistCache = {} -- Cache's a group's blacklist
+groupEditingRanks = {} -- A table that tells us when a group is editing ranks so we do not promote/demote anyone in the meantime
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
@@ -467,6 +468,11 @@ function promoteMember(accName, reason)
 		local newRank = getNextRank(group_, plrRank)
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
 		
+		if (groupEditingRanks[group_]) then
+			exports.UCDdx:new(client, "Ranks are currently being edited - you cannot warn, promote, demote or kick right now", 255, 0, 0)
+			return
+		end
+		
 		if (plrRank == getGroupLastRank(group_)) then return end
 		if (group_ and acc) then
 			if (canPlayerDoActionInGroup(client, "promote")) then
@@ -510,6 +516,11 @@ function demoteMember(accName, reason)
 		local newRank = getPreviousRank(group_, plrRank)
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
 		
+		if (groupEditingRanks[group_]) then
+			exports.UCDdx:new(client, "Ranks are currently being edited - you cannot warn, promote, demote or kick right now", 255, 0, 0)
+			return
+		end
+		
 		if (canPlayerDoActionInGroup(client, "demote")) then
 			if (isRankHigherThan(group_, clientRank, plrRank)) then
 				if (plrRank == clientRank and not canPlayerDoActionInGroup(client, "demoteWithSameRank")) then
@@ -551,6 +562,11 @@ function kickMember(accName, reason)
 		local clientRank = getPlayerGroupRank(client)
 		local plrRank = playerGroupCache[accName][3]
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
+		
+		if (groupEditingRanks[group_]) then
+			exports.UCDdx:new(client, "Ranks are currently being edited - you cannot warn, promote, demote or kick right now", 255, 0, 0)
+			return
+		end
 		
 		if (canPlayerDoActionInGroup(client, "kick")) then
 			if (isRankHigherThan(group_, clientRank, plrRank)) then
@@ -604,6 +620,11 @@ function warnMember(accName, level, reason)
 		
 		local clientRank = getPlayerGroupRank(client)
 		local plrRank = playerGroupCache[accName][3]
+		
+		if (groupEditingRanks[group_]) then
+			exports.UCDdx:new(client, "Ranks are currently being edited - you cannot warn, promote, demote or kick right now", 255, 0, 0)
+			return
+		end
 		
 		if (group_) then
 			if (canPlayerDoActionInGroup(client, "warn") and isRankHigherThan(group_, clientRank, plrRank)) then
@@ -753,10 +774,10 @@ addEvent("UCDgroups.requestGroupHistory", true)
 addEventHandler("UCDgroups.requestGroupHistory", root, requestGroupHistory)
 
 function requestGroupRanks()
-	if (client) then
-		local group_ = getPlayerGroup(client)
+	if (source) then
+		local group_ = getPlayerGroup(source)
 		if (group_) then
-			triggerLatentClientEvent(client, "UCDgroups.groupRanks", client, groupRanks[group_])
+			triggerLatentClientEvent(source, "UCDgroups.groupRanks", source, groupRanks[group_])
 		end
 	end
 end
@@ -954,8 +975,9 @@ function handleLogin2(qh, plr, account)
 	group[plr] = group_
 	
 	if (gmotd) then
+		local LUN = exports.UCDaccounts:GAD(groupTable[group_].gmotd_setter, "lastUsedName") or groupTable[group_].gmotd_setter
 		--outputDebugString(tostring(r).." "..tostring(g).." "..tostring(b))
-		outputChatBox("(GMOTD) #FFFFFF"..gmotd, plr, r, g, b, true)
+		outputChatBox("GMOTD "..LUN.." #FFFFFF"..gmotd, plr, r, g, b, true)
 	end
 end
 
@@ -1047,15 +1069,18 @@ function updateGroupSettings(newSettings)
 					local r, g, b = getGroupChatColour(group_)
 					groupTable[group_].enableGSC = newSettings.enableGSC
 					db:exec("UPDATE `groups_` SET `enableGSC`=? WHERE `groupName`=?", newSettings.enableGSC, group_)
+					if (groupTable[group_].enableGSC == 1) then
+						createGroupLog(group_, client.name.." ("..client.account.name..") has enabled group staff chat")
+					else
+						createGroupLog(group_, client.name.." ("..client.account.name..") has disabled group staff chat")
+					end
 					for _, acc in ipairs(groupMembers[group_]) do
 						if (Account(acc).player) then
 							if (canPlayerDoActionInGroup(Account(acc).player, "gsc")) then
 								if (groupTable[group_].enableGSC == 1) then
 									exports.UCDdx:new(Account(acc).player, client.name.." has enabled group staff chat /gsc", r, g, b)
-									createGroupLog(group_, client.name.." ("..client.account.name..") has enabled group staff chat")
 								else
 									exports.UCDdx:new(Account(acc).player, client.name.." has disabled group staff chat /gsc", r, g, b)
-									createGroupLog(group_, client.name.." ("..client.account.name..") has disabled group staff chat")
 								end
 							end
 						end
@@ -1069,6 +1094,8 @@ function updateGroupSettings(newSettings)
 				if (canPlayerDoActionInGroup(client, "gmotd")) then
 					groupTable[group_].gmotd = newSettings.gmotd
 					db:exec("UPDATE `groups_` SET `gmotd`=? WHERE `groupName`=?", newSettings.gmotd, group_)
+					groupTable[group_].gmotd_setter = client.account.name
+					db:exec("UPDATE `groups_` SET `gmotd_setter`=? WHERE `groupName`=?", client.account.name, group_)
 					messageGroup(group_, client.name.." has changed the group MOTD", "info")
 					createGroupLog(group_, client.name.." ("..client.account.name..") has changed the group MOTD")
 				else
@@ -1082,3 +1109,131 @@ function updateGroupSettings(newSettings)
 end
 addEvent("UCDgroups.updateSettings", true)
 addEventHandler("UCDgroups.updateSettings", root, updateGroupSettings)
+
+function deleteRank(rankName)
+	if (client and rankName) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			local rank = getPlayerGroupRank(client)
+			if (getGroupLastRank(group_) == rank) then
+				if (not groupRanks[group_][rankName]) then
+					exports.UCDdx:new(client, "This rank does not exist", 255, 255, 0)
+					return
+				end
+				local prevRank = getPreviousRank(group_, rankName)
+				local rankIndex = getRankIndex(group_, rankName)
+				if (rankIndex == 0 or rankIndex == -1) then
+					exports.UCDdx:new(client, "This rank cannot be removed", 255, 255, 0)
+					return
+				end
+				if (not prevRank) then
+					exports.UCDdx:new(client, "You can't delete this rank because there is no rank before it", 255, 255, 0)
+					return
+				end
+				groupEditingRanks[group_] = true
+				db:exec("DELETE FROM `groups_ranks` WHERE `groupName`=? AND `rankName`=?", group_, rankName)
+				db:exec("UPDATE `groups_ranks` SET `rankIndex` = `rankIndex` - 1 WHERE `rankIndex` > ? AND `groupName`=?", rankIndex, group_)
+				db:exec("UPDATE `groups_members` SET `rank`=? WHERE `rank`=? AND `groupName`=?", prevRank, rankName, group_)
+				groupRanks[group_][rankName] = nil
+				for _, ent in pairs(playerGroupCache) do
+					if (ent[1] == group_) then
+						if (ent[3] == rankName) then
+							ent[3] = prevRank
+						end
+					end
+				end
+				for _, ent in pairs(groupRanks[group_]) do
+					--outputDebugString("ent[2] = "..tostring(ent[2]).." | rankIndex = "..tostring(rankIndex))
+					if (ent[2] > rankIndex) then
+						ent[2] = ent[2] - 1
+					end
+				end
+				groupEditingRanks[group_] = nil
+				triggerEvent("UCDgroups.requestGroupRanks", client)
+				exports.UCDdx:new(client, "Rank "..rankName.." has been deleted", 0, 255, 0)
+			end
+		end
+	end
+end
+addEvent("UCDgroups.deleteRank", true)
+addEventHandler("UCDgroups.deleteRank", root, deleteRank)
+
+function addRank(rankName, prevRank, data)
+	if (client and rankName and prevRank and data) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			local rank = getPlayerGroupRank(client)
+			if (getGroupLastRank(group_) == rank) then
+				if (rankName == "Kick this player") then return end
+				if (groupRanks[group_] and groupRanks[group_][rankName]) then
+					exports.UCDdx:new(client, "A rank with this name already exists", 255, 255, 0)
+					return
+				end
+				groupEditingRanks[group_] = true
+				local rankIndex = getRankIndex(group_, prevRank)
+				db:exec("UPDATE `groups_ranks` SET `rankIndex` = `rankIndex` + 1 WHERE `rankIndex` > ? AND `groupName` = ?", rankIndex, group_)
+				db:exec("INSERT INTO `groups_ranks` (`groupName`, `rankName`, `permissions`, `rankIndex`) VALUES (?, ?, ?, ?)", group_, rankName, toJSON(data), rankIndex + 1)
+				for _, ent in pairs(groupRanks[group_]) do
+					if (ent[2] > rankIndex) then
+						ent[2] = ent[2] + 1
+					end
+				end
+				groupRanks[group_][rankName] = {data, rankIndex + 1}
+				groupEditingRanks[group_] = nil
+				triggerEvent("UCDgroups.requestGroupRanks", client)
+				exports.UCDdx:new(client, "Rank "..rankName.." has been added", 0, 255, 0)
+			end
+		end
+	end
+end
+addEvent("UCDgroups.addRank", true)
+addEventHandler("UCDgroups.addRank", root, addRank)
+
+function editRank(rankName, newName, data)
+	if (client and rankName and newName and data) then
+		local group_ = getPlayerGroup(client)
+		if (group_ and getPlayerGroupRank(client) == getGroupLastRank(group_)) then
+			if (newName ~= rankName) then
+				if (groupRanks[group_][newName]) then
+					exports.UCDdx:new(client, "That rank name is already in use", 255, 0, 0)
+					return
+				end
+			end
+			if (getGroupLastRank(group_) == rankName) then
+				if (data[25] ~= true) then
+					outputDebugString("Correct permissions not given for last rank in group "..group_.."  with rank "..rankName)
+					return
+				end
+			end
+			if (newName ~= rankName) then
+				local rankIndex = getRankIndex(group_, rankName)
+				groupEditingRanks[group_] = true
+				db:exec("UPDATE `groups_ranks` SET `rankName`=? WHERE `rankName`=? AND `groupName`=?", data[1], newName, group_)
+				db:exec("UPDATE `groups_members` SET `rank`=? WHERE `rank`=? AND `groupName`=?", data[1], newName, group_)
+				groupRanks[group_][newName] = groupRanks[group_][rankName]
+				groupRanks[group_][rankName] = nil
+				for acc, _data in pairs(playerGroupCache) do
+					if (_data[1] == group_) then
+						if (_data[3] == rankName) then
+							_data[3] = newName
+						end
+					end
+				end
+				if (data and type(data) == "table" and rankIndex ~= -1) then
+					db:exec("UPDATE `groups_ranks` SET `permissions`=? WHERE `rankName`=? AND `groupName`=?", toJSON(data), newName, group_)
+					groupRanks[group_][newName][1] = data
+				end
+				groupEditingRanks[group_] = nil
+			else
+				groupEditingRanks[group_] = true
+				db:exec("UPDATE `groups_ranks` SET `permissions`=? WHERE `rankName`=? AND `groupName`=?", toJSON(data), rankName, group_)
+				groupRanks[group_][rankName][1] = data
+				groupEditingRanks[group_] = nil
+			end
+			triggerEvent("UCDgroups.requestGroupRanks", client)
+			exports.UCDdx:new(client, "Rank "..rankName.." has been updated", 0, 255, 0)
+		end
+	end
+end
+addEvent("UCDgroups.editRank", true)
+addEventHandler("UCDgroups.editRank", root, editRank)
