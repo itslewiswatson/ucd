@@ -86,7 +86,7 @@ function registerAccount(plr, usr, passwd, email)
 		toJSON({Team.getFromName("Unemployed"):getColor()}),
 		plr.name
 	)
-	accountData[usr] = {x = 2001, y = -788, z = 134, rot = 0, dim = 0, interior = 0, playtime = 1, team = "Unemployed", money = 500, model = 61, walkstyle = 0, wanted = 0, health = 200, armour = 0, occupation = "Unemployed", class = "Homeless", nametag = toJSON({Team.getFromName("Unemployed"):getColor()})}
+	accountData[usr] = {x = 2001, y = -788, z = 134, rot = 0, dim = 0, interior = 0, playtime = 1, team = "Unemployed", money = 500, model = 61, walkstyle = 0, wanted = 0, health = 200, armour = 0, occupation = "Unemployed", class = "Homeless", nametag = toJSON({Team.getFromName("Unemployed"):getColor()}), lastUsedName = plr.name}
 	passwd = nil -- Clear their password out of memory
 	db:exec("INSERT INTO `playerWeapons` SET `account`=?, `weaponString`=?", usr, toJSON({})) -- Empty JSON string
 	

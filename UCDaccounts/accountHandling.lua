@@ -55,6 +55,7 @@ function Accounts.Login(_, theCurrentAccount)
 	db:exec("UPDATE `accounts` SET `serial`=?, `ip`=?, `lastUsedName`=? WHERE `account`=?", source.serial, source.ip, source.name, source.account.name)
 	--source:setData("accountID", accountID, true)
 	source:setData("accountName", source.account.name, true)
+	SAD(source, "lastUsedName", source.name)
 end
 addEventHandler("onPlayerLogin", root, Accounts.Login)
 
@@ -88,7 +89,7 @@ function Accounts.Save(plr)
 	)
 	
 	-- It's more efficient here to have one query and not 16 different ones that would come from using SAD
-	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=? WHERE `account`=?",
+	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
 		playerX,
 		playerY,
 		playerZ,
@@ -106,6 +107,7 @@ function Accounts.Save(plr)
 		class,
 		nametag,
 		--id
+		plr.name,
 		plr.account.name
 	)
 	
