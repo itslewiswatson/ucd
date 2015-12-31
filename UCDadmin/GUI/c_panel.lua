@@ -165,24 +165,31 @@ local punishmentTimes = {
         adminPanel.label[37] = guiCreateLabel(280, 209, 345, 20, "Author:", false, adminPanel.tab[2])
         adminPanel.label[38] = guiCreateLabel(280, 229, 345, 20, "Version:", false, adminPanel.tab[2])
         adminPanel.label[39] = guiCreateLabel(280, 249, 345, 23, "Description:", false, adminPanel.tab[2])
-
         adminPanel.tab[3] = guiCreateTab("Server Management", adminPanel.tabpanel[1])
         adminPanel.tab[4] = guiCreateTab("Utilities", adminPanel.tabpanel[1])    
 		
 		
         confirm.window[1] = guiCreateWindow(792, 480, 324, 111, "UCD | Admin - <health>", false)
-        guiWindowSetSizable(confirm.window[1], false)
-        guiSetVisible(confirm.window[1], false)
-
+        confirm.window[1].sizable = false
+        confirm.window[1].visible = false
         confirm.button[1] = guiCreateButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
-        guiSetProperty(confirm.button[1], "NormalTextColour", "FFAAAAAA")
         confirm.button[2] = guiCreateButton(169, 82, 101, 19, "Cancel", false, confirm.window[1])
-        guiSetProperty(confirm.button[2], "NormalTextColour", "FFAAAAAA")
         confirm.edit[1] = guiCreateEdit(35, 47, 260, 25, "", false, confirm.window[1])
         confirm.label[1] = guiCreateLabel(36, 21, 259, 20, "Set the motherfucking label text nigga", false, confirm.window[1])
         guiLabelSetHorizontalAlign(confirm.label[1], "center", false)
-        guiLabelSetVerticalAlign(confirm.label[1], "center")    
-
+        guiLabelSetVerticalAlign(confirm.label[1], "center") 
+		
+		-- 
+		WPT = {gridlist = {}, window = {}, button = {}, label = {}}
+		WPT.window[1] = guiCreateWindow(850, 390, 201, 348, "UCD Admin | Warp Player To", false)
+		WPT.window[1].sizable = false
+		WPT.window[1].visible = false
+		WPT.button[1] = guiCreateButton(10, 304, 85, 34, "Warp Player To", false, WPT.window[1])
+		WPT.label[1] = guiCreateLabel(10, 24, 179, 21, "Select a player from the grid", false, WPT.window[1])
+		guiLabelSetHorizontalAlign(WPT.label[1], "center", false)
+		WPT.gridlist[1] = guiCreateGridList(10, 45, 178, 249, false, WPT.window[1])
+		guiGridListAddColumn(WPT.gridlist[1], "Player", 0.9)
+		WPT.button[2] = guiCreateButton(103, 304, 85, 34, "Close", false, WPT.window[1])
 
 --    end
 --)
@@ -267,7 +274,6 @@ addEventHandler("onClientRender", root,
 	function ()
 		-- Update team colours
 		for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
-            --local plr = Player(guiGridListGetItemText(adminPanel.gridlist[1], i, 1))
             local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
 			if (plr) then
 				local r, g, b
@@ -293,9 +299,6 @@ function updatePlayerInformation(plr, getServerSidedData)
 	-- Fetch the rest server-side
 	local name = plr.name
 	local loc = plr.position
-	--loc.x = exports.UCDutil:mathround(loc.x, 3)
-	--loc.y = exports.UCDutil:mathround(loc.y, 3)
-	--loc.z = exports.UCDutil:mathround(loc.z, 3) -- Need to fix this
 	local accountID = plr:getData("accountID") or "N/A"
 	local accountName = plr:getData("accountName") or "N/A"
 	local model = plr.model or 0
@@ -410,6 +413,50 @@ function playerSelection()
 end
 addEventHandler("onClientGUIClick", guiRoot, playerSelection)
 
+function toggleWPT(plr)
+	WPT.window[1].visible = not WPT.window[1].visible
+	guiGridListClear(WPT.gridlist[1])
+	if (plr) then
+		playerToWarp = plr
+		if (WPT.window[1].visible) then
+			guiBringToFront(WPT.window[1])
+			for _, player in ipairs(Element.getAllByType("player")) do
+				if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+					local r, g, b
+					if (player.team) then
+						r, g, b = player.team:getColor()
+					else
+						r, g, b = 255, 255, 255
+					end
+					local row = guiGridListAddRow(WPT.gridlist[1])
+					guiGridListSetItemText(WPT.gridlist[1], row, 1, tostring(player.name), false, false)
+					guiGridListSetItemData(WPT.gridlist[1], row, 1, player)
+					guiGridListSetItemColor(WPT.gridlist[1], row, 1, r, g, b)
+				end
+			end
+		end
+	end
+end
+addEvent("UCDadmin.toggleWPT", true)
+addEventHandler("UCDadmin.toggleWPT", root, toggleWPT)
+
+function handleWPTInput()
+	if (source == WPT.button[1]) then
+		local row = guiGridListGetSelectedItem(WPT.gridlist[1])
+		if (row and row ~= -1) then
+			local plr = guiGridListGetItemData(WPT.gridlist[1], row, 1)
+			if playerToWarp then
+				triggerServerEvent("UCDadmin.warpPlayerTo", localPlayer, playerToWarp, plr)
+			end
+			triggerEvent("UCDadmin.toggleWPT", localPlayer)
+		end
+	elseif (source == WPT.button[2]) then
+		triggerEvent("UCDadmin.toggleWPT", localPlayer)
+	end
+end
+addEventHandler("onClientGUIClick", WPT.button[1], handleWPTInput)
+addEventHandler("onClientGUIClick", WPT.button[2], handleWPTInput)
+
 function adminAction()
 	if (source ~= adminPanel.gridlist[1] and source.parent == adminPanel.tab[1]) then
 		local plr = getSelectedPlayer()
@@ -423,10 +470,9 @@ function adminAction()
 		if (action == "punish") then
 			-- open punish gui
 		elseif (action == "warp to player") then
-			--
 			triggerServerEvent("UCDadmin.warpToPlayer", localPlayer, plr)
 		elseif (action == "warp player to") then
-			
+			triggerEvent("UCDadmin.toggleWPT", localPlayer, plr)
 		elseif (action == "reconnect") then
 			triggerServerEvent("UCDadmin.reconnect", localPlayer, plr)
 		elseif (action == "kick") then
@@ -441,7 +487,7 @@ function adminAction()
 		elseif (action == "shout") then
 			
 		elseif (action == "spectate") then
-			
+			triggerServerEvent("UCDadmin.spectate", localPlayer, plr)
 		elseif (action == "slap") then
 			
 		elseif (action == "rename") then
@@ -475,15 +521,19 @@ function adminAction()
 		elseif (action == "view weps") then
 			
 		elseif (action == "fix") then
-			
+			if (plr.vehicle) then
+				triggerServerEvent("UCDadmin.fixVehicle", localPlayer, plr, plr.vehicle)
+			end
 		elseif (action == "eject") then
-			
+			if (plr.vehicle) then
+				triggerServerEvent("UCDadmin.ejectPlayer", localPlayer, plr, plr.vehicle)
+			end
 		elseif (action == "destroy") then
 			if (plr.vehicle) then
 				if (plr.vehicle:getData("vehicleID")) then
 					exports.UCDdx:new(plr.name.."'s vehicle is a player vehicle. Hiding it instead...", 0, 255, 0)
 					triggerServerEvent("UCDvehicleSystem.hideVehicle", plr, plr.vehicle:getData("vehicleID"))
-					triggerServerEvent("UCDadmin.destroyVehicle", localPlayer, plr)
+					--triggerServerEvent("UCDadmin.destroyVehicle", localPlayer, plr)
 					return
 				end
 				triggerServerEvent("UCDadmin.destroyVehicle", localPlayer, plr, plr.vehicle)
@@ -493,7 +543,7 @@ function adminAction()
 		elseif (action == "disable") then
 			
 		elseif (action == "blow") then
-		
+			
 		elseif (action == "give vehicle") then
 			if (isPedInVehicle(plr) or plr.vehicle) then
 				exports.UCDdx:new("You can't give this player a vehicle as they are already in one", 255, 0, 0)

@@ -35,7 +35,29 @@ addEventHandler("UCDadmin.warpToPlayer", root, warpToPlayer)
 
 function warpPlayerTo(plr, warpTo)
 	if (plr and client and warpTo and isPlayerAdmin(client)) then
-		-- warpTo should be a player element
+		if (isElement(warpTo) and warpTo.type == "player") then
+			if (plr == warpTo) then
+				return
+			end
+			if (plr.vehicle) then
+				plr:removeFromVehicle(plr.vehicle)
+			end
+			if (plr.dimension ~= warpTo.dimension) then
+				plr.dimension = warpTo.dimension
+			end
+			if (plr.interior ~= warpTo.interior) then
+				plr.interior = warpTo.interior
+			end
+			local position = warpTo.matrix.position + warpTo.matrix.forward * 2
+			plr:setPosition(position)
+			if (warpTo == client) then
+				exports.UCDdx:new(plr, client.name.." has warped you to them", 0, 255, 0)
+				exports.UCDdx:new(client, "You have warped "..plr.name.." to you", 0, 255, 0)
+			else
+				exports.UCDdx:new(plr, "You have been warped to "..warpTo.name.." by "..client.name, 0, 255, 0)
+				exports.UCDdx:new(client, "You have warped "..plr.name.." to "..warpTo.name, 0, 255, 0)
+			end
+		end
 	end
 end
 addEvent("UCDadmin.warpPlayerTo", true)
@@ -109,10 +131,20 @@ end
 addEvent("UCDadmin.shout", true)
 addEventHandler("UCDadmin.shout", root, shoutToPlayer)
 
+spectating = {}
 function spectatePlayer(plr)
-	if (isPlayerOwner(plr) and not isPlayerOwner(client)) then return false end
-	if (getPlayerAdminRank(plr) == 5 and getPlayerAdminRank(client) ~= 5) then return false end
-	
+	if (plr == client) then return end
+	if (isPlayerOwner(plr) and not isPlayerOwner(client)) then return end
+	if (getPlayerAdminRank(plr) == 5 and getPlayerAdminRank(client) ~= 5) then return end
+	if (spectating[client] == plr) then
+		client.cameraTarget = client
+		spectating[client] = nil
+		exports.UCDdx:new(client, "You are no longer spectating "..plr.name, 0, 255, 0)
+		return
+	end
+	exports.UCDdx:new(client, "You are now spectating "..plr.name, 0, 255, 0)
+	spectating[client] = plr
+	client.cameraTarget = plr
 end
 addEvent("UCDadmin.spectate", true)
 addEventHandler("UCDadmin.spectate", root, spectatePlayer)
@@ -214,17 +246,23 @@ addEventHandler("UCDadmin.setInterior", root, setPlayerInterior)
 
 function giveVehicle(plr, vehicle)
 	if (plr and client and vehicle and isPlayerAdmin(client)) then
-	
 		local spawnedVehicle
 		
 		-- We're dealing with a vehicle ID
 		if tostring(vehicle):match("%d") and tonumber(vehicle) ~= false and tonumber(vehicle) ~= nil then
-			
+			if (not Vehicle.getNameFromModel(vehicle) or Vehicle.getNameFromModel(vehicle) == "" or Vehicle.getNameFromModel(vehicle) == " ") then
+				exports.UCDdx:new(client, "You must specify a valid vehicle name or ID", 255, 0, 0)
+				return
+			end
 			-- Possibly add this vehicle to a table so he can /djv it
 			spawnedVehicle = Vehicle(vehicle, plr.position, 0, 0, getPedRotation(plr), "PEN15")
 			warpPedIntoVehicle(plr, spawnedVehicle)
 			
 		else -- We're dealing with a vehicle name
+			if (not Vehicle.getModelFromName(vehicle)) then
+				exports.UCDdx:new(client, "You must specify a valid vehicle name or ID", 255, 0, 0)
+				return
+			end
 			spawnedVehicle = Vehicle(Vehicle.getModelFromName(vehicle), plr.position, 0, 0, getPedRotation(plr), "PEN15")
 			warpPedIntoVehicle(plr, spawnedVehicle)
 		end
@@ -242,13 +280,35 @@ addEvent("UCDadmin.giveVehicle", true)
 addEventHandler("UCDadmin.giveVehicle", root, giveVehicle)
 
 function fixVehicle_(plr, vehicle)
-	
+	if (plr and client and vehicle and isPlayerAdmin(client)) then
+		if (plr.vehicle ~= vehicle or vehicle.type ~= "vehicle") then
+			return
+		end
+		if (vehicle:getData("vehicleID") and type(vehicle:getData("vehicleID")) == number) then
+			if (getPlayerAdminRank(client) < 4) then
+				exports.UCDdx:new(client, "You are not allowed to fix player vehicles until L4", 255, 0, 0)
+				return
+			end
+			exports.UCDvehicleSystem:setVehicleData(vehicle:getData("vehicleID"), "health", 1000)
+		end
+		vehicle:fix()
+		vehicle.health = 1000
+		exports.UCDdx:new(client, "You have fixed "..plr.name.."'s "..vehicle.name, 0, 255, 0)
+		exports.UCDdx:new(plr, client.name.." has fixed your "..vehicle.name, 0, 255, 0)
+	end
 end
 addEvent("UCDadmin.fixVehicle", true)
 addEventHandler("UCDadmin.fixVehicle", root, fixVehicle_)
 
-function ejectPlayerFromVehicle(plr)
-	
+function ejectPlayerFromVehicle(plr, vehicle)
+	if (plr and client and vehicle and isPlayerAdmin(client)) then
+		if (plr.vehicle ~= vehicle or vehicle.type ~= "vehicle") then
+			return
+		end
+		plr:removeFromVehicle(vehicle)
+		exports.UCDdx:new(client, "You have ejected "..plr.name.." from their "..vehicle.name, 0, 255, 0)
+		exports.UCDdx:new(plr, "You have been ejected from your "..vehicle.name.." by "..plr.name, 0, 255, 0)
+	end
 end
 addEvent("UCDadmin.ejectPlayer", true)
 addEventHandler("UCDadmin.ejectPlayer", root, ejectPlayerFromVehicle)
