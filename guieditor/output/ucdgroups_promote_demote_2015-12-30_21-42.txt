@@ -1,0 +1,21 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    combobox = {}
+}
+GUIEditor.window[1] = guiCreateWindow(474, 357, 324, 169, "UCD | Groups - Promote", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.button[1] = guiCreateButton(58, 140, 101, 19, "Confirm", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(169, 140, 101, 19, "Cancel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.edit[1] = guiCreateEdit(36, 105, 260, 25, "", false, GUIEditor.window[1])
+GUIEditor.label[1] = guiCreateLabel(37, 80, 259, 20, "Enter the reason for promotion", false, GUIEditor.window[1])
+GUIEditor.label[2] = guiCreateLabel(37, 22, 259, 20, "Select the new rank", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+guiLabelSetVerticalAlign(GUIEditor.label[2], "center")
+GUIEditor.combobox[1] = guiCreateComboBox(37, 46, 259, 113, "", false, GUIEditor.window[1])
