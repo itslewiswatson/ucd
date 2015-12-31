@@ -1208,9 +1208,10 @@ function editRank(rankName, newName, data)
 			if (newName ~= rankName) then
 				local rankIndex = getRankIndex(group_, rankName)
 				groupEditingRanks[group_] = true
-				db:exec("UPDATE `groups_ranks` SET `rankName`=? WHERE `rankName`=? AND `groupName`=?", data[1], newName, group_)
-				db:exec("UPDATE `groups_members` SET `rank`=? WHERE `rank`=? AND `groupName`=?", data[1], newName, group_)
-				groupRanks[group_][newName] = groupRanks[group_][rankName]
+				db:exec("UPDATE `groups_ranks` SET `rankName`=? WHERE `rankName`=? AND `groupName`=?", newName, rankName, group_)
+				db:exec("UPDATE `groups_members` SET `rank`=? WHERE `rank`=? AND `groupName`=?", newName, rankName, group_)
+				local r = groupRanks[group_][rankName]
+				groupRanks[group_][newName] = r
 				groupRanks[group_][rankName] = nil
 				for acc, _data in pairs(playerGroupCache) do
 					if (_data[1] == group_) then
@@ -1237,3 +1238,74 @@ function editRank(rankName, newName, data)
 end
 addEvent("UCDgroups.editRank", true)
 addEventHandler("UCDgroups.editRank", root, editRank)
+
+function requestGroupsForPD(demote, account)
+	if (client and account) then
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			local rank = playerGroupCache[account][3]
+			if (demote == true) then
+				local temp = {}
+				local iter = 0
+				while iter < getRankIndex(group_, getPreviousRank(group_, rank)) + 1 do
+					for k, v in pairs(groupRanks[group_]) do
+						if (v[2] == iter) then
+							temp[iter] = k
+							iter = iter + 1
+						end
+					end
+				end
+				
+				for i = -1, #temp do
+					outputDebugString(tostring(i).." | "..tostring(temp[i]))
+				end
+				
+				triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client, temp or {})
+			else
+				local clientRank = getPlayerGroupRank(client)
+				local clientRankIndex = getRankIndex(group_, clientRank)
+				if (rank == getGroupLastRank(group_)) then return end
+				local temp = {}
+				outputDebugString(getRankIndex(group_, rank).."/"..getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))))
+				for i = getRankIndex(group_, rank), getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))) do
+					for k, v in pairs(groupRanks[group_]) do
+						if (i >= clientRankIndex and clientRankIndex ~= -1) then
+							if (i == clientRankIndex) then
+								if (canPlayerDoActionInGroup(client, "promoteUntilOwnRank")) then
+									temp[i] = getGroupRankFromIndex(group_, i)
+									outputDebugString("Is allowed to do this for rankIndex = "..i)
+								else
+									outputDebugString("Should not be allowed to do this for rankIndex = "..i)
+								end
+							end
+							break
+						else
+							temp[i] = getRankFromIndex(group_, i)
+						end
+					end
+				end
+				--[[local iter = getRankIndex(group_, rank)
+				local r = getRankIndex(group_, rank)
+				while r < getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))) do
+					for k, v in pairs(groupRanks[group_]) do
+						--if (v[2] == iter) then
+							temp[iter] = k
+							iter = iter + 1
+						--end
+					end
+				end
+				]]
+				temp[-1] = getGroupLastRank(group_)
+				
+				for i = -1, #temp do
+					outputDebugString(tostring(i).." | "..tostring(temp[i]))
+				end
+				
+				triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client, temp or {})
+			end
+		end
+	end
+end
+addEvent("UCDgroups.requestGroupsForPD", true)
+addEventHandler("UCDgroups.requestGroupsForPD", root, requestGroupsForPD)
+

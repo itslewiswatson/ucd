@@ -13,6 +13,7 @@ ranksGUI = {checkbox = {}, scrollpane = {}, label = {}, button = {}, window = {}
 groupSettings = {edit = {}, button = {}, window = {}, label = {}, combobox = {}}
 addRankGUI = {checkbox = {}, scrollpane = {}, edit = {}, button = {}, window = {}, label = {}, combobox = {}}
 editRankGUI = {checkbox = {}, scrollpane = {}, edit = {}, button = {}, window = {}, label = {}}
+PD = {edit = {}, button = {}, window = {}, label = {}, combobox = {}}
 
 original = {}
 groupList_ = {}
@@ -403,11 +404,27 @@ function createGUI()
 		groupSettings.edit[i].enabled = false
 	end
 	
+	-- promote demote
+	PD.window[1] = guiCreateWindow(474, 357, 324, 169, "UCD | Groups - ", false)
+	PD.window[1].sizable = false
+	PD.window[1].visible = false
+	PD.button[1] = guiCreateButton(58, 140, 101, 19, "Confirm", false, PD.window[1])
+	PD.button[2] = guiCreateButton(169, 140, 101, 19, "Cancel", false, PD.window[1])
+	PD.edit[1] = guiCreateEdit(36, 105, 260, 25, "", false, PD.window[1])
+	PD.label[1] = guiCreateLabel(37, 80, 259, 20, "Enter the reason for ", false, PD.window[1])
+	PD.label[2] = guiCreateLabel(37, 22, 259, 20, "Select the new rank", false, PD.window[1])
+	guiLabelSetHorizontalAlign(PD.label[1], "center", false)
+	guiLabelSetVerticalAlign(PD.label[1], "center")
+	guiLabelSetHorizontalAlign(PD.label[2], "center", false)
+	guiLabelSetVerticalAlign(PD.label[2], "center")
+	PD.combobox[1] = guiCreateComboBox(37, 46, 259, 150, "", false, PD.window[1])
+	
 	-- All the group GUI windows
-	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1], addRankGUI.window[1], editRankGUI.window[1]}
+	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1], addRankGUI.window[1], editRankGUI.window[1], PD.window[1]}
 	for _, gui in pairs(windows) do
 		if (gui and isElement(gui)) then
 			exports.UCDutil:centerWindow(gui)
+			gui.alpha = 255
 		end
 	end
 	
@@ -745,7 +762,8 @@ function viewMemberList(members)
 		return
 	end
 	memberList.window[1] = guiCreateWindow(690, 369, 566, 330, "UCD | Groups - Members", false)
-	guiWindowSetSizable(memberList.window[1], false)
+	memberList.window[1].sizable = false
+	memberList.window[1].alpha = 255
 	exports.UCDutil:centerWindow(memberList.window[1])
 	memberList.gridlist[1] = guiCreateGridList(9, 25, 547, 266, false, memberList.window[1])
 	guiGridListAddColumn(memberList.gridlist[1], "Name", 0.3)
@@ -1125,9 +1143,11 @@ function memberListClick()
 	if (account == localPlayer:getData("accountName") and localPlayer.name ~= "Noki") then return end
 	
 	if (source == memberList.button[1]) then -- promote
-		exports.UCDutil:createInputBox("UCD | Groups - Promote", "Enter the reason for promotion", "", "UCDgroups.promoteMember", localPlayer, account)
+		--exports.UCDutil:createInputBox("UCD | Groups - Promote", "Enter the reason for promotion", "", "UCDgroups.promoteMember", localPlayer, account)
+		triggerEvent("UCDgroups.promoteDemoteWindow", localPlayer, nil, "UCD | Groups - Promote", "Enter the reason for promotion", "UCDgroups.promoteMember", account)
 	elseif (source == memberList.button[2]) then -- demote
-		exports.UCDutil:createInputBox("UCD | Groups - Demote", "Enter the reason for demotion", "", "UCDgroups.demoteMember", localPlayer, account) -- The reason will be passed by the GUI
+		--exports.UCDutil:createInputBox("UCD | Groups - Demote", "Enter the reason for demotion", "", "UCDgroups.demoteMember", localPlayer, account) -- The reason will be passed by the GUI
+		triggerEvent("UCDgroups.promoteDemoteWindow", localPlayer, nil, "UCD | Groups - Demote", "Enter the reason for demotion", "UCDgroups.demoteMember", account)
 	elseif (source == memberList.button[3]) then -- kick
 		exports.UCDutil:createInputBox("UCD | Groups - Kick", "Enter the reason for kick", "", "UCDgroups.kickMember", localPlayer, account) 
 	elseif (source == memberList.button[4]) then -- warn
@@ -1136,6 +1156,40 @@ function memberListClick()
 		accounToBeWarned = account
 	end
 end
+
+function promoteDemoteWindow(ranks, title, labeltext, event, arg)
+	PD.edit[1].text = ""
+	guiComboBoxClear(PD.combobox[1])
+	if (title and labeltext) then
+		PD.window[1].text = title
+		PD.label[1].text = labeltext
+	end
+	if (ranks and type(ranks) == "table") then
+		if (not PD.window[1].visible) then
+			PD.window[1].visible = true
+		end
+		guiBringToFront(PD.window[1])
+		--for i, v in ipairs(ranks) do
+		for i = 0, #ranks do
+			guiComboBoxAddItem(PD.combobox[1], ranks[i])
+		end
+		if (ranks[-1]) then
+			guiComboBoxAddItem(PD.combobox[1], ranks[-1])
+		end
+	else
+		if (PD.window[1].visible) then
+			PD.window[1].visible = false
+		else
+			if (event:find("demote")) then
+				triggerServerEvent("UCDgroups.requestGroupsForPD", localPlayer, true, arg)
+			else
+				triggerServerEvent("UCDgroups.requestGroupsForPD", localPlayer, false, arg)
+			end
+		end
+	end
+end
+addEvent("UCDgroups.promoteDemoteWindow", true)
+addEventHandler("UCDgroups.promoteDemoteWindow", root, promoteDemoteWindow)
 
 function createGroup()
 	local name 
@@ -1201,6 +1255,5 @@ function handleInvite()
 	if (row and row ~= false and row ~= -1 and row ~= nil) then
 		local group_ = guiGridListGetItemText(plrInvites.gridlist[1], row, 1)
 		triggerServerEvent("UCDgroups.handleInvite", localPlayer, group_, source.text:lower())
-		plrInvites.window[1].visible = false
 	end
 end
