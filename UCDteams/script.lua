@@ -34,13 +34,45 @@ addEventHandler("onResourceStart", resourceRoot, createTeams)]]
 --------
 
 function setDefaultTeam()
-	source:setTeam(Team.getFromName("Not logged in"))
+	source.team = Team.getFromName("Not logged in")
 end
 addEventHandler("onPlayerJoin", root, setDefaultTeam)
 
+function onPlayerTeamChange(oldTeam, newTeam)
+	-- source is the player whose team changed
+	-- oldTeam and newTeam should contain team elements
+	-- use Team.getFromName to get the team names
+end
+addEvent("onPlayerTeamChange", true)
+addEventHandler("onPlayerTeamChange", root, onPlayerTeamChange)
+
+_setPlayerTeam = setPlayerTeam
+function setPlayerTeam(plr, team)
+	if (not plr or not team) then return end
+	if ((team.type ~= "userdata" and type(team) ~= "string") or not isElement(plr) or plr.type ~= "player") then return false end
+	
+	local oldTeam
+	local newTeam
+	
+	oldTeam = plr.team
+	if (type(team) == "string") then
+		if (not Team.getFromName(team)) then
+			return false
+		end
+		plr.team = Team.getFromName(team)
+		newTeam = Team.getFromName(team)
+	elseif (team.type == "team") then
+		plr.team = team
+		newTeam = team
+	end
+	-- Trigger onPlayerTeamChange event
+	triggerEvent("onPlayerTeamChange", plr, oldTeam, newTeam)
+	return true
+end
+
 function isPlayerInTeam(plr, team)
-	if (not plr or not team) then return nil end
-	if (plr.type ~= "player") then return false end
+	if (not plr or not team) then return end
+	if (not isElement(plr) or plr.type ~= "player") then return false end
 	
 	if (type(team) == "string") then
 		if plr.team == Team.getFromName(team) then
@@ -51,7 +83,6 @@ function isPlayerInTeam(plr, team)
 			return true
 		end
 	end
-	
 	return false
 end
 
