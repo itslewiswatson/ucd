@@ -1,9 +1,10 @@
 <meta>
-	<info author="Noki" version="2" name="UCDaccounts" type="script" />
+	<min_mta_version server="1.5.1" client="1.5.1" />
+	<info author="Noki" version="3" name="UCDaccounts" type="script" />
 	
 	<script src="accountData.slua" type="server" />
 	<script src="accountHandling.lua" type="server" />
-	
+	<script src="login/accountMisc.lua" type="server" />
 	<script src="exports/s_exports.lua" type="server" />
 	
 	<script src="exports/c_exports.lua" type="client" />
@@ -36,6 +37,5 @@
 	<export function="isPlayerAccountCached" type="server" />
 	<export function="cacheAccount" type="server" />
 	
-	<min_mta_version server="1.5.1" client="1.5.1" />
 	<oop>true</oop>
 </meta>
