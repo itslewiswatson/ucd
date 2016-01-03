@@ -9,16 +9,6 @@ end
 addEventHandler("onClientPlayerDamage", root, disableAdministratorDamage)
 
 function toggleVehicleDamage()
-	if (localPlayer:getTeam():getName() ~= "Admins") then return end
-	local theVehicle = localPlayer:getOccupiedVehicle()
-	if (not theVehicle) then return end
-
-	if (not theVehicle:isDamageProof()) then
-		exports.UCDdx:new("Disabled damage for your "..theVehicle:getName(), 255, 255, 0)
-	else
-		exports.UCDdx:new("Your "..theVehicle:getName().." is no longer damage proof", 255, 255, 0)
-	end
-	theVehicle:setDamageProof(not theVehicle:isDamageProof())
 end
 addCommandHandler("dmgproof", toggleVehicleDamage)
 
@@ -34,16 +24,6 @@ addCommandHandler("invis",
 		end
 	end
 )
-
-function onClientVehicleExit(plr, seat)
-	if (plr ~= localPlayer or localPlayer.team.name ~= "Admins") then return end	
-	if (source:isDamageProof() and seat == 0) then
-		if (source:getData("vehicleID")) then return end -- We don't want this triggering for player vehicles
-		source:setDamageProof(false)
-		exports.UCDdx:new("Your "..source:getName().." is no longer damage proof", 255, 255, 0)
-	end
-end
-addEventHandler("onClientVehicleExit", root, onClientVehicleExit)
 
 function flipVehicle()
 	if (localPlayer:getTeam():getName() ~= "Admins") then return end	

@@ -45,6 +45,7 @@ function gg(client)
 		client:setNametagColor(false)
 		client:setData("Occupation", "Administrator" )
 		exports.UCDdx:new(client, "You are now an on-duty administrator", 255, 255, 255)
+		exports.UCDjobs:setPlayerJob()
 	end
 	return false
 end

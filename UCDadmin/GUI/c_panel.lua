@@ -1,19 +1,7 @@
-adminPanel = {
-    tab = {},
-    label = {},
-    tabpanel = {},
-    edit = {},
-    gridlist = {},
-    window = {},
-    checkbox = {},
-    button = {}
-}
-confirm = {
-    button = {},
-    window = {},
-    label = {},
-    edit = {}
-}
+adminPanel = {tab = {}, label = {}, tabpanel = {}, edit = {}, gridlist = {}, window = {}, checkbox = {}, button = {}}
+confirm = {button = {}, window = {}, label = {}, edit = {}}
+giveWeapon_ = {edit = {}, button = {}, window = {}, label = {}, combobox = {}}
+WPT = {gridlist = {}, window = {}, button = {}, label = {}}
 
 function getSelectedPlayer()
 	local row = guiGridListGetSelectedItem(adminPanel.gridlist[1])
@@ -130,34 +118,26 @@ local punishmentTimes = {
 
         adminPanel.gridlist[2] = guiCreateGridList(10, 48, 245, 349, false, adminPanel.tab[2])
         guiGridListAddColumn(adminPanel.gridlist[2], "Resource", 0.5)
-        guiGridListAddColumn(adminPanel.gridlist[2], "State", 0.5)
+        guiGridListAddColumn(adminPanel.gridlist[2], "State", 0.4)
         guiGridListSetItemText(adminPanel.gridlist[2], 0, 1, "-", false, false)
         guiGridListSetItemText(adminPanel.gridlist[2], 0, 2, "-", false, false)
         adminPanel.edit[2] = guiCreateEdit(10, 10, 245, 28, "", false, adminPanel.tab[2])
         adminPanel.button[30] = guiCreateButton(10, 407, 245, 29, "Refresh", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[30], "NormalTextColour", "FFAAAAAA")
         adminPanel.edit[3] = guiCreateEdit(-548, 44, 15, 15, "", false, adminPanel.tab[2])
         adminPanel.edit[4] = guiCreateEdit(265, 282, 350, 30, "", false, adminPanel.tab[2])
-        adminPanel.checkbox[1] = guiCreateCheckBox(380, 317, 15, 15, "", false, false, adminPanel.tab[2])
-        adminPanel.label[30] = guiCreateLabel(410, 317, 105, 20, "Silent (srun/scrun)", false, adminPanel.tab[2])
+        adminPanel.checkbox[1] = guiCreateCheckBox(410, 317, 15, 15, "", false, false, adminPanel.tab[2])
+        adminPanel.label[30] = guiCreateLabel(435, 317, 105, 20, "Silent", false, adminPanel.tab[2])
         adminPanel.button[31] = guiCreateButton(290, 342, 140, 19, "Client", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[31], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[32] = guiCreateButton(454, 342, 140, 19, "Server", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[32], "NormalTextColour", "FFAAAAAA")
         adminPanel.label[31] = guiCreateLabel(265, 366, 302, 18, "Last runs", false, adminPanel.tab[2])
         adminPanel.label[32] = guiCreateLabel(271, 384, 374, 18, "[UCD]Noki [server]: killPed(getPlayerFromName(\"Epozide\"))", false, adminPanel.tab[2])
         adminPanel.label[33] = guiCreateLabel(271, 402, 374, 18, "[UCD]Noki [server]: killPed(getPlayerFromName(\"Epozide\"))", false, adminPanel.tab[2])
         adminPanel.label[34] = guiCreateLabel(271, 420, 374, 16, "[UCD]Noki [server]: killPed(getPlayerFromName(\"Epozide\"))", false, adminPanel.tab[2])
         adminPanel.button[33] = guiCreateButton(282, 20, 148, 38, "Start", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[33], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[34] = guiCreateButton(457, 20, 148, 38, "Stop", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[34], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[35] = guiCreateButton(282, 70, 323, 38, "Restart", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[35], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[36] = guiCreateButton(457, 118, 148, 38, "Delete", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[36], "NormalTextColour", "FFAAAAAA")
         adminPanel.button[37] = guiCreateButton(282, 118, 148, 38, "Move", false, adminPanel.tab[2])
-        guiSetProperty(adminPanel.button[37], "NormalTextColour", "FFAAAAAA")
         adminPanel.label[35] = guiCreateLabel(265, 168, 178, 21, "Resource Information", false, adminPanel.tab[2])
         guiSetFont(adminPanel.label[35], "default-bold-small")
         guiLabelSetColor(adminPanel.label[35], 255, 0, 0)
@@ -169,7 +149,7 @@ local punishmentTimes = {
         adminPanel.tab[4] = guiCreateTab("Utilities", adminPanel.tabpanel[1])    
 		
 		
-        confirm.window[1] = guiCreateWindow(792, 480, 324, 111, "UCD | Admin - <health>", false)
+        confirm.window[1] = guiCreateWindow(792, 480, 324, 111, "UCD | Admin - ", false)
         confirm.window[1].sizable = false
         confirm.window[1].visible = false
         confirm.button[1] = guiCreateButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
@@ -180,7 +160,6 @@ local punishmentTimes = {
         guiLabelSetVerticalAlign(confirm.label[1], "center") 
 		
 		-- 
-		WPT = {gridlist = {}, window = {}, button = {}, label = {}}
 		WPT.window[1] = guiCreateWindow(850, 390, 201, 348, "UCD Admin | Warp Player To", false)
 		WPT.window[1].sizable = false
 		WPT.window[1].visible = false
@@ -190,9 +169,108 @@ local punishmentTimes = {
 		WPT.gridlist[1] = guiCreateGridList(10, 45, 178, 249, false, WPT.window[1])
 		guiGridListAddColumn(WPT.gridlist[1], "Player", 0.9)
 		WPT.button[2] = guiCreateButton(103, 304, 85, 34, "Close", false, WPT.window[1])
+		
+		--
+		local weapons = {
+			"Colt 45", "Silenced", "Deagle", "Shotgun", "Sawed-off", "Combat Shotgun",
+			"Uzi", "MP5", "Tec-9", "AK-47", "M4", "Rifle", "Sniper",
+			"Rocket Launcher", "Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
+		}
+		giveWeapon_.window[1] = guiCreateWindow(244, 682, 317, 126, "UCD | Admin - Give Weapon", false)
+		giveWeapon_.window[1].sizable = false
+		giveWeapon_.window[1].visible = false
+		giveWeapon_.edit[1] = guiCreateEdit(226, 48, 81, 25, "", false, giveWeapon_.window[1])
+		giveWeapon_.combobox[1] = guiCreateComboBox(10, 48, 197, 100, "", false, giveWeapon_.window[1])
+		for _, wep in ipairs(weapons) do
+			guiComboBoxAddItem(giveWeapon_.combobox[1], wep)
+		end
+		giveWeapon_.label[1] = guiCreateLabel(10, 24, 197, 19, "Weapon", false, giveWeapon_.window[1])
+		guiLabelSetHorizontalAlign(giveWeapon_.label[1], "center", false)
+		guiLabelSetVerticalAlign(giveWeapon_.label[1], "center")
+		giveWeapon_.label[2] = guiCreateLabel(226, 24, 81, 19, "Ammo", false, giveWeapon_.window[1])
+		guiLabelSetHorizontalAlign(giveWeapon_.label[2], "center", false)
+		guiLabelSetVerticalAlign(giveWeapon_.label[2], "center")
+		giveWeapon_.button[1] = guiCreateButton(66, 92, 87, 22, "Confirm", false, giveWeapon_.window[1])
+		giveWeapon_.button[2] = guiCreateButton(168, 92, 87, 22, "Close", false, giveWeapon_.window[1])
 
+		windows = {adminPanel.window[1], giveWeapon_.window[1], WPT.window[1]}
+		for _, gui in ipairs(windows) do
+			if (gui and isElement(gui)) then
+				exports.UCDutil:centerWindow(gui)
+			end
+		end
 --    end
 --)
+
+function giveWeaponHandler()
+	if (source == giveWeapon_.button[1]) then
+		local plr = getSelectedPlayer()
+		if (not plr) then
+			exports.UCDdx:new("A player was not selected", 255, 0, 0)
+			return
+		end
+		local w = guiComboBoxGetSelected(giveWeapon_.combobox[1])
+		if (not w or w == -1) then
+			exports.UCDdx:new("You must select a weapon from the drop down menu")
+			return
+		end
+		local ammo, weapon = giveWeapon_.edit[1].text, getWeaponIDFromName(guiComboBoxGetItemText(giveWeapon_.combobox[1], w))
+		if (tonumber(ammo) == nil) then
+			ammo = 100
+		end
+		triggerServerEvent("UCDadmin.giveWeapon", localPlayer, plr, weapon, ammo)
+	elseif (source == giveWeapon_.button[2]) then
+		showGiveWeapon()
+	end
+end
+addEventHandler("onClientGUIClick", giveWeapon_.button[1], giveWeaponHandler, false)
+addEventHandler("onClientGUIClick", giveWeapon_.button[2], giveWeaponHandler, false)
+function showGiveWeapon()
+	if (getSelectedPlayer()) then
+		if (giveWeapon_.window[1].visible) then
+			giveWeapon_.window[1].visible = false
+			return
+		end
+		giveWeapon_.window[1].visible = true
+		giveWeapon_.edit[1].text = "100"
+		guiBringToFront(giveWeapon_.window[1])
+	else
+		if (giveWeapon_.window[1].visible) then
+			giveWeapon_.window[1].visible = false
+			giveWeapon_.edit[1].text = "100"
+			guiComboBoxClear(giveWeapon_.combobox[1])
+		end
+	end
+end
+addEventHandler("onClientGUIClick", adminPanel.button[26], showGiveWeapon, false)
+
+function updateResources(kk)
+	if (kk and type(kk) == "table") then
+		guiGridListClear(adminPanel.gridlist[2])
+		for i, res in ipairs(kk) do
+			local row = guiGridListAddRow(adminPanel.gridlist[2])
+
+			local r, g, b
+			if (res[2] == "running" or res[2] == "starting") then
+				r, g, b = 0, 255, 0
+			else
+				r, g, b = 255, 0 ,0
+			end
+			guiGridListSetItemText(adminPanel.gridlist[2], row, 1, tostring(res[1]), false, false)
+			guiGridListSetItemText(adminPanel.gridlist[2], row, 2, tostring(res[2]), false, false)
+			guiGridListSetItemColor(adminPanel.gridlist[2], row, 1, r, g, b)
+			guiGridListSetItemColor(adminPanel.gridlist[2], row, 2, r, g, b)
+		end
+	end
+end
+addEvent("UCDadmin.updateResources", true)
+addEventHandler("UCDadmin.updateResources", root, updateResources)
+
+function aa()
+	triggerServerEvent("UCDadmin.getResources", localPlayer)
+end
+addEventHandler("onClientResourceStart", resourceRoot, aa)
+addEventHandler("onClientGUIClick", adminPanel.button[30], aa, false)
 
 for _, plr in pairs(Element.getAllByType("player")) do
 	local row = guiGridListAddRow(adminPanel.gridlist[1])
@@ -489,7 +567,7 @@ function adminAction()
 		elseif (action == "spectate") then
 			triggerServerEvent("UCDadmin.spectate", localPlayer, plr)
 		elseif (action == "slap") then
-			
+			triggerServerEvent("UCDadmin.slap", localPlayer, plr)
 		elseif (action == "rename") then
 			createInputBox("UCD | Admin - Rename", "Enter the desired name", exports.UCDutil:randomstring(8), "UCDadmin.rename", localPlayer, plr)
 		elseif (action == "screenshot") then
@@ -545,7 +623,7 @@ function adminAction()
 		elseif (action == "blow") then
 			
 		elseif (action == "give vehicle") then
-			if (isPedInVehicle(plr) or plr.vehicle) then
+			if (plr.vehicle) then
 				exports.UCDdx:new("You can't give this player a vehicle as they are already in one", 255, 0, 0)
 				return
 			end
@@ -563,9 +641,18 @@ function toggleGUI()
 		adminPanel.window[1]:setVisible(true)
 	end
 	--]]
-	adminPanel.window[1]:setVisible(not adminPanel.window[1]:getVisible())
-	showCursor(adminPanel.window[1]:getVisible())
-	
+	adminPanel.window[1].visible = not adminPanel.window[1].visible
+	showCursor(adminPanel.window[1].visible)
+	if (adminPanel.window[1].visible) then
+		guiSetInputMode("no_binds_when_editing")
+	else
+		guiSetInputMode("allow_binds")
+		for _, gui in ipairs(windows) do
+			if (gui and isElement(gui)) then
+				gui.visible = false
+			end
+		end
+	end
 	if (confirm.window[1]) then
 		closeInputBox()
 	end

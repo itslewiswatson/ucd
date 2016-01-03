@@ -13,3 +13,13 @@ function requestPlayerData(plr)
 end
 addEvent("UCDadmin.requestPlayerData", true)
 addEventHandler("UCDadmin.requestPlayerData", root, requestPlayerData)
+
+function fetchResources()
+	local resources = {}
+	for i, res in ipairs(getResources()) do
+		resources[i] = {res.name, res.state}
+	end
+	triggerClientEvent(client, "UCDadmin.updateResources", client, resources or {})
+end
+addEvent("UCDadmin.getResources", true)
+addEventHandler("UCDadmin.getResources", root, fetchResources)

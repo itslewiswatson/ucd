@@ -1,5 +1,21 @@
 vowels = {["a"] = true, ["e"] = true, ["i"] = true, ["o"] = true, ["u"] = true}
 
+function givePlayerWeapon_(plr, weapon, amount)
+	if (plr and client and weapon and amount and isPlayerAdmin(client)) then
+		giveWeapon(plr, weapon, amount, true)
+		local weaponName = getWeaponNameFromID(weapon)
+		if (vowels[weaponName:sub(1, 1):lower()]) then
+			exports.UCDdx:new(client, "You have given "..plr.name.." an "..weaponName.." ("..amount..")", 0, 255, 0)
+			exports.UCDdx:new(plr, client.name.." has given you an "..weaponName.." ("..amount..")", 0, 255, 0)
+		else
+			exports.UCDdx:new(client, "You have given "..plr.name.." a "..weaponName.." ("..amount..")", 0, 255, 0)
+			exports.UCDdx:new(plr, client.name.." has given you a "..weaponName.." ("..amount..")", 0, 255, 0)
+		end
+	end
+end
+addEvent("UCDadmin.giveWeapon", true)
+addEventHandler("UCDadmin.giveWeapon", root, givePlayerWeapon_)
+
 function warpToPlayer(plr)
 	if (plr and client and isPlayerAdmin(client)) then
 		if (client == plr) then return end
@@ -149,11 +165,11 @@ end
 addEvent("UCDadmin.spectate", true)
 addEventHandler("UCDadmin.spectate", root, spectatePlayer)
 
-function slapPlayer(plr, hp)
-	if (plr and client and hp and isPlayerAdmin(client)) then
+function slapPlayer(plr)
+	if (plr and client and isPlayerAdmin(client)) then
 		plr:kill()
-		exports.UCDdx:new(client, "You have slapped "..plr.name.." for "..hp.." HP", 0, 255, 0)
-		exports.UCDdx:new(plr, "You have been slapped by "..client.name.." for "..hp.." HP", 0, 255, 0)
+		exports.UCDdx:new(client, "You have slapped "..plr.name, 0, 255, 0)
+		exports.UCDdx:new(plr, "You have been slapped by "..client.name, 0, 255, 0)
 	end
 end
 addEvent("UCDadmin.slap", true)
