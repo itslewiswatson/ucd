@@ -158,6 +158,10 @@ function createGroup(name)
 			exports.UCDdx:new(client, "You cannot create a group because you are already in one. Leave your current group first.", 255, 0, 0)
 			return false
 		end
+		if (groupTable[groupName]) then
+			exports.UCDdx:new(client, "A group with this name already exists", 255, 0, 0)
+			return
+		end
 		for index, row in pairs(groupTable) do
 			if row.name == name then
 				exports.UCDdx:new("A group with this name already exists", 255, 0, 0)
@@ -194,7 +198,7 @@ function createGroup(name)
 			["balance"] = 0, ["chatColour"] = toJSON(settings.default_chat_colour), ["gmotd"] = "",
 		}
 		
-		createGroupLog(group_, client.name.." ("..client.account.name..") has created "..group_)
+		createGroupLog(groupName, client.name.." ("..client.account.name..") has created "..groupName)
 		groupMembers[groupName] = {}
 		table.insert(groupMembers[groupName], client.account.name)
 		client:setData("group", groupName)
