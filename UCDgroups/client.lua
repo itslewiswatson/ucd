@@ -1178,7 +1178,6 @@ function confirmPD()
 		local rankName = guiComboBoxGetItemText(PD.combobox[1], rank)
 		if (PD.window[1].text:lower():find("demote")) then
 			triggerServerEvent("UCDgroups.demoteMember", localPlayer, accountForAction, rankName, reason)
-			outputDebugString("ayy")
 		else
 			triggerServerEvent("UCDgroups.promoteMember", localPlayer, accountForAction, rankName, reason)
 		end

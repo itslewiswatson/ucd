@@ -1158,6 +1158,7 @@ function deleteRank(rankName)
 				groupEditingRanks[group_] = nil
 				triggerEvent("UCDgroups.requestGroupRanks", client)
 				exports.UCDdx:new(client, "Rank "..rankName.." has been deleted", 0, 255, 0)
+				createGroupLog(group_, client.name.." ("..client.account.name..") has deleted rank "..rankName)
 			end
 		end
 	end
@@ -1189,6 +1190,7 @@ function addRank(rankName, prevRank, data)
 				groupEditingRanks[group_] = nil
 				triggerEvent("UCDgroups.requestGroupRanks", client)
 				exports.UCDdx:new(client, "Rank "..rankName.." has been added", 0, 255, 0)
+				createGroupLog(group_, client.name.." ("..client.account.name..") has added rank "..rankName)
 			end
 		end
 	end
@@ -1232,11 +1234,13 @@ function editRank(rankName, newName, data)
 					groupRanks[group_][newName][1] = data
 				end
 				groupEditingRanks[group_] = nil
+				createGroupLog(group_, client.name.." ("..client.account.name..") has edited rank "..rankName.." --> "..newName)
 			else
 				groupEditingRanks[group_] = true
 				db:exec("UPDATE `groups_ranks` SET `permissions`=? WHERE `rankName`=? AND `groupName`=?", toJSON(data), rankName, group_)
 				groupRanks[group_][rankName][1] = data
 				groupEditingRanks[group_] = nil
+				createGroupLog(group_, client.name.." ("..client.account.name..") has edited rank "..rankName)
 			end
 			triggerEvent("UCDgroups.requestGroupRanks", client)
 			exports.UCDdx:new(client, "Rank "..rankName.." has been updated", 0, 255, 0)
