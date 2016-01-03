@@ -25,6 +25,7 @@ function Accounts.Login(_, theCurrentAccount)
 	local playerX, playerY, playerZ 			= result.x, result.y, result.z
 	local playerRot, playerDim, playerInterior 	= result.rot, result.dim, result.interior
 	local playerModel 							= result.model
+	local jobModel								= result.jobModel
 	local playerTeam 							= result.team
 	local class, occupation 					= result.class, result.occupation
 	local playerWalkstyle 						= result.walkstyle
@@ -33,7 +34,11 @@ function Accounts.Login(_, theCurrentAccount)
 	local playerWanted 							= result.wanted
 	local ntR, ntG, ntB 						= unpack(fromJSON(result.nametag))
 	
-	source:spawn(playerX, playerY, playerZ + 0.5, playerRot, playerModel, playerInterior, playerDim, Team.getFromName(playerTeam))
+	if (playerTeam == "Admins" or playerTeam == "Law Enforcement" or (playerTeam == "Citizens" and occupation ~= "")) then
+		source:spawn(playerX, playerY, playerZ + 0.5, playerRot, jobModel, playerInterior, playerDim, Team.getFromName(playerTeam))
+	else
+		source:spawn(playerX, playerY, playerZ + 0.5, playerRot, playerModel, playerInterior, playerDim, Team.getFromName(playerTeam))
+	end
 	
 	setTimer(
 		function (source)
@@ -71,7 +76,7 @@ function Accounts.Save(plr)
 	local interior = plr:getInterior()
 	local team = plr.team.name or "Unemployed"
 	local money = plr:getMoney()
-	local model = plr:getModel()
+	local model
 	local walkstyle = plr:getWalkingStyle() --exports.UCDwalkstyle:getPlayerWalkingStyle(plr)
 	local wanted = plr:getWantedLevel()
 	local health = plr:getHealth()
@@ -84,12 +89,11 @@ function Accounts.Save(plr)
 		plr.name,
 		plr.ip,
 		plr.serial,
-		--id
 		plr.account.name
 	)
-	
+		
 	-- It's more efficient here to have one query and not 16 different ones that would come from using SAD
-	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
+	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
 		playerX,
 		playerY,
 		playerZ,
@@ -98,7 +102,6 @@ function Accounts.Save(plr)
 		interior,
 		team,
 		money,
-		model,
 		walkstyle,
 		wanted,
 		health,
@@ -106,7 +109,6 @@ function Accounts.Save(plr)
 		occupation,
 		class,
 		nametag,
-		--id
 		plr.name,
 		plr.account.name
 	)
