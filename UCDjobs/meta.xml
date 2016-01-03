@@ -1,1 +1,1 @@
-<meta>	<min_mta_version server="1.3.5" client="1.3.5"/></meta>
+<meta>	<min_mta_version server="1.5.1" client="1.5.1"/>	<script src="jobs.lua" type="client" />	<script src="server.lua" type="server" />	<include resource="UCDjobsTable" />	<oop>true</oop></meta>

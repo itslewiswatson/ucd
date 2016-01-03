@@ -1,41 +1,30 @@
 
-
 local jobsTable = 
 {
 	["Pilot"] = 
 	{
-		team = "Aviators",
-		markerCoords =
+		team = "Citizens",
+		marker =
 		{
-			{1447, -2287, 13},
-			{1308.4971, 1618.2949, 10.8203},
-			{-1242.5739, 21.0195, 14.1484},
+			color = 
+			{
+				r = 255, g = 255, b = 0,
+			},
+			coords = 
+			{
+				{1953.5154, -2188.354, 13.5469},
+			},
 		},
-		markerColour =
-		{
-			255, 255, 255
-		},
-		skin =
+		skins =
 		{
 			{61, "Male Pilot"},
 			{0, "Placeholder"},
 		},
 		blipID = 56,
-		desc = "A pilot's job is to transport goods and people around San Andreas, via the airways",
+		desc = "A pilot's job is to transport cargo and passengers both \ndomestically and internationally with various aircraft. \nA pilot has a repertoire of only the best engineered \naircraft to get his/her job done. The job has a \nsubstantially high risk factor, pilots are compensated for \ntheir risk with lump sums of cash after every flight.\n\nGo to a blip to spawn a plane, or use your own.\nFrom there, wait to be assigned a flight path. \nOnce assigned, pick up your cargo and fly to your \ndestination, which will be marked.",
 	},
 }
 
 function getJobTable()
 	return jobsTable
-end
-
-------------------------------------------------------------------------
--- Testing out the table loop
-------------------------------------------------------------------------
-
-for i, v in pairs(jobsTable) do
-	for a, b in pairs(v.markerCoords) do
-		local marker = createMarker(b[1], b[2], b[3])
-		createBlipAttachedTo(marker, v.blipID)
-	end
 end
