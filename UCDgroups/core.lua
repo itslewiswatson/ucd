@@ -459,13 +459,13 @@ end
 addEvent("UCDgroups.requestInviteList", true)
 addEventHandler("UCDgroups.requestInviteList", root, requestInvites)
 
-function promoteMember(accName, reason)
+function promoteMember(accName, newRank, reason)
 	if (client and accName and reason) then
 		local group_ = getPlayerGroup(client)
 		local acc = Account(accName)
 		local clientRank = getPlayerGroupRank(client)
 		local plrRank = playerGroupCache[accName][3]
-		local newRank = getNextRank(group_, plrRank)
+		--local newRank = getNextRank(group_, plrRank)
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
 		
 		if (groupEditingRanks[group_]) then
@@ -494,6 +494,8 @@ function promoteMember(accName, reason)
 					else
 						messageGroup(group_, client.name.." is promoting "..accName.." to "..newRank.." ("..reason..")", "info")
 					end
+					
+					triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client)
 				else
 					exports.UCDdx:new(client, "You cannot promote players with same or higher rank", 200, 0, 0)
 				end
@@ -506,14 +508,14 @@ end
 addEvent("UCDgroups.promoteMember", true)
 addEventHandler("UCDgroups.promoteMember", root, promoteMember)
 
-function demoteMember(accName, reason)
-	if (client and accName and reason) then
+function demoteMember(accName, newRank, reason)
+	if (client and accName and newRank and reason) then
 		local group_ = getPlayerGroup(client)
 		local acc = Account(accName)
 		
 		local clientRank = getPlayerGroupRank(client)
 		local plrRank = playerGroupCache[accName][3]
-		local newRank = getPreviousRank(group_, plrRank)
+		--local newRank = getPreviousRank(group_, plrRank)
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
 		
 		if (groupEditingRanks[group_]) then
@@ -527,7 +529,7 @@ function demoteMember(accName, reason)
 					exports.UCDdx:new(client, "You are not allowed to demote players with the same rank as you", 255, 0, 0)
 					return
 				end
-				if (isRankHigherThan(group_, clientRank, newRank) == false) then return end
+				if (isRankHigherThan(group_, clientRank, newRank) == false) then outputDebugString("lmao") return end
 				if (plrRank == getGroupFirstRank(group_)) then
 					exports.UCDdx:new(client, "You cannot demote this player as they have the lowest rank already", 255, 0, 0)
 					return
@@ -538,6 +540,7 @@ function demoteMember(accName, reason)
 				triggerEvent("UCDgroups.requestMemberList", client)
 				
 				createGroupLog(group_, client.name.." ("..client.account.name..") has demoted "..exports.UCDaccounts:GAD(accName, "lastUsedName").." ("..accName..") to "..newRank.." ("..reason..")")
+				triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client)
 				
 				if (acc.player) then
 					messageGroup(group_, client.name.." is demoting "..acc.player.name.." to "..newRank.." ("..reason..")", "info")
@@ -548,7 +551,11 @@ function demoteMember(accName, reason)
 			else
 				exports.UCDdx:new(client, "You can't demote players with a higher rank than you", 255, 0, 0)
 			end
+		else
+			outputDebugString("lmao")
 		end
+	else
+		outputDebugString("lmao")
 	end
 end
 addEvent("UCDgroups.demoteMember", true)
@@ -1243,32 +1250,68 @@ function requestGroupsForPD(demote, account)
 	if (client and account) then
 		local group_ = getPlayerGroup(client)
 		if (group_) then
+			if (groupEditingRanks[group_]) then
+				exports.UCDdx:new(client, "Ranks are currently being edited - you cannot warn, promote, demote or kick right now", 255, 0, 0)
+				return
+			end
+			
 			local rank = playerGroupCache[account][3]
 			if (demote == true) then
+				if (not canPlayerDoActionInGroup(client, "demote")) then
+					exports.UCDdx:new(client, "You are not allowed to demote members", 255, 0, 0)
+					return
+				end
+				if (rank == getGroupFirstRank(group_)) then return end
+				if (isRankHigherThan(group_, rank, getPlayerGroupRank(client)) and getPlayerGroupRank(client) ~= getGroupLastRank(group_)) then
+					outputDebugString("kek")
+					return
+				end
+				if (isRankHigherThan(group_, rank, getPlayerGroupRank(client)) == "equal" and not canPlayerDoActionInGroup(client, "demoteWithSameRank")) then
+					exports.UCDdx:new(client, "You are not allowed to demote members with the same rank as you", 255, 0, 0)
+					return
+				end
+				
 				local temp = {}
 				local iter = 0
-				while iter < getRankIndex(group_, getPreviousRank(group_, rank)) + 1 do
-					for k, v in pairs(groupRanks[group_]) do
-						if (v[2] == iter) then
-							temp[iter] = k
-							iter = iter + 1
+				if (getGroupLastRank(group_) ~= rank) then
+					for i, v in pairs(groupRanks[group_]) do
+						if (v[2] < getRankIndex(group_, rank) and v[2] ~= -1) then
+							temp[v[2]] = i
 						end
 					end
-				end
-				
-				for i = -1, #temp do
-					outputDebugString(tostring(i).." | "..tostring(temp[i]))
-				end
-				
-				triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client, temp or {})
+				else
+					for i, v in pairs(groupRanks[group_]) do
+						if (v[2] > -1) then
+							temp[v[2]] = i
+						end
+					end
+				end			
+				triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client, temp or {}, nil, nil, nil, account)
 			else
 				local clientRank = getPlayerGroupRank(client)
 				local clientRankIndex = getRankIndex(group_, clientRank)
-				if (rank == getGroupLastRank(group_)) then return end
+				local accountRankIndex = getRankIndex(group_, rank)
+				if (rank == getGroupLastRank(group_)) then return end		
+				if (accountRankIndex > clientRankIndex and clientRankIndex ~= -1) then outputDebugString("hh") return end
+				
 				local temp = {}
-				outputDebugString(getRankIndex(group_, rank).."/"..getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))))
-				for i = getRankIndex(group_, rank), getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))) do
+				outputDebugString(accountRankIndex.."/"..getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))))
+				for i = accountRankIndex, getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))) do
 					for k, v in pairs(groupRanks[group_]) do
+						-- 
+						if (clientRankIndex == -1 or clientRankIndex >= i) then
+							if (not canPlayerDoActionInGroup(client, "promoteUntilOwnRank") and clientRankIndex ~= -1) then
+								outputDebugString("clientRankIndex >= "..i.." | and cannot promoteUntilOwnRank")
+								break
+							end
+							-- If their rank is equal to or smaller than the current rank, insert into the table
+							if (accountRankIndex < i) then
+								if (i == v[2]) then
+									temp[i] = k
+								end
+							end
+						end
+						--[[
 						if (i >= clientRankIndex and clientRankIndex ~= -1) then
 							if (i == clientRankIndex) then
 								if (canPlayerDoActionInGroup(client, "promoteUntilOwnRank")) then
@@ -1282,6 +1325,7 @@ function requestGroupsForPD(demote, account)
 						else
 							temp[i] = getRankFromIndex(group_, i)
 						end
+						--]]
 					end
 				end
 				--[[local iter = getRankIndex(group_, rank)
@@ -1295,13 +1339,16 @@ function requestGroupsForPD(demote, account)
 					end
 				end
 				]]
-				temp[-1] = getGroupLastRank(group_)
-				
-				for i = -1, #temp do
-					outputDebugString(tostring(i).." | "..tostring(temp[i]))
+				-- Only allow promotions to founder is the specified player is a founder
+				if (clientRankIndex == -1) then
+					temp[-1] = getGroupLastRank(group_)
 				end
 				
-				triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client, temp or {})
+				--for k, v in pairs(temp) do
+				--	outputDebugString(tostring(k).." | "..tostring(v))
+				--end
+				
+				triggerClientEvent(client, "UCDgroups.promoteDemoteWindow", client, temp or {}, nil, nil, nil, account)
 			end
 		end
 	end

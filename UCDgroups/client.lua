@@ -483,6 +483,9 @@ function createGUI()
 	addEventHandler("onClientGUIClick", groupSettings.button[6], viewGroupSettings, false)
 	addEventHandler("onClientGUIClick", groupSettings.button[5], settingsHandler, false)
 	
+	addEventHandler("onClientGUIClick", PD.button[1], confirmPD, false)
+	addEventHandler("onClientGUIClick", PD.button[2], promoteDemoteWindow, false)
+	
 	addEventHandler("onClientGUITabSwitched", guiRoot, blacklistTabSwitch)
 	addEventHandler("onClientGUIChanged", guiRoot, onClientGUIChanged)
 	
@@ -1157,6 +1160,31 @@ function memberListClick()
 	end
 end
 
+function confirmPD()
+	local rank = guiComboBoxGetSelected(PD.combobox[1])
+	if (not rank or rank == -1) then
+		exports.UCDdx:new("You must select a rank from the drop down menu", 255, 0, 0)
+		return
+	end
+	if (source == PD.button[1]) then
+		local reason = PD.edit[1].text
+		if (reason == "" or reason == " " or reason:gsub(" ", "") == "") then
+			reason = "No Reason"
+		end
+		if (not accountForAction) then
+			exports.UCDdx:new("No member was selected for action", 255, 0, 0)
+			return
+		end
+		local rankName = guiComboBoxGetItemText(PD.combobox[1], rank)
+		if (PD.window[1].text:lower():find("demote")) then
+			triggerServerEvent("UCDgroups.demoteMember", localPlayer, accountForAction, rankName, reason)
+			outputDebugString("ayy")
+		else
+			triggerServerEvent("UCDgroups.promoteMember", localPlayer, accountForAction, rankName, reason)
+		end
+	end
+end
+
 function promoteDemoteWindow(ranks, title, labeltext, event, arg)
 	PD.edit[1].text = ""
 	guiComboBoxClear(PD.combobox[1])
@@ -1169,13 +1197,42 @@ function promoteDemoteWindow(ranks, title, labeltext, event, arg)
 			PD.window[1].visible = true
 		end
 		guiBringToFront(PD.window[1])
-		--for i, v in ipairs(ranks) do
-		for i = 0, #ranks do
-			guiComboBoxAddItem(PD.combobox[1], ranks[i])
+		
+		-- Create a temp table to store values in (so we can get max and minimum numbers)
+		local temp = {}
+		
+		-- Put the index in temp if it's not -1
+		for i in pairs(ranks) do
+			if (i ~= -1) then
+				table.insert(temp, i)
+			end
 		end
+		
+		if (ranks[0]) then
+			outputDebugString("0 exists")
+		end
+		
+		local start, end_
+		if (#temp and unpack(temp)) then
+			-- Get the minimum and maximum values
+			start = math.min(unpack(temp))
+			end_ = math.max(unpack(temp))
+			outputDebugString("start = "..start.." end_ = "..end_)
+		end
+		
+		-- This way we loop from 2 to 4, for example
+		if (start and end_) then
+			for i = start, end_ do
+				guiComboBoxAddItem(PD.combobox[1], tostring(ranks[i]))
+			end
+		end
+		
+		-- If a the founder rank exists, we always create it last
 		if (ranks[-1]) then
-			guiComboBoxAddItem(PD.combobox[1], ranks[-1])
+			guiComboBoxAddItem(PD.combobox[1], tostring(ranks[-1]))
 		end
+		
+		accountForAction = arg
 	else
 		if (PD.window[1].visible) then
 			PD.window[1].visible = false
