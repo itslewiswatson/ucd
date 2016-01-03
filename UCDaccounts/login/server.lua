@@ -135,13 +135,23 @@ end
 addEventHandler("onPlayerLogin", root, login_handler)
 
 function isAccount(name)
-	local send
-	if (getAccount(name)) then
-		send = false
-	else
-		send = true
+	local msg, found
+	for _, v in pairs(Account.getAll()) do
+		if (v.name == name) then
+			msg = "This account name is taken"
+			found = true
+			break
+		elseif (v.name:lower() == name:lower()) then
+			msg = "Account name exists with different case"
+			found = true
+			break
+		end
 	end
-	triggerClientEvent(client, "UCDaccounts.login.updateValidationLabel", client, send)
+	if (found == true) then
+		triggerClientEvent(client, "UCDaccounts.login.updateValidationLabel", client, msg, true)
+	else
+		triggerClientEvent(client, "UCDaccounts.login.updateValidationLabel", client, "Available account name", false)
+	end
 end
 addEvent("UCDaccounts.login.isAccount", true)
 addEventHandler("UCDaccounts.login.isAccount", root, isAccount)

@@ -261,6 +261,21 @@ function onRegistrationEditsChanged()
 			registration.button[1]:setEnabled(false)
 		end
 	end
+	Timer(
+		function ()
+			if (registration.window[1]:getVisible() == true) then
+				local ar, ag, ab = registration.label[5]:getColor()
+				local br, bg, bb = registration.label[6]:getColor()
+				local cr, cg, cb = registration.label[8]:getColor()
+				local dr, dg, db = registration.label[9]:getColor()
+				if (ar == 0 and ag == 255 and ab == 0) and (br == 0 and bg == 255 and bb == 0) and (cr == 0 and cg == 255 and cb == 0) and (dr == 0 and dg == 255 and db == 0) then
+					registration.button[1]:setEnabled(true)
+				else
+					registration.button[1]:setEnabled(false)
+				end
+			end
+		end, (getPlayerPing(localPlayer) + 50) or 400, 1
+	)
 end
 
 function onClickLogin(button, state)
@@ -410,7 +425,14 @@ addEvent("UCDaccounts.login.destroyInterface", true)
 addEventHandler("UCDaccounts.login.destroyInterface", root, destroyInterface)
 
 -- Callback for checking if an account exists
-function updateValidationLabel(value)
+function updateValidationLabel(value, bad)
+	registration.label[6]:setText(value)
+	if (bad == true) then
+		registration.label[6]:setColor(255, 0, 0)
+	else
+		registration.label[6]:setColor(0, 255, 0)
+	end
+	--[[
 	if (value == true) then
 		registration.label[6]:setText("Available account name")
 		registration.label[6]:setColor(0, 255, 0)
@@ -421,6 +443,7 @@ function updateValidationLabel(value)
 		registration.label[6]:setText("An error has occured")
 		registration.label[6]:setColor(255, 0, 0)
 	end
+	--]]
 end
 addEvent("UCDaccounts.login.updateValidationLabel", true)
 addEventHandler("UCDaccounts.login.updateValidationLabel", root, updateValidationLabel)
