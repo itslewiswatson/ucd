@@ -10,7 +10,7 @@
 -- Move this to some exports file
 function getVehicleOwner(vehicle)
 	if (not vehicle) then return nil end
-	if (vehicle:getType() ~= "vehicle") then return false end
+	if (vehicle.type ~= "vehicle") then return false end
 	
 	local owner = vehicle:getData("owner") -- Set it to a player name
 	
@@ -28,7 +28,7 @@ function getVehicleOwner(vehicle)
 	
 	return Player(owner) -- OOP equivalent of getPlayerFromName
 end
-
+	
 -- We need the owner's name to be synced
 function onPlayerChangeNick(old, new)
 	if (exports.UCDaccounts:isPlayerLoggedIn(source) and activeVehicles[source] and #activeVehicles[source] > 0) then
@@ -84,3 +84,13 @@ function onVehicleHidden()
 end
 addEvent("onVehicleHidden")
 addEventHandler("onVehicleHidden", root, onVehicleHidden)
+
+function foo()
+	if (source.occupant and source.damageProof ~= true) then
+		exports.UCDdx:new(source.occupant, "This vehicle is critically damaged. It must be repaired!", 255, 0, 0)
+	end
+	source:setDamageProof(true)
+	source:setEngineState(false)
+end
+addEvent("dmgproof", true)
+addEventHandler("dmgproof", root, foo)

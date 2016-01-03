@@ -44,3 +44,37 @@ function onResourceStop()
 	end
 end
 addEventHandler("onClientResourceStop", resourceRoot, onResourceStop)
+
+
+addEventHandler("onClientVehicleDamage", root,
+	function (_, _, loss)
+		if (isElement(source) and source.type == "vehicle") then
+			if (source.health < 250 or (source.health - loss) < 250) then
+				if (source.damageProof == false or source.engineState == true) then
+					triggerServerEvent("dmgproof", source)
+					source:setDamageProof(true)
+					source:setEngineState(false)
+				end
+				--exports.UCDdx:new("This vehicle is critically damaged. It must be repaired!", 255, 0, 0)
+				source.health = 250
+				outputDebugString("hh")
+				cancelEvent()
+			end
+		end
+	end
+)
+
+addEventHandler("onClientVehicleEnter", root,
+	function (plr)
+		if (plr ~= localPlayer) then return end
+		if (isElement(source) and source.type == "vehicle") then
+			if (source.health <= 250) then
+				source:setEngineState(false)
+				source:setDamageProof(true)
+				triggerServerEvent("dmgproof", source)
+				source.health = 250
+				exports.UCDdx:new("This vehicle is critically damaged. It must be repaired!", 255, 0, 0)
+			end
+		end
+	end
+)

@@ -228,16 +228,19 @@ function hideVehicle(vehicleID, tosync)
 	-- This is our custom event for when a vehicle is hidden
 	triggerEvent("onVehicleHidden", vehicle)
 	
+	local ownerPlayer = Player(vehicle:getData("owner"))
+	if (ownerPlayer and ownerPlayer.type == "player") then
+		triggerClientEvent(ownerPlayer, "UCDvehicleSystem.onVehicleHidden", ownerPlayer, vehicleID)
+		triggerClientEvent(ownerPlayer, "UCDvehicleSystem.syncIdToVehicle", resourceRoot, getPlayerSpecificIDToVehicle(ownerPlayer))
+		exports.UCDdx:new(ownerPlayer, "Your "..Vehicle.getNameFromModel(vehicles[vehicleID].model).." has been hidden", 0, 255, 0)
+	end
+	
 	vehicle:destroy()
 	
 	-- We check for client because the onResourceStop event saves all vehicles by triggering this one and we don't want lots of client events being triggered at once, especially when the resource is going to stop anyway
-	if (client) then
-		exports.UCDdx:new(client, "Your "..Vehicle.getNameFromModel(vehicles[vehicleID].model).." has been successfully hidden", 0, 255, 0)
-		--triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
-		triggerClientEvent(client, "UCDvehicleSystem.syncIdToVehicle", resourceRoot, getPlayerSpecificIDToVehicle(client))
-	end
+	
 	-- We need this here for if someone sells their vehicle
-	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)	
+	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
 end
 addEvent("UCDvehicleSystem.hideVehicle", true)
 addEventHandler("UCDvehicleSystem.hideVehicle", root, hideVehicle)

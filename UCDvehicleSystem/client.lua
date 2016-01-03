@@ -82,6 +82,7 @@ function updateVehicleGrid(vehicleID)
 	guiGridListSetItemData(GUIEditor.gridlist[1], row, 1, vehicleID) -- Vehicle ID
 end
 
+--[[
 function updateConstant()
 	if (GUIEditor.window[1]:getVisible()) then
 		for i = 0, guiGridListGetRowCount(GUIEditor.gridlist[1]) - 1 do
@@ -92,8 +93,8 @@ function updateConstant()
 		end
 	end
 end
---addEventHandler("onClientRender", root, updateConstant)
-Timer(updateConstant, 1000, 0)
+addEventHandler("onClientRender", root, updateConstant)
+--]]
 
 function populateGridList()
 	guiGridListClear(GUIEditor.gridlist[1])
@@ -133,14 +134,10 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
 function toggleGUI()
-	if (not isElement(GUIEditor.window[1])) then
-		createGUI()
-		--triggerServerEvent("UCDvehicleSystem.getPlayerVehicleTable", localPlayer)
-	end
 	if (not guiGetVisible(GUIEditor.window[1])) then
-		guiSetVisible(GUIEditor.window[1], true)
+		GUIEditor.window[1].visible = true
 		
-		for _, v in pairs(playerVehicles[localPlayer]) do
+		for _, v in ipairs(playerVehicles[localPlayer]) do
 			-- Should we update them regardless of whether they are spawned in or not?
 			if (idToVehicle[v]) then
 				updateVehicleGrid(v)
@@ -148,18 +145,18 @@ function toggleGUI()
 		end
 		
 		local row = guiGridListGetSelectedItem(GUIEditor.gridlist[1])
-		if (row ~= -1 and row and row ~= nil) then
+		if (row and row ~= -1) then
 			local vehicleID = guiGridListGetItemData(GUIEditor.gridlist[1], row, 1)
 			if (vehicleID and idToVehicle[vehicleID]) then
 				local x, y, z = getElementPosition(idToVehicle[vehicleID])
 				GUIEditor.label[1]:setText("Selected: "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." - "..exports.UCDutil:getCityZoneFromXYZ(x, y, z)..", "..getZoneName(x, y, z))
 			end
 		end
-		
+		showCursor(true)
 	else
-		guiSetVisible(GUIEditor.window[1], false)
+		GUIEditor.window[1].visible = false
+		showCursor(false)
 	end
-	showCursor(not isCursorShowing())
 end
 addCommandHandler("vehicles", toggleGUI, false, false)
 bindKey("F2", "down", "vehicles")
@@ -253,10 +250,7 @@ function handleInput(button, state)
 					return
 				end
 				if (isSpectating) then
-					setCameraTarget(localPlayer)
-					isSpectating = false
-					removeEventHandler("onClientRender", root, lolrender)
-					exports.UCDdx:new("You are no longer spectating your "..idToVehicle[vehicleID].name, 0, 255, 0)
+					toggleSpectate(idToVehicle[vehicleID])
 				end
 				if (blip[vehicleID]) then
 					blip[vehicleID]:destroy()
@@ -270,45 +264,50 @@ function handleInput(button, state)
 					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
 					return
 				end
-				-- add checks to see if a player was hurt in the last X seconds, add checks to see if a player is in dim and int 0 etc
 				vehicle = idToVehicle[vehicleID]
-				if (localPlayer:isInVehicle(vehicle)) then
-					if (localPlayer:getOccupiedVehicle() == vehicle) then
-						exports.UCDdx:new("You can't spectate a vehicle you are currently in", 255, 0, 0)
-						return
-					end
-					exports.UCDdx:new("You must be on foot to spectate a vehicle", 255, 0, 0)
-					return
-				end
-				if (localPlayer.dimension ~= 0 or localPlayer.interior ~= 0) then
-					exports.UCDdx:new("You cannot spectate a vehicle while not in the main world", 255, 0, 0)
-					return
-				end
-				if (isSpectating == true) then
-					setCameraTarget(localPlayer)
-					isSpectating = false
-					exports.UCDdx:new("You are no longer spectating your "..vehicle.name, 0, 255, 0)
-					removeEventHandler("onClientRender", root, lolrender)
-					return
-				end
-				
-				local vehVec = vehicle:getPosition()
-				--local vehVec2 = vehicle:getPosition()
-				vehVec.z = vehVec.z + 20
-				
-				Camera.setMatrix(vehVec, vehicle:getPosition())
-				--cp1, cp2, cp3, la1, la2, la3 = getCameraMatrix()
-				--exports.UCDutil:smoothMoveCamera(cp1, cp2, cp3, la1, la2, la3, vehVec.x, vehVec.y, vehVec.z + 10, vehVec.x, vehVec.y, vehVec.z, 3000)
-				--setTimer(function () addEventHandler("onClientRender", root, lolrender) end, 3000, 1) -- This allows us to smooth towards the vehicle and keep on its position afterwards
-				addEventHandler("onClientRender", root, lolrender)
-				
-				isSpectating = true
-				exports.UCDdx:new("You are now spectating your "..vehicle.name..". Press the spectate button again to cancel.", 0, 255, 0)
+				toggleSpectate(vehicle)
 			end
 		end
 	end
 end
 addEventHandler("onClientGUIClick", guiRoot, handleInput)
+
+function toggleSpectate(vehicle)
+	if (vehicle and vehicle.type == "vehicle" and isElement(vehicle)) then
+		if (localPlayer.vehicle) then
+			if (localPlayer.vehicle == vehicle) then
+				exports.UCDdx:new("You can't spectate a vehicle you are currently in", 255, 0, 0)
+				return
+			end
+			exports.UCDdx:new("You must be on foot to spectate a vehicle", 255, 0, 0)
+			return
+		end
+		if (localPlayer.dimension ~= 0 or localPlayer.interior ~= 0) then
+			exports.UCDdx:new("You cannot spectate a vehicle while not in the main world", 255, 0, 0)
+			return
+		end
+		if (isSpectating == true) then
+			setCameraTarget(localPlayer)
+			isSpectating = false
+			exports.UCDdx:new("You are no longer spectating your "..vehicle.name, 0, 255, 0)
+			removeEventHandler("onClientRender", root, lolrender)
+			return
+		end
+		
+		local vehVec = vehicle:getPosition()
+		--local vehVec2 = vehicle:getPosition()
+		vehVec.z = vehVec.z + 20
+		
+		Camera.setMatrix(vehVec, vehicle:getPosition())
+		--cp1, cp2, cp3, la1, la2, la3 = getCameraMatrix()
+		--exports.UCDutil:smoothMoveCamera(cp1, cp2, cp3, la1, la2, la3, vehVec.x, vehVec.y, vehVec.z + 10, vehVec.x, vehVec.y, vehVec.z, 3000)
+		--setTimer(function () addEventHandler("onClientRender", root, lolrender) end, 3000, 1) -- This allows us to smooth towards the vehicle and keep on its position afterwards
+		addEventHandler("onClientRender", root, lolrender)
+		
+		isSpectating = true
+		exports.UCDdx:new("You are now spectating your "..vehicle.name..". Press the spectate button again to cancel.", 0, 255, 0)
+	end	
+end
 
 addEvent("UCDvehicleSystem.playerVehiclesTable", true)
 addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
@@ -318,6 +317,17 @@ addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 			playerVehicles[source] = {}
 		end
 		playerVehicles[source] = tbl
+	end
+)
+
+addEvent("UCDvehicleSystem.onVehicleHidden", true)
+addEventHandler("UCDvehicleSystem.onVehicleHidden", root,
+	function (vehicleID)
+		if (idToVehicle[vehicleID]) then
+			if (isSpectating) then
+				toggleSpectate(idToVehicle[vehicleID])
+			end
+		end
 	end
 )
 
