@@ -1061,10 +1061,10 @@ function updateGroupSettings(newSettings)
 					db:exec("UPDATE `groups_` SET `lockInvites`=? WHERE `groupName`=?", newSettings.lockInvites, group_)
 					if (groupTable[group_].lockInvites == 1) then
 						messageGroup(group_, client.name.." has locked group invites", "info")
-						createGroupLog(group_, client.name.." ("..client.account.name..") has unlocked group invites")
+						createGroupLog(group_, client.name.." ("..client.account.name..") has locked group invites")
 					else
 						messageGroup(group_, client.name.." has unlocked group invites", "info")
-						createGroupLog(group_, client.name.." ("..client.account.name..") has locked group invites")
+						createGroupLog(group_, client.name.." ("..client.account.name..") has unlocked group invites")
 					end
 				else
 					exports.UCDdx:new(client, "You are not allowed to lock/unlock group invites", 255, 0, 0)
