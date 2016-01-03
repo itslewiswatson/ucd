@@ -9,6 +9,8 @@ function applyMods()
 	
 	engineImportTXD(engineLoadTXD("infernus.txd", true), 411)
 	engineReplaceModel(engineLoadDFF("infernus.dff", 411), 411)
+	
+	engineReplaceModel(engineLoadDFF("hydra.dff", 520), 520)
 		
 end
 addEventHandler( "onClientResourceStart", resourceRoot, applyMods )
