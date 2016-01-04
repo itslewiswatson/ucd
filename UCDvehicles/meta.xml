@@ -1,8 +1,30 @@
 <meta>
-    <script src="cruise.lua" type="client" />
-    <script src="dx_hud.lua" type="client" />
+	<min_mta_version server="1.5.1" client="1.5.1"/>
 	
-	<script src="engine.lua" type="server" />
+	
+	<script src="vehicleData.slua" type="server"/>
+	<script src="vehicleData.lua" type="client"/>
+	
+	<script src="server.lua" type="server"/>
+	<script src="serverMisc.lua" type="server"/>
+	<script src="exports_s.lua" type="server"/>
+	<script src="vehicleDamage_s.lua" type="server"/>
+	
+	<script src="client.lua" type="client"/>
+	<script src="vehicleAim.lua" type="client"/>
+	<script src="vehicleDamage.lua" type="client"/>
+    <script src="vehicleDirectX.lua" type="client"/>
+	
+	<export function="isVehicleBrokenDown" type="client"/>
+	<export function="isVehicleBrokenDown" type="server"/>
+	
+	<export function="getVehicleData" type="client"/>
+	<export function="callback_sellVehicle" type="client"/>
+	<export function="getVehicleData" type="server"/>
+	<export function="setVehicleData" type="server"/>
+	<export function="getPlayerSpecificIDToVehicle" type="server"/>
+	
+	<include resource="UCDmarket"/>
+	
 	<oop>true</oop>
-    <min_mta_version client="1.5"></min_mta_version>
 </meta>

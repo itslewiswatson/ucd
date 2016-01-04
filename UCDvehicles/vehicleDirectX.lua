@@ -1,3 +1,12 @@
+-------------------------------------------------------------------
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDvehicleSystem
+--// DEVELOPER(S): Lewis Watson (Noki)
+--// DATE: 04/01/2016
+--// PURPOSE: DirectX related vehicle functions.
+--// FILE: \vehicleDirectX.lua [client]
+-------------------------------------------------------------------
+
 function lol(pm)
 	if pm == "+" then
 		setTimer(
