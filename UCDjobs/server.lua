@@ -1,4 +1,10 @@
-local jobs = exports.UCDjobsTable:getJobTable()
+local jobs
+
+addEventHandler("onResourceStart", resourceRoot,
+	function ()
+		jobs = exports.UCDjobsTable:getJobTable()
+	end
+)
 
 function takeJob(jobName, skinID)
 	if (source and jobName and skinID) then
