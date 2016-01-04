@@ -729,8 +729,8 @@ function doDrawScoreboard(rtPass, onlyAnim, sX, sY)
 									
 									dxDrawImage (topX+theX, y, itemWidth, itemHeight, content.src, content.rot, content.rotOffX, content.rotOffY, content.color, drawOverGUI)
 								end
-							elseif column.name == "dxscoreboard_loc" then
-								dxDrawImage(topX+theX, y+s(1)-2, 20, 16, content, 0, 0, 0, cWhite, drawOverGUI)
+							elseif column.name == "dxscoreboard_loc" and content ~= "N/A" then
+								dxDrawImage(topX+ theX, y+s(1)+0.5, 16, 11, content, 0, 0, 0, cWhite, drawOverGUI)
 							else
 								dxDrawText(content, topX+theX+s(1), 	y+s(1), topX+x+s(1+column.width), 	y+s(11)+dxGetFontHeight(fontscale(contentFont, scoreboardScale), contentFont), 	tocolor(0, 0, 0, a or 255), fontscale(contentFont, s(1)), contentFont, "left", "top", true, false, drawOverGUI)
 								dxDrawText(content, topX+theX, 		y, 		topX+x+s(column.width), 	y+dxGetFontHeight(fontscale(contentFont, scoreboardScale), contentFont), 			tocolor(r or 255, g or 255, b or 255, a or 255), fontscale(contentFont, s(1)), contentFont, "left", "top", true, false, drawOverGUI)
