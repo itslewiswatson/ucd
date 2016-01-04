@@ -386,7 +386,7 @@ function sendInvite(plr)
 				end
 				table.insert(playerInvites[plr.account.name], {group_, client.name})
 				db:exec("INSERT INTO `groups_invites` SET `account`=?, `groupName`=?, `by`=?", plr.account.name, group_, client.name)
-				
+				createGroupLog(group_, client.name.." ("..client.account.name..") has invited "..plr.name.." ("..plr.account.name..") to the group")
 				messageGroup(group_, client.name.." has invited "..plr.name.." to the group", "info")
 				exports.UCDdx:new(plr, "You have been invited to "..group_.." by "..client.name..". Press F6 -> 'Group Invites' to view your invites", 0, 255, 0)
 			else
