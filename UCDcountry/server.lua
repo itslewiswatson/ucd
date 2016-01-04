@@ -284,56 +284,43 @@ function getCountry(ip)
 	return false
 end
 
-addEventHandler("onPlayerJoin", root,
-	function ()
-		countryShort, countryLong = getCountry(source.ip)
-		
-		if (countryShort) then
-			countryShort = countryShort
-		elseif (countryShort == false) and (getPlayerFromPartialName("Noki") == source) then
-			countryShort = "AU"
-		else
-			countryShort = "Unknown"
-		end
-		
-		if (getPlayerFromPartialName("Noki") == source) then
-			countryLong = "Australia"
-		else
-			if (countryLong) then
-				countryLong = countryLong
+manual = {
+	["Noki"] = "AU",
+	["Noki2"] = "AU",
+}
+
+function setPlayerCountry(plr)
+	if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+		if (manual[plr.account.name]) then
+			local countryLong = countryName[manual[plr.account.name]]
+			local countryShort = manual[plr.account.name]
+			if (countryShort == "N/A" or countryShort == "Unknown" or not countryShort) then
+				plr:setData("dxscoreboard_loc", "N/A", true)
+				plr:setData("Country", "N/A", true)
 			else
-				countryLong = "Unknown"
+				plr:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
+				plr:setData("Country", countryLong..", "..countryShort, true)
 			end
+			return true
 		end
-		
-		source:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
-		source:setData("Country", countryLong..", "..countryShort, true)
 	end
-)
+	local countryShort, countryLong = getCountry(plr.ip)
+	if (countryShort == "N/A" or countryShort == "Unknown" or not countryShort) then
+		plr:setData("dxscoreboard_loc", "N/A", true)
+		plr:setData("Country", "N/A", true)
+	else
+		plr:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
+		plr:setData("Country", countryLong..", "..countryShort, true)
+	end
+	return true
+end
+
+function setPlayerCountry_()
+	setPlayerCountry(source)
+end
+addEventHandler("onPlayerJoin", root, setPlayerCountry_)
+addEventHandler("onPlayerLogin", root, setPlayerCountry_)
 
 for _, v in pairs(Element.getAllByType("player")) do
-	countryShort, countryLong = getCountry(v.ip)
-	
-	if (countryShort) then
-		countryShort = countryShort
-	elseif (countryShort == false) and (getPlayerFromPartialName("Noki") == v) then
-		countryShort = "AU"
-	else
-		countryShort = "Unknown"
-	end
-	
-	if (getPlayerFromPartialName("Noki") == v) then
-		countryLong = "Australia"
-	else
-		if (countryLong) then
-			countryLong = countryLong
-		elseif (countryLong == false) and (getPlayerFromPartialName("Noki") == v) then
-			countryLong = "Australia"
-		else
-			countryLong = "Unknown"
-		end
-	end
-	
-	v:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
-	v:setData("Country", countryLong..", "..countryShort, true)
+	setPlayerCountry(v)
 end
