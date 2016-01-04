@@ -40,12 +40,16 @@ function gg(client)
 			client:setData("Class", adminRanks[getPlayerAdminRank(client)])
 		end
 		
-		client:setTeam(Team.getFromName("Admins"))
+		--client:setTeam(Team.getFromName("Admins"))
+		exports.UCDteams:setPlayerTeam(client, "Admins")
 		client:setModel(217)
+		if (exports.UCDaccounts:GAD(client, "jobModel") ~= 217) then
+			exports.UCDaccounts:SAD(client, "jobModel", 217)
+		end
 		client:setNametagColor(false)
 		client:setData("Occupation", "Administrator" )
 		exports.UCDdx:new(client, "You are now an on-duty administrator", 255, 255, 255)
-		exports.UCDjobs:setPlayerJob()
+		--exports.UCDjobs:setPlayerJob()
 	end
 	return false
 end

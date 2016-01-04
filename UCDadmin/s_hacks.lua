@@ -5,6 +5,7 @@ function fixAdminVeh( client )
 	
 	local vehicleHealth = getElementHealth( theVehicle ) / 10
 	if ( vehicleHealth ~= 100 ) then
+		triggerEvent("onVehicleFixed", theVehicle, client)
 		fixVehicle( theVehicle )
 		exports.UCDdx:new( client, "Your "..getVehicleName( theVehicle ).." has been fixed", 255, 255, 0 )
 	else
