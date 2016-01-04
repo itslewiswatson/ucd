@@ -1,7 +1,6 @@
 <meta>
 	<info description="Shader - Tex names" version="0.0.2" type="script" />
 	<script src="c_tex_names.lua" type="client" />
-	<script src="s.lua" type="server" />
 	<file src="tex_names.fx" />
 	<file src="mta-helper.fx" />
 	
