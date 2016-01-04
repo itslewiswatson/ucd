@@ -1,11 +1,15 @@
 <meta>
 	<min_mta_version server="1.5"></min_mta_version>
-    <info author="Noki" type="" name="" />
+    <info author="Noki" type="" name=""/>
 	<script src="script.lua" type="client"/>
 	
-	<file src="island.col" />
-	<file src="island.dff" />
-	<file src="island.txd" />
-		
+	<file src="island.col"/>
+	<file src="island.dff"/>
+	<file src="island.txd"/>
+	
+	<file src="airPbagBelt.col"/>
+	<file src="airPbar.col"/>
+	<file src="airPint.col"/>
+	
 	<oop>true</oop>
 </meta>

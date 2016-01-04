@@ -44,26 +44,23 @@ for _, i in pairs(wires_and_cables) do
 end
 
 function applyMods()
-	engineReplaceCOL(engineLoadCOL("island.col"), 1316 )
-	engineImportTXD(engineLoadTXD("island.txd", true), 1316 )
-	engineReplaceModel(engineLoadDFF("island.dff", 1316 ), 1316 )
+	engineReplaceCOL(engineLoadCOL("island.col"), 1316)
+	engineImportTXD(engineLoadTXD("island.txd", true), 1316)
+	engineReplaceModel(engineLoadDFF("island.dff", 1316), 1316)
 	engineSetModelLODDistance(1316, 180)
-		
-		-- island
+	
+	-- island
 	local island = createObject(1316, -3341.5, 2086, 1.2)
-	local island_lod = createObject(1316, -3341.5, 2086, 1.2, 0, 0, 0, true)
+	local island_lod = Object(1316, -3341.5, 2086, 1.2, 0, 0, 0, true)
 	setElementDoubleSided(island, true)
 	island:setLowLOD(island_lod)
 	
-	
+	-- Airport interior
+	engineReplaceCOL(engineLoadCOL("airPint.col"), 3971)
+	engineReplaceCOL(engineLoadCOL("airPbar.col"), 3970)
+	engineReplaceCOL(engineLoadCOL("airPbagBelt.col"), 3969)
+	Object(6959, -1865.0999755859, 40.099998474121, 1046.4000244141, 90)
 end
 addEventHandler( "onClientResourceStart", resourceRoot, applyMods )
 
-
-function create()
-
-	
-end
-addEventHandler( "onClientResourceStart", resourceRoot, create )
-	
 	
