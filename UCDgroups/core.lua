@@ -985,7 +985,7 @@ function handleLogin2(qh, plr, account)
 	plr:setData("group", group_)
 	group[plr] = group_
 	
-	if (gmotd) then
+	if (gmotd and gmotd ~= "" and gmotd:gsub(" ", "") ~= "" and gmotd:len() > 1) then
 		local LUN = exports.UCDaccounts:GAD(groupTable[group_].gmotd_setter, "lastUsedName") or groupTable[group_].gmotd_setter
 		--outputDebugString(tostring(r).." "..tostring(g).." "..tostring(b))
 		outputChatBox("GMOTD "..LUN.." #FFFFFF"..gmotd, plr, r, g, b, true)
