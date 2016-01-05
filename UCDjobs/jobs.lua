@@ -24,13 +24,18 @@ function onClientResourceStart()
 	
 	-- Create markers
 	for jobName, info in pairs(jobs) do
-		if (info.marker) then
+		if (info.markers) then
 			markers[jobName] = {}
 			blips[jobName] = {}
-			for i, v in ipairs(info.marker.coords) do
-				markers[jobName][i] = Marker(v[1], v[2], v[3] - 1, "cylinder", 2, info.marker.color.r, info.marker.color.g, info.marker.color.b, 120)
+			for i, v in ipairs(info.markers) do
+				markers[jobName][i] = Marker(v.x, v.y, v.z - 1, "cylinder", 2, info.colour.r, info.colour.g, info.colour.b, 120)
 				markers[jobName][i]:setData("job", jobName)
-				blips[jobName][i] = Blip.createAttachedTo(markers[jobName][i], info.blipID, nil, nil, nil, nil, nil, 5, 120)
+				markers[jobName][i].interior = v.interior
+				markers[jobName][i].dimension = v.dimension
+				
+				if (v.interior == 0) then
+					blips[jobName][i] = Blip.createAttachedTo(markers[jobName][i], info.blipID, nil, nil, nil, nil, nil, 5, 225)
+				end
 				
 				addEventHandler("onClientMarkerHit", markers[jobName][i], onJobMarkerHit)
 			end
@@ -40,10 +45,10 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, onClientResourceStart)
 
 function onJobMarkerHit(plr, matchingDimension)
-	if (plr and isElement(plr) and plr.type == "player" and plr.interior == 0 and plr.dimension == 0 and plr == localPlayer and not plr.vehicle and matchingDimension) then
+	if (plr and isElement(plr) and plr.type == "player" and plr == localPlayer and not plr.vehicle and matchingDimension) then
 		local jobName = source:getData("job")
 		if (markers[jobName] and blips[jobName]) then
-			if (plr.position.z - 1.5 < source.position.z) then
+			if (plr.position.z - 1.5 < source.position.z and plr.position.z + 1.5 > source.position.z) then
 				toggleJobGUI(jobName)
 			end
 		end
