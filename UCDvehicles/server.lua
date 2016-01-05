@@ -1,6 +1,6 @@
 -------------------------------------------------------------------
 --// PROJECT: Union of Clarity and Diversity
---// RESOURCE: UCDvehicleSystem
+--// RESOURCE: UCDvehicles
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 09/12/2015
 --// PURPOSE: Handling vehicles on the server.
@@ -45,7 +45,7 @@ local recLocs = {
 		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
 	},
 	["General"] = {
-		{-500, 6, 20, 0}, {80, 10, 5, 0}, {400, -60, 5, 0}, {0, 0, 5, 0}
+		{1650.84, -1101.55, 23.9, 270}, 
 	},
 }
 
@@ -63,22 +63,22 @@ end
 
 function syncIdToVehicle(refreshGridlist)
 	if not refreshGridlist then
-		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, getPlayerSpecificIDToVehicle(source))
+		triggerClientEvent(source, "UCDvehicles.syncIdToVehicle", source, getPlayerSpecificIDToVehicle(source))
 	else
-		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, getPlayerSpecificIDToVehicle(source), true)
+		triggerClientEvent(source, "UCDvehicles.syncIdToVehicle", source, getPlayerSpecificIDToVehicle(source), true)
 	end
 	
 	-- This part synced the whole table, let's only sync selected bits
 	--[[
 	if not refreshGridlist then
-		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, idToVehicle)
+		triggerClientEvent("UCDvehicles.syncIdToVehicle", source, source, idToVehicle)
 	else
-		triggerClientEvent("UCDvehicleSystem.syncIdToVehicle", source, source, idToVehicle, true)
+		triggerClientEvent("UCDvehicles.syncIdToVehicle", source, source, idToVehicle, true)
 	end
 	--]]
 end
-addEvent("UCDvehicleSystem.getIdToVehicleTable", true)
-addEventHandler("UCDvehicleSystem.getIdToVehicleTable", root, syncIdToVehicle)
+addEvent("UCDvehicles.getIdToVehicleTable", true)
+addEventHandler("UCDvehicles.getIdToVehicleTable", root, syncIdToVehicle)
 
 function onPlayerQuit()
 	if (not playerVehicles[source]) then
@@ -86,7 +86,7 @@ function onPlayerQuit()
 	end
 	for _, vehicleID in pairs(playerVehicles[source]) do
 		if (idToVehicle[vehicleID]) then
-			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, vehicleID)
+			triggerEvent("UCDvehicles.hideVehicle", resourceRoot, vehicleID)
 		end
 	end
 	if (activeVehicles[source]) then
@@ -106,10 +106,10 @@ function loadPlayerVehicles(plr)
 			table.insert(playerVehicles[plr], i)
 		end
 	end
-	triggerClientEvent(plr, "UCDvehicleSystem.playerVehiclesTable", plr, playerVehicles[plr])
+	triggerClientEvent(plr, "UCDvehicles.playerVehiclesTable", plr, playerVehicles[plr])
 end
-addEvent("UCDvehicleSystem.loadPlayerVehicles", true)
-addEventHandler("UCDvehicleSystem.loadPlayerVehicles", root, loadPlayerVehicles)
+addEvent("UCDvehicles.loadPlayerVehicles", true)
+addEventHandler("UCDvehicles.loadPlayerVehicles", root, loadPlayerVehicles)
 addEventHandler("onPlayerLogin", root, function () loadPlayerVehicles(source) end)
 --addEventHandler("onResourceStart", resourceRoot, function () for _, v in pairs(Element.getAllByType("player")) do loadPlayerVehicles(v) end end) -- Now handled in vehicleData.slua
 
@@ -118,7 +118,7 @@ addEventHandler("onPlayerLogin", root, function () loadPlayerVehicles(source) en
 function saveAllVehicles()
 	for i, _ in pairs(idToVehicle) do
 		if (idToVehicle[i]) then
-			triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, i)
+			triggerEvent("UCDvehicles.hideVehicle", resourceRoot, i, true, false)
 		end
 	end
 end
@@ -129,13 +129,13 @@ function spawnVehicle(vehicleID)
 	
 	-- If the selected vehicle is already in the world
 	if (idToVehicle[vehicleID]) then
-		exports.UCDdx:new(client, "That vehicle is already spawned in!", 255, 0, 0)
+		exports.UCDdx:new(client, "That vehicle is already spawned in", 255, 0, 0)
 		return false
 	end
 	
 	-- If the player has more than 2 active vehicles in the world
 	if (activeVehicles[client] and #activeVehicles[client] >= 2) then
-		exports.UCDdx:new(client, "You cannot have more than 2 vehicles in the world at one time.", 255, 0, 0)
+		exports.UCDdx:new(client, "You cannot have more than 2 vehicles in the world at one time", 255, 0, 0)
 		return false
 	end
 	
@@ -175,13 +175,15 @@ function spawnVehicle(vehicleID)
 	end
 	
 	exports.UCDdx:new(client, "You have successfully spawned your "..vehicle:getName(), 0, 255, 0)
-	--triggerClientEvent(root, "UCDvehicleSystem.syncIdToVehicle", client, idToVehicle) -- Maybe change this to only sync to the owner
-	triggerClientEvent(client, "UCDvehicleSystem.syncIdToVehicle", client, getPlayerSpecificIDToVehicle(client)) -- Maybe change this to only sync to the owner
+	triggerClientEvent(client, "UCDvehicles.syncIdToVehicle", client, getPlayerSpecificIDToVehicle(client)) -- Maybe change this to only sync to the owner
+	triggerClientEvent(client, "UCDvehicles.updateVehicleGrid", client, vehicleID)
+	
+	syncSpecific(client, vehicleID, vehicles[vehicleID])
 end
-addEvent("UCDvehicleSystem.spawnVehicle", true)
-addEventHandler("UCDvehicleSystem.spawnVehicle", root, spawnVehicle)
+addEvent("UCDvehicles.spawnVehicle", true)
+addEventHandler("UCDvehicles.spawnVehicle", root, spawnVehicle)
 
-function hideVehicle(vehicleID, tosync)
+function hideVehicle(vehicleID, tosync, sendToClient)
 	if (not vehicleID) then return nil end
 	local vehicle = idToVehicle[vehicleID]
 	if (not vehicle or vehicle:getData("vehicleID") ~= vehicleID) then return end
@@ -229,9 +231,11 @@ function hideVehicle(vehicleID, tosync)
 	triggerEvent("onVehicleHidden", vehicle)
 	
 	local ownerPlayer = Player(vehicle:getData("owner"))
-	if (ownerPlayer and ownerPlayer.type == "player") then
-		triggerClientEvent(ownerPlayer, "UCDvehicleSystem.onVehicleHidden", ownerPlayer, vehicleID)
-		triggerClientEvent(ownerPlayer, "UCDvehicleSystem.syncIdToVehicle", resourceRoot, getPlayerSpecificIDToVehicle(ownerPlayer))
+	if (ownerPlayer and ownerPlayer.type == "player" and sendToClient == true) then
+		triggerClientEvent(ownerPlayer, "UCDvehicles.syncIdToVehicle", resourceRoot, getPlayerSpecificIDToVehicle(ownerPlayer))
+		triggerClientEvent(ownerPlayer, "UCDvehicles.onVehicleHidden", ownerPlayer, vehicleID)
+		triggerClientEvent(ownerPlayer, "UCDvehicles.updateVehicleGrid", ownerPlayer, vehicleID)
+		syncSpecific(ownerPlayer, vehicleID, vehicles[vehicleID])
 		exports.UCDdx:new(ownerPlayer, "Your "..Vehicle.getNameFromModel(vehicles[vehicleID].model).." has been hidden", 0, 255, 0)
 	end
 	
@@ -240,92 +244,77 @@ function hideVehicle(vehicleID, tosync)
 	-- We check for client because the onResourceStop event saves all vehicles by triggering this one and we don't want lots of client events being triggered at once, especially when the resource is going to stop anyway
 	
 	-- We need this here for if someone sells their vehicle
-	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicleSystem.syncIdToVehicle", resourceRoot, idToVehicle)
+	-- triggerClientEvent(Element.getAllByType("player"), "UCDvehicles.syncIdToVehicle", resourceRoot, idToVehicle)
 end
-addEvent("UCDvehicleSystem.hideVehicle", true)
-addEventHandler("UCDvehicleSystem.hideVehicle", root, hideVehicle)
+addEvent("UCDvehicles.hideVehicle", true)
+addEventHandler("UCDvehicles.hideVehicle", root, hideVehicle)
 
-function recoverVehicle(vehicleID)
-	local vehicle
-	local vehicleEle
+function getClosestRecoveryLocation(vehicleType, x, y, z)
 	local distances = {}
 	local points = {}
-	local vehicleType = _getVehicleType(vehicleID)
-	
-	if (idToVehicle[vehicleID]) then
-		vehicleEle = idToVehicle[vehicleID]
-		vehicle = vehicleEle:getPosition()
-		
-		-- Debug purposes, make it a VIP feature?
-		if (exports.UCDadmin:isPlayerOwner(client)) then
-			--[[
-				-- A different approach
-				local position = vehicle.matrix.position + vehicle.matrix.forward * 3
-				player:setPosition(position)
-			--]]
-			local pos = client:getPosition()
-			local _, _, r = getElementRotation(client)
-			local x = pos.x - math.sin(math.rad(r)) * 4
-			local y = pos.y + math.cos(math.rad(r)) * 4
-			local v = Vector3(x, y , pos.z + 0.3)
-			
-			for _, occupant in pairs(vehicleEle:getOccupants()) do
-				occupant:removeFromVehicle()
-				if (occupant:getType() == "player") then
-					exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
-				end
-			end
-			
-			vehicleEle:setPosition(v)
-			vehicleEle:setRotation(0, 0, r + 90)
-			exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered just in front of you!", 0, 255, 0)
-			return
-		end
-	else
-		vehicle = Vector3(unpack(fromJSON(getVehicleData(vehicleID, "xyz")))) -- This looks inefficient
-	end
-		
-	-- Loop through to find the smallest distance
 	for i = 1, #recLocs[vehicleType] do
-		local distance_ = getDistanceBetweenPoints3D(vehicle.z, vehicle.y, vehicle.z, recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3])
+		local distance_ = getDistanceBetweenPoints3D(x, y, z, recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3])
 		table.insert(distances, distance_)
 		points[distance_] = Vector4(recLocs[vehicleType][i][1], recLocs[vehicleType][i][2], recLocs[vehicleType][i][3], recLocs[vehicleType][i][4])
 	end
-	table.sort(distances) -- Sort the table to find the smallest distance
-	
-	--[[
-	for k, v in ipairs(distances) do
-		outputDebugString(v) -- distances[1] should be the smallest because of the ipairs loop
-	end
-	outputDebugString("Smallest should be ".. distances[1])
-	--]]
-	
-	local smallest = points[distances[1]] -- returns a 4D vector [x, y, z, rot]
+	table.sort(distances) -- Sort the table to find the smallest distance	
+	return points[distances[1]]
+end
+
+function recoverVehicle(vehicleID)
+	local vehicleEle
+	local vehicleType = _getVehicleType(vehicleID)
+	local smallest
 	
 	if (idToVehicle[vehicleID]) then
-		-- Check for people in it
-		for _, occupant in pairs(vehicleEle:getOccupants()) do
+		vehicleEle = idToVehicle[vehicleID]
+		
+		for _, occupant in ipairs(vehicleEle:getOccupants()) do
 			occupant:removeFromVehicle()
 			if (occupant.type == "player") then
-				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been hidden.", 255, 0, 0)
+				exports.UCDdx:new(occupant, "You have been ejected from the vehicle as it has been recovered", 255, 0, 0)
 			end
 		end
-		vehicleEle:setDamageProof(true)	
-		vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
-		vehicleEle:setRotation(Vector3(0, 0, smallest.w))
-		Timer(function (vehicleEle) if (vehicleEle and isElement(vehicleEle)) then vehicleEle:setDamageProof(false) end end, 5000, 1, vehicleEle)
+
+		if (exports.UCDadmin:isPlayerOwner(client)) then
+			if (client.vehicle) then
+				exports.UCDdx:new(client, "You can't recover a vehicle to yourself while you're already in one", 255, 0, 0)
+				return
+			end
+			
+			local _, _, r = getElementRotation(client)
+			local pos 
+			pos = client.matrix.position + client.matrix.forward * 6
+			pos = pos + client.matrix.up
+			vehicleEle.position = pos
+			vehicleEle:setRotation(0, 0, r + 90)
+			smallest = Vector4(vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z, r + 90)
+			
+			exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered just in front of you!", 0, 255, 0)
+		else
+			-- Loop through to find the smallest distance
+			smallest = getClosestRecoveryLocation(vehicleType, vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z)
+			vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
+			vehicleEle:setRotation(Vector3(0, 0, smallest.w))
+			exports.UCDdx:new(client, "Your "..vehicleEle.name.." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
+		end
+	else
+		local last = Vector3(unpack(fromJSON(getVehicleData(vehicleID, "xyz"))))
+		smallest = getClosestRecoveryLocation(vehicleType, last.x, last.y, last.z)
+		exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
 	end
-	setVehicleData(vehicleID, "xyz", toJSON({smallest.x, smallest.y, smallest.z + 2}))
+	syncSpecific(client, vehicleID, vehicles[vehicleID])
+	setVehicleData(vehicleID, "xyz", toJSON({smallest.x, smallest.y, smallest.z + 1}))
 	setVehicleData(vehicleID, "rotation", smallest.w)
-	exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
+	triggerClientEvent(client, "UCDvehicles.updateVehicleGrid", client, vehicleID)
 end
-addEvent("UCDvehicleSystem.recoverVehicle", true)
-addEventHandler("UCDvehicleSystem.recoverVehicle", root, recoverVehicle)
+addEvent("UCDvehicles.recoverVehicle", true)
+addEventHandler("UCDvehicles.recoverVehicle", root, recoverVehicle)
 
 function sellVehicle(vehicleID)
 	-- Hide the vehicle, but don't sync it to the database
 	if (idToVehicle[vehicleID]) then
-		triggerEvent("UCDvehicleSystem.hideVehicle", resourceRoot, vehicleID, false)
+		triggerEvent("UCDvehicles.hideVehicle", resourceRoot, vehicleID, false)
 	end
 	for _, v in ipairs(playerVehicles[client]) do
 		if (v == vehicleID) then
@@ -341,12 +330,12 @@ function sellVehicle(vehicleID)
 	client:giveMoney(newPrice)
 	vehicles[vehicleID] = nil
 	-- Remove it from SQL, sync to player
-	triggerEvent("UCDvehicleSystem.requestVehicleTableSync", client)
-	triggerEvent("UCDvehicleSystem.getIdToVehicleTable", client, true)
+	triggerEvent("UCDvehicles.requestVehicleTableSync", client)
+	triggerEvent("UCDvehicles.getIdToVehicleTable", client, true)
 	db:exec("DELETE FROM `vehicles` WHERE `vehicleID`=?", vehicleID)
 end
-addEvent("UCDvehicleSystem.sellVehicle", true)
-addEventHandler("UCDvehicleSystem.sellVehicle", root, sellVehicle)
+addEvent("UCDvehicles.sellVehicle", true)
+addEventHandler("UCDvehicles.sellVehicle", root, sellVehicle)
 
 function toggleLock(enteringPlayer)
 	-- On duty admins are allowed to jack a player's car
@@ -370,5 +359,5 @@ function toggleLock_(vehicleID)
 		exports.UCDdx:new(client, "You have successfully locked your "..vehicleEle.name, 0, 255, 0)
 	end
 end
-addEvent("UCDvehicleSystem.toggleLock", true)
-addEventHandler("UCDvehicleSystem.toggleLock", root, toggleLock_)
+addEvent("UCDvehicles.toggleLock", true)
+addEventHandler("UCDvehicles.toggleLock", root, toggleLock_)

@@ -1,6 +1,6 @@
 -------------------------------------------------------------------
 --// PROJECT: Union of Clarity and Diversity
---// RESOURCE: UCDvehicleSystem
+--// RESOURCE: UCDvehicles
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 09/12/2015
 --// PURPOSE: Storing data tables on the client-side for access.
@@ -22,8 +22,8 @@ function syncVehicleTable(id, sync)
 	
 	updateVehicleGrid(id)
 end
-addEvent("UCDvehicleSystem.syncVehicleTable", true)
-addEventHandler("UCDvehicleSystem.syncVehicleTable", root, syncVehicleTable)
+addEvent("UCDvehicles.syncVehicleTable", true)
+addEventHandler("UCDvehicles.syncVehicleTable", root, syncVehicleTable)
 
 function requestVehicleTableSync()
 	-- This should allow the sync to properly go through if the resource is restarted
@@ -31,7 +31,7 @@ function requestVehicleTableSync()
 		-- The timer is for the local server
 		setTimer(
 			function (localPlayer)
-				triggerServerEvent("UCDvehicleSystem.requestVehicleTableSync", localPlayer)
+				triggerServerEvent("UCDvehicles.requestVehicleTableSync", localPlayer)
 			end, 500, 1, localPlayer
 		)
 	end
@@ -67,8 +67,8 @@ function syncVehicleTable(sync)
 		updateVehicleGrid(i)
 	end
 end
-addEvent("UCDvehicleSystem.syncVehicleTable", true)
-addEventHandler("UCDvehicleSystem.syncVehicleTable", root, syncVehicleTable)
+addEvent("UCDvehicles.syncVehicleTable", true)
+addEventHandler("UCDvehicles.syncVehicleTable", root, syncVehicleTable)
 
 function syncVehicleTable(sync)
 	if (not sync) then outputDebugString("Table not sent.") return end
@@ -82,6 +82,6 @@ function syncVehicleTable(sync)
 		updateVehicleGrid(i)
 	end
 end
-addEvent("UCDvehicleSystem.syncVehicleTable", true)
-addEventHandler("UCDvehicleSystem.syncVehicleTable", root, syncVehicleTable)
+addEvent("UCDvehicles.syncVehicleTable", true)
+addEventHandler("UCDvehicles.syncVehicleTable", root, syncVehicleTable)
 --]]

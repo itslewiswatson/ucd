@@ -1,6 +1,6 @@
 -------------------------------------------------------------------
 --// PROJECT: Union of Clarity and Diversity
---// RESOURCE: UCDvehicleSystem
+--// RESOURCE: UCDvehicles
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 09/12/2015
 --// PURPOSE: Storing miscellaneous server-side functions.

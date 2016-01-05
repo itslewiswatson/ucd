@@ -1,13 +1,23 @@
 -------------------------------------------------------------------
 --// PROJECT: Union of Clarity and Diversity
---// RESOURCE: UCDvehicleSystem
+--// RESOURCE: UCDvehicles
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 09/12/2015
 --// PURPOSE: Front end vehicle management interface.
 --// FILE: \client.lua [client]
 -------------------------------------------------------------------
 
+addEventHandler("onClientResourceStop", resourceRoot,
+	function ()
+		idToVehicle = nil
+		playerVehicles = nil
+		vehicles = nil
+		blip = nil
+	end
+)
+
 local blip = {}
+local rows = {}
 playerVehicles = {}
 
 function syncIdToVehicle(tbl, _, refreshGridlist)
@@ -17,11 +27,11 @@ function syncIdToVehicle(tbl, _, refreshGridlist)
 		GUIEditor.label[1]:setText("Selected: N/A")
 	end
 end
-addEvent("UCDvehicleSystem.syncIdToVehicle", true)
-addEventHandler("UCDvehicleSystem.syncIdToVehicle", root, syncIdToVehicle)
+addEvent("UCDvehicles.syncIdToVehicle", true)
+addEventHandler("UCDvehicles.syncIdToVehicle", root, syncIdToVehicle)
 
-triggerServerEvent("UCDvehicleSystem.loadPlayerVehicles", localPlayer) -- Sync the playerVehicles table when the resource starts
-triggerServerEvent("UCDvehicleSystem.getIdToVehicleTable", localPlayer) -- Sync the idToVehicle table when the resource starts
+triggerServerEvent("UCDvehicles.loadPlayerVehicles", localPlayer) -- Sync the playerVehicles table when the resource starts
+triggerServerEvent("UCDvehicles.getIdToVehicleTable", localPlayer) -- Sync the idToVehicle table when the resource starts
 
 function onClientVehicleEnter(theVehicle, seat)
 	if (source ~= localPlayer) then return end
@@ -37,10 +47,10 @@ GUIEditor = {gridlist = {}, window = {}, button = {}, label = {}}
 function updateVehicleGrid(vehicleID)
 	if (not vehicleID) then return end
 	outputDebugString("Updating grid for vehicleID = "..vehicleID)
-	if (not vehicles[vehicleID].row) then
-		vehicles[vehicleID].row = guiGridListAddRow(GUIEditor.gridlist[1]) -- make oop
+	if (not rows[vehicleID]) then
+		rows[vehicleID] = guiGridListAddRow(GUIEditor.gridlist[1]) -- make oop
 	end
-	local row = vehicles[vehicleID].row
+	local row = rows[vehicleID]
 	
 	if (idToVehicle[vehicleID]) then
 		local vehicleEle = idToVehicle[vehicleID]
@@ -51,6 +61,16 @@ function updateVehicleGrid(vehicleID)
 		model = getVehicleNameFromModel(getVehicleData(vehicleID, "model")) -- Wait until this is oop
 		health = exports.UCDutil:mathround(getVehicleData(vehicleID, "health") / 10)
 		fuel = 100 --idToVehicle[vehicleID] -- Get the fuel later
+	end
+	
+	for i = 0, guiGridListGetRowCount(GUIEditor.gridlist[1]) - 1 do
+		if (guiGridListGetItemData(GUIEditor.gridlist[1], i, 1) == vehicleID) then
+			if (idToVehicle[vehicleID]) then
+				guiGridListSetItemColor(GUIEditor.gridlist[1], i, 1, 0, 200, 200)
+			else
+				guiGridListSetItemColor(GUIEditor.gridlist[1], i, 1, 255, 255, 255)
+			end
+		end
 	end
 	
 	if (health <= 40) then
@@ -81,6 +101,8 @@ function updateVehicleGrid(vehicleID)
 	
 	guiGridListSetItemData(GUIEditor.gridlist[1], row, 1, vehicleID) -- Vehicle ID
 end
+addEvent("UCDvehicles.updateVehicleGrid", true)
+addEventHandler("UCDvehicles.updateVehicleGrid", root, updateVehicleGrid)
 
 --[[
 function updateConstant()
@@ -134,13 +156,16 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
 function toggleGUI()
-	if (not guiGetVisible(GUIEditor.window[1])) then
+	if (GUIEditor.window[1].visible) then
+		GUIEditor.window[1].visible = false
+		showCursor(false)
+	else
+		showCursor(true)
 		GUIEditor.window[1].visible = true
 		
-		for _, v in ipairs(playerVehicles[localPlayer]) do
-			-- Should we update them regardless of whether they are spawned in or not?
-			if (idToVehicle[v]) then
-				updateVehicleGrid(v)
+		if (idToVehicle and type(idToVehicle) == "table") then
+			for _, v in pairs(idToVehicle) do		
+				updateVehicleGrid(v:getData("vehicleID"))
 			end
 		end
 		
@@ -152,14 +177,10 @@ function toggleGUI()
 				GUIEditor.label[1]:setText("Selected: "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." - "..exports.UCDutil:getCityZoneFromXYZ(x, y, z)..", "..getZoneName(x, y, z))
 			end
 		end
-		showCursor(true)
-	else
-		GUIEditor.window[1].visible = false
-		showCursor(false)
 	end
 end
 addCommandHandler("vehicles", toggleGUI, false, false)
-bindKey("F2", "down", "vehicles")
+bindKey("F2", "up", "vehicles")
 
 function lolrender()
 	local vehicleVector = vehicle:getPosition()
@@ -203,7 +224,7 @@ function handleInput(button, state)
 		-- No action can be taken on vehicles that aren't spawned in [EXCEPTION: SELLING THE VEHICLE]
 		if (source == GUIEditor.button[1]) then
 			if (button == "left" and state == "up") then
-				triggerServerEvent("UCDvehicleSystem.recoverVehicle", localPlayer, vehicleID)
+				triggerServerEvent("UCDvehicles.recoverVehicle", localPlayer, vehicleID)
 			end
 		elseif (source == GUIEditor.button[2]) then
 			if (button == "left" and state == "up") then
@@ -226,22 +247,22 @@ function handleInput(button, state)
 					exports.UCDdx:new("The selected vehicle is not spawned", 255, 0, 0)
 					return
 				end
-				triggerServerEvent("UCDvehicleSystem.toggleLock", localPlayer, vehicleID)
-				outputDebugString("Triggered server UCDvehicleSystem.toggleLock")
+				triggerServerEvent("UCDvehicles.toggleLock", localPlayer, vehicleID)
+				outputDebugString("Triggered server UCDvehicles.toggleLock")
 			end
 		elseif (source == GUIEditor.button[4]) then
 			if (button == "left" and state == "up") then
 				-- trigger a server event and make sure to despawn the vehicle and delete from database
 				local price = getVehicleData(vehicleID, "price")
 				local rate = root:getData("vehicles.rate") --exports.UCDmarket:getVehicleRate()
-				--exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicleSystem:callback_sellVehicle("..vehicleID..")")
-				exports.UCDutil:createConfirmationWindow("UCDvehicleSystem.sellVehicle.client", vehicleID, nil, "UCD | Player Vehicles - Confirmation", "Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicleSystem:callback_sellVehicle("..vehicleID..")")
+				--exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicles:callback_sellVehicle("..vehicleID..")")
+				exports.UCDutil:createConfirmationWindow("UCDvehicles.sellVehicle.client", vehicleID, nil, "UCD | Player Vehicles - Confirmation", "Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicles:callback_sellVehicle("..vehicleID..")")
 				
 			end
 		elseif (source == GUIEditor.button[5]) then
 			if (button == "left" and state == "up") then
-				triggerServerEvent("UCDvehicleSystem.spawnVehicle", localPlayer, vehicleID)
-				outputDebugString("triggered UCDvehicleSystem.spawnVehicle with vehicleID = "..vehicleID)
+				triggerServerEvent("UCDvehicles.spawnVehicle", localPlayer, vehicleID)
+				outputDebugString("triggered UCDvehicles.spawnVehicle with vehicleID = "..vehicleID)
 			end
 		elseif (source == GUIEditor.button[6]) then
 			if (button == "left" and state == "up") then
@@ -256,7 +277,7 @@ function handleInput(button, state)
 					blip[vehicleID]:destroy()
 					blip[vehicleID] = nil
 				end
-				triggerServerEvent("UCDvehicleSystem.hideVehicle", localPlayer, vehicleID)
+				triggerServerEvent("UCDvehicles.hideVehicle", localPlayer, vehicleID, true, true)
 			end
 		elseif (source == GUIEditor.button[7]) then
 			if (button == "left" and state == "up") then
@@ -294,20 +315,20 @@ function toggleSpectate(vehicle)
 			return
 		end
 		
-		local vehVec = vehicle:getPosition()
+		local vehVec = vehicle.position
 		--local vehVec2 = vehicle:getPosition()
 		vehVec.z = vehVec.z + 20
 		
-		Camera.setMatrix(vehVec, vehicle:getPosition())
+		Camera.setMatrix(vehVec, vehicle.position)
 		addEventHandler("onClientRender", root, lolrender)
 		
 		isSpectating = true
 		exports.UCDdx:new("You are now spectating your "..vehicle.name..". Press the spectate button again to cancel.", 0, 255, 0)
-	end	
+	end
 end
 
-addEvent("UCDvehicleSystem.playerVehiclesTable", true)
-addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
+addEvent("UCDvehicles.playerVehiclesTable", true)
+addEventHandler("UCDvehicles.playerVehiclesTable", root,
 	function (tbl)
 		if (type(tbl) ~= "table") then outputDebugString("playerVehicles did not pass table - ["..tostring(tbl).."]") return end
 		if (not playerVehicles[source]) then
@@ -317,10 +338,11 @@ addEventHandler("UCDvehicleSystem.playerVehiclesTable", root,
 	end
 )
 
-addEvent("UCDvehicleSystem.onVehicleHidden", true)
-addEventHandler("UCDvehicleSystem.onVehicleHidden", root,
+addEvent("UCDvehicles.onVehicleHidden", true)
+addEventHandler("UCDvehicles.onVehicleHidden", root,
 	function (vehicleID)
 		if (idToVehicle[vehicleID]) then
+			updateVehicleGrid(vehicleID)
 			if (isSpectating) then
 				toggleSpectate(idToVehicle[vehicleID])
 			end
@@ -332,11 +354,11 @@ function sellVehicle(vehicleID)
 	outputDebugString("Successfully called callback_sellVehicle")
 	outputDebugString("Argument passed = "..tostring(vehicleID))
 	if (vehicleID) then
-		triggerServerEvent("UCDvehicleSystem.sellVehicle", localPlayer, vehicleID)
+		triggerServerEvent("UCDvehicles.sellVehicle", localPlayer, vehicleID)
 	end
 end
-addEvent("UCDvehicleSystem.sellVehicle.client", true)
-addEventHandler("UCDvehicleSystem.sellVehicle.client", root, sellVehicle)
+addEvent("UCDvehicles.sellVehicle.client", true)
+addEventHandler("UCDvehicles.sellVehicle.client", root, sellVehicle)
 
 --[[
 function populateGridList(vehicleTable)
@@ -382,14 +404,14 @@ function populateGridList(vehicleTable)
 		end
 	end
 end
-addEvent("UCDvehicleSystem.populateGridList", true)
-addEventHandler("UCDvehicleSystem.populateGridList", root, populateGridList)
+addEvent("UCDvehicles.populateGridList", true)
+addEventHandler("UCDvehicles.populateGridList", root, populateGridList)
 
 
 function toggleGUI()
 	if (not isElement(GUIEditor.window[1])) then
 		createGUI()
-		--triggerServerEvent("UCDvehicleSystem.getPlayerVehicleTable", localPlayer)
+		--triggerServerEvent("UCDvehicles.getPlayerVehicleTable", localPlayer)
 	end
 	if (not guiGetVisible(GUIEditor.window[1])) then
 		guiSetVisible(GUIEditor.window[1], true)
@@ -407,7 +429,7 @@ function toggleGUI()
 		end
 		--outputDebugString("gui open")
 		if (vehicleTable and #vehicleTable >= 1) then
-			triggerEvent("UCDvehicleSystem.populateGridList", localPlayer, vehicleTable)
+			triggerEvent("UCDvehicles.populateGridList", localPlayer, vehicleTable)
 		end
 	else
 		guiSetVisible(GUIEditor.window[1], false)
