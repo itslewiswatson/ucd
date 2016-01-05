@@ -7,31 +7,25 @@ local sZone = {LS, JF, SF1, LV}
 
 function isElementWithinSafeZone(element)
 	if not isElement(element) then return false end
-	if (getElementDimension(element) ~= 0) or (getElementInterior(element) ~= 0) then return false end
+	if (element.dimension ~= 0 or element.interior ~= 0) then return false end
 	for i, sZone in pairs(sZone) do
 		if (isElementWithinColShape(element, sZone)) then return true end
 	end
 	return false
 end
 
-function controlCheck()
-	toggleControl("fire", false)
-end
-
 function zoneEntry(element, matchingDimension)
 	if (element ~= localPlayer or not matchingDimension) then return end
+	if (isControlEnabled("aim_weapon") and localPlayer.team ~= "Admins") then
+		toggleControl("aim_weapon", false)
+		toggleControl("fire", false)
+	end
 	exports.UCDdx:new("You have entered a safe zone", 50, 200, 70)
-	toggleControl("fire", false)
-	g = Timer(controlCheck, 1500, 0)
 end
 
 function zoneExit(element, matchingDimension)
 	if (element ~= localPlayer or not matchingDimension) then return end
 	exports.UCDdx:new("You have left a safe zone", 50, 200, 70)
-	if (not localPlayer.frozen) then
-		toggleControl("fire", true)
-	end
-	if (isTimer(g)) then killTimer(g) end
 end
 	
 for i, sZone in pairs(sZone) do
@@ -46,4 +40,3 @@ function cancelDmg()
 	end
 end
 addEventHandler("onClientPlayerDamage", root, cancelDmg)
-
