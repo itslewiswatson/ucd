@@ -1,2 +1,2 @@
-<meta>	<min_mta_version server="1.5.1" client="1.5.1"/>	<info author="NOki" version="1"/>	<file src="staff.dff" /> 	<file src="staff.txd" />	<file src="infernus.dff" /> 	<file src="infernus.txd" />	<file src="hydra.dff" /> 	<file src="seaspar.dff" /> 	<file src="shamal.dff" /> 	
+<meta>	<min_mta_version server="1.5.1" client="1.5.1"/>	<info author="NOki" version="1"/>	<file src="staff.dff" /> 	<file src="staff.txd" />	<file src="infernus.dff" /> 	<file src="infernus.txd" />	<file src="hydra.dff" /> 	<file src="seaspar.dff" /> 	<file src="shamal.dff" />	<file src="66.dff" /> 	<file src="66.txd" />	
 	<script src="mods.lua" type="client"/>	</meta>

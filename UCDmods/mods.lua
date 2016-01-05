@@ -1,11 +1,9 @@
 function applyMods()	
-	--local skin = engineLoadTXD( "gold.txd", true )
-	--engineImportTXD(skin, 519)
-
-	local staff = engineLoadTXD( "staff.txd", true )
-	engineImportTXD(staff, 217)
-	local staff = engineLoadDFF( "staff.dff", 217 )
-	engineReplaceModel(staff, 217)
+	engineImportTXD(engineLoadTXD("staff.txd", true), 217)
+	engineReplaceModel(engineLoadDFF("staff.dff", 217), 217)
+	
+	engineImportTXD(engineLoadTXD("66.txd", true), 66)
+	engineReplaceModel(engineLoadDFF("66.dff", 66), 66)
 	
 	engineImportTXD(engineLoadTXD("infernus.txd", true), 411)
 	engineReplaceModel(engineLoadDFF("infernus.dff", 411), 411)
