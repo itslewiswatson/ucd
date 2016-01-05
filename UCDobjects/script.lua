@@ -59,8 +59,25 @@ function applyMods()
 	engineReplaceCOL(engineLoadCOL("airPint.col"), 3971)
 	engineReplaceCOL(engineLoadCOL("airPbar.col"), 3970)
 	engineReplaceCOL(engineLoadCOL("airPbagBelt.col"), 3969)
-	Object(6959, -1865.0999755859, 40.099998474121, 1046.4000244141, 90)
-end
-addEventHandler( "onClientResourceStart", resourceRoot, applyMods )
-
+	-- 0, 1, 2
+	-- One for each airport
+	for i=50000,50002 do
+		local wall = Object(6959, -1865.1, 40.1, 1046.4, 90)
+		wall.interior = 14
+		wall.dimension = i
+	end
 	
+	-- Mechanic interior
+	for i=50000,50003 do
+		local wall1 = Object(6959, -2038.4, 171.7, 13)
+		wall1.dimension = i
+		wall1.interior = 1
+		wall1:setRotation(0, 90, 0)
+		
+		local wall2 = Object(6959, -2042.5999755859, 150.5, 13)
+		wall2.dimension = i
+		wall2.interior = 1
+		wall2:setRotation(90, 0, 0)
+	end
+end
+addEventHandler("onClientResourceStart", resourceRoot, applyMods)
