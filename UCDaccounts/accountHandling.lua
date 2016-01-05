@@ -27,7 +27,7 @@ function Accounts.Login(_, theCurrentAccount)
 	local playerModel 							= result.model
 	local jobModel								= result.jobModel
 	local playerTeam 							= result.team
-	local class, occupation 					= result.class, result.occupation
+	local occupation 					= result.occupation
 	local playerWalkstyle 						= result.walkstyle
 	local playerHealth, playerArmour 			= result.health, result.armour
 	local playerMoney 							= result.money
@@ -45,7 +45,6 @@ function Accounts.Login(_, theCurrentAccount)
 			source:setArmor(playerArmour)
 			source:setWantedLevel(playerWanted)
 			source:setData("Occupation", occupation, true)
-			source:setData("Class", class, true)
 			source:setWalkingStyle(playerWalkstyle) --exports.UCDwalkstyle:setPlayerWalkingStyle(source, playerWalkstyle)			
 		end, 1000, 1, source
 	)
@@ -82,7 +81,6 @@ function Accounts.Save(plr)
 	local health = plr:getHealth()
 	local armour = plr:getArmor()
 	local occupation = plr:getData("Occupation")
-	local class = plr:getData("Class")
 	local nametag = toJSON({plr:getNametagColor()})
 
 	db:exec("UPDATE `accounts` SET `lastUsedName`=?, `ip`=?, `serial`=? WHERE `account`=?", 
@@ -93,7 +91,7 @@ function Accounts.Save(plr)
 	)
 		
 	-- It's more efficient here to have one query and not 16 different ones that would come from using SAD
-	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `class`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
+	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
 		playerX,
 		playerY,
 		playerZ,
@@ -107,7 +105,6 @@ function Accounts.Save(plr)
 		health,
 		armour,
 		occupation,
-		class,
 		nametag,
 		plr.name,
 		plr.account.name
