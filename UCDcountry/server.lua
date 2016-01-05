@@ -285,7 +285,7 @@ function getCountry(ip)
 end
 
 manual = {
-	["Noki"] = "AU",
+	["Noki"] = "NL",
 	["Noki2"] = "AU",
 }
 
@@ -298,7 +298,7 @@ function setPlayerCountry(plr)
 				plr:setData("dxscoreboard_loc", "N/A", true)
 				plr:setData("Country", "N/A", true)
 			else
-				plr:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
+				plr:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png "..countryShort, true)
 				plr:setData("Country", countryLong..", "..countryShort, true)
 			end
 			return true
@@ -309,7 +309,7 @@ function setPlayerCountry(plr)
 		plr:setData("dxscoreboard_loc", "N/A", true)
 		plr:setData("Country", "N/A", true)
 	else
-		plr:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png", true)
+		plr:setData("dxscoreboard_loc", ":UCDcountry/flags/"..countryShort..".png "..countryShort, true)
 		plr:setData("Country", countryLong..", "..countryShort, true)
 	end
 	return true
