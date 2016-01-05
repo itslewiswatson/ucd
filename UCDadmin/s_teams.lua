@@ -17,11 +17,11 @@ addEventHandler("onPlayerConnect", root,
 )
 
 local adminRanks = {
-	[1] = "Trial Administrator",
-	[2] = "Administrator",
-	[3] = "Senior Administrator",
-	[4] = "Super Administrator",
-	[5] = "Lead Administrator",
+	[1] = "L1 Admin",
+	[2] = "L2 Admin",
+	[3] = "L3 Admin",
+	[4] = "L4 Admin",
+	[5] = "L5 Admin",
 }
 
 if (not getTeamFromName("Admins")) then
@@ -35,21 +35,18 @@ function gg(client)
 		if (client:getWantedLevel() > 0 and not isPlayerOwner(client)) then exports.dx:new(client, "You cannot go on-duty whilst being wanted", 255, 255, 255) return false end
 
 		if (isPlayerOwner(client)) then
-			client:setData("Class", "Owner")
+			client:setData("Occupation", "L1337 Admin")
 		else
-			client:setData("Class", adminRanks[getPlayerAdminRank(client)])
+			client:setData("Occupation", adminRanks[getPlayerAdminRank(client)])
 		end
 		
-		--client:setTeam(Team.getFromName("Admins"))
 		exports.UCDteams:setPlayerTeam(client, "Admins")
 		client:setModel(217)
 		if (exports.UCDaccounts:GAD(client, "jobModel") ~= 217) then
 			exports.UCDaccounts:SAD(client, "jobModel", 217)
 		end
 		client:setNametagColor(false)
-		client:setData("Occupation", "Administrator" )
 		exports.UCDdx:new(client, "You are now an on-duty administrator", 255, 255, 255)
-		--exports.UCDjobs:setPlayerJob()
 	end
 	return false
 end
