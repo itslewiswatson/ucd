@@ -67,7 +67,7 @@ local jobsTable =
 		{
 			{50, "Mechanic 1"},
 			{268, "Mechanic 2"},
-			{309, "Mechanic 3"},
+			{305, "Mechanic 3"},
 		},
 		colour = {r = 255, g = 255, b = 0},
 		blipID = 56,
@@ -135,7 +135,7 @@ local jobsRanks =
 		[7] = {name = "Co-Captain", bonus = 165, req = 630},
 		[8] = {name = "Captain", bonus = 200, req = 800},
 		[9] = {name = "Executive", bonus = 230, req = 1000},
-		[10] = {name = "Chairman", bonus = 300, req = 1250},
+		[10] = {name = "Ace", bonus = 300, req = 1250},
 	},
 	["Trucker"] = {
 		--[[
@@ -149,7 +149,7 @@ local jobsRanks =
 		[7] = {name = "Expert Trucker", bonus = , req = },
 		[8] = {name = "Executive Trucker", bonus = , req = },
 		[9] = {name = "Chief Executive", bonus = , req = },
-		[10] = {name = "Roadrunner", bonus = , req = },
+		[10] = {name = "The Hauler", bonus = , req = },
 		--]]
 	},
 }
