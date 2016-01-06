@@ -5,6 +5,9 @@ function applyMods()
 	engineImportTXD(engineLoadTXD("66.txd", true), 66)
 	engineReplaceModel(engineLoadDFF("66.dff", 66), 66)
 	
+	engineImportTXD(engineLoadTXD("275.txd", true), 275)
+	engineReplaceModel(engineLoadDFF("275.dff", 275), 275)
+	
 	engineImportTXD(engineLoadTXD("infernus.txd", true), 411)
 	engineReplaceModel(engineLoadDFF("infernus.dff", 411), 411)
 	
