@@ -1,3 +1,3 @@
 <meta>	<min_mta_version server="1.4" client="1.4"/>
 	<info author="Noki" />
-	<script src="server.lua" type="server"/>	<script src="client.lua" type="client" cache="false"/></meta>
+	<script src="server.lua" type="server"/>	<script src="client.lua" type="client" cache="false"/>	<oop>true</oop></meta>
