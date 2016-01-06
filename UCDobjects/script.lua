@@ -33,6 +33,9 @@ local wires_and_cables = {
 	-- more wires
 	16747, 16746, 16745, 16744, 16743, 16742, 16741, 16740, 16739, 16738, 16737, 16736, 16735, 
 	
+	-- fucking fence
+	1468, 1447, 1412, 1411, 1413,
+	
 	9154, 5150, 5290, 13018, 17936, 
 	-- Objects we can do either with
 	4574, -- The annoying bit of that building in LS that planes crash into
