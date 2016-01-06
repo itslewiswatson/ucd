@@ -1,2 +1,0 @@
-<meta>	<min_mta_version server="1.3.5" client="1.3.5"/>
-	<info author="Noki" description="AFK system" type="script" version="1." />		<script src="client.lua" type="client"/>	</meta>

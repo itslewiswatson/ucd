@@ -1,9 +1,0 @@
-<meta>
-	<info author="Noki" name="login" version="1" type="script"/>
-	
-	<script src="s.lua" type="server" />
-	<script src="c.lua" type="client" />
-	<export function="isLoginWindowOpen" type="client" />
-	
-	<oop>true</oop>
-</meta>

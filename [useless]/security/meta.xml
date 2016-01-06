@@ -1,3 +1,0 @@
-<meta>	<min_mta_version server="1.4" client="1.4"/>
-	<info author="Noki" description="" type="script" version="1" />
-	<script src="s.lua" type="server"/>	<script src="c.lua" type="client"/>	</meta>

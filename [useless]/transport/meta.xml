@@ -1,4 +1,0 @@
-<meta>	<min_mta_version server="1.4" client="1.4"/>
-	<script src="c_transport.lua" type="client" protected="true"/>
-	<script src="s_transport.lua" type="server"/>
-</meta>
