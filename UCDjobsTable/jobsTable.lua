@@ -24,7 +24,7 @@ local jobsTable =
 		team = "Citizens",
 		markers = 
 		{
-			
+			{x = 83.2926, y = -285.0277, z = 1.5781, interior = 0, dimension = 0},
 		},
 		skins = 
 		{
@@ -72,7 +72,45 @@ local jobsTable =
 		colour = {r = 255, g = 255, b = 0},
 		blipID = 56,
 		desc = "",
-	}
+	},
+	["Paramedic"] = 
+	{
+		team = "Citizens",
+		markers = 
+		{
+			{x = 234.5989, y = 159.3621, z = 1003.0234, interior = 3, dimension = 50000},
+			{x = 234.5989, y = 159.3621, z = 1003.0234, interior = 3, dimension = 50001},
+			{x = 234.5989, y = 159.3621, z = 1003.0234, interior = 3, dimension = 50002},
+			{x = 234.5989, y = 159.3621, z = 1003.0234, interior = 3, dimension = 50003},
+			{x = 234.5989, y = 159.3621, z = 1003.0234, interior = 3, dimension = 50004},
+			{x = 234.5989, y = 159.3621, z = 1003.0234, interior = 3, dimension = 50005},
+			{x = 234.5989, y = 159.3621, z = 1003.0234, interior = 3, dimension = 50006},
+		},
+		skins = 
+		{
+			{275, "Female Medic"},
+			{274, "Male Medic 1"},
+			{276, "Male Medic 2"},
+		},
+		colour = {r = 0, g = 255, b = 255},
+		blipID = 56,
+		desc = "A paramedic's job is to heal the people of San Andreas. \nA paramedic is given both helicopters and\n ambulances to be the first responders to an ordeal. \nTo heal players, a paramedic must be still and within one \nmetre of the patient they want to heal. \n\nA paramedic has a centralized computer to see the status \nof people that require healing around SA. This is accessed \nusing the F5 key when on-duty.",
+	},
+	["Iron Miner"] = 
+	{
+		team = "Citizens",
+		markers = 
+		{
+			{x = 590.1082, y = 870.6659, z = -42.4973, interior = 0, dimension = 0},
+		},
+		skins = 
+		{
+			{},
+		},
+		colour = {r = 255, g = 255, b = 0},
+		blipID = 56,
+		desc = "",
+	},
 }
 
 function getJobTable()
@@ -83,63 +121,36 @@ local jobsRanks =
 {
 	["Aviator"] = 
 	{
-		ranks = 
-		{
-			[0] = "Student Pilot",
-			[1] = "Amateur Aviator",
-			[2] = "Licensed Aviator",
-			[3] = "Competent Aviator",
-			[4] = "Flight Instructor",
-			[5] = "Flight Engineer",
-			[6] = "Flight Officer",
-			[7] = "Co-Captain",
-			[8] = "Captain",
-			[9] = "Executive",
-			[10] = "Chairman",
-		},
-		bonuses = {
-			[0] = 0,
-			[1] = 0,
-			[2] = 0,
-			[3] = 0,
-			[4] = 0,
-			[5] = 0,
-			[6] = 0,
-			[7] = 0,
-			[8] = 0,
-			[9] = 0,
-			[10] = 0,
-		},
+		-- It takes about 3 minutes to go from LS to SF to LV in a Shamal
+		
+		-- Bonus in percentage of original price (the end income will be base + bonus * base)
+		-- Requirements in number of flights
+		[0] = {name = "Student Pilot", bonus = 0, req = 0},
+		[1] = {name = "Amateur Aviator", bonus = 15, req = 15},
+		[2] = {name = "Licensed Aviator", bonus = 25, req = 40},
+		[3] = {name = "Competent Aviator", bonus = 40, req = 75}, 
+		[4] = {name = "Flight Instructor", bonus = 65, req = 165},
+		[5] = {name = "Flight Engineer", bonus = 95, req = 300},
+		[6] = {name = "Flight Officer", bonus = 130, req = 460},
+		[7] = {name = "Co-Captain", bonus = 165, req = 630},
+		[8] = {name = "Captain", bonus = 200, req = 800},
+		[9] = {name = "Executive", bonus = 230, req = 1000},
+		[10] = {name = "Chairman", bonus = 300, req = 1250},
 	},
-	["Trucker"] = 
-	{
-		ranks =
-		{
-			[0] = "Unlicensed Trucker",
-			[1] = "Licensed Trucker",
-			[2] = "Advanced Trucker",
-			[3] = "Commercial Trucker",
-			[4] = "Light Load Trucker",
-			[5] = "Medium Load Trucker",
-			[6] = "Heavy Load Trucker",
-			[7] = "Expert Trucker",
-			[8] = "Executive Trucker",
-			[9] = "Chief Executive",
-			[10] = "Roadrunner",
-		},
-		bonuses = {
-			[0] = 0,
-			[1] = 0,
-			[2] = 0,
-			[3] = 0,
-			[4] = 0,
-			[5] = 0,
-			[6] = 0,
-			[7] = 0,
-			[8] = 0,
-			[9] = 0,
-			[10] = 0,
-		},
+	["Trucker"] = {
+		--[[
+		[0] = {name = "Unlicensed Trucker", bonus = , req = },
+		[1] = {name = "Licensed Trucker", bonus = , req = },
+		[2] = {name = "Advanced Trucker", bonus = , req = },
+		[3] = {name = "Commercial Trucker", bonus = , req = },
+		[4] = {name = "Light Load Trucker", bonus = , req = },
+		[5] = {name = "Medium Load Trucker", bonus = , req = },
+		[6] = {name = "Heavy Load Trucker", bonus = , req = },
+		[7] = {name = "Expert Trucker", bonus = , req = },
+		[8] = {name = "Executive Trucker", bonus = , req = },
+		[9] = {name = "Chief Executive", bonus = , req = },
+		[10] = {name = "Roadrunner", bonus = , req = },
+		--]]
 	},
 }
 
