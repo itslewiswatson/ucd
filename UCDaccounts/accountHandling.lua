@@ -44,11 +44,11 @@ function Accounts.Login(_, theCurrentAccount)
 		function (source)
 			source:setArmor(playerArmour)
 			source:setWantedLevel(playerWanted)
-			source:setData("Occupation", occupation, true)
 			source:setWalkingStyle(playerWalkstyle) --exports.UCDwalkstyle:setPlayerWalkingStyle(source, playerWalkstyle)			
 		end, 1000, 1, source
 	)
 	
+	source:setData("Occupation", occupation, true)
 	source:setNametagColor(ntR, ntG, ntB)
 	source:setMoney(playerMoney)
 	source:setStat(24, 1000)
