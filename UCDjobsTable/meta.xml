@@ -1,3 +1,3 @@
 <meta>	<min_mta_version server="1.5.1" client="1.5.1"/>
 	<info author="Noki" description="" type="script" version="1" />
-	<script src="jobsTable.lua" type="shared" />	<export function="getJobTable" type="shared" /></meta>
+	<script src="jobsTable.lua" type="shared" />	<export function="getJobTable" type="shared"/>	<export function="getJobRanks" type="shared"/></meta>
