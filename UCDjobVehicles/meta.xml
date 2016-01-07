@@ -1,0 +1,8 @@
+<meta>
+    <info author="Noki" version="1" name="" description="" />
+	<min_mta_version server="1.5.1" client="1.5.1"></min_mta_version>
+    <script src="vehicleTable.lua" type="server"/>
+    <script src="server.lua" type="server"/>
+    <script src="client.lua" type="client"/>
+	<oop>true</oop>
+</meta>
