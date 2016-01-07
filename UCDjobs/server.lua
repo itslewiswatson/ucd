@@ -1,4 +1,5 @@
 local jobs
+local vowels = {["a"] = true, ["e"] = true, ["i"] = true, ["o"] = true, ["u"] = true}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
@@ -9,10 +10,16 @@ addEventHandler("onResourceStart", resourceRoot,
 function takeJob(jobName, skinID)
 	if (source and jobName and skinID) then
 		local job = setPlayerJob(source, jobName, skinID)
-		if (job) then
-			exports.UCDdx:new(source, "You have been employed as a "..jobName, 0, 255, 0)
+		local aan
+		if (vowels[jobName:sub(1, 1):lower()]) then
+			aan = "an"
 		else
-			exports.UCDdx:new(source, "Error! Could not employ you as a "..jobName, 0, 255, 0)
+			aan = "a"
+		end
+		if (job) then
+			exports.UCDdx:new(source, "You have been employed as "..aan.." "..jobName, 0, 255, 0)
+		else
+			exports.UCDdx:new(source, "Error! Could not employ you as "..aan.." "..jobName, 0, 255, 0)
 		end
 	end
 end
@@ -22,6 +29,8 @@ addEventHandler("UCDjobs.takeJob", root, takeJob)
 function setPlayerJob(plr, jobName, skinID)
 	if (not plr or not jobName or not skinID) then return end
 	if (not isElement(plr) or plr.type ~= "player" or type(jobName) ~= "string" or tonumber(skinID) == nil or not jobs[jobName]) then return false end
+	
+	local oldJob = plr:getData("Occupation")
 	
 	-- Model
 	plr:setModel(skinID)
@@ -33,6 +42,11 @@ function setPlayerJob(plr, jobName, skinID)
 	
 	-- Element data
 	plr:setData("Occupation", jobName)
+	
+	-- Server event
+	triggerEvent("onPlayerGetJob", plr, jobName)
+	-- Client event
+	triggerClientEvent(plr, "onClientPlayerGetJob", plr, jobName)
 	
 	return true
 end
