@@ -27,12 +27,12 @@ addEventHandler("onClientGUIClick", GUI.spawn, onClickSpawn, false)
 function toggleGUI()
 	GUI.window.visible = not GUI.window.visible
 	if (GUI.window.visible) then
-		showCursor(true)
-		localPlayer.frozen = true
+		showCursor(true, true)
+		--localPlayer.frozen = true
 		GUI.window.text = "UCD | "..source:getData("Occupation").." - Vehicles"
 	else
-		showCursor(false)
-		localPlayer.frozen = false
+		showCursor(false, false)
+		--localPlayer.frozen = false
 		GUI.window.text = "UCD | Jobs - Vehicles"
 	end
 end

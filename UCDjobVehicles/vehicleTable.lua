@@ -16,7 +16,7 @@ jobVehicles =
 	{x = 1677.8402, y = 1627.1708, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- Las Venturas
 	{x = 1609.5867, y = 1627.1708, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- Las Venturas
 	{x = 414.5836, y = 2503.1677, z = 16.4844, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- Verdant Meadows
-	{x = 382.5719, y = 2539.615, z = 16.5391, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- Verdant Meadows
+	{x = 382.5719, y = 2539.615, z = 16.5391, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- Verdant Meadows
 	{x = -1246.6765, y = -97.359, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
 	{x = -1207.1486, y = -145.5417, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
 	{x = -1272.3878, y = -618.8027, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 255, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
