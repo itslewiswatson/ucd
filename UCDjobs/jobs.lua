@@ -10,6 +10,7 @@ function onClientResourceStart()
 	GUI.window = guiCreateWindow(781, 377, 337, 418, "UCD | Jobs - ", false)
 	GUI.window.visible = false
 	GUI.window.sizeable = false
+	exports.UCDutil:centerWindow(GUI.window)
 	GUI.label = guiCreateLabel(8, 30, 319, 198, "", false, GUI.window)
 	GUI.gridlist = guiCreateGridList(11, 238, 316, 120, false, GUI.window)
 	guiGridListAddColumn(GUI.gridlist, "Skin Name", 0.7)
