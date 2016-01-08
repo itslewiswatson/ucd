@@ -1,11 +1,11 @@
 -- This will create the teams in order (unless the scoreboard shits itself)
 local teams = {
 	[1] = {"Admins", 195, 195, 195},
-	[2] = {"Citizens", 255, 255, 0},
+	[2] = {"Citizens", 255, 215, 0},
 	[3] = {"Law", 30, 144, 255}, --0-191-255
 	[4] = {"Criminals", 200, 5, 5},
 	[5] = {"Gangsters", 112, 13, 200},
-	[6] = {"Unemployed", 220, 70, 240},
+	[6] = {"Unoccupied", 220, 70, 240},
 	[7] = {"Not logged in", 255, 255, 255},
 }
 
