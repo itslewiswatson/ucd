@@ -350,25 +350,27 @@ addEventHandler("onClientPlayerChangeNick", root,
 
 addEventHandler("onClientRender", root,
 	function ()
-		-- Update team colours
-		for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
-            local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
-			if (plr) then
-				local r, g, b
-				if plr.team then
-					r, g, b = plr.team:getColor()
-				else
-					r, g, b = 255, 255, 255
-				end
-				guiGridListSetItemColor(adminPanel.gridlist[1], i, 1, r, g, b)
-				
-				if (plr.name ~= guiGridListGetItemText(adminPanel.gridlist[1], i, 1)) then
-					guiGridListSetItemText(adminPanel.gridlist[1], i, 1, plr.name, false, false)
+		if (adminPanel.window[1].visible) then
+			-- Update team colours
+			for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
+				local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
+				if (plr) then
+					local r, g, b
+					if plr.team then
+						r, g, b = plr.team:getColor()
+					else
+						r, g, b = 255, 255, 255
+					end
+					guiGridListSetItemColor(adminPanel.gridlist[1], i, 1, r, g, b)
+					
+					if (plr.name ~= guiGridListGetItemText(adminPanel.gridlist[1], i, 1)) then
+						guiGridListSetItemText(adminPanel.gridlist[1], i, 1, plr.name, false, false)
+					end
 				end
 			end
-        end
-		if (getSelectedPlayer()) then
-			updatePlayerInformation(getSelectedPlayer(), false) -- We don't want it triggering events every second, plus we don't want to repeat code
+			if (getSelectedPlayer()) then
+				updatePlayerInformation(getSelectedPlayer(), false) -- We don't want it triggering events every second, plus we don't want to repeat code
+			end
 		end
 	end
 )
