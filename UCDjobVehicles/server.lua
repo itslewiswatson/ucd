@@ -43,12 +43,12 @@ function getPlayerJobVehicle(plr)
 	return false
 end
 
-function destroyPlayerJobVehicle(plr)
+function destroyPlayerJobVehicle(plr, force)
 	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player") then return false end
 	local vehicle = PJV[plr]
 	if (vehicle and isElement(vehicle)) then
-		if (vehicle:getOccupant(0) == plr and exports.UCDutil:getElementSpeed(vehicle) > 30) then
+		if (vehicle:getOccupant(0) == plr and exports.UCDutil:getElementSpeed(vehicle) > 30 and not force) then
 			return "too fast"
 		end
 		vehicle:destroy()
@@ -57,6 +57,8 @@ function destroyPlayerJobVehicle(plr)
 	end
 	return false
 end
+addEvent("onPlayerGetJob")
+addEventHandler("onPlayerGetJob", root, function () destroyPlayerJobVehicle(source, true) end)
 
 function djv(plr)
 	local q = destroyPlayerJobVehicle(plr)
@@ -94,6 +96,7 @@ function createJobVehicle(plr, model, rot, pos)
 	PJV[plr] = Vehicle(model, pos.x, pos.y, pos.z + 2, 0, 0, rot)
 	plr:warpIntoVehicle(PJV[plr])
 	PJV[plr]:setColor(r1, g1, b1, r2, g2, b2)
+	PJV[plr]:setData("owner", plr.name)
 end
 
 function createFromMarker(model, rot, marker)

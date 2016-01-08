@@ -5,6 +5,7 @@ local _marker
 GUI.window = guiCreateWindow(819, 448, 259, 256, "UCD | Jobs - Vehicles", false)
 GUI.window.sizeable = false
 GUI.window.visible = false
+exports.UCDutil:centerWindow(GUI.window)
 GUI.gridlist = guiCreateGridList(9, 26, 240, 182, false, GUI.window)
 guiGridListSetSortingEnabled(GUI.gridlist, false)
 guiGridListAddColumn(GUI.gridlist, "Vehicle", 0.9)
