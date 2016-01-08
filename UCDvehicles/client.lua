@@ -121,7 +121,7 @@ addEventHandler("onClientRender", root, updateConstant)
 function populateGridList()
 	guiGridListClear(GUIEditor.gridlist[1])
 	for i, v in pairs(vehicles) do
-		if v.ownerID == localPlayer:getData("accountID") then
+		if (v.ownerID == localPlayer:getData("accountID")) then
 			updateVehicleGrid(i)
 		end
 	end
@@ -136,7 +136,7 @@ function createGUI()
 	guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle", 0.5)
 	guiGridListAddColumn(GUIEditor.gridlist[1], "HP", 0.2)
 	guiGridListAddColumn(GUIEditor.gridlist[1], "Fuel", 0.2)
-	guiSetProperty(GUIEditor.gridlist[1], "SortSettingEnabled", "False")
+	guiGridListSetSortingEnabled(GUIEditor.gridlist[1], false)
 	
 	GUIEditor.button[1] = guiCreateButton(11, 247, 66, 32, "Recover", false, GUIEditor.window[1])
 	GUIEditor.button[2] = guiCreateButton(91, 247, 66, 32, "Toggle blip", false, GUIEditor.window[1])
@@ -155,13 +155,12 @@ function createGUI()
 end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
-function toggleGUI()
-	if (GUIEditor.window[1].visible) then
-		GUIEditor.window[1].visible = false
+function toggleVehiclesGUI()
+	GUIEditor.window[1].visible = not GUIEditor.window[1].visible
+	if (not GUIEditor.window[1].visible) then
 		showCursor(false)
 	else
 		showCursor(true)
-		GUIEditor.window[1].visible = true
 		
 		if (idToVehicle and type(idToVehicle) == "table") then
 			for _, v in pairs(idToVehicle) do		
@@ -179,8 +178,8 @@ function toggleGUI()
 		end
 	end
 end
-addCommandHandler("vehicles", toggleGUI, false, false)
-bindKey("F2", "up", "vehicles")
+addCommandHandler("vehicles", toggleVehiclesGUI, false, false)
+bindKey("F2", "up", toggleVehiclesGUI)
 
 function lolrender()
 	local vehicleVector = vehicle:getPosition()
@@ -194,7 +193,7 @@ function handleInput(button, state)
 	
 		if (source == GUIEditor.button[8]) then
 			if (button == "left" and state == "up") then
-				toggleGUI()
+				toggleVehiclesGUI()
 			end
 		end
 	

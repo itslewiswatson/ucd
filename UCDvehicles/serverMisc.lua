@@ -9,8 +9,8 @@
 
 -- We need the owner's name to be synced
 function onPlayerChangeNick(old, new)
-	if (exports.UCDaccounts:isPlayerLoggedIn(source) and activeVehicles[source] and #activeVehicles[source] > 0) then
-		for _, vehicle in pairs(activeVehicles[source]) do
+	if (exports.UCDaccounts:isPlayerLoggedIn(source)) then
+		for _, vehicle in pairs(Element.getAllByType("vehicle")) do
 			if (old == vehicle:getData("owner")) then
 				vehicle:setData("owner", new)
 			end

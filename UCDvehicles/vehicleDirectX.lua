@@ -56,14 +56,24 @@ addEventHandler("onClientPlayerVehicleEnter", root, renderVehicleName)
 
 -- If you get in an out of your vehicles too fast it causes issues
 
+Timer(
+	function ()
+		if (localPlayer.vehicle) then
+			local veh = localPlayer.vehicle
+			vehSpeedMPH = math.floor(exports.UCDutil:getElementSpeed(veh, "mph"))
+			vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
+		end
+	end, 100, 0
+)
 
 function renderVehicleHUD()
 	if (not isPlayerHudComponentVisible("radar") or not localPlayer.vehicle or isPlayerMapVisible()) then return end
+	if (not vehSpeedMPH or not vehSpeedKMH) then return end
 	
 	local veh = localPlayer.vehicle
 	local vehHealth = math.floor(veh.health / 10)
-	local vehSpeedMPH = math.floor(exports.UCDutil:getElementSpeed(veh, "mph"))
-	local vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
+	--local vehSpeedMPH = math.floor(exports.UCDutil:getElementSpeed(veh, "mph"))
+	--local vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
 	local nitro = getVehicleNitroCount(veh) or 0
 	local zone = getZoneName(veh.position)
 	local dial = (sX - 219) * ((vehSpeedMPH / 1300) + 1)
