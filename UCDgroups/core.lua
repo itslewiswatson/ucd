@@ -977,6 +977,7 @@ function handleLogin2(qh, plr, account)
 		end
 	end
 	if (not playerGroupCache[account] or not playerGroupCache[account][1]) then return end
+	playerGroupCache[account][5] = getRealTime().yearday
 	local group_ = playerGroupCache[account][1]
 	local r, g, b = getGroupChatColour(group_)
 	local gmotd = groupTable[group_].gmotd

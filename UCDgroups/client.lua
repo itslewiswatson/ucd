@@ -996,7 +996,7 @@ function viewGroupHistory(hist, logNum, logCount)
 			guiGridListSetItemColor(historyGUI.gridlist[1], row, 1, 0, 200, 200)
 		end
 		historyGUI.label[1].text = "Group: "..source:getData("group")
-		historyGUI.label[2].text = "Viewing: "..logNum.." of "..logCount
+		historyGUI.label[2].text = "Viewing: "..logCount.." of "..logNum
 	else
 		if (historyGUI.window[1].visible) then
 			historyGUI.window[1].visible = false
