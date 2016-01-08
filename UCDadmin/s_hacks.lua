@@ -14,16 +14,11 @@ function fixAdminVeh( client )
 end
 addCommandHandler("fix", fixAdminVeh)
 
-addEvent( "staff.invis", true)
-addEventHandler( "staff.invis", root,
-	function ()
-		setElementAlpha( client, 0 )
+function toggleJetpack(plr)
+	if (doesPedHaveJetPack(plr)) then
+		removePedJetPack(plr)
+	else
+		givePedJetPack(plr)
 	end
-)
-
-addEvent( "staff.visible", true)
-addEventHandler( "staff.visible", root,
-	function ()
-		setElementAlpha( client, 255 )
-	end
-)
+end
+addCommandHandler("jetpack", toggleJetpack)

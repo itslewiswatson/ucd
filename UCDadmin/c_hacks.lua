@@ -8,23 +8,6 @@ function disableAdministratorDamage(attacker, weapon, bodypart, loss)
 end
 addEventHandler("onClientPlayerDamage", root, disableAdministratorDamage)
 
-function toggleVehicleDamage()
-end
-addCommandHandler("dmgproof", toggleVehicleDamage)
-
--- Rework this cmd
-addCommandHandler("invis",
-	function ()
-		if (localPlayer:getTeam():getName() ~= "Admins") then return end
-		if (localPlayer:getAlpha() == 0) then
-			triggerServerEvent("staff.visible", localPlayer)
-		else
-			triggerServerEvent("staff.invis", localPlayer)
-			exports.UCDdx:new("You are now invisible", 0, 255, 0)
-		end
-	end
-)
-
 function flipVehicle()
 	if (localPlayer:getTeam():getName() ~= "Admins") then return end	
 	local vehicle = getPedOccupiedVehicle(localPlayer)

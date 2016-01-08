@@ -305,8 +305,9 @@ function fixVehicle_(plr, vehicle)
 				exports.UCDdx:new(client, "You are not allowed to fix player vehicles until L4", 255, 0, 0)
 				return
 			end
-			exports.UCDvehicleSystem:setVehicleData(vehicle:getData("vehicleID"), "health", 1000)
+			exports.UCDvehicles:setVehicleData(vehicle:getData("vehicleID"), "health", 1000)
 		end
+		triggerEvent("onVehicleFixed", vehicle)
 		vehicle:fix()
 		vehicle.health = 1000
 		exports.UCDdx:new(client, "You have fixed "..plr.name.."'s "..vehicle.name, 0, 255, 0)
