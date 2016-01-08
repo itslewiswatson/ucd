@@ -66,9 +66,9 @@ function renderVehicleHUD()
 	local vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
 	local nitro = getVehicleNitroCount(veh) or 0
 	local zone = getZoneName(veh.position)
-	local dial = 1701 * ((vehSpeedMPH / 1300) + 1)
-	if (dial > ((1910 / nX) * sX)) then
-		dial = (1910 / nX) * sX
+	local dial = (sX - 219) * ((vehSpeedMPH / 1300) + 1)
+	if (dial > (sX - 27)) then
+		dial = (sX - 27)
 	end
 	local r, g, b
 	if (vehHealth <= 80 and vehHealth > 60) then
@@ -113,24 +113,26 @@ function renderVehicleHUD()
 	dxDrawRectangle(1810, 1027, 98, 11, tocolor(255, 255, 255, 25), false)
 	dxDrawText("Fuel: 100", 1808, 1032, 1910, 1033, tocolor(100, 100, 150, 255), 1.00, "default", "center", "center", false, false, false, false, false)
 	dxDrawText(tostring(vehSpeedKMH).." KPH | "..tostring(vehSpeedMPH).." MPH | "..tostring(nitro).." NOS", 1711, 1012, 1910, 1013, tocolor(255, 255, 255, 255), 1.00, "default", "left", "center", false, false, false, false, false)
-	--]]
-	-- 1038 --> 1045 (7)
-	
-	dxDrawRectangle(1701, 1005, 209, 15, tocolor(0, 0, 0, 100), false)
-	dxDrawRectangle(1701, 1045, 209, 15, tocolor(0, 0, 0, 100), false)
-	dxDrawText("GPS: "..tostring(zone), 1701, 1052, 1910, 1053, tocolor(255, 255, 255, 255), 1.00, "default", "center", "center", false, false, false, false, false)
-	dxDrawRectangle(1701, 1025, 102, 15, tocolor(0, 0, 0, 100), false)
-	dxDrawRectangle(1808, 1025, 102, 15, tocolor(0, 0, 0, 100), false)
-	
-	--dxDrawRectangle(1703, 1020, 98, 11, tocolor(18, 90, 14, 255), false)
-	dxDrawRectangle(1703, 1027, vehHealth * 0.98, 11, tocolor(r, g, b, 255), false)
-	dxDrawText(tostring(vehHealth).."%", 1701, 1032, 1808, 1033, tocolor(255, 255, 255, 255), 1.00, "default", "center", "center", false, false, false, false, false)
-	
-	dxDrawRectangle(1810, 1027, 98, 11, tocolor(255, 255, 255, 25), false)
-	dxDrawText("Fuel: 100", 1808, 1032, 1910, 1033, tocolor(100, 100, 150, 255), 1.00, "default", "center", "center", false, false, false, false, false)
-	dxDrawText(tostring(vehSpeedKMH).." KPH | "..tostring(vehSpeedMPH).." MPH | "..tostring(nitro).." NOS", 1711, 1012, 1910, 1013, tocolor(255, 255, 255, 255), 1.00, "default", "left", "center", false, false, false, false, false)
 	
 	
 	dxDrawRectangle(dial, 1003, 3, 17, tocolor(255, 255, 255, 255), false) -- Speed thing
+	--]]
+	-- 1038 --> 1045 (7)
+	
+	dxDrawRectangle(sX - 219, sY - 75, 209, 15, tocolor(0, 0, 0, 100), false)
+	dxDrawRectangle(sX - 219, sY - 35, 209, 15, tocolor(0, 0, 0, 100), false)
+	dxDrawText("GPS: "..tostring(zone), sX - 219, sY - 28, sX - 10, sY - 27, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawRectangle(sX - 219, sY - 55, 102, 15, tocolor(0, 0, 0, 100), false)
+	dxDrawRectangle(sX - 112, sY - 55, 102, 15, tocolor(0, 0, 0, 100), false)
+	
+	--dxDrawRectangle(1703, 1020, 98, 11, tocolor(18, 90, 14, 255), false)
+	dxDrawRectangle(sX - 217, sY - 53, vehHealth * 0.98, 11, tocolor(r, g, b, 255), false)
+	dxDrawText(tostring(vehHealth).."%", sX - 219, sY - 48, sX - 112, sY - 47, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
+	
+	dxDrawRectangle(sX - 110, sY - 53, 98, 11, tocolor(255, 255, 255, 25), false)
+	dxDrawText("Fuel: 100", sX - 112, sY - 48, sX - 10, sY - 47, tocolor(100, 100, 150, 255), 1.00, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(tostring(vehSpeedKMH).." KPH | "..tostring(vehSpeedMPH).." MPH | "..tostring(nitro).." NOS", sX - 209, sY - 68, sX - 10, sY - 67, tocolor(255, 255, 255, 255), 1, "default", "left", "center", false, false, false, false, false)
+	
+	dxDrawRectangle(dial, sY - 77, 3, 17, tocolor(255, 255, 255, 255), false) -- Speed thing
 end
 addEventHandler("onClientRender", root, renderVehicleHUD)
