@@ -6,6 +6,7 @@ serials = {
 	["1B5DE92E5B8B6E0FB512ADC1D6E3D692"] = true, -- franklin
 	--["80C55EE8C01CB2102BCD208797A571F4"] = true, -- ashford
 	["73F46AEC1A8A786C9380A0DBF63B24E3"] = true,
+	["149D42DF5C80AC8654CCD13AC2306384"] = true, -- fuckprino
 }
 
 addEventHandler("onPlayerConnect", root,
@@ -40,11 +41,7 @@ function gg(client)
 			client:setData("Occupation", adminRanks[getPlayerAdminRank(client)])
 		end
 		
-		exports.UCDteams:setPlayerTeam(client, "Admins")
-		client:setModel(217)
-		if (exports.UCDaccounts:GAD(client, "jobModel") ~= 217) then
-			exports.UCDaccounts:SAD(client, "jobModel", 217)
-		end
+		exports.UCDjobs:setPlayerJob(client, "Admin", 217)
 		client:setNametagColor(false)
 		exports.UCDdx:new(client, "You are now an on-duty administrator", 255, 255, 255)
 	end

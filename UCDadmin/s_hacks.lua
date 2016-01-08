@@ -22,3 +22,12 @@ function toggleJetpack(plr)
 	end
 end
 addCommandHandler("jetpack", toggleJetpack)
+
+function flipVehicle(plr)
+	if (not exports.UCDteams:isPlayerInTeam(plr, "Admins")) then return end	
+	if (plr.vehicle) then
+		local rX, rY, rZ = getElementRotation(vehicle)
+		vehicle:setRotation(0, 0, (rX > 90 and rX < 270) and (rZ + 180) or rZ)
+	end
+end
+addCommandHandler("flip", flipVehicle)

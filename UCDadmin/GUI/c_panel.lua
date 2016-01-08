@@ -447,7 +447,7 @@ function requestPlayerData_callback(sync)
 	adminPanel.label[2]:setText("IP: "..data["ip"])
 	adminPanel.label[3]:setText("Serial: "..data["serial"])
 	adminPanel.label[4]:setText("Version: "..data["version"])
-	adminPanel.label[12]:setText("Email: "..data["email"])
+	adminPanel.label[12]:setText("Email: "..data["email"] or "N/A")
 	adminPanel.label[16]:setText("Bank: ".."$"..tostring(exports.UCDutil:mathround(data["bank"])))
 end
 addEvent("UCDadmin.requestPlayerData:callback", true)
