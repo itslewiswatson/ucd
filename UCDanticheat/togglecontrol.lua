@@ -14,7 +14,7 @@ local disallowedTeams = {["Citizens"] = true, ["Not logged in"] = true}
 function fireCheck(button, state)
 	if (localPlayer.vehicle) then return end
 	if (fireKeys[button] and state == true) then
-		if (exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
+		if (exports.UCDsafeZones:isElementWithinSafeZone(localPlayer) or (not exports.UCDturfing:isElementInLV(localPlayer) and disallowedTeams[localPlayer.team.name])) then
 			toggleControl("fire", false)
 			return
 		end
