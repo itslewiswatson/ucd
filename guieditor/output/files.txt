@@ -21,3 +21,4 @@
 :guieditor/output/ucdadmin_giveweapon_2016-1-3_12-12.txt
 :guieditor/output/GUI_output_2016-1-5_20-15.txt
 :guieditor/output/UCDclick_2016-1-5_20-23.txt
+:guieditor/output/CIThudReplica_2016-1-7_21-8.txt
