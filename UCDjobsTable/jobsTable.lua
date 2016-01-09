@@ -1,5 +1,20 @@
 local jobsTable = 
 {
+	-- Other jobs
+	["Gangster"] = 
+	{
+		team = "Gangsters",
+	},
+	["Criminal"] = 
+	{
+		team = "Criminals",
+	},
+	[""] = 
+	{
+		team = "Citizens",
+	},
+	
+	-- Proper jobs
 	["Aviator"] = 
 	{
 		team = "Citizens",
@@ -24,7 +39,7 @@ local jobsTable =
 		team = "Citizens",
 		markers = 
 		{
-			{x = 83.2926, y = -285.0277, z = 1.5781, interior = 0, dimension = 0},
+			{x = 81.3992, y = -283.6037, z = 1.5781, interior = 0, dimension = 0},
 		},
 		skins = 
 		{
@@ -142,22 +157,37 @@ local jobsRanks =
 		[10] = {name = "Ace", bonus = 300, req = 1250, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 0, b2 = 0}}, -- Red
 	},
 	["Trucker"] = {
-		--[[
-		[0] = {name = "Unlicensed Trucker", bonus = , req = },
-		[1] = {name = "Licensed Trucker", bonus = , req = },
-		[2] = {name = "Advanced Trucker", bonus = , req = },
-		[3] = {name = "Commercial Trucker", bonus = , req = },
-		[4] = {name = "Light Load Trucker", bonus = , req = },
-		[5] = {name = "Medium Load Trucker", bonus = , req = },
-		[6] = {name = "Heavy Load Trucker", bonus = , req = },
-		[7] = {name = "Expert Trucker", bonus = , req = },
-		[8] = {name = "Executive Trucker", bonus = , req = },0
-		[9] = {name = "Chief Executive", bonus = , req = },
-		[10] = {name = "The Hauler", bonus = , req = },
-		--]]
+		-- Still need to do calculations, but this is a basic guideline for now
+		[0] = {name = "Unlicensed Trucker", bonus = 0, req = 0, colour = {r1 = 255, g1 = 255, b1 = 255, r2 = 255, g2 = 255, b2 = 255}},
+		[1] = {name = "Licensed Trucker", bonus = 15, req = 30, colour = {r1 = 0, g1 = 0, b1 = 255, r2 = 255, g2 = 255, b2 = 255}},
+		[2] = {name = "Advanced Trucker", bonus = 25, req = 75, colour = {r1 = 0, g1 = 0, b1 = 255, r2 = 0, g2 = 0, b2 = 0}},
+		[3] = {name = "Commercial Trucker", bonus = 40, req = 165, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}},
+		[4] = {name = "Light Load Trucker", bonus = 65, req = 280, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}},
+		[5] = {name = "Medium Load Trucker", bonus = 95, req = 380, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}},
+		[6] = {name = "Heavy Load Trucker", bonus = 130, req = 500, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 0}},
+		[7] = {name = "Expert Trucker", bonus = 165, req = 750, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 255, b2 = 255}},
+		[8] = {name = "Executive Trucker", bonus = 200, req = 925, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 255, b2 = 255}},
+		[9] = {name = "Chief Executive", bonus = 230, req = 1150, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 0, b2 = 0}},
+		[10] = {name = "The Hauler", bonus = 300, req = 1350, colour = {r1 = 0, g1 = 0, b1 = 0, r2 = 0, g2 = 0, b2 = 0}},
 	},
 }
 
 function getJobRanks(jobName)
 	return jobsRanks[jobName]
 end
+
+local rankRestrictions = 
+{
+	["Aviator"] = 
+	{
+		[519] = 2, -- Shamal
+		[487] = 2, -- Maverick
+		[592] = 3, -- Andromada
+		[553] = 3, -- Nevada
+		[577] = 5, -- AT-400 (this is higher than the rest because of the allahu akbar types of people)
+	},
+}
+function getRestricedVehicles(jobName)
+	return rankRestrictions[jobName] or false
+end
+
