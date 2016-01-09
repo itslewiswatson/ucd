@@ -1,5 +1,5 @@
 function clearChat()
-	for i=1,200 do
+	for i = 1, getChatboxLayout()["chat_lines"] do
 		outputChatBox("")
 	end
 end
