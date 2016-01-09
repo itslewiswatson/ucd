@@ -15,6 +15,7 @@ end
 addCommandHandler("fix", fixAdminVeh)
 
 function toggleJetpack(plr)
+	if (Resource.getFromName("freeroam").state == "running") then return end
 	if (doesPedHaveJetPack(plr)) then
 		removePedJetPack(plr)
 	else

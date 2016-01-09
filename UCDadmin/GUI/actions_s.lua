@@ -30,7 +30,7 @@ function warpToPlayer(plr)
 			local i = 0
 			while (i < seats) do
 				if (not getVehicleOccupant(plr.vehicle, i)) then
-   					warpPedIntoVehicle(client, plr.vehicle, i)
+   					client:warpIntoVehicle(plr.vehicle, i)
 					break
 				end
 				i = i + 1
@@ -242,6 +242,10 @@ addEventHandler("UCDadmin.setArmour", root, setPlayerArmour)
 
 function setPlayerDimension(plr, dimension)
 	if (plr and client and isPlayerAdmin(client)) then
+		if (tonumber(dimension) == nil or (tonumber(dimension) < 0 or tonumber(dimension) > 65535)) then
+			exports.UCDdx:new(client, "You must enter a valid dimension between 0 and 65535", 255, 0, 0)
+			return
+		end
 		plr:setDimension(dimension)
 		exports.UCDdx:new(client, "You have set "..plr.name.."'s dimension to "..dimension, 0, 255, 0)
 		exports.UCDdx:new(plr, "Your dimension has been set to "..dimension.." by "..client.name, 0, 255, 0)
@@ -252,6 +256,10 @@ addEventHandler("UCDadmin.setDimension", root, setPlayerDimension)
 
 function setPlayerInterior(plr, interior)
 	if (plr and client and isPlayerAdmin(client)) then
+		if (tonumber(interior) == nil or (tonumber(interior) < 0 or tonumber(interior) > 255)) then
+			exports.UCDdx:new(client, "You must enter a valid interior between 0 and 255", 255, 0, 0)
+			return
+		end
 		plr:setInterior(interior)
 		exports.UCDdx:new(client, "You have set "..plr.name.."'s interior to "..interior, 0, 255, 0)
 		exports.UCDdx:new(plr, "Your interior has been set to "..interior.." by "..plr.name, 0, 255, 0)
@@ -272,7 +280,6 @@ function giveVehicle(plr, vehicle)
 			end
 			-- Possibly add this vehicle to a table so he can /djv it
 			spawnedVehicle = Vehicle(vehicle, plr.position, 0, 0, getPedRotation(plr), "PEN15")
-			warpPedIntoVehicle(plr, spawnedVehicle)
 			
 		else -- We're dealing with a vehicle name
 			if (not Vehicle.getModelFromName(vehicle)) then
@@ -280,8 +287,12 @@ function giveVehicle(plr, vehicle)
 				return
 			end
 			spawnedVehicle = Vehicle(Vehicle.getModelFromName(vehicle), plr.position, 0, 0, getPedRotation(plr), "PEN15")
-			warpPedIntoVehicle(plr, spawnedVehicle)
 		end
+		
+		spawnedVehicle.dimension = plr.dimension
+		spawnedVehicle.interior = plr.interior
+		client:warpIntoVehicle(spawnedVehicle)
+		spawnedVehicle:setData("owner", client.name)
 		
 		if vowels[spawnedVehicle.name:sub(1, 1):lower()] then
 			exports.UCDdx:new(plr, "You have been given an "..spawnedVehicle.name.." by "..client.name, 0, 255, 0)

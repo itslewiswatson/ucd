@@ -612,7 +612,7 @@ function adminAction()
 			if (plr.vehicle) then
 				if (plr.vehicle:getData("vehicleID")) then
 					exports.UCDdx:new(plr.name.."'s vehicle is a player vehicle. Hiding it instead...", 0, 255, 0)
-					triggerServerEvent("UCDvehicles.hideVehicle", plr, plr.vehicle:getData("vehicleID"))
+					triggerServerEvent("UCDvehicles.hideVehicle", plr, plr.vehicle:getData("vehicleID"), true, true)
 					--triggerServerEvent("UCDadmin.destroyVehicle", localPlayer, plr)
 					return
 				end
