@@ -38,3 +38,21 @@ function updateColor()
 	end
 end
 addEventHandler("onClientRender", root, updateColor)
+
+-----
+
+addEventHandler( "onClientResourceStart", resourceRoot,
+    function()
+ 
+        -- Create shader
+        local myShader = dxCreateShader ( "overlay.fx" )
+ 
+            -- get texture and set dxSetShaderValues
+           local additionalTexture = dxCreateTexture ( "marker.png" );
+           dxSetShaderValue ( myShader, "gTexture", additionalTexture );
+ 
+            -- Apply to global txd
+            engineApplyShaderToWorldTexture ( myShader, "CJ_W_GRAD" )
+    end
+)
+ 

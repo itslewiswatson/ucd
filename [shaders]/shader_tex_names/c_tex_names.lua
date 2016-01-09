@@ -83,11 +83,11 @@ addEventHandler( "onClientRender", root,
 ---------------------------------------
 addEventHandler("onClientKeyClick", resourceRoot,
 	function(key)
-		if key == "num_7" then
+		if key == "7" then
 			moveCurrentTextureCaret( -1 )
-		elseif key == "num_9" then
+		elseif key == "9" then
 			moveCurrentTextureCaret( 1 )
-		elseif key == "num_8" then
+		elseif key == "8" then
 			bShowTextureUsage = not bShowTextureUsage
 		elseif key == "k" then
 			if m_SelectedTextureName ~= "" then
