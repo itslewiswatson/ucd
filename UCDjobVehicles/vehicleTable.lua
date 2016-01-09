@@ -38,4 +38,18 @@ jobVehicles =
 	{x = -1323.0562, y = -208.1613, z = 14.1484, rot = 315, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- San Fierro
 	{x = -1657.6765, y = -164.9684, z = 14.1484, rot = 315, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- San Fierro
 	{x = 2113.0366, y = -2467.2312, z = 13.5469, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- Los Santos
+	-- Complimentary vehicles (Tug, Baggage)
+	{x = 1443.3219, y = -2290.1899, z = 13.5469, rot = 270, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
+	{x = 1443.3219, y = -2284.1802, z = 13.5469, rot = 270, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
+	{x = -1233.8478, y = 22.4323, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside SF interior entry
+	{x = 1311.8883, y = 1256.8636, z =  10.8203, rot = 0, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LV interior entry
+	{x = 1327.4552, y = 1256.8636, z =  10.8203, rot = 0, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LV interior entry
+	
+	-- Trucker (Linerunner, Roadtrain)
+	-- Blueberry Acres
+	{x = 102.8701, y = -285.973, z = 1.5781, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = 90.4732, y = -285.973, z = 1.5781, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = 64.8113, y = -285.973, z = 1.5781, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = 51.9532, y = -285.973, z = 1.7036, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = 39.329, y = -285.973, z = 2.0362, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 }

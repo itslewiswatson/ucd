@@ -4,7 +4,7 @@ PJV = {} -- Table of player spawned vehicles
 -- Create markers
 function init()
 	for _, info in ipairs(jobVehicles) do
-		local mkr = Marker(info.x, info.y, info.z - 1, "cylinder", 2, info.colour.r, info.colour.g, info.colour.b, 175)
+		local mkr = Marker(info.x, info.y, info.z - 1, "cylinder", 2, info.colour.r, info.colour.g, info.colour.b, 200)
 		spawnerData[mkr] = {info.vt, info.rot, info.vehs}
 		addEventHandler("onMarkerHit", mkr, markerHit)
 	end
@@ -78,13 +78,31 @@ function createJobVehicle(plr, model, rot, pos)
 	if (not isElement(plr) or plr.type ~= "player") then return false end
 	
 	local jobName = plr:getData("Occupation")
-	local playerRank = 9
+	local playerRank = 1
 	local r, g, b
-	local ranks
-	if (jobName ~= false and playerRank ~= false) then
-		ranks = exports.UCDjobsTable:getJobRanks(jobName)
-		r1, g1, b1, r2, g2, b2 = ranks[playerRank].colour.r1, ranks[playerRank].colour.g1, ranks[playerRank].colour.b1, ranks[playerRank].colour.r2, ranks[playerRank].colour.g2, ranks[playerRank].colour.b2
+	if (not jobName or not playerRank) then
+		return
 	end
+	
+	local ranks = exports.UCDjobsTable:getJobRanks(jobName)
+	local restricted = exports.UCDjobsTable:getRestricedVehicles(jobName)
+	
+	if (restricted) then
+		local vehicleRestricted = restricted[model]
+		if (playerRank < vehicleRestricted) then
+			local reqRank
+			for i in ipairs(ranks) do
+				if (i == vehicleRestricted) then
+					reqRank = i
+					break
+				end
+			end
+			exports.UCDdx:new(client, "This vehicle requires you be L"..tostring(reqRank).." ("..tostring(ranks[vehicleRestricted].name)..") or above", 255, 0, 0)
+			return
+		end
+	end
+	
+	r1, g1, b1, r2, g2, b2 = ranks[playerRank].colour.r1, ranks[playerRank].colour.g1, ranks[playerRank].colour.b1, ranks[playerRank].colour.r2, ranks[playerRank].colour.g2, ranks[playerRank].colour.b2
 	
 	plr.position = Vector3(pos.x, pos.y, pos.z + 2)
 	plr.rotation = Vector3(0, 0, rot)
@@ -95,7 +113,12 @@ function createJobVehicle(plr, model, rot, pos)
 	
 	PJV[plr] = Vehicle(model, pos.x, pos.y, pos.z + 2, 0, 0, rot)
 	plr:warpIntoVehicle(PJV[plr])
-	PJV[plr]:setColor(r1, g1, b1, r2, g2, b2)
+	
+	-- If it's not a tug or a baggage
+	if (model ~= 583 and model ~= 485) then
+		PJV[plr]:setColor(r1, g1, b1, r2, g2, b2)
+	end
+	
 	PJV[plr]:setData("owner", plr.name)
 end
 
@@ -104,3 +127,11 @@ function createFromMarker(model, rot, marker)
 end
 addEvent("UCDjobVehicles.createFromMarker", true)
 addEventHandler("UCDjobVehicles.createFromMarker", root, createFromMarker)
+
+addEventHandler("onPlayerQuit", root,
+	function ()
+		if (getPlayerJobVehicle(source)) then
+			destroyPlayerJobVehicle(source, true)
+		end
+	end
+)
