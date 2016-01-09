@@ -1,0 +1,41 @@
+
+GUIEditor = {
+    scrollpane = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(482, 144, 468, 446, "Player Statistics", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.edit[1] = guiCreateEdit(10, 26, 176, 34, "", false, GUIEditor.window[1])
+        GUIEditor.gridlist[1] = guiCreateGridList(10, 65, 176, 371, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Player", 0.9)
+        GUIEditor.button[1] = guiCreateButton(196, 26, 128, 34, "Refresh", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.scrollpane[1] = guiCreateScrollPane(196, 67, 262, 369, false, GUIEditor.window[1])
+
+        GUIEditor.label[1] = guiCreateLabel(0, 1, 262, 15, "Name: [UCD]Noki", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[2] = guiCreateLabel(0, 16, 262, 15, "Job: Admin", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[3] = guiCreateLabel(0, 31, 262, 15, "Group: Zedd", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[4] = guiCreateLabel(0, 46, 262, 15, "Group Rank: fuccboi", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[5] = guiCreateLabel(0, 61, 262, 15, "Wanted Level: 0", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[6] = guiCreateLabel(0, 76, 262, 15, "Cash: $99,999,999", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[7] = guiCreateLabel(0, 91, 262, 15, "Country: Australia, AU", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[8] = guiCreateLabel(0, 106, 262, 15, "Ping: 350", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[9] = guiCreateLabel(0, 121, 262, 15, "_____________________________________", false, GUIEditor.scrollpane[1])
+        guiLabelSetVerticalAlign(GUIEditor.label[9], "center")
+        GUIEditor.label[10] = guiCreateLabel(0, 136, 262, 15, "", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[11] = guiCreateLabel(0, 151, 262, 15, "Times Jailed:", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[12] = guiCreateLabel(0, 166, 262, 15, "Delivered Arrests: ", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[13] = guiCreateLabel(0, 181, 262, 15, "Total Arrest Points:", false, GUIEditor.scrollpane[1])
+        GUIEditor.label[14] = guiCreateLabel(0, 196, 262, 15, "Lifetime Wanted Points:", false, GUIEditor.scrollpane[1])
+
+        GUIEditor.button[2] = guiCreateButton(330, 26, 128, 34, "Close", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")    
+    end
+)

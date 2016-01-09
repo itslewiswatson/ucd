@@ -22,3 +22,4 @@
 :guieditor/output/GUI_output_2016-1-5_20-15.txt
 :guieditor/output/UCDclick_2016-1-5_20-23.txt
 :guieditor/output/CIThudReplica_2016-1-7_21-8.txt
+:guieditor/output/stats_prototype_1_2016-1-9_14-46.txt
