@@ -36,6 +36,9 @@ local wires_and_cables = {
 	-- fucking fence
 	1468, 1447, 1412, 1411, 1413,
 	
+	-- Lights thing in mech interior
+	11394,
+	
 	9154, 5150, 5290, 13018, 17936, 
 	-- Objects we can do either with
 	4574, -- The annoying bit of that building in LS that planes crash into
@@ -72,10 +75,17 @@ function applyMods()
 	
 	-- Mechanic interior
 	for i=50000,50003 do
-		local wall1 = Object(6959, -2038.4, 171.7, 13)
+		local wall1 = Object(11416, -2038.7, 178.8, 29.9)
+		--local wall1 = Object(6959, -2038.4, 171.7, 13)
 		wall1.dimension = i
 		wall1.interior = 1
-		wall1:setRotation(0, 90, 0)
+		--wall1:setRotation(0, 90, 0)
+		wall1:setRotation(0, 0, 180)
+		
+		local wall3 = Object(11416, -2038.7, 170.3, 29.9)
+		wall3.dimension = i
+		wall3.interior = 1
+		wall3:setRotation(0, 0, 180)
 		
 		local wall2 = Object(6959, -2042.5999755859, 150.5, 13)
 		wall2.dimension = i
