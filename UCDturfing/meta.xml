@@ -1,7 +1,8 @@
 <meta>
 	<script src="server.lua" type="server"/>
-	<script src="lasventuras.lua" type="shared"/>
-	
+	<script src="LV_shared.lua" type="shared"/>
+	<script src="LV_s.lua" type="server"/>
+	<script src="LV_c.lua" type="client"/>
 	<export function="isElementInLV" type="shared"/>
 	<oop>true</oop>
 </meta>
