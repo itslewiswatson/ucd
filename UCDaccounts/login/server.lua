@@ -36,6 +36,8 @@ function startMatrix()
 	showPlayerHudComponent(source, "all", false)
 	showChat(source, false)
 	setPlayerNametagColor(source, false)
+	source.position = Vector3(0, 0, -5)
+	source.frozen = true
 end
 addEventHandler("onPlayerJoin", root, startMatrix)
 

@@ -20,7 +20,10 @@ function Accounts.Login(_, theCurrentAccount)
 	if result == nil then
 		exports.UCDdx:new(source, "We have encountered a database issue. Please contact an administrator.")
 		outputDebugString("Player could not log in - data is nil")
+		return
 	end
+	
+	source.frozen = false
 	
 	local playerX, playerY, playerZ 			= result.x, result.y, result.z
 	local playerRot, playerDim, playerInterior 	= result.rot, result.dim, result.interior
