@@ -166,11 +166,18 @@ function onClientMarkerHit(plr, matchingDimension)
 		
 		outputDebugString("H: "..localPlayer.vehicle.position.z)
 		outputDebugString("M: "..source.position.z)
-		if (localPlayer.vehicle.vehicleType == "Helicopter" and localPlayer.vehicle.position.z - HELI_MARKER_DIST > source.position.z) then
+		if (localPlayer.vehicle.vehicleType == "Helicopter" and (localPlayer.vehicle.position.z - HELI_MARKER_DIST) > source.position.z) then
 			return
 		end
 		
 		--stopVehicle(true)
+		
+		if (localPlayer.vehicle.vehicleType == "Plane") then
+			if (not localPlayer.vehicle.onGround and (localPlayer.vehicle.position.z - HELI_MARKER_DIST) > source.position.z) then
+				exports.UCDdx:new("ATC: You must be on the ground in order to process the flight!", 255, 215, 0)
+				return
+			end
+		end
 		
 		if (prev.airport or prev.dest) then
 			if (localPlayer.vehicle.vehicleType == "Plane") then

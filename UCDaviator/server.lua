@@ -41,7 +41,7 @@ function processFlight(flightData, vehicle)
 			elseif (lrg[model]) then
 				base = math.random((distance * 2.5) - 250, (distance * 2.5) + 250)
 			elseif (mid[model]) then
-				base = math.random((distance * 1.75) - 250, (distance * 1.75) + 400)
+				base = math.random((distance * 1.6) - 250, (distance * 1.75) + 400)
 			else
 				outputDebugString("Unknown type given")
 				return
