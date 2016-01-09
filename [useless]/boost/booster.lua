@@ -29,7 +29,7 @@ end
 addEventHandler( "onClientKey", root,
 	function ( button, press )
 		if ( getPlayerTeam( localPlayer ) == getTeamFromName( "Admins" ) ) then
-			if (not localPlayer.vehicle or localPlayer.vehicle.seat ~= 0) then return end
+			if (not localPlayer.vehicle or localPlayer.vehicle.controller ~= localPlayer) then return end
 			theVehicle = getPedOccupiedVehicle( localPlayer )
 			getspeed = getElementSpeed( theVehicle, 2 )
 			if ( button == "mouse_wheel_up" ) and ( theVehicle ) and ( isPedInVehicle( localPlayer ) ) and not ( getspeed == 0 ) then
