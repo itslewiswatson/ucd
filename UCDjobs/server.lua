@@ -27,8 +27,8 @@ addEvent("UCDjobs.takeJob", true)
 addEventHandler("UCDjobs.takeJob", root, takeJob)
 
 function setPlayerJob(plr, jobName, skinID)
-	if (not plr or not jobName or not skinID) then return end
-	if (not isElement(plr) or plr.type ~= "player" or type(jobName) ~= "string" or tonumber(skinID) == nil or (not jobs[jobName] and jobName ~= "Admin")) then return false end
+	if (not plr or not jobName) then return end
+	if (not isElement(plr) or plr.type ~= "player" or type(jobName) ~= "string" or (not jobs[jobName] and jobName ~= "Admin")) then return false end
 		
 	if (jobName == "Admin") then
 		exports.UCDteams:setPlayerTeam(plr, "Admins")
@@ -36,23 +36,28 @@ function setPlayerJob(plr, jobName, skinID)
 		exports.UCDaccounts:SAD(plr, "jobModel", skinID)
 		triggerEvent("onPlayerGetJob", plr, jobName)
 		triggerClientEvent(plr, "onClientPlayerGetJob", plr, jobName)
-	else
+		return
+	end
+	
+	if (skinID and skinID ~= plr.model) then
 		-- Model
 		plr:setModel(skinID)
 		exports.UCDaccounts:SAD(plr, "jobModel", skinID)
-		
-		-- Team
-		local team = jobs[jobName].team
-		exports.UCDteams:setPlayerTeam(plr, team)
-		
-		-- Element data
-		plr:setData("Occupation", jobName)
-		
-		-- Server event
-		triggerEvent("onPlayerGetJob", plr, jobName)
-		-- Client event
-		triggerClientEvent(plr, "onClientPlayerGetJob", plr, jobName)
+	else
+		local _s = exports.UCDaccounts:GAD(plr, "model")
+		plr:setModel(_s)
 	end
 	
+	-- Team
+	local team = jobs[jobName].team
+	exports.UCDteams:setPlayerTeam(plr, team)
+	
+	-- Element data
+	plr:setData("Occupation", jobName)
+	
+	-- Server event
+	triggerEvent("onPlayerGetJob", plr, jobName)
+	-- Client event
+	triggerClientEvent(plr, "onClientPlayerGetJob", plr, jobName)
 	return true
 end

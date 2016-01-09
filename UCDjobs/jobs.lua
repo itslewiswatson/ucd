@@ -4,13 +4,15 @@ local markers = {}
 local GUI = {}
 local originalSkin = {}
 local frozen
+local disabledControls = {"forwards", "backwards", "jump", "sprint", "left", "right"}
 
 function onClientResourceStart()
+	local sX, sY = guiGetScreenSize()
 	-- GUI
 	GUI.window = guiCreateWindow(781, 377, 337, 418, "UCD | Jobs - ", false)
 	GUI.window.visible = false
-	GUI.window.sizeable = false
-	exports.UCDutil:centerWindow(GUI.window)
+	GUI.window.sizable = false
+	guiSetPosition(GUI.window, 0, (sY - 377) / 2, false)
 	GUI.label = guiCreateLabel(8, 30, 319, 198, "", false, GUI.window)
 	GUI.gridlist = guiCreateGridList(11, 238, 316, 120, false, GUI.window)
 	guiGridListAddColumn(GUI.gridlist, "Skin Name", 0.7)
@@ -51,6 +53,9 @@ function onJobMarkerHit(plr, matchingDimension)
 		if (markers[jobName] and blips[jobName]) then
 			if (plr.position.z - 1.5 < source.position.z and plr.position.z + 1.5 > source.position.z) then
 				toggleJobGUI(jobName)
+				for _, ctrl in ipairs(disabledControls) do
+					setControlState(ctrl, false)
+				end
 			end
 		end
 	end
