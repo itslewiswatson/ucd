@@ -7,14 +7,21 @@ addCommandHandler("tog",
 
 local aimKeys = getBoundKeys("aim_weapon")
 local fireKeys = getBoundKeys("fire")
-local exceptedWeapons = {[41] = true}
+local exceptedWeapons = {[0] = true, [41] = true}
 local exceptedSlots = {[0] = true, [1] = true, [8] = true, [10] = true, [11] = true, [12] = true}
 local disallowedTeams = {["Citizens"] = true, ["Not logged in"] = true}
 
+-- Firing checks (also disables firing without aiming)
 function fireCheck(button, state)
 	if (localPlayer.vehicle) then return end
 	if (fireKeys[button] and state == true) then
-		if (exports.UCDsafeZones:isElementWithinSafeZone(localPlayer) or (not exports.UCDturfing:isElementInLV(localPlayer) and disallowedTeams[localPlayer.team.name])) then
+		-- If they are in a safezone, disable firing regardless of everything else
+		if (exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
+			toggleControl("fire", false)
+			return
+		end
+		-- If they are in not in LV, are a civilian and are not currently using their fists then
+		if (not exports.UCDturfing:isElementInLV(localPlayer) and disallowedTeams[localPlayer.team.name] and localPlayer:getWeapon() ~= 0) then
 			toggleControl("fire", false)
 			return
 		end
