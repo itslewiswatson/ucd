@@ -1,5 +1,6 @@
 interiors = 
 {
+	-- {entryX = , entryY = , entryZ = , exitX = , exitY = , exitZ = , dimension = , interior = , blipID = }
 	-- JOBS
 	-- Aviator job
 	["Aviator"] = 
@@ -53,11 +54,33 @@ interiors =
 		-- Pro Laps (Train Hard)
 		{entryX = 499.4977, entryY = -1360.6191, entryZ = 16.37, exitX = 207.0415, exitY = -140.3765, exitZ = 1003.6, dimension = 20000, interior = 3, blipID = 45}, -- West LS
 	},
-	
+	["Food Places"] = 
+	{
+		-- Burger Shot
+		{entryX = 1872.2556, entryY = 2071.8784, entryZ = 11.1, exitX = 362.8748, exitY = -75.1725, exitZ = 1001.55, dimension = 12000, interior = 10, blipID = 10}, -- Central LV
+		{entryX = 1200.4174, entryY = -918.4593, entryZ = 43.15, exitX = 362.8748, exitY = -75.1725, exitZ = 1001.55, dimension = 12001, interior = 10, blipID = 10}, -- North LS
+		{entryX = 2169.408, entryY = 2795.8557, entryZ = 10.9, exitX = 362.8748, exitY = -75.1725, exitZ = 1001.55, dimension = 12002, interior = 10, blipID = 10}, -- North LV
+		{entryX = 2472.8645, entryY = 2034.2269, entryZ = 11.1, exitX = 362.8748, exitY = -75.1725, exitZ = 1001.55, dimension = 12003, interior = 10, blipID = 10}, -- LV near Old Strip
+		{entryX = 1157.9176, entryY = 2072.2578, entryZ = 11.1, exitX = 362.8748, exitY = -75.1725, exitZ = 1001.55, dimension = 12004, interior = 10, blipID = 10}, -- North HBL
+		{entryX = 2367.0569, entryY = 2071.1333, entryZ = 10.9, exitX = 362.8748, exitY = -75.1725, exitZ = 1001.55, dimension = 12005, interior = 10, blipID = 10}, -- LV near Old Strip x2
+		{entryX = 810.485, entryY = -1616.1458, entryZ = 13.5469, exitX = 362.9, exitY = -75.1725, exitZ = 1001.55, dimension = 12006, interior = 10, blipID = 10}, -- LS near the canal
+		{entryX = -2336.8684, entryY = -166.7959, entryZ = 35.5547, exitX = 362.9, exitY = -75.1725, exitZ = 1001.55, dimension = 12007, interior = 10, blipID = 10}, -- South SF
+		{entryX = -1912.3921, entryY =  827.8793, entryZ = 35.25, exitX = 362.9, exitY = -75.1725, exitZ = 1001.55, dimension = 12008, interior = 10, blipID = 10}, -- SF near cop station
+		{entryX = -2355.8169, entryY = 1008.0756, entryZ = 50.9, exitX = 362.9, exitY = -75.1725, exitZ = 1001.55, dimension = 12009, interior = 10, blipID = 10}, -- North SF
+		
+		-- Cluckin' Bell 
+		{entryX = 928.9164, entryY = -1352.9517, entryZ = 13.3438, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12000, interior = 9, blipID = 14}, -- Central LS
+		{entryX = 2419.7715, entryY = -1508.9784, entryZ = 24.1, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12001, interior = 9, blipID = 14}, -- Near DFR
+		{entryX = 2397.8469, entryY = -1899.1882, entryZ = 13.5469, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12002, interior = 9, blipID = 14}, -- South LS
+		{entryX = 2101.8923, entryY = 2228.8621, entryZ = 11.1, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12003, interior = 9, blipID = 14}, -- Central LV
+		
+		-- The Well Stacked Pizza Co.
+		--{entryX = , entryY = , entryZ = , exitX = , exitY = , exitZ = , dimension = , interior = , blipID = }
+	},
 	["Misc Buildings"] = 
 	{
 		{entryX = 1570.7594, entryY = -1337.1803, entryZ = 16.4844, exitX = 1548.5723, exitY = -1363.7415, exitZ = 326.2183, dimension = 0, interior = 0, colour = {255, 20, 150}}, -- LS Bank Tower
 		{entryX = -1749.2916, entryY = 868.519, entryZ = 25.1, exitX = -1753.6852, exitY = 884.0199, exitZ = 295.601, dimension = 0, interior = 0, colour = {255, 20, 150}}, -- Big Pointy Building (SF)
 		{entryX = 1742.2089, entryY = -2288.1794, entryZ = 13.534, exitX = 1765.2947, exitY = -2271.6238, exitZ = 26.8, dimension = 0, interior = 0, colour = {255, 20, 150}}, -- LS Airport Heli Thing
-	}, 
+	},
 }
