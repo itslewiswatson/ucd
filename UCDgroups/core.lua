@@ -772,9 +772,9 @@ function requestGroupHistory()
 		local group_ = getPlayerGroup(client)
 		if (group_) then
 			if (canPlayerDoActionInGroup(client, "history")) then
-				local history = db:query("SELECT `log` AS `log_` FROM `groups_logs` WHERE `groupName`=? LIMIT 100", group_):poll(-1)
-				local count = db:query("SELECT Count(`log`) AS `count_` FROM `groups_logs` WHERE `groupName`=?", group_):poll(-1)[1].count_
-				triggerLatentClientEvent(client, "UCDgroups.history", client, history or {}, count or 0, #history or 0)
+				local history, rows = db:query("SELECT `log` AS `log_` FROM `groups_logs` WHERE `groupName`=? ORDER BY `log` DESC LIMIT 100", group_):poll(-1)
+				local total = db:query("SELECT Count(*) AS `count_` FROM `groups_logs` WHERE `groupName`=?", group_):poll(-1)[1].count_
+				triggerLatentClientEvent(client, "UCDgroups.history", client, history or {}, total or 0, rows or 0)
 			else
 				exports.UCDdx:new(client, "You are not allowed to view the group history", 255, 0, 0)
 			end
