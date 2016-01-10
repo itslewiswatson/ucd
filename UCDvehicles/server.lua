@@ -171,6 +171,8 @@ function spawnVehicle(vehicleID)
 	
 	-- Debug purposes while resource is still being made
 	if (exports.UCDadmin:isPlayerOwner(client)) then
+		vehicle.position = Vector3(client.position.x, client.position.y, client.position.z + 1)
+		vehicle.rotation = Vector3(0, 0, client.rotation.z)
 		client:warpIntoVehicle(vehicle)
 	end
 	
