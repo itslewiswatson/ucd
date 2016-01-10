@@ -52,4 +52,9 @@ jobVehicles =
 	{x = 64.8113, y = -285.973, z = 1.5781, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 	{x = 51.9532, y = -285.973, z = 1.7036, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 	{x = 39.329, y = -285.973, z = 2.0362, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	-- Easter Basin
+	{x =  -1706.3956, y = 13.2921, z = 3.5547, rot = 315, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = -1668.9581, y = -8.8188, z = 3.5547, rot = 45, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = -1654.2281, y = 40.4067, z = 3.5547, rot = 135, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = -1698.495, y = 43.8636, z = 3.5495, rot = 225, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 }
