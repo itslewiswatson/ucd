@@ -39,7 +39,8 @@ local jobsTable =
 		team = "Citizens",
 		markers = 
 		{
-			{x = 81.3992, y = -283.6037, z = 1.5781, interior = 0, dimension = 0},
+			{x = 81.3992, y = -283.6037, z = 1.5781, interior = 0, dimension = 0}, -- Blueberry Acres
+			{x = -1677.2028, y = 7.5826, z = 3.5547, interior = 0, dimension = 0}, -- Easter Basin
 		},
 		skins = 
 		{
