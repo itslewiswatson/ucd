@@ -61,3 +61,14 @@ function setPlayerJob(plr, jobName, skinID)
 	triggerClientEvent(plr, "onClientPlayerGetJob", plr, jobName)
 	return true
 end
+
+function getPlayerJob(plr)
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return false end
+	
+	local jobName = plr:getData("job")
+	if (not jobName) then
+		return false
+	end
+	return jobName
+end
