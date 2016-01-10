@@ -5,9 +5,9 @@ interiors =
 	-- Aviator job
 	["Aviator"] = 
 	{
-		{entryX = 1451.0819, entryY = -2287.0996, entryZ = 13.5469, exitX = -1826.892, exitY = 59.6342, exitZ = 1055.2, dimension = 50000, interior = 14}, -- Los Santos
-		{entryX = -1244.4714, entryY = 22.2696, entryZ = 14.1561, exitX = -1826.892, exitY = 59.6342, exitZ = 1055.2, dimension = 50001, interior = 14}, -- San Fierro
-		{entryX = 1319.161, entryY = 1250.0486, entryZ = 10.83, exitX = -1826.892, exitY = 59.6342, exitZ = 1055.2, dimension = 50002, interior = 14}, -- Las Venturas
+		{entryX = 1451.0819, entryY = -2287.0996, entryZ = 13.5469, exitX = -1835.6049, exitY = 61.2516, exitZ = 1055.2, dimension = 50000, interior = 14}, -- Los Santos
+		{entryX = -1244.4714, entryY = 22.2696, entryZ = 14.1561, exitX = -1835.6049, exitY = 61.2516, exitZ = 1055.2, dimension = 50001, interior = 14}, -- San Fierro
+		{entryX = 1319.161, entryY = 1250.0486, entryZ = 10.83, exitX = -1835.6049, exitY = 61.2516, exitZ = 1055.2, dimension = 50002, interior = 14}, -- Las Venturas
 	},
 	--[[
 	["Trucker"] = 
@@ -73,14 +73,50 @@ interiors =
 		{entryX = 2419.7715, entryY = -1508.9784, entryZ = 24.1, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12001, interior = 9, blipID = 14}, -- Near DFR
 		{entryX = 2397.8469, entryY = -1899.1882, entryZ = 13.5469, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12002, interior = 9, blipID = 14}, -- South LS
 		{entryX = 2101.8923, entryY = 2228.8621, entryZ = 11.1, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12003, interior = 9, blipID = 14}, -- Central LV
+		{entryX = 2393.2495, entryY = 2041.5597, entryZ = 10.9, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12004, interior = 9, blipID = 14}, -- Near two Burger Shots in LV
+		{entryX = 2845.8967, entryY = 2415.4009, entryZ = 11.1, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12005, interior = 9, blipID = 14}, -- North East LV (near KACC)
+		{entryX = 2638.501, entryY = 1671.8777, entryZ = 11.1, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12006, interior = 9, blipID = 14}, -- China turf in LV
+		{entryX = 172.9952, entryY = 1177.1761, entryZ = 14.8, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12007, interior = 9, blipID = 14}, -- Fort Carson
+		{entryX = -2672.1541, entryY = 257.9238, entryZ = 4.7, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12008, interior = 9, blipID = 14}, -- Near SF Council building
+		{entryX = -1213.8019, entryY = 1830.3379, entryZ = 41.9297, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12009, interior = 9, blipID = 14}, -- Middle of fucking no where in TR
+		{entryX = -1816.509, entryY = 618.6837, entryZ = 35.1719, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12010, interior = 9, blipID = 14}, -- SF Cop Station
+		{entryX = -2155.3157, entryY = -2460.1624, entryZ = 30.8516, exitX = 364.9769, exitY = -11.8439, exitZ = 1001.9, dimension = 12011, interior = 9, blipID = 14}, -- SF Cop Station
 		
 		-- The Well Stacked Pizza Co.
-		--{entryX = , entryY = , entryZ = , exitX = , exitY = , exitZ = , dimension = , interior = , blipID = }
+		{entryX = 2351.8743, entryY = 2533.6287, entryZ = 10.9, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12000, interior = 5, blipID = 29}, -- Near LVPD
+		{entryX = 2756.7688, entryY = 2477.3496, entryZ = 11.1, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12001, interior = 5, blipID = 29}, -- KACC
+		{entryX = 2638.7886, entryY = 1849.8884, entryZ = 11.1, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12002, interior = 5, blipID = 29}, -- China turf
+		{entryX = 2331.8083, entryY = 75.014, entryZ = 26.621, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12003, interior = 5, blipID = 29}, -- Palomino Creek
+		{entryX = 1367.5347, entryY = 248.3298, entryZ = 19.6, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12004, interior = 5, blipID = 29}, -- Montgomery
+		{entryX = 212.7102, entryY = -202.1897, entryZ = 1.58, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12005, interior = 5, blipID = 29}, -- Center of the map
+		{entryX = 2105.4827, entryY = -1806.4436, entryZ = 13.5547, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12006, interior = 5, blipID = 29}, -- LS
+		{entryX = -1720.9437, entryY = 1359.7965, entryZ = 7.2, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12007, interior = 5, blipID = 29}, -- North SF
+		{entryX = -1808.7478, entryY = 945.8807, entryZ = 24.9, exitX = 372.3267, exitY = -133.5244, exitZ = 1001.5, dimension = 12008, interior = 5, blipID = 29}, -- Central SF
 	},
 	["Misc Buildings"] = 
 	{
 		{entryX = 1570.7594, entryY = -1337.1803, entryZ = 16.4844, exitX = 1548.5723, exitY = -1363.7415, exitZ = 326.2183, dimension = 0, interior = 0, colour = {255, 20, 150}}, -- LS Bank Tower
 		{entryX = -1749.2916, entryY = 868.519, entryZ = 25.1, exitX = -1753.6852, exitY = 884.0199, exitZ = 295.601, dimension = 0, interior = 0, colour = {255, 20, 150}}, -- Big Pointy Building (SF)
 		{entryX = 1742.2089, entryY = -2288.1794, entryZ = 13.534, exitX = 1765.2947, exitY = -2271.6238, exitZ = 26.8, dimension = 0, interior = 0, colour = {255, 20, 150}}, -- LS Airport Heli Thing
+	},
+	["Ammunation"] = 
+	{
+		-- Ammunation 1 [Main]
+		{entryX = -2625.7964, entryY = 208.2397, entryZ = 4.9, exitX = 285.4411, exitY = -41.7859, exitZ = 1001.6, dimension = 13000, interior = 1, blipID = 6},
+		
+		-- Ammunation 2 [Medium]
+		{entryX = 2159.5452, entryY = 943.1827, entryZ = 10.9, exitX = 285.7528, exitY = -86.6919, exitZ = 1001.6, dimension = 13000, interior = 4, blipID = 6}, -- South LV
+		{entryX = 2539.543, entryY = 2083.9563, entryZ = 10.9, exitX = 285.7528, exitY = -86.6919, exitZ = 1001.6, dimension = 13001, interior = 4, blipID = 6}, -- South LV
+		{entryX =  2400.4714, entryY = -1981.9952, entryZ = 13.5469, exitX = 285.7528, exitY = -86.6919, exitZ = 1001.6, dimension = 13002, interior = 4, blipID = 6}, -- South LV
+		
+		-- Ammunation 3 [Country]
+		{entryX = 776.7211, entryY = 1871.3616, entryZ = 5, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13000, interior = 6, blipID = 6},
+		{entryX = -316.1608, entryY = 829.8984, entryZ = 14.3, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13001, interior = 6, blipID = 6},
+		{entryX = -2093.6763, entryY = -2464.9331, entryZ = 30.8516, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13002, interior = 6, blipID = 6},
+		{entryX = 243.2938, entryY = -178.3488, entryZ = 1.6, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13003, interior = 6, blipID = 6},
+		{entryX = 2333.0864, entryY = 61.586, entryZ = 26.7058, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13004, interior = 6, blipID = 6},
+	
+		-- Ammunation 5 [Multi-storey]
+		{entryX = 1368.999, entryY = -1279.7173, entryZ = 13.5469, exitX = 315.7852, exitY = -143.6611, exitZ = 999.6016, dimension = 13000, interior = 7, blipID = 6},
 	},
 }
