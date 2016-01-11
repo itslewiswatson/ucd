@@ -89,7 +89,7 @@ function createJobVehicle(plr, model, rot, pos)
 	
 	if (restricted) then
 		local vehicleRestricted = restricted[model]
-		if (playerRank < vehicleRestricted) then
+		if (vehicleRestricted and playerRank < vehicleRestricted) then
 			local reqRank
 			for i in ipairs(ranks) do
 				if (i == vehicleRestricted) then
