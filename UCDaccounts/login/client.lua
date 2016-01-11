@@ -122,8 +122,8 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			addEventHandler("onClientGUIClick", registration.button[2], onClickCancel, false)
 			addEventHandler("onClientGUIChanged", registration.window[1], onRegistrationEditsChanged)
 			
-			if (File.exists("credentials.xml")) then
-				local f = XML.load("credentials.xml")
+			if (File.exists("@credentials.xml")) then
+				local f = XML.load("@credentials.xml")
 				login.edit[1]:setText(tostring(f:findChild("usr", 0):getValue()))
 				login.edit[2]:setText(tostring(teaDecode(f:findChild("passwd", 0):getValue(), keys.xml)))
 				f:unload()
@@ -450,24 +450,24 @@ addEventHandler("UCDaccounts.login.updateValidationLabel", root, updateValidatio
 
 function xmllol()
 	if guiCheckBoxGetSelected(login.checkbox[1]) then
-		local usr = login.edit[1]:getText()
-		local passwd = teaEncode(login.edit[2]:getText(), keys.xml)
-		if (not File.exists("credentials.xml")) then
-			local f = XML("credentials.xml", "login")
+		local usr = login.edit[1].text
+		local passwd = teaEncode(login.edit[2].text, keys.xml)
+		if (not File.exists("@credentials.xml")) then
+			local f = XML("@credentials.xml", "login")
 			f:createChild("usr"):setValue(usr)
 			f:createChild("passwd"):setValue(passwd)
 			f:saveFile()
 			f:unload()
 		else
-			local f = XML.load("credentials.xml")
+			local f = XML.load("@credentials.xml")
 			f:findChild("usr", 0):setValue(usr)
 			f:findChild("passwd", 0):setValue(passwd)
 			f:saveFile()
 			f:unload()
 		end
 	else
-		if (File.exists("credentials.xml")) then
-			File.delete("credentials.xml")
+		if (File.exists("@credentials.xml")) then
+			File.delete("@credentials.xml")
 		end
 	end
 end
