@@ -62,6 +62,7 @@ addEventHandler("onVehicleHidden", root, onVehicleHidden)
 function onVehicleFixed(whatFixed)
 	-- This should pass the vehicle with it's prior state to being fixed
 	if (exports.UCDvehicles:isVehicleBrokenDown(source)) then
+		
 		source:setEngineState(true)
 		source:setDamageProof(false)
  	end

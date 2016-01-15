@@ -128,10 +128,13 @@ function populateGridList()
 end
 
 function createGUI()
-	GUIEditor.window[1] = guiCreateWindow(586, 330, 326, 333, "UCD | Vehicles", false)
+	local sX, sY = guiGetScreenSize()
+	GUIEditor.window[1] = guiCreateWindow(586, 330, 326, 333, "UCD | Player Vehicles", false)
 	GUIEditor.window[1].sizable = false
 	GUIEditor.window[1].visible = false
-	exports.UCDutil:centerWindow(GUIEditor.window[1])
+	--exports.UCDutil:centerWindow(GUIEditor.window[1])
+	GUIEditor.window[1]:setPosition(sX - 326, (sY / 2) - (333 / 2), false)
+	
 	GUIEditor.gridlist[1] = guiCreateGridList(11, 31, 305, 186, false, GUIEditor.window[1])
 	guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle", 0.5)
 	guiGridListAddColumn(GUIEditor.gridlist[1], "HP", 0.2)

@@ -45,7 +45,8 @@ function lolrender()
 	end
 end
 
-function renderVehicleName(vehicle)
+function renderVehicleName(plr)
+	if (plr ~= localPlayer) then return end
 	alpha = 0
 	lol("+")
 	setTimer(lol, 3500, 1, "-")
@@ -76,9 +77,9 @@ function renderVehicleHUD()
 	--local vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
 	local nitro = getVehicleNitroCount(veh) or 0
 	local zone = getZoneName(veh.position)
-	local dial = (sX - 219) * ((vehSpeedMPH / 1300) + 1)
-	if (dial > (sX - 27)) then
-		dial = (sX - 27)
+	local dial = (sX - 219) * ((vehSpeedMPH / sX) + 1)
+	if (dial > (sX - 20)) then
+		dial = (sX - 20)
 	end
 	local r, g, b
 	if (vehHealth <= 80 and vehHealth > 60) then

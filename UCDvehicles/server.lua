@@ -140,14 +140,14 @@ function spawnVehicle(vehicleID)
 	end
 	
 	-- Get the car's data form the table
-	local c1, c2, c3, c4 = unpack(fromJSON(getVehicleData(vehicleID, "colour"))) -- Get the colour data
+	local r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4 = unpack(fromJSON(getVehicleData(vehicleID, "colour"))) -- Get the colour data
 	local model = getVehicleData(vehicleID, "model") -- Get the vehicle model
 	local vX, vY, vZ = unpack(fromJSON(getVehicleData(vehicleID, "xyz"))) -- Get the vehicle's position
 	local rot = getVehicleData(vehicleID, "rotation") -- Get its rotation
 	
 	-- Spawn the vehicle and set it's properties
 	local vehicle = Vehicle(model, vX, vY, vZ + 0.5, 0, 0, rot)
-	vehicle:setColor(c1, c2, c3, c4)
+	vehicle:setColor(r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4)
 	vehicle:setData("owner", client:getName())
 	vehicle:setData("vehicleID", vehicleID)
 	vehicle:setRotation(0, 0, vehicles[vehicleID].rotation)
@@ -197,15 +197,13 @@ function hideVehicle(vehicleID, tosync, sendToClient)
 	
 	local health = vehicle:getHealth()
 	local pos = vehicle:getPosition()
-	local rot = vehicle:getRotation()
-	local c1, c2, c3, c4  = vehicle:getColor()
-	
+	local rot = vehicle:getRotation()	
 	
 	if (tosync ~= false) then
 		setVehicleData(vehicleID, "rotation", rot.z)
 		setVehicleData(vehicleID, "xyz", toJSON({pos.x, pos.y, pos.z}))
 		setVehicleData(vehicleID, "health", health)
-		setVehicleData(vehicleID, "colour", toJSON({c1, c2, c3, c4}))
+		setVehicleData(vehicleID, "colour", toJSON({vehicle:getColor(true)}))
 	end
 	
 	idToVehicle[vehicleID] = nil
