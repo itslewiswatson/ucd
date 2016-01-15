@@ -2,9 +2,9 @@ function foo(markerNumber, type_, entryOrExit)
 	if (client and markerNumber and type_) then
 		local goto = interiors[type_][markerNumber]
 		if (entryOrExit == "exit") then
-			client.position = Vector3(goto.entryX, goto.entryY, goto.entryZ)
 			client.dimension = 0
 			client.interior = 0
+			client.position = Vector3(goto.entryX, goto.entryY, goto.entryZ)
 		elseif (entryOrExit == "entry") then
 			client.position = Vector3(goto.exitX, goto.exitY, goto.exitZ)
 			client.dimension = goto.dimension
