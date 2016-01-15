@@ -14,6 +14,5 @@ function applyMods()
 	engineReplaceModel(engineLoadDFF("hydra.dff", 520), 520)
 	engineReplaceModel(engineLoadDFF("shamal.dff", 519), 519)
 	engineReplaceModel(engineLoadDFF("seaspar.dff", 447), 447)
-	
 end
 addEventHandler( "onClientResourceStart", resourceRoot, applyMods )
