@@ -1,7 +1,9 @@
 <meta>
 	<min_mta_version server="1.5"></min_mta_version>
     <info author="Noki" type="" name="" />
-	<script src="script.lua" type="server"/>
+	<script src="stats.lua" type="server"/>
+	<script src="server.lua" type="server"/>
+	<script src="client.lua" type="client"/>
 	<export function="getPlayerAccountStat" type="server"/>
 	<export function="setPlayerAccountStat" type="server"/>
 	<oop>true</oop>
