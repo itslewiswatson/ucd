@@ -50,6 +50,16 @@ for _, i in pairs(wires_and_cables) do
 end
 
 function applyMods()
+	-- Replace door
+	engineReplaceCOL(engineLoadCOL("door.col"), 1569)
+	engineReplaceModel(engineLoadDFF("door.dff", 1569), 1569)
+	
+	-- Create it where it's needed
+	local SFA = Object(1569, -1246, 21.6, 13.2, 0, 0, 45)
+	local LVM = Object(1569, 1963.6, 2141.3, 9.9)
+	local BPB = Object(1569, -1750.8, 869.3, 24.1)
+	
+	-- Replace island
 	engineReplaceCOL(engineLoadCOL("island.col"), 1316)
 	engineImportTXD(engineLoadTXD("island.txd", true), 1316)
 	engineReplaceModel(engineLoadDFF("island.dff", 1316), 1316)
@@ -61,22 +71,36 @@ function applyMods()
 	setElementDoubleSided(island, true)
 	island:setLowLOD(island_lod)
 	
-	-- Airport interior
+	-- Replace airport interior
 	engineReplaceCOL(engineLoadCOL("airPint.col"), 3971)
 	engineReplaceCOL(engineLoadCOL("airPbar.col"), 3970)
 	engineReplaceCOL(engineLoadCOL("airPbagBelt.col"), 3969)
+	
 	-- 0, 1, 2
 	-- One for each airport
 	for i=50000,50002 do
-		local wall = Object(6959, -1865.1, 40.1, 1046.4, 90)
-		wall.interior = 14
-		wall.dimension = i
+		local wal_ = Object(6959, -1865.0999755859, 40.099998474121, 1046.4000244141, 90)
+		wal_.dimension = i
+		wal_.interior = 14
+		local wall1 = Object(1569, -1835.2, 59.3, 1054.2, 0, 0, 270)
+		local wall2 = Object(1569, -1835.2, 62.7, 1054.2, 0, 0, 270)
+		local wall3 = Object(1569, -1888.8, 59.3, 1054.2, 0, 0, 270)
+		local wall4 = Object(1569, -1888.8, 62.7, 1054.2, 0, 0, 270)
+		
+		wall1.interior = 14
+		wall2.interior = 14
+		wall3.interior = 14
+		wall4.interior = 14
+		
+		wall1.dimension = i
+		wall2.dimension = i
+		wall3.dimension = i
+		wall4.dimension = i
 	end
 	
 	-- Mechanic interior
 	for i=50000,50003 do
-		local wall1 = Object(11416, -2038.7, 178.8, 29.9)
-		--local wall1 = Object(6959, -2038.4, 171.7, 13)
+		local wall1 = Object(11416, -2038.7, 178.8, 29.9)	
 		wall1.dimension = i
 		wall1.interior = 1
 		--wall1:setRotation(0, 90, 0)

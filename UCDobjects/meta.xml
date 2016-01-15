@@ -11,5 +11,8 @@
 	<file src="airPbar.col"/>
 	<file src="airPint.col"/>
 	
+	<file src="door.col"/>
+	<file src="door.dff"/>
+	
 	<oop>true</oop>
 </meta>
