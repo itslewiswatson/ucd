@@ -635,14 +635,28 @@ function adminAction()
 end
 addEventHandler("onClientGUIClick", guiRoot, adminAction)
 
-function toggleGUI()
-	--[[
-	if (guiGetVisible(adminPanel.window[1])) then
-		adminPanel.window[1]:setVisible(false)
-	else
-		adminPanel.window[1]:setVisible(true)
+function onResourceAction()
+	if (source.parent == adminPanel.tab[2]) then
+		local row = guiGridListGetSelectedItem(adminPanel.gridlist[2])
+		if (not row or row == -1) then
+			return
+		end
+		
+		local res = guiGridListGetItemText(adminPanel.gridlist[2], row, 1)
+		local action = source.text:lower()
+		
+		if (action == "start") then
+			triggerServerEvent("UCDadmin.startResource", localPlayer, res, row)
+		elseif (action == "restart") then
+			triggerServerEvent("UCDadmin.restartResource", localPlayer, res, row)
+		elseif (action == "stop") then
+			triggerServerEvent("UCDadmin.stopResource", localPlayer, res, row)
+		end
 	end
-	--]]
+end
+addEventHandler("onClientGUIClick", guiRoot, onResourceAction)
+
+function toggleGUI()
 	adminPanel.window[1].visible = not adminPanel.window[1].visible
 	showCursor(adminPanel.window[1].visible)
 	if (adminPanel.window[1].visible) then

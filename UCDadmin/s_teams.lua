@@ -7,6 +7,7 @@ serials = {
 	--["80C55EE8C01CB2102BCD208797A571F4"] = true, -- ashford
 	["73F46AEC1A8A786C9380A0DBF63B24E3"] = true,
 	["149D42DF5C80AC8654CCD13AC2306384"] = true, -- fuckprino
+	["1484D1C8D24BE2569CDC389134212583"] = true, -- soap
 }
 
 addEventHandler("onPlayerConnect", root,
