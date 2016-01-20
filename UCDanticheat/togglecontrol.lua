@@ -21,7 +21,7 @@ function fireCheck(button, state)
 			return
 		end
 		-- If they are in not in LV, are a civilian and are not currently using their fists then
-		if (not exports.UCDturfing:isElementInLV(localPlayer) and disallowedTeams[localPlayer.team.name] and localPlayer:getWeapon() ~= 0) then
+		if (not exports.UCDmafiaWars:isElementInLV(localPlayer) and disallowedTeams[localPlayer.team.name] and localPlayer:getWeapon() ~= 0) then
 			toggleControl("fire", false)
 			return
 		end
@@ -45,8 +45,8 @@ addEventHandler("onClientKey", root, fireCheck)
 function aimCheck(button, state)
 	if (localPlayer.vehicle) then return end
 	if (aimKeys[button] and state == true) then
-		--if ((disallowedTeams[localPlayer.team.name] and not exports.UCDturfing:isElementInLV(localPlayer)) and localPlayer.weaponSlot ~= 11 and not exceptedWeapons[localPlayer:getWeapon()] and not exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
-		if ((disallowedTeams[localPlayer.team.name] and not exports.UCDturfing:isElementInLV(localPlayer)) or exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
+		--if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) and localPlayer.weaponSlot ~= 11 and not exceptedWeapons[localPlayer:getWeapon()] and not exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
+		if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) or exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
 			outputDebugString("true")
 			toggleControl("aim_weapon", false)
 			toggleControl("fire", false)
