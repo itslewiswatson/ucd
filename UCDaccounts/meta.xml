@@ -30,6 +30,8 @@
 	<export function="isLoginWindowOpen" type="client" />
 		
 	<export function="getPlayerWeaponString" type="server" />
+	<export function="getOwnedWeapons" type="server" />
+	<export function="setOwnedWeapon" type="server" />
 	
 	<!-- Functions from accountData.slua -->
 	<export function="GAD" type="server" />

@@ -130,7 +130,7 @@ function login_handler()
 	triggerClientEvent(source, "UCDaccounts.login.destroyInterface", source)
 
 	-- Used for debug purposes as of now
-	if (source:getDimension() ~= 0 and exports.UCDaccounts:isPlayerOwner(source)) then
+	if (source:getDimension() ~= 0 and exports.UCDadmin:isPlayerOwner(source)) then
 		outputChatBox("You are not in dimension 0!", source, 255, 255, 255)
 	end
 end

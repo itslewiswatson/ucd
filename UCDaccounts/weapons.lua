@@ -61,3 +61,24 @@ function getPlayerWeaponString(plr)
 	if (not isElement(plr) or plr.type ~= "player" or not isPlayerLoggedIn(plr)) then return false end
 	return toJSON(getPlayerWeaponTable(plr))
 end
+
+-- 
+function getOwnedWeapons(plr)
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or not isPlayerLoggedIn(plr)) then return false end
+	return fromJSON(GAD(plr, "ownedWeapons")) or {}
+end
+
+function setOwnedWeapon(plr, weaponID)
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or not isPlayerLoggedIn(plr)) then return false end
+	local t = fromJSON(GAD(plr, "ownedWeapons"))
+	for _, v in ipairs(t) do
+		if (v == weaponID) then
+			return
+		end
+	end
+	table.insert(t, weaponID)
+	SAD(plr, "ownedWeapons", toJSON(t))
+	return true
+end
