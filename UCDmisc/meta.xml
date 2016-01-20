@@ -1,7 +1,7 @@
 <meta>
 	<script src="c_exports.lua" type="client" />
 	<script src="commands.lua" type="client" />
-		
+	
 	<export function="centerWindow" type="client"/>
 	<export function="isPlayerLoggedIn" type="client"/> <!-- We have one of these server side in accounts. exports.accounts:isPlayedLoggedIn( player ) ) -->
 

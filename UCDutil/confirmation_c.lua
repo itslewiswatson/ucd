@@ -13,6 +13,7 @@ function createConfirmationWindow(event, arugment, serverOrClient, title, text)
 	
 	if (confirmation.window[1] == nil) then
 		confirmation.window[1] = guiCreateWindow(819, 425, 282, 132, title, false)
+		confirmation.window[1].alpha = 255
 		centerWindow(confirmation.window[1])
 		guiWindowSetSizable(confirmation.window[1], false)
 		
