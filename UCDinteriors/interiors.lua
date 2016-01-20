@@ -103,6 +103,7 @@ interiors =
 	{
 		-- Ammunation 1 [Main]
 		{entryX = -2625.7964, entryY = 208.2397, entryZ = 4.9, exitX = 285.4411, exitY = -41.7859, exitZ = 1001.6, dimension = 13000, interior = 1, blipID = 6},
+		{entryX = 1368.999, entryY = -1279.7173, entryZ = 13.5469, exitX = 285.4411, exitY = -41.7859, exitZ = 1001.6, dimension = 13001, interior = 1, blipID = 6},
 		
 		-- Ammunation 2 [Medium]
 		{entryX = 2159.5452, entryY = 943.1827, entryZ = 10.9, exitX = 285.7528, exitY = -86.6919, exitZ = 1001.6, dimension = 13000, interior = 4, blipID = 6}, -- South LV
@@ -115,8 +116,5 @@ interiors =
 		{entryX = -2093.6763, entryY = -2464.9331, entryZ = 30.8516, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13002, interior = 6, blipID = 6},
 		{entryX = 243.2938, entryY = -178.3488, entryZ = 1.6, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13003, interior = 6, blipID = 6},
 		{entryX = 2333.0864, entryY = 61.586, entryZ = 26.7058, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13004, interior = 6, blipID = 6},
-	
-		-- Ammunation 5 [Multi-storey]
-		{entryX = 1368.999, entryY = -1279.7173, entryZ = 13.5469, exitX = 315.7852, exitY = -143.6611, exitZ = 999.6016, dimension = 13000, interior = 7, blipID = 6},
 	},
 }
