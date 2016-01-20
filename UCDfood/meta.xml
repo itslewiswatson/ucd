@@ -1,0 +1,16 @@
+<meta>
+	<min_mta_version server="1.5.1"></min_mta_version>
+    <info author="Noki" type="" name="" />
+	<script src="server.lua" type="server"/>
+	<script src="client.lua" type="client"/>
+	<file src="burger_large.png"/>
+	<file src="burger_medium.png"/>
+	<file src="burger_small.png"/>
+	<file src="cluckin_large.png"/>
+	<file src="cluckin_medium.png"/>
+	<file src="cluckin_small.png"/>
+	<file src="pizza_large.png"/>
+	<file src="pizza_medium.png"/>
+	<file src="pizza_small.png"/>
+	<oop>true</oop>
+</meta>
