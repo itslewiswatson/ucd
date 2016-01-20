@@ -1,25 +1,2 @@
 
-:UCDadmin/GUI/design_2015-8-28_17-17.txt
-:UCDadmin/GUI/ouput2_2015-8-28_17-28.txt
-:guieditor/output/UCDadmin2_2015-12-2_15-8.txt
-:guieditor/output/UCDadmin3_2015-12-2_15-23.txt
-:guieditor/output/UCDadmin4_2015-12-2_18-38.txt
-:guieditor/output/UCDadmin5_2015-12-2_21-29.txt
-:guieditor/output/UCDadmin6_2015-12-2_22-29.txt
-:guieditor/output/UCDadmin7_2015-12-3_10-22.txt
-:guieditor/output/ayylmao_2015-12-17_22-23.txt
-:guieditor/output/blacklist_ucdgroups_2015-12-18_9-57.txt
-:guieditor/output/blacklist_v2_2015-12-20_19-0.txt
-:guieditor/output/groups_history_2015-12-24_10-37.txt
-:guieditor/output/ucdgroups_settings_2015-12-24_16-28.txt
-:guieditor/output/ucdgroups_ranks_v1_2015-12-24_16-44.txt
-:guieditor/output/ucdgroups_ranks_v2_2015-12-24_17-8.txt
-:guieditor/output/ucdgroups_ranks_v3_2015-12-24_17-22.txt
-:guieditor/output/ucdgroups_ranks_addrank_2015-12-29_17-49.txt
-:guieditor/output/ucdgroups_editrankbankthingylol_2015-12-29_20-50.txt
-:guieditor/output/ucdgroups_promote_demote_2015-12-30_21-42.txt
-:guieditor/output/ucdadmin_giveweapon_2016-1-3_12-12.txt
-:guieditor/output/GUI_output_2016-1-5_20-15.txt
-:guieditor/output/UCDclick_2016-1-5_20-23.txt
-:guieditor/output/CIThudReplica_2016-1-7_21-8.txt
-:guieditor/output/stats_prototype_1_2016-1-9_14-46.txt
+:guieditor/output/GUI_output_2016-1-20_14-18.txt

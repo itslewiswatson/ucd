@@ -7,7 +7,7 @@
 --]]--------------------------------------------------
 
 
-_DEBUG = true
+_DEBUG = false
 _DEBUG_CATEGORIES = {
 	MOVER = false,
 	CREATOR = false,

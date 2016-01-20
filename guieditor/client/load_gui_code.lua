@@ -1007,60 +1007,82 @@ function processCode(code)
 		height = {" Height", " h", " y", "%(Height", "%(h", "%(y"},
 	}
 	
+	-- loop each element/dx type and check for matches
 	for eType,match in pairs(matches) do
-		local matchS, matchE = string.find(code, match, 0, true)
+		local matchStart, matchEnd = string.find(code, match, 0, true)
 		
-		while matchS and matchE and matchS ~= -1 and matchE ~= -1 do
+		while matchStart and matchEnd and matchStart ~= -1 and matchEnd ~= -1 do
 			--outputDebug("Found match for " .. match)
 			local tokens = {}
-			local lastE = matchE + 1
+			local previousEnd = matchEnd + 1
 			
-			local prefix = string.sub(code, 0, matchE)
-			local _, doubleCount = string.gsub(prefix, "\"", "x")
-			local _, singleCount = string.gsub(prefix, "'", "x")
+			-- the part before the tokens start (e.g. [abc = dxDrawText(] )
+			local prefix = string.sub(code, 0, matchEnd)
+			local _, doubleQuoteCount = string.gsub(prefix, "\"", "x")
+			local _, singleQuoteCount = string.gsub(prefix, "'", "x")
+			--outputDebug("Prefix is [" .. prefix .. "], doubles: " .. tostring(doubleQuoteCount) .. ", singles: " .. tostring(singleQuoteCount))
 			
 			-- if we have an odd number of string characters we must be inside a string, so ignore the match
-			if doubleCount % 2 == 0 and singleCount % 2 == 0 then			
+			if doubleQuoteCount % 2 == 0 and singleQuoteCount % 2 == 0 then			
 				-- get the first 4 tokens, split on ',' (which are generally x, y, w, h)
 				while true do
-					local ts, te = string.find(code, ',', lastE, true)
+					local tokenStart, tokenEnd = string.find(code, ',', previousEnd, true)
 					
-					if ts and te and ts ~= -1 and te ~= -1 then
-						tokens[#tokens + 1] = clean(string.sub(code, lastE, ts - 1))
-						lastE = te + 1
-						--outputDebug("Found tokens: " .. ts .. " - " .. te .. ": '" .. tokens[#tokens] .. "'")
-						if eType ~= "dxline" then
-							for replace,t in pairs(selfStrings) do
+					if tokenStart and tokenEnd and tokenStart ~= -1 and tokenEnd ~= -1 then			
+						-- the token, trimmed both sides and cleaned of commas at the start
+						local cleanToken = clean(string.sub(code, previousEnd, tokenStart - 1))
+						local skipString = false
+
+						-- first argument for dxtext is a string, so skip over that one
+						if eType == "dxtext" and #tokens == 0 then
+								local stringEnd = previousEnd
+								
+								-- if the start of the token is a quote we know it must be a string
+								if cleanToken:sub(1, 1) == "\"" then
+									-- find the end of the text string
+									stringEnd = NextUnescapedChar(code, "\"", previousEnd + 1)								
+									--outputDebug("inside, skipping from " .. previousEnd .. " to " .. stringEnd)
+								elseif cleanToken:sub(1, 1) == "'" then
+									stringEnd = NextUnescapedChar(code, "'", previousEnd + 1)		
+								end
+								
+								if stringEnd ~= previousEnd then
+									-- find the comma directly after the text string and reset our position to it
+									_, previousEnd = string.find(code, ',', stringEnd, true)
+									previousEnd = previousEnd + 1	
+									skipString = true
+								end
+						end
+					
+						if not skipString then
+							--tokens[#tokens + 1] = clean(string.sub(code, previousEnd, tokenStart - 1))
+							tokens[#tokens + 1] = cleanToken
+							previousEnd = tokenEnd + 1
+							--outputDebug("Found token: " .. tokenStart .. " - " .. tokenEnd .. ": '[" .. tokens[#tokens] .. "]'")
+							if eType ~= "dxline" then
+								for replace,t in pairs(selfStrings) do
+									for _,m in ipairs(t) do
+										tokens[#tokens] = string.gsubIgnoreCase(tokens[#tokens], m, replace)
+									end
+								end
+							end						
+							
+							for replace,t in pairs(screenStrings) do
 								for _,m in ipairs(t) do
 									tokens[#tokens] = string.gsubIgnoreCase(tokens[#tokens], m, replace)
 								end
 							end
-						end						
-						
-						for replace,t in pairs(screenStrings) do
-							for _,m in ipairs(t) do
-								tokens[#tokens] = string.gsubIgnoreCase(tokens[#tokens], m, replace)
-							end
 						end
-
-						--if string.contains(tokens[#tokens], "\"") or string.contains(tokens[#tokens], "'") then
-						--	tokens = nil
-						--	break
-						--end
 					else
 						break
 					end
-					
-					if (eType ~= "dxtext" and #tokens == 4) or (#tokens == 5) then
+
+					if #tokens == 4 then
 						break
 					end
 				end
 				
 				if tokens and #tokens >= 4 then
-					if eType == "dxtext" then
-						table.remove(tokens, 1)
-					end	
-				
 					local numerical = true
 					
 					for k,t in ipairs(tokens) do
@@ -1094,19 +1116,58 @@ function processCode(code)
 							end
 						end
 
-						--code = string.overwrite(code, "{'" .. table.concat(tokens, "','") .. "'}," .. table.concat(tokens, ",") .. ",", matchE, lastE - 1)
-						code = string.insert(code, "{'" .. table.concat(tokens, "','") .. "'},", matchE)
+						--code = string.overwrite(code, "{'" .. table.concat(tokens, "','") .. "'}," .. table.concat(tokens, ",") .. ",", matchEnd, previousEnd - 1)
+						--outputDebug("Inserting: " .. "{'" .. table.concat(tokens, "','") .. "'},")
+						code = string.insert(code, "{'" .. table.concat(tokens, "','") .. "'},", matchEnd)
 					end
 				end
 			end
 			
-			matchS, matchE = string.find(code, match, matchE, true)
+			matchStart, matchEnd = string.find(code, match, matchEnd, true)
 		end
 	end
-	--outputDebugString(code)
+	--outputDebug(code)
 	return code
 end
 
+-- returns the next unescaped character of type c in the given string (searching forward)
+function NextUnescapedChar(str, c, startPosition)
+	local matchStart, matchEnd
+
+	while true do
+		matchStart, matchEnd = str:find(c, startPosition, true)
+	
+		if (not matchStart or not matchEnd)  or (matchStart == -1 or matchEnd == -1) then
+			return startPosition
+		end
+		
+		-- check for escapes
+		local partial = str:sub(1, matchStart)
+		local count = 0
+		
+		while true do
+			local previous = partial:sub(-(count+2), -(count+2))
+			--io.write("prev: " ..previous.."\n")
+			
+			if previous == "\\" then
+				--io.write("slash\n")
+				count = count + 1
+			else
+				--io.write("not slash\n")
+				break
+			end
+		end
+		
+		if count % 2 == 0 then
+			return matchStart
+		end
+		
+		startPosition = matchEnd + 1
+	end
+end
+
+--local str = [[hell'''o\\\"n\"\"nn\"""]]
+--io.write(tostring(NextUnescapedChar(str, '\"')))
 
 function processDXEffects(preLoadDXCount)
 	outputDebug("Pre: "..tostring(preLoadDXCount)..", Post: "..tostring(#DX_Element.instances), "TEXT_EFFECT_LOAD")
