@@ -1,15 +1,31 @@
 <meta>
 	<min_mta_version server="1.5.1"></min_mta_version>
     <info author="Noki" type="" name="" />
-	<script src="client.lua" type="client"/>
-	<file src="iphone.png"/>
+	<include resource="blur_box"/>	
 	<file src="iphone2.png"/>
-	<file src="apps/im.png"/>
-	<file src="apps/browser.png"/>
-	<file src="apps/calc.png"/>
-	<file src="apps/music.png"/>
-	<file src="apps/settings.png"/>
-	<file src="apps/notes.png"/>
-	<file src="apps/clock.png"/>
+	<file src="images/im.png"/>
+	<file src="images/browser.png"/>
+	<file src="images/calc.png"/>
+	<file src="images/music.png"/>
+	<file src="images/settings.png"/>
+	<file src="images/notes.png"/>
+	<file src="images/clock.png"/>
+	<file src="images/camera.png"/>
+	<file src="images/stocks.png"/>
+	<file src="images/weather.png"/>
+	<file src="images/mark.png"/>
+	<file src="images/money.png"/>
+	<file src="images/housing.png"/>
+	
+	
+	<script src="client.lua" type="client"/>
+	<script src="server.lua" type="server"/>
+	
+	<script src="apps/im/im_c.lua" type="client"/>
+	<script src="apps/money/money_c.lua" type="client"/>
+	
+	<script src="apps/apps.lua" type="client"/>
+	
+	<export function="isHomeScreenOpen" type="client"/>
 	<oop>true</oop>
 </meta>
