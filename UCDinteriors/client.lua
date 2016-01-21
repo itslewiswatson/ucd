@@ -27,9 +27,9 @@ function createMarkers()
 			-- Entry markers
 			entryMarkers[type_][i] = Marker(info.entryX, info.entryY, info.entryZ + 0.5, "arrow", 1, r, g, b)
 			if (jobs[type_] and jobs[type_].blipID) then
-				Blip.createAttachedTo(entryMarkers[type_][i], jobs[type_].blipID, nil, nil, nil, nil, nil, 5, 225)
+				Blip.createAttachedTo(entryMarkers[type_][i], jobs[type_].blipID, nil, nil, nil, nil, nil, 5, 255)
 			elseif (info.blipID) then
-				Blip.createAttachedTo(entryMarkers[type_][i], info.blipID, nil, nil, nil, nil, nil, 5, 225)
+				Blip.createAttachedTo(entryMarkers[type_][i], info.blipID, nil, nil, nil, nil, nil, 5, 255)
 			end
 			
 			-- Exit markers
