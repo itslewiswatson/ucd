@@ -76,7 +76,7 @@ end
 function isPlayerOnDuty(plr)
 	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player" or not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return false end
-	if (plr.team == "Civilians" and getPlayerJob(plr) == "") or (plr.team == "Gangsters") or (plr.team == "Criminals") or (plr.team == "Unoccupied") then
+	if ((plr.team.name == "Civilians" and getPlayerJob(plr) == "") or plr.team.name == "Gangsters" or plr.team.name == "Criminals" or plr.team.name == "Unoccupied") then
 		return false
 	end
 	return true
