@@ -41,15 +41,9 @@ function onPlayerChat(message, messageType)
 				executeCommandHandler(message:sub(2, #message), source)
 				return
 			end
-			
-			if (source.team.name == "Law Enforcement") then 
-				t = "Law"
-			else
-				t = source.team.name
-			end
-			
+				
 			for _, v in pairs(source.team:getPlayers()) do
-				outputChatBox("("..t..") "..source.name.."#FFFFFF "..message, v, nR, nG, nB, true)
+				outputChatBox("(TEAM) "..source.name.."#FFFFFF "..message, v, nR, nG, nB, true)
 			end
 			
 			antiSpam[player] = true

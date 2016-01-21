@@ -32,15 +32,17 @@ function instantMessage(plr, _, target, ...)
 		if (msg == "" or msg == " " or msg:gsub(" ", "") == "") then return end
 		if (msg:find("ucd")) then msg = msg:gsub("ucd", "UCD") end
 		
-		if (recipient.name == player.name) then exports.UCDdx:new(plr, "You cannot send an IM to yourself", 255, 0, 0) return end
+		if (recipient.name == plr.name) then exports.UCDdx:new(plr, "You cannot send an IM to yourself", 255, 0, 0) return end
         local imTo = outputChatBox("[IM to "..recipient.name.."] "..msg, plr, 200, 30, 200, true)
         local imFrom = outputChatBox("[IM from "..plr.name.."] " .. msg, recipient, 200, 30, 200, true)
 
 		--exports.UCDlogging:new(plr, "IM", msg, )
     else
-		exports.UCDdx:new(player, "There is no player named "..target.." online", 255, 0, 0)
+		exports.UCDdx:new(plr, "There is no player named "..target.." online", 255, 0, 0)
     end
 end
 addCommandHandler("im", instantMessage, false, false)
 addCommandHandler("instantmessage", instantMessage, false, false)
-
+addCommandHandler("imsg", instantMessage, false, false)
+addCommandHandler("imessage", instantMessage, false, false)
+addCommandHandler("instantmsg", instantMessage, false, false)
