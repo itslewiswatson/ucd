@@ -1,0 +1,15 @@
+<meta>
+	<min_mta_version server="1.5.1"></min_mta_version>
+    <info author="Noki" type="" name="" />
+	<script src="client.lua" type="client"/>
+	<file src="iphone.png"/>
+	<file src="iphone2.png"/>
+	<file src="apps/im.png"/>
+	<file src="apps/browser.png"/>
+	<file src="apps/calc.png"/>
+	<file src="apps/music.png"/>
+	<file src="apps/settings.png"/>
+	<file src="apps/notes.png"/>
+	<file src="apps/clock.png"/>
+	<oop>true</oop>
+</meta>
