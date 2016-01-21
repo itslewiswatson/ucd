@@ -72,3 +72,12 @@ function getPlayerJob(plr)
 	end
 	return jobName
 end
+
+function isPlayerOnDuty(plr)
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return false end
+	if (plr.team == "Civilians" and getPlayerJob(plr) == "") or (plr.team == "Gangsters") or (plr.team == "Criminals") or (plr.team == "Unoccupied") then
+		return false
+	end
+	return true
+end
