@@ -43,7 +43,7 @@ local markers =
 }
 for _, info in ipairs(markers) do
 	for i = info.dimRange[1], info.dimRange[2] do
-		local m = Marker(info.x, info.y, info.z - 1, "cylinder", 2, 44, 255, 44, 170)
+		local m = Marker(info.x, info.y, info.z - 1, "cylinder", 2, 150, 150, 255, 170)
 		m.dimension = i
 		m.interior = info.interior
 		addEventHandler("onClientMarkerHit", m, onMarkerHit)
