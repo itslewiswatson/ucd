@@ -1,0 +1,6 @@
+<meta>
+    <script src="server.lua" type="server" />
+	<script src="skinTable.lua" type="client" />
+	<script src="client.lua" type="client" />
+	<oop>true</oop>
+</meta>
