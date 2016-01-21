@@ -58,3 +58,12 @@ function aimCheck(button, state)
 	end
 end
 addEventHandler("onClientKey", root, aimCheck)
+
+--addEventHandler("onClientRender", root,
+Timer(
+	function ()
+		if (getControlState("fire") and not getControlState("aim_weapon") and (not exceptedSlots[localPlayer.weaponSlot] and not exceptedWeapons[localPlayer:getWeapon()])) then
+			toggleControl("fire", false)
+		end
+	end, 100, 0
+)
