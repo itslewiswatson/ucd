@@ -1,13 +1,13 @@
 screenWidth, screenHeight = guiGetScreenSize()
 
-function onClick()
+function toggleBrowser()
 	if (WebBrowserGUI.instance) then
 		WebBrowserGUI.instance:CloseButton_Click("left", "up")
 	else
 		showBrowser()
 	end
 end
-bindKey("F3", "up", onClick)
+addCommandHandler("browser", toggleBrowser)
 
 function isPointInRect(posX, posY, posX1, posY1, posX2, posY2)
 	return (posX > posX1 and posX < posX2) and (posY > posY1 and posY < posY2)
