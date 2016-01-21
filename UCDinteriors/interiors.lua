@@ -41,6 +41,7 @@ interiors =
 		{entryX = 1457.2363, entryY = -1137.3344, entryZ = 24, exitX = 161.3736, exitY = -97.1084, exitZ = 1002, dimension = 20000, interior = 18, blipID = 45}, -- ZIP at LS (near LS Bank Tower)
 		{entryX = -1882.2816, entryY = 866.5267, entryZ = 35.1719, exitX = 161.3736, exitY = -97.1084, exitZ = 1002, dimension = 20001, interior = 18, blipID = 45}, -- ZIP at SF
 		{entryX = 2572.0146, entryY = 1904.9441, entryZ = 11.1, exitX = 161.3736, exitY = -97.1084, exitZ = 1002, dimension = 20002, interior = 18, blipID = 45}, -- ZIP at LV (China turf)
+		
 		-- Binco
 		{entryX = -2374, entryY = 910.1912, entryZ = 45.4396, exitX = 207.7013, exitY = -111.4, exitZ = 1005.3, dimension = 20000, interior = 15, blipID = 45}, -- Binco in SF
 		{entryX = 1657.0343, entryY = 1733.3, entryZ = 10.83, exitX = 207.7013, exitY = -111.4, exitZ = 1005.3, dimension = 20001, interior = 15, blipID = 45}, -- Binco at LVH

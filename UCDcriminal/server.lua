@@ -9,7 +9,7 @@ function doCriminal(plr)
 	if (exports.UCDteams:isPlayerInTeam(plr, "Criminals")) then
 		return
 	end
-	if (exports.UCDturfing:isElementInLV(plr) and exports.UCDteams:isPlayerInTeam(plr, "Gangsters")) then
+	if (exports.UCDmafiaWars:isElementInLV(plr) and exports.UCDteams:isPlayerInTeam(plr, "Gangsters")) then
 		return
 	end
 	exports.UCDjobs:setPlayerJob(plr, "Criminal")
