@@ -1,0 +1,34 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    button = {},
+    staticimage = {},
+    label = {}
+}
+GUIEditor.staticimage[1] = guiCreateStaticImage(1600, 458, 310, 600, ":UCDphone/iphone2.png", false)
+
+GUIEditor.button[1] = guiCreateButton(130, 535, 50, 50, "", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(33, 449, 54, 54, "", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(97, 449, 54, 54, "", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[4] = guiCreateButton(161, 449, 54, 54, "", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[5] = guiCreateButton(225, 449, 54, 54, "", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[1] = guiCreateLabel(34, 503, 53, 15, "IM", false, GUIEditor.staticimage[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(98, 503, 53, 15, "Music", false, GUIEditor.staticimage[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.label[3] = guiCreateLabel(162, 503, 53, 15, "Browser", false, GUIEditor.staticimage[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+GUIEditor.label[4] = guiCreateLabel(225, 503, 53, 15, "Settings", false, GUIEditor.staticimage[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "center", false)
+GUIEditor.label[5] = guiCreateLabel(21, 71, 265, 19, "UCDphone                                            12:00", false, GUIEditor.staticimage[1])

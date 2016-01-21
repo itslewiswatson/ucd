@@ -1,0 +1,22 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    staticimage = {},
+    edit = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(1600, 458, 310, 600, ":UCDphone/iphone2.png", false)
+
+        GUIEditor.edit[1] = guiCreateEdit(18, 94, 273, 28, "", false, GUIEditor.staticimage[1])
+        GUIEditor.gridlist[1] = guiCreateGridList(20, 139, 271, 317, false, GUIEditor.staticimage[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Player", 0.9)    
+    end
+)

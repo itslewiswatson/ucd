@@ -1,2 +1,8 @@
 
 :guieditor/output/GUI_output_2016-1-20_14-18.txt
+:guieditor/output/phone1_2016-1-21_14-15.txt
+:guieditor/output/phone1_2016-1-21_14-28.txt
+:guieditor/output/phone2_2016-1-21_14-28.txt
+:guieditor/output/phone2.txt_2016-1-21_14-28.txt
+:guieditor/output/phone3_2016-1-21_17-5.txt
+:guieditor/output/PHONE_TEMPLATE_2016-1-21_22-39.txt
