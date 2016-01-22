@@ -22,7 +22,13 @@
 	<script src="server.lua" type="server"/>
 	
 	<script src="apps/im/im_c.lua" type="client"/>
+	<script src="apps/im/im_s.lua" type="server"/>
 	<script src="apps/money/money_c.lua" type="client"/>
+	<script src="apps/money/money_s.lua" type="server"/>
+	<script src="apps/mark/mark_c.lua" type="client"/>
+	<script src="apps/notes/notes_c.lua" type="client"/>
+	<script src="apps/clock/clock_c.lua" type="client"/>
+	<script src="apps/music/music_c.lua" type="client"/>
 	
 	<script src="apps/apps.lua" type="client"/>
 	

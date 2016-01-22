@@ -15,6 +15,7 @@ phone =
 	-- Global scope [all of phone]
 	button = {},
 	image = {},
+	label = {},
 	
 	-- Home screen/all apps
 	home = 
@@ -24,6 +25,9 @@ phone =
 }
 phone.image["phone_window"] = GuiStaticImage(sX - 320 --[[abs = 1600]], sY - 622 --[[abs = 458]], 310, 600, ":UCDphone/iphone2.png", false)
 phone.image["phone_window"].visible = false
+--GUIEditor.label[1] = GuiLabel(20, 71, 268, 17, "UCDphone                                            19:23", false, phone.image["phone_window"])
+phone.label["banner"] = GuiLabel(20, 71, 268, 17, " UCDphone", false, phone.image["phone_window"])
+phone.label["banner"].font = "default-bold-small"
 
 phone.button["home"] = GuiButton(130, 535, 50, 50, "", false, phone.image["phone_window"])
 phone.button["home"].alpha = 0
@@ -91,6 +95,7 @@ for i, info in ipairs(apps) do
 end
 
 function togglePhone()
+	guiSetInputMode("no_binds_when_editing")
 	if (blur and isElement(blur)) then
 		exports.blur_box:destroyBlurBox(blur)
 	else
