@@ -1,0 +1,21 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    staticimage = {},
+    button = {},
+    edit = {}
+}
+GUIEditor.staticimage[1] = guiCreateStaticImage(1600, 458, 310, 600, ":UCDphone/iphone2.png", false)
+
+GUIEditor.edit[1] = guiCreateEdit(18, 95, 274, 32, "", false, GUIEditor.staticimage[1])
+GUIEditor.gridlist[1] = guiCreateGridList(20, 135, 271, 333, false, GUIEditor.staticimage[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Players", 0.9)
+GUIEditor.button[1] = guiCreateButton(39, 476, 232, 37, "Toggle blip on specified player", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
