@@ -4,10 +4,10 @@ function onClientGUIChanged()
 		local text = banking.edit[1].text
 		text = text:gsub(",", "")
 		if (tonumber(text)) then
-			if (tonumber(text) > 99999999) then
-				banking.edit[1].text = "99,999,999"
-			end
 			banking.edit[1]:setText(exports.UCDutil:tocomma(tonumber(text)))
+			if (tonumber(text) > localPlayer:getMoney()) then
+				banking.edit[1].text = exports.UCDutil:tocomma(localPlayer:getMoney())
+			end
 			--if (guiEditGetCaretIndex(UCDhousing.edit[1]) == string.len(UCDhousing.edit[1]:getText())) then
 			if (not getKeyState("backspace")) then
 				guiEditSetCaretIndex(banking.edit[1], string.len(banking.edit[1].text))

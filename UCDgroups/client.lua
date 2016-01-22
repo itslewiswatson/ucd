@@ -741,7 +741,7 @@ end
 function saveGroupInfo()
 	if (infoGUI.window[1].visible) then
 		if (infoGUI.memo[1].text:len() > 10000) then
-			exports.UCDdx:new("The group information can't be more than 10000 characters.", 200, 0, 0)
+			exports.UCDdx:new("The group information can't be more than 10,000 characters.", 200, 0, 0)
 			return
 		end
 		triggerServerEvent("UCDgroups.updateInfo", localPlayer, infoGUI.memo[1].text)
