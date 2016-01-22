@@ -37,7 +37,7 @@ function onClientResourceStart()
 				markers[jobName][i].dimension = v.dimension
 				
 				if (v.interior == 0) then
-					blips[jobName][i] = Blip.createAttachedTo(markers[jobName][i], info.blipID, nil, nil, nil, nil, nil, 5, 225)
+					blips[jobName][i] = Blip.createAttachedTo(markers[jobName][i], info.blipID, nil, nil, nil, nil, nil, 5, 255)
 				end
 				
 				addEventHandler("onClientMarkerHit", markers[jobName][i], onJobMarkerHit)
