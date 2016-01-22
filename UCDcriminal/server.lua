@@ -12,6 +12,10 @@ function doCriminal(plr)
 	if (exports.UCDmafiaWars:isElementInLV(plr) and exports.UCDteams:isPlayerInTeam(plr, "Gangsters")) then
 		return
 	end
+	if (exports.UCDmafiaWars:isElementInLV(plr)) then
+		exports.UCDjobs:setPlayerJob(plr, "Gangster")
+		return
+	end
 	exports.UCDjobs:setPlayerJob(plr, "Criminal")
 end
 addCommandHandler("criminal", doCriminal, false, false)
