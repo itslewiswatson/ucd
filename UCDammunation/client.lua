@@ -33,7 +33,7 @@ addEventHandler("UCDammunation.update", root, updateGUI)
 
 function createGUI()
 	
-	ammuGUI.window[1] = guiCreateWindow(564, 264, 826, 574, "UCD | Ammunation", false)
+	ammuGUI.window[1] = guiCreateWindow(564, 264, 806	, 574, "UCD | Ammunation", false)
 	ammuGUI.window[1].alpha = 230
 	ammuGUI.window[1].sizable = false
 	ammuGUI.window[1].visible = false
@@ -65,12 +65,12 @@ function createGUI()
 	ammuGUI.button[6] = guiCreateButton(166, 360, 78, 48, "Buy Weapon\n($47,000)", false, ammuGUI.window[1]) -- SPAS-12
 	ammuGUI.button[7] = guiCreateButton(166, 424, 78, 48, "Buy Weapon\n($56,000)", false, ammuGUI.window[1]) -- AK-47
 	ammuGUI.button[8] = guiCreateButton(166, 488, 78, 48, "Buy Weapon\n($69,000)", false, ammuGUI.window[1]) -- M4
-	ammuGUI.button[9] = guiCreateButton(540, 36, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window[1]) -- Uzi
-	ammuGUI.button[10] = guiCreateButton(540, 104, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window[1]) -- Tec-9
-	ammuGUI.button[11] = guiCreateButton(540, 168, 78, 48, "Buy Weapon\n($18,000)", false, ammuGUI.window[1]) -- MP5
-	ammuGUI.button[12] = guiCreateButton(540, 232, 78, 48, "Buy Weapon\n($32,000)", false, ammuGUI.window[1]) -- Country Rifle
-	ammuGUI.button[13] = guiCreateButton(540, 296, 78, 48, "Buy Weapon\n($75,000)", false, ammuGUI.window[1]) -- Sniper Rifle
-	ammuGUI.button[14] = guiCreateButton(725, 104, 78, 48, "Buy MG-42\n($5,000,000)", false, ammuGUI.window[1])
+	ammuGUI.button[9] = guiCreateButton(530, 36, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window[1]) -- Uzi
+	ammuGUI.button[10] = guiCreateButton(530, 104, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window[1]) -- Tec-9
+	ammuGUI.button[11] = guiCreateButton(530, 168, 78, 48, "Buy Weapon\n($18,000)", false, ammuGUI.window[1]) -- MP5
+	ammuGUI.button[12] = guiCreateButton(530, 232, 78, 48, "Buy Weapon\n($32,000)", false, ammuGUI.window[1]) -- Country Rifle
+	ammuGUI.button[13] = guiCreateButton(530, 296, 78, 48, "Buy Weapon\n($75,000)", false, ammuGUI.window[1]) -- Sniper Rifle
+	ammuGUI.button[14] = guiCreateButton(715, 104, 78, 48, "Buy MG-42\n($5,000,000)", false, ammuGUI.window[1])
 	
 	ammuGUI.button[15] = guiCreateButton(254, 36, 78, 48, "Buy Ammo\n($3)", false, ammuGUI.window[1]) -- Colt
 	ammuGUI.button[16] = guiCreateButton(254, 104, 78, 48, "Buy Ammo\n($20)", false, ammuGUI.window[1]) -- Deagle
@@ -80,21 +80,21 @@ function createGUI()
 	ammuGUI.button[20] = guiCreateButton(254, 360, 78, 48, "Buy Ammo\n($30)", false, ammuGUI.window[1]) -- SPAS-12
 	ammuGUI.button[21] = guiCreateButton(254, 424, 78, 48, "Buy Ammo\n($16)", false, ammuGUI.window[1]) -- AK-47
 	ammuGUI.button[22] = guiCreateButton(254, 488, 78, 48, "Buy Ammo\n($16)", false, ammuGUI.window[1]) -- M4
-	ammuGUI.button[23] = guiCreateButton(628, 36, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window[1]) -- Uzi
-	ammuGUI.button[24] = guiCreateButton(628, 104, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window[1]) -- Tec-9
-	ammuGUI.button[25] = guiCreateButton(628, 168, 78, 48, "Buy Ammo\n($8)", false, ammuGUI.window[1]) -- MP5
-	ammuGUI.button[26] = guiCreateButton(628, 232, 78, 48, "Buy Ammo\n($50)", false, ammuGUI.window[1]) -- Country Rifle
-	ammuGUI.button[27] = guiCreateButton(628, 296, 78, 48, "Buy Ammo\n($100)", false, ammuGUI.window[1]) -- Sniper
-	ammuGUI.button[28] = guiCreateButton(727, 168, 78, 48, "Buy MG-42 ammo\n($12)", false, ammuGUI.window[1])
+	ammuGUI.button[23] = guiCreateButton(618, 36, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window[1]) -- Uzi
+	ammuGUI.button[24] = guiCreateButton(618, 104, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window[1]) -- Tec-9
+	ammuGUI.button[25] = guiCreateButton(618, 168, 78, 48, "Buy Ammo\n($8)", false, ammuGUI.window[1]) -- MP5
+	ammuGUI.button[26] = guiCreateButton(618, 232, 78, 48, "Buy Ammo\n($50)", false, ammuGUI.window[1]) -- Country Rifle
+	ammuGUI.button[27] = guiCreateButton(618, 296, 78, 48, "Buy Ammo\n($100)", false, ammuGUI.window[1]) -- Sniper
+	ammuGUI.button[28] = guiCreateButton(715, 168, 78, 48, "Buy MG-42 ammo\n($12)", false, ammuGUI.window[1])
 	
-	ammuGUI.button[29] = guiCreateButton(725, 36, 78, 48, "Buy Armour\n($1000)", false, ammuGUI.window[1])
+	ammuGUI.button[29] = guiCreateButton(715, 36, 78, 48, "Buy Armour\n($1000)", false, ammuGUI.window[1])
 	
-	ammuGUI.button[30] = guiCreateButton(479, 380, 94, 54, "Buy a grenade\n($2,000)", false, ammuGUI.window[1])
-	ammuGUI.button[31] = guiCreateButton(479, 466, 94, 54, "Buy a molotov\n($1,500)", false, ammuGUI.window[1])
-	ammuGUI.button[32] = guiCreateButton(696, 380, 94, 54, "Buy a satchel charge\n($2,000)", false, ammuGUI.window[1])
-	ammuGUI.button[33] = guiCreateButton(696, 466, 94, 54, "Buy tear gas\n($1,500)", false, ammuGUI.window[1])
+	ammuGUI.button[30] = guiCreateButton(469, 380, 94, 54, "Buy a grenade\n($2,000)", false, ammuGUI.window[1])
+	ammuGUI.button[31] = guiCreateButton(469, 466, 94, 54, "Buy a molotov\n($1,500)", false, ammuGUI.window[1])
+	ammuGUI.button[32] = guiCreateButton(686, 380, 94, 54, "Buy a satchel charge\n($2,000)", false, ammuGUI.window[1])
+	ammuGUI.button[33] = guiCreateButton(686, 466, 94, 54, "Buy tear gas\n($1,500)", false, ammuGUI.window[1])
 	
-	ammuGUI.button[34] = guiCreateButton(681, 538, 135, 26, "Close", false, ammuGUI.window[1])
+	ammuGUI.button[34] = guiCreateButton(659, 538, 135, 26, "Close", false, ammuGUI.window[1])
 	
 	addEventHandler("onClientGUIClick", ammuGUI.window[1], handleClick)
 	
@@ -106,15 +106,15 @@ function createGUI()
 	ammuGUI.staticimage[6] = guiCreateStaticImage(10, 350, 64, 64, ":UCDhud/icons/combat shotgun.png", false, ammuGUI.window[1])
 	ammuGUI.staticimage[7] = guiCreateStaticImage(10, 414, 64, 64, ":UCDhud/icons/ak-47.png", false, ammuGUI.window[1])
 	ammuGUI.staticimage[8] = guiCreateStaticImage(10, 478, 64, 64, ":UCDhud/icons/m4.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[9] = guiCreateStaticImage(384, 30, 64, 64, ":UCDhud/icons/uzi.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[10] = guiCreateStaticImage(384, 94, 64, 64, ":UCDhud/icons/tec-9.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[11] = guiCreateStaticImage(384, 158, 64, 64, ":UCDhud/icons/mp5.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[12] = guiCreateStaticImage(384, 222, 64, 64, ":UCDhud/icons/rifle.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[13] = guiCreateStaticImage(384, 286, 64, 64, ":UCDhud/icons/sniper.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[14] = guiCreateStaticImage(384, 365, 85, 85, ":UCDhud/icons/grenade.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[15] = guiCreateStaticImage(384, 450, 85, 85, ":UCDhud/icons/molotov.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[16] = guiCreateStaticImage(600, 365, 85, 85, ":UCDhud/icons/satchel.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[17] = guiCreateStaticImage(600, 450, 85, 85, ":UCDhud/icons/teargas.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[9] = guiCreateStaticImage(374, 30, 64, 64, ":UCDhud/icons/uzi.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[10] = guiCreateStaticImage(374, 94, 64, 64, ":UCDhud/icons/tec-9.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[11] = guiCreateStaticImage(374, 158, 64, 64, ":UCDhud/icons/mp5.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[12] = guiCreateStaticImage(374, 222, 64, 64, ":UCDhud/icons/rifle.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[13] = guiCreateStaticImage(374, 286, 64, 64, ":UCDhud/icons/sniper.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[14] = guiCreateStaticImage(374, 365, 85, 85, ":UCDhud/icons/grenade.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[15] = guiCreateStaticImage(374, 450, 85, 85, ":UCDhud/icons/molotov.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[16] = guiCreateStaticImage(590, 365, 85, 85, ":UCDhud/icons/satchel.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[17] = guiCreateStaticImage(590, 450, 85, 85, ":UCDhud/icons/teargas.png", false, ammuGUI.window[1])
 	
 	ammoConfirm.window[1] = guiCreateWindow(1417, 441, 331, 108, "UCD | Ammunation - Ammo", false)
 	exports.UCDutil:centerWindow(ammoConfirm.window[1])
