@@ -1,10 +1,10 @@
 <meta>
-	<script src="c_hud.lua" type="client" />
-	<script src="hud.lua" type="shared" />
+	<!--<script src="c_hud.lua" type="client" />-->
+	<!--<script src="hud.lua" type="shared" />-->
 	<oop>true</oop>
 	
-	<export function="getDisabledHUD" type="shared"/>
-	<export function="isLocalPlayerCustomHUDEnabled" type="client"/>
+	<!--<export function="getDisabledHUD" type="shared"/>-->
+	<!--<export function="isLocalPlayerCustomHUDEnabled" type="client"/>-->
 	
 	<file src="icons/ak-47.png"/>
 	<file src="icons/bat.png"/>

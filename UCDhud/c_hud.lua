@@ -102,9 +102,25 @@ function renderArmour()
 	if armourLevel == 0 then return end
 	
 	dxDrawRectangle((1639 / iX) * sX, (112 / iY) * sY, (181 / iX) * sX, (18 / iY) * sY, tocolor(0, 0, 0, 255), false)
-	dxDrawRectangle((1642 / iX) * sX, (115 / iY) * sY, armourLevel * ((1.75 / iX) * sX), (12 / iY) * sY, tocolor(255, 255, 255, 255), false)
+	dxDrawRectangle((1641 / iX) * sX, (114 / iY) * sY, (175 / iX) * sX, (14 / iY) * sY, tocolor(255, 255, 255, 150), false)
+	dxDrawRectangle((1641 / iX) * sX, (114 / iY) * sY, armourLevel * ((1.75 / iX) * sX), (14 / iY) * sY, tocolor(255, 255, 255, 255), false)
 end
 addEventHandler("onClientRender", root, renderArmour)
+
+function renderHealthBar()
+	if (not isPlayerHudComponentVisible("radar") or isPlayerMapVisible()) then return end
+	
+	if (getPedStat(localPlayer, 24) == 1000) then
+		dxDrawRectangle((1498 / iX) * sX, (185 / iY) * sY, (323 / iX) * sX, (18 / iY) * sY, tocolor(0, 0, 0, 255), false)
+		dxDrawRectangle((1500 / iX) * sX, (187 / iY) * sY, (320 / iX) * sX, (14 / iY) * sY, tocolor(255, 0, 0, 150), false)
+		dxDrawRectangle((1500 / iX) * sX, (187 / iY) * sY, localPlayer.health * ((1.6 / iX) * sX), (14 / iY) * sY, tocolor(255, 0, 0, 255), false)
+	else
+		dxDrawRectangle((1639 / iX) * sX, (156 / iY) * sY, (181 / iX) * sX, (18 / iY) * sY, tocolor(0, 0, 0, 255), false)
+		dxDrawRectangle((1641 / iX) * sX, (158 / iY) * sY, (175 / iX) * sX, (14 / iY) * sY, tocolor(255, 0, 0, 150), false)	
+		dxDrawRectangle((1641 / iX) * sX, (158 / iY) * sY, localPlayer.health * ((1.76 / iX) * sX), (14 / iY) * sY, tocolor(255, 0, 0, 255), false)	
+	end
+end
+addEventHandler("onClientRender", root, renderHealthBar)
 
 function renderOxygen()
 	if (not isPlayerHudComponentVisible("radar") or isPlayerMapVisible()) then return end	
@@ -118,7 +134,7 @@ function renderOxygen()
 	end
 	
 	dxDrawRectangle((1639 / iX) * sX, (gY / iY) * sY, (181 / iX) * sX, (18 / iY) * sY, tocolor(0, 0, 0, 255), false)
-	dxDrawRectangle((1642 / iX) * sX, (hY / iY) * sY, oxygenLevel * (1.75 / iX) * sX, (12 / iY) * sY, tocolor(25, 208, 215, 255), false)
+	dxDrawRectangle((1641 / iX) * sX, (hY / iY) * sY, oxygenLevel * (1.75 / iX) * sX, (14 / iY) * sY, tocolor(25, 208, 215, 255), false)
 end
 addEventHandler("onClientRender", root, renderOxygen)
 
@@ -148,20 +164,6 @@ function renderMoney()
 	dxDrawText("$"..finalOutputM, ((1506 / iX) * sX)	, ((cY / iY) * sY)	  , ((1822 / iX) * sX)    , ((244 / iY) * sY), 	   tocolor(r, g, b, 255), 1.80, "pricedown", "right", "top", false, false, false, false, false)
 end
 addEventHandler("onClientRender", root, renderMoney)
-
-function renderHealthBar()
-	if (not isPlayerHudComponentVisible("radar") or isPlayerMapVisible()) then return end
-	
-	if (getPedStat(localPlayer, 24) == 1000) then
-		dxDrawRectangle((1498 / iX) * sX, (185 / iY) * sY, (323 / iX) * sX, (18 / iY) * sY, tocolor(0, 0, 0, 255), false)
-		dxDrawRectangle((1501 / iX) * sX, (188 / iY) * sY, localPlayer.health * ((1.585 / iX) * sX), (12 / iY) * sY, tocolor(255, 0, 0, 255), false)
-	
-	else
-		dxDrawRectangle((1639 / iX) * sX, (156 / iY) * sY, (181 / iX) * sX, (18 / iY) * sY, tocolor(0, 0, 0, 255), false)
-		dxDrawRectangle((1642 / iX) * sX, (159 / iY) * sY, localPlayer.health * ((1.75 / iX) * sX), (12 / iY) * sY, tocolor(255, 0, 0, 255), false)	
-	end
-end
-addEventHandler("onClientRender", root, renderHealthBar)
 
 function renderWanted()
 	if (not isPlayerHudComponentVisible("radar") or isPlayerMapVisible() or localPlayer:getWantedLevel() == 0) then return end
