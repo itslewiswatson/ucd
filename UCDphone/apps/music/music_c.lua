@@ -1,7 +1,7 @@
 Music = {}
 Music.stations = 
 {
-	{"[Hard Dance] Q-Dance", "http://radio.q-dance.nl/q-danceradio.pls"},
+	{"[Hard Dance] Q-Dance Radio", "http://radio.q-dance.nl/q-danceradio.pls"},
 	{"[Hardstyle] NERadio Hardstyle", "http://listen.hardstyle.nu/listen.pls"},
 	{"[House/Trance] NERadio House/Trance", "http://listen.neradio.fm/listen.pls"},
 	{"[Top 40] Power 181", "http://www.181.fm/winamp.pls?station=181-power&file=181-power.pls"},
@@ -80,12 +80,11 @@ end
 addEventHandler("onClientGUIClick", phone.music.button["vol_down"], Music.changeVolume, false)
 addEventHandler("onClientGUIClick", phone.music.button["vol_up"], Music.changeVolume, false)
 
-addEventHandler("onClientSoundChangedMeta", root,
-	function (streamTitle)
-		if (stream and isElement(stream)) then
-			if (stream:getMetaTags()["stream_title"] == streamTitle) then
-				exports.UCDdx:new("Now playing: "..tostring(streamTitle), 255, 200, 0)
-			end
+function Music.onStreamTitleChange(title)
+	if (stream and isElement(stream)) then
+		if (stream:getMetaTags()["stream_title"] == title) then
+			exports.UCDdx:new("Now playing: "..tostring(title), 255, 200, 0)
 		end
 	end
-)
+end
+addEventHandler("onClientSoundChangedMeta", root, Music.onStreamTitleChange)

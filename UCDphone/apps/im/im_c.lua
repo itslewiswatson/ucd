@@ -1,6 +1,11 @@
 IM = {}
 IM.f2a = {}
 
+-- Request list on resource start (in case the resource is restarted while the player is online)
+if (exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+	triggerServerEvent("UCDphone.requestFriendList", localPlayer)
+end
+
 function IM.create()
 	phone.im = {button = {}, edit = {}, gridlist = {}}
 	
@@ -106,7 +111,7 @@ function IM.onReceivedFriendsList(list)
 	guiGridListClear(phone.im.gridlist["friends"])
 	for _, info in pairs(list) do
 		local row = guiGridListAddRow(phone.im.gridlist["friends"])
-		IM.f2a[row] = info[3]
+		IM.f2a[row] = info
 		guiGridListSetItemText(phone.im.gridlist["friends"], row, 1, tostring(info[1]), false, false)
 		if (info[2]) then
 			guiGridListSetItemColor(phone.im.gridlist["friends"], row, 1, 0, 255, 0)
@@ -130,8 +135,46 @@ addEventHandler("onClientGUIClick", phone.im.button["add_friend"], IM.addFriend,
 function IM.removeFriend()
 	local row = guiGridListGetSelectedItem(phone.im.gridlist["friends"])
 	if (row and row ~= -1) then
-		local accName = IM.f2a[row]
+		local accName = IM.f2a[row][3]
 		triggerServerEvent("UCDphone.removeFriend", localPlayer, accName)
 	end
 end
 addEventHandler("onClientGUIClick", phone.im.button["remove_friend"], IM.removeFriend, false)
+
+addEventHandler("onClientPlayerQuit", root,
+	function ()
+		for i = 0, guiGridListGetRowCount(phone.im.gridlist["friends"]) - 1 do
+			local r, g, b = guiGridListGetItemColor(phone.im.gridlist["friends"], i, 1)
+			-- Colour is green meaning they are online
+			if (r == 0 and g == 255 and b == 0) then
+				guiGridListSetItemText(phone.im.gridlist["friends"], i, 1, IM.f2a[i][3], false, false)
+				guiGridListSetItemColor(phone.im.gridlist["friends"], i, 1, 255, 0, 0)
+			end
+		end
+	end
+)
+
+addEventHandler("onClientPlayerChangeNick", root,
+	function (old, new)
+		for i = 0, guiGridListGetRowCount(phone.im.gridlist["friends"]) - 1 do
+			local r, g, b = guiGridListGetItemColor(phone.im.gridlist["friends"], i, 1)
+			if (guiGridListGetItemText(phone.im.gridlist["friends"], i, 1) == old and r == 0 and g == 255 and b == 0) then
+				guiGridListSetItemText(phone.im.gridlist["friends"], i, 1, new, false, false)
+			end
+		end
+	end
+)
+
+addEvent("onClientPlayerLogin", true)
+addEventHandler("onClientPlayerLogin", root,
+	function (accName)
+		outputDebugString("UCDphone catching accName = "..accName)
+		for i = 0, guiGridListGetRowCount(phone.im.gridlist["friends"]) - 1 do
+			local r, g, b = guiGridListGetItemColor(phone.im.gridlist["friends"], i, 1)
+			if (guiGridListGetItemText(phone.im.gridlist["friends"], i, 1) == accName and r == 255 and g == 0 and b == 0) then
+				guiGridListSetItemText(phone.im.gridlist["friends"], i, 1, source.name, false, false)
+				guiGridListSetItemColor(phone.im.gridlist["friends"], i, 1, 0, 255, 0)
+			end
+		end
+	end
+)

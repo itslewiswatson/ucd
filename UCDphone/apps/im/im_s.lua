@@ -2,6 +2,13 @@ IM = {}
 IM.friends = {}
 db = exports.UCDsql:getConnection()
 
+addEvent("UCDphone.requestFriendList", true)
+addEventHandler("UCDphone.requestFriendList", root,
+	function ()
+		IM.sendFriends(client)
+	end
+)
+
 addEventHandler("onPlayerLogin", root,
 	function ()
 		IM.sendFriends(source)
@@ -27,12 +34,13 @@ function IM.sendFriends(plr)
 	local temp = {}
 	if (IM.friends[plr.account.name]) then
 		for i, accountName in ipairs(IM.friends[plr.account.name]) do
-			local displayName, online
+			local displayName, online, LUN
 			if (Account(accountName).player) then
 				displayName = Account(accountName).player.name
 				online = true
 			else
-				displayName = exports.UCDaccounts:GAD(accountName, "lastUsedName")
+				--displayName = exports.UCDaccounts:GAD(accountName, "lastUsedName")
+				displayName = accountName
 			end
 			temp[i] = {[1] = displayName, [2] = online, [3] = accountName}
 		end
@@ -80,14 +88,10 @@ function IM.removeFriend(accName)
 		local x
 		for k, v in ipairs(IM.friends[client.account.name]) do
 			if (v == accName) then
-				--x = k
 				table.remove(IM.friends[client.account.name], k)
 				break
 			end
 		end
-		--outputDebugString(#IM.friends[client.account.name])
-		--table.remove(IM.friends[client.account.name], x)
-		--outputDebugString(#IM.friends[client.account.name])
 		if (Account(accName).player) then
 			exports.UCDdx:new(client, Account(accName).player.name.." has been removed from your friends list", 0, 255, 0)
 		else

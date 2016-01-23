@@ -15,9 +15,10 @@ function Notes.create()
 	
 	-- Load the notes in when the resource starts
 	if (File.exists("@notes.txt")) then
-		local f = File("@notes.txt")
+		local f = File("@notes.txt", true)
 		local contents = f:read(f.size)
 		phone.notes.memo["notes"].text = contents
+		f:close()
 	end
 end
 Notes.create()
@@ -31,12 +32,20 @@ end
 -- Save the notes every time the app closes
 addEventHandler("onClientGUIClick", phone.button["home"],
 	function ()
-		if (not File.exists("@notes.txt")) then
-			File.new("@notes.txt")
+		if (isHomeScreenOpen()) then
+			return
 		end
-		local f = File("@notes.txt")
-		f:write(phone.notes.memo["notes"].text)
-		f:flush()
-		f:close()
-	end, false
+		Notes.save()
+	end, false, "high"
 )
+
+function Notes.save()
+	if (not File.exists("@notes.txt")) then
+		File.delete("@notes.txt")
+	end
+	local f = File.new("@notes.txt")
+	f:write(phone.notes.memo["notes"].text)
+	f:flush()
+	f:destroy()
+end
+addEventHandler("onClientResourceStop", resourceRoot, Notes.save)

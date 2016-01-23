@@ -32,6 +32,10 @@ phone.label["banner"].font = "default-bold-small"
 phone.button["home"] = GuiButton(130, 535, 50, 50, "", false, phone.image["phone_window"])
 phone.button["home"].alpha = 0
 
+if (sX == 800 and sY == 600) then
+	phone.image["phone_window"]:setPosition(sX - 310, 0, false)
+end
+
 addEventHandler("onClientGUIClick", phone.button["home"], 
 	function ()
 		-- Close the phone if the home screen is open
@@ -95,6 +99,9 @@ for i, info in ipairs(apps) do
 end
 
 function togglePhone()
+	if (not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+		return
+	end
 	guiSetInputMode("no_binds_when_editing")
 	if (blur and isElement(blur)) then
 		exports.blur_box:destroyBlurBox(blur)
