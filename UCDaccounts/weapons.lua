@@ -54,7 +54,7 @@ function savePlayerWeaponString(plr)
 end
 addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) end)
 addEventHandler("onPlayerWasted", root, function () savePlayerWeaponString(source)  end)
-addEventHandler("onResourceStop", root, function () for _, plr in pairs(Element.getAllByType("player")) do savePlayerWeaponString(plr) end end)
+addEventHandler("onResourceStop", resourceRoot, function () for _, plr in pairs(Element.getAllByType("player")) do savePlayerWeaponString(plr) end end)
 
 function getPlayerWeaponString(plr)
 	if (not plr) then return end

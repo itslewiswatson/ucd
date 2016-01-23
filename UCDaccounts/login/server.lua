@@ -8,6 +8,10 @@
 -------------------------------------------------------------------
 
 local db = exports.UCDsql:getConnection()
+local restricted =
+{
+	"UCDhousing", "admin", "UCD", "UCDadmin", "nokizorque"
+}
 
 local matrixViewPositions = {
 	-- Some CSG ones
@@ -59,7 +63,6 @@ end
 -- Login handling
 function loginPlayer(usr, passwd)
 	-- Maybe have a label that you constantly need to update instead of using UCDdx
-
 	if (getAccount(usr)) then
 		if (getAccount(usr, passwd)) then
 			if (getAccount(usr):getPlayer()) then
@@ -90,6 +93,12 @@ addEventHandler("UCDaccounts.login.logIn", root, loginPlayer)
 
 -- Registration here
 function registerPlayer(usr, email, passwd, conf)
+	for _, v in ipairs(restricted) do
+		if (usr == v) then
+			exports.UCDdx:new(client, "You cannot register this account name because it is restricted", 255, 255, 255)
+			return
+		end
+	end
 	if (not getAccount(usr)) then
 		local addedAccount = exports.UCDaccounts:registerAccount(client, usr, passwd, email)
 		if (not addedAccount) then

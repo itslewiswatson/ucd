@@ -63,6 +63,8 @@ function Accounts.Login(_, theCurrentAccount)
 	--source:setData("accountID", accountID, true)
 	source:setData("accountName", source.account.name, true)
 	SAD(source, "lastUsedName", source.name)
+	
+	triggerClientEvent(Element.getAllByType("player"), "onClientPlayerLogin", source, source.account.name)
 end
 addEventHandler("onPlayerLogin", root, Accounts.Login)
 
