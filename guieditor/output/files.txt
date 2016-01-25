@@ -7,3 +7,4 @@
 :guieditor/output/phone3_2016-1-21_17-5.txt
 :guieditor/output/PHONE_TEMPLATE_2016-1-21_22-39.txt
 :guieditor/output/phone_marking_2016-1-22_9-0.txt
+:guieditor/output/UCDSTOCKMARKET_2016-1-24_1-25.txt
