@@ -6,8 +6,8 @@
 
 local sX, sY = guiGetScreenSize()
 local app = {width = 54, height = 54}
-local baseX, baseY = 31, 100
-local offX, offY = 64, 79
+local baseX, baseY = 31, 95--100
+local offX, offY = 64, 76--79
 local blur
 
 phone = 
@@ -86,7 +86,8 @@ for i, info in ipairs(apps) do
 	
 	-- If it's a docked row
 	if (info[3][1] == -1) then
-		y = 449
+		--y = 449
+		y = 455
 	else
 		y = baseY + (offY * info[3][1])
 	end
