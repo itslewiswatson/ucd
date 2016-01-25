@@ -158,6 +158,7 @@ function calculateItinerary()
 end
 
 function onClientMarkerHit(plr, matchingDimension)
+	if (source ~= markings.marker) then return end
 	if (plr == localPlayer and matchingDimension) then
 		
 		if (hasHit) then
@@ -238,4 +239,3 @@ function onCompleteWaitForPassengers()
 		end
 	end
 end
-
