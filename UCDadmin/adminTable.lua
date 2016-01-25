@@ -9,7 +9,7 @@ addEventHandler("onResourceStart", resourceRoot,
 
 function createAdminTable(qh)
 	local result = qh:poll(-1)
-	for _, row in pairs(result) do
+	for _, row in pairs(result or {}) do
 		adminTable[row.account] = {}
 		for column, value in pairs(row) do
 			if (column ~= "account") then

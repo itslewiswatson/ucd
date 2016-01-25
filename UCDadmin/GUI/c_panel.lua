@@ -28,6 +28,7 @@ local punishmentTimes = {
         guiWindowSetSizable(adminPanel.window[1], false)
         guiSetVisible(adminPanel.window[1], false)
 		exports.UCDutil:centerWindow(adminPanel.window[1])
+		adminPanel.window[1].alpha = 1
 
         adminPanel.tabpanel[1] = guiCreateTabPanel(10, 24, 645, 470, false, adminPanel.window[1])
 
@@ -385,7 +386,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local dim = plr.dimension or 0
 	local int = plr.interior or 0
 	local health = plr.health or 0
-	local armour = plr.armor or 0
+	local armour = math.floor(plr.armor) or 0
 	local money = plr:getMoney() or "N/A"
 	local team = plr.team.name or "Not logged in"
 	local group = plr:getData("group") or "N/A"
