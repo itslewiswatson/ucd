@@ -132,6 +132,7 @@ function createGUI()
 	GUIEditor.window[1] = guiCreateWindow(586, 330, 326, 333, "UCD | Player Vehicles", false)
 	GUIEditor.window[1].sizable = false
 	GUIEditor.window[1].visible = false
+	GUIEditor.window[1].alpha = 1
 	--exports.UCDutil:centerWindow(GUIEditor.window[1])
 	GUIEditor.window[1]:setPosition(sX - 326, (sY / 2) - (333 / 2), false)
 	
@@ -159,6 +160,10 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
 function toggleVehiclesGUI()
+	if (not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+		return
+	end
+	
 	GUIEditor.window[1].visible = not GUIEditor.window[1].visible
 	if (not GUIEditor.window[1].visible) then
 		showCursor(false)
