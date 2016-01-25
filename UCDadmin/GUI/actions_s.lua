@@ -293,6 +293,7 @@ function giveVehicle(plr, vehicle)
 		spawnedVehicle.interior = plr.interior
 		client:warpIntoVehicle(spawnedVehicle)
 		spawnedVehicle:setData("owner", client.name)
+		spawnedVehicle:setColor(math.random(0, 255), math.random(0, 255), math.random(0, 255), math.random(0, 255), math.random(0, 255), math.random(0, 255))
 		
 		if vowels[spawnedVehicle.name:sub(1, 1):lower()] then
 			exports.UCDdx:new(plr, "You have been given an "..spawnedVehicle.name.." by "..client.name, 0, 255, 0)
