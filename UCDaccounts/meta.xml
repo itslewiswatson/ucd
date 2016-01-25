@@ -1,5 +1,5 @@
 <meta>
-	<min_mta_version server="1.5.1" client="1.5.1" />
+	<min_mta_version server="1.5.2" client="1.5.2" />
 	<info author="Noki" version="3" name="UCDaccounts" type="script" />
 	
 	<script src="accountData.slua" type="server" />
