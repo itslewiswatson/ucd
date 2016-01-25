@@ -713,6 +713,9 @@ addEvent("UCDgroups.balanceWindow", true)
 addEventHandler("UCDgroups.balanceWindow", root, bankingHandler)
 
 function toggleGUI()
+	if (not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+		return
+	end
 	if (mainGUI.window[1] and mainGUI.window[1].visible) then
 		for _, gui in pairs(windows) do
 			if (gui and isElement(gui)) then
