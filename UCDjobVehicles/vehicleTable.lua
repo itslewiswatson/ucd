@@ -39,8 +39,8 @@ jobVehicles =
 	{x = -1657.6765, y = -164.9684, z = 14.1484, rot = 315, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- San Fierro
 	{x = 2113.0366, y = -2467.2312, z = 13.5469, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- Los Santos
 	-- Complimentary vehicles (Tug, Baggage)
-	{x = 1443.3219, y = -2290.1899, z = 13.5469, rot = 270, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
-	{x = 1443.3219, y = -2284.1802, z = 13.5469, rot = 270, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
+	{x = 1443.3219, y = -2290.1899, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
+	{x = 1443.3219, y = -2284.1802, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
 	{x = -1233.8478, y = 22.4323, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside SF interior entry
 	{x = 1311.8883, y = 1256.8636, z =  10.8203, rot = 0, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LV interior entry
 	{x = 1327.4552, y = 1256.8636, z =  10.8203, rot = 0, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LV interior entry
@@ -57,4 +57,9 @@ jobVehicles =
 	{x = -1668.9581, y = -8.8188, z = 3.5547, rot = 45, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 	{x = -1654.2281, y = 40.4067, z = 3.5547, rot = 135, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 	{x = -1698.495, y = 43.8636, z = 3.5495, rot = 225, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	-- Ocean Docks
+	{x = 2461.3496, y = -2104.6243, z = 13.5469, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = 2484.4426, y = -2104.6243, z = 13.5469, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = 2508.5732, y = -2104.6243, z = 13.5469, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	{x = 2534.4783, y = -2104.6243, z = 13.5469, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 }
