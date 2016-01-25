@@ -26,6 +26,7 @@
 	<export function="getPlayerFromID" type="server" />
 	<export function="getAccountEmail" type="server" />
 	<export function="getAllLoggedInPlayers" type="server" />
+	<export function="getLoggedInPlayers" type="server" />
 	
 	<export function="isLoginWindowOpen" type="client" />
 		

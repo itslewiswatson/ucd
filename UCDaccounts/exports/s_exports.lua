@@ -1,5 +1,14 @@
 function getAllLoggedInPlayers()
 	local loggedIn = {}
+	for _, plr in ipairs(Element.getAllByType("player")) do
+		if (not plr.account:isGuest()) then
+			table.insert(loggedIn, plr)
+		end
+	end
+	return loggedIn
+end
+function getLoggedInPlayers()
+	local loggedIn = {}
 	for _, plr in pairs(Element.getAllByType("player")) do
 		if (not plr.account:isGuest()) then
 			table.insert(loggedIn, plr)
