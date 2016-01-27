@@ -1,5 +1,7 @@
 <meta>
 	<script src="client.lua" type="client"/>
 	<script src="server.lua" type="server"/>
+	<export function="getStocks" type="server"/>
+	<export function="getPlayerStocks" type="server"/>
 	<oop>true</oop>
 </meta>

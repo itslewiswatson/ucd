@@ -65,13 +65,13 @@ end
 -- db:query(SELECT * FROM `stocks__history` WHERE `account`=? AND `acronym`=?, account, acronym)
 -- 
 
-function sendStocks()
-	local temp = {}
+function getPlayerStocks(plr)
+	if (not plr) then return end
+	if (not isElement(plr) or plr.type ~= "player" or not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return false end
 	local own = {}
 	for acronym, info in pairs(stocks) do
 		local stockCount = 0
-		local _, shareholders = getShareholders(acronym)
-		for k, amount in pairs(shares[source.account.name] or {}) do
+		for k, amount in pairs(shares[plr.account.name] or {}) do
 			if (k == acronym) then
 				if (not own[acronym]) then
 					own[acronym] = {}
@@ -81,10 +81,9 @@ function sendStocks()
 				stockCount = stockCount + amount
 			end
 		end
-		temp[acronym] = {info.name, info.price, info.prev, shareholders or 0, info.total, stockCount, info.mininvest, info.minsell}
 		if (own and own[acronym] and #own[acronym] > 0) then
 			local p = 0
-			local result = db:query("SELECT `price` FROM `stocks__history` WHERE `account`=? AND `acronym`=? AND `action`=?", source.account.name, acronym, "bought"):poll(-1)
+			local result = db:query("SELECT `price` FROM `stocks__history` WHERE `account`=? AND `acronym`=? AND `action`=?", plr.account.name, acronym, "bought"):poll(-1)
 			if (result and #result > 0) then
 				for i = 1, #result do
 					if (result[i + 1]) then
@@ -98,7 +97,31 @@ function sendStocks()
 			end
 		end
 	end
-	triggerLatentClientEvent(source, "UCDstocks.toggleGUI", source, temp or {}, own or {})
+	return own
+end
+
+function getStocks()
+	local temp = {}
+	for acronym, info in pairs(stocks) do
+		local stockCount = 0
+		local _, shareholders = getShareholders(acronym)
+		--for k, amount in pairs(shares[source.account.name] or {}) do
+		for k, v in pairs(shares or {}) do
+			for i, amount in pairs(v) do
+				if (v == acronym) then				
+					stockCount = stockCount + amount
+				end
+			end
+		end
+		temp[acronym] = {info.name, info.price, info.prev, shareholders or 0, info.total, stockCount, info.mininvest, info.minsell}
+	end
+	return temp
+end
+
+function sendStocks(show)
+	local temp = getStocks()
+	local own = getPlayerStocks(source)
+	triggerLatentClientEvent(source, "UCDstocks.toggleGUI", source, temp or {}, own or {}, show)
 end
 addEvent("UCDstocks.getStocks", true)
 addEventHandler("UCDstocks.getStocks", root, sendStocks)
@@ -108,9 +131,10 @@ function buyStock()
 end
 
 function onStockMarketUpdate()
-	triggerClientEvent(exports.UCDaccounts:getLoggedInPlayers(), "onStockMarketUpdate", resourceRoot)
+	triggerClientEvent(exports.UCDaccounts:getLoggedInPlayers(), "onClientStockMarketUpdate", resourceRoot)
 	for _, plr in ipairs(exports.UCDaccounts:getLoggedInPlayers()) do
-		triggerEvent("UCDstocks.getStocks", plr)
+		triggerEvent("UCDstocks.getStocks", plr, false)
+		triggerEvent("UCDphone.getStocks", plr)
 	end
 end
 addEvent("onStockMarketUpdate")

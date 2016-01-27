@@ -60,7 +60,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		guiGridListAddColumn(GUI.gridlist["own"], "Shares", 0.45)
 		GUI.label["own.share_name"] = GuiLabel(297, 367, 253, 16, "Name: ", false, GUI.window)
 		GUI.label["own.worth"] = GuiLabel(297, 383, 253, 16, "Worth of own shares: ", false, GUI.window)
-		GUI.label["own.worth_at_pur"] = GuiLabel(297, 399, 253, 16, "Worth at purchase: $1,200,000", false, GUI.window)
+		GUI.label["own.worth_at_pur"] = GuiLabel(297, 399, 253, 16, "Worth at purchase: ", false, GUI.window)
 		GUI.label["own.my_shares"] = GuiLabel(297, 415, 253, 16, "My shares: ", false, GUI.window)
 		GUI.label["own.percentage"] = GuiLabel(297, 431, 253, 16, "Stakeholder percentage: ", false, GUI.window)
 		GUI.label["own.min_sell"] = GuiLabel(297, 447, 253, 16, "Minimum Sellout: ", false, GUI.window)
@@ -78,15 +78,18 @@ addEventHandler("onClientResourceStart", resourceRoot,
 	end
 )
 
-function toggleGUI(data, own)
+function toggleGUI(data, own, show)
+	if (not show) then
+		show = true
+	end
 	GUI.gridlist["all"]:clear()
 	GUI.gridlist["own"]:clear()
 	buyGUI.window[1].visible = false
 	if (data and type(data) == "table" and own and type(own) == "table") then
 		_stocks = data
 		_own = own
-		GUI.window.visible = true
-		showCursor(true)
+		GUI.window.visible = show
+		showCursor(show)
 		for k, v in pairs(data) do
 			local curr = exports.UCDutil:mathround(v[2], 2)
 			local prev = exports.UCDutil:mathround(v[3], 2)
