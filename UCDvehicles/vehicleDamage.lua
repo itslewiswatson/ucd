@@ -32,9 +32,9 @@ addEventHandler("onClientVehicleDamage", root,
 	end
 )
 
-addEventHandler("onClientVehicleEnter", root,
-	function (plr)
-		if (plr == localPlayer and isElement(source) and source.type == "vehicle") then
+addEventHandler("onClientPlayerVehicleEnter", root,
+	function (vehicle)
+		if (vehicle == localPlayer.vehicle and isElement(source) and vehicle.type == "vehicle") then
 			if (source.health <= 250) then
 				source:setEngineState(false)
 				source:setDamageProof(true)
