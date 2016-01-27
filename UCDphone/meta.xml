@@ -29,6 +29,8 @@
 	<script src="apps/notes/notes_c.lua" type="client"/>
 	<script src="apps/clock/clock_c.lua" type="client"/>
 	<script src="apps/music/music_c.lua" type="client"/>
+	<script src="apps/stocks/stocks_s.lua" type="server"/>
+	<script src="apps/stocks/stocks_c.lua" type="client"/>
 	
 	<script src="apps/apps.lua" type="client"/>
 	

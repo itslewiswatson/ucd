@@ -6,7 +6,8 @@ allapps =
 	[5] = Notes,
 	[6] = Clock,
 	[9] = Money,
-	[10] = Mark,	
+	[10] = Mark,
+	[12] = Stocks,
 }
 
 function toggleApp(i)

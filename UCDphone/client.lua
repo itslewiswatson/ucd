@@ -132,6 +132,7 @@ addEventHandler("onClientGUIClick", guiRoot,
 				end
 			end
 			toggleApp(index)
+			triggerEvent("UCDphone.onOpenApp", localPlayer, index)
 		end
 	end
 )
