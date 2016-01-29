@@ -69,7 +69,7 @@ function Stocks.populate(all, own)
 	for k, v in pairs(own) do
 		local row = guiGridListAddRow(phone.stocks.gridlist["own"])
 		guiGridListSetItemText(phone.stocks.gridlist["own"], row, 1, tostring(k), false, false)
-		guiGridListSetItemText(phone.stocks.gridlist["own"], row, 2, tostring(v[1]), false, false)
+		guiGridListSetItemText(phone.stocks.gridlist["own"], row, 2, tostring(exports.UCDutil:tocomma(v[1])), false, false)
 			
 		guiGridListSetItemColor(phone.stocks.gridlist["own"], row, 1, 0, 200, 200)
 		guiGridListSetItemColor(phone.stocks.gridlist["own"], row, 2, 0, 200, 200)

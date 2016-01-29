@@ -70,15 +70,12 @@ function getPlayerStocks(plr)
 	if (not isElement(plr) or plr.type ~= "player" or not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return false end
 	local own = {}
 	for acronym, info in pairs(stocks) do
-		local stockCount = 0
 		for k, amount in pairs(shares[plr.account.name] or {}) do
 			if (k == acronym) then
 				if (not own[acronym]) then
 					own[acronym] = {}
 				end
 				own[acronym] = {amount}
-				
-				stockCount = stockCount + amount
 			end
 		end
 		if (own and own[acronym] and #own[acronym] > 0) then
@@ -103,19 +100,24 @@ end
 function getStocks()
 	local temp = {}
 	for acronym, info in pairs(stocks) do
-		local stockCount = 0
+		local stockCount = getAvailableStocks(acronym)
 		local _, shareholders = getShareholders(acronym)
-		--for k, amount in pairs(shares[source.account.name] or {}) do
-		for k, v in pairs(shares or {}) do
-			for i, amount in pairs(v) do
-				if (v == acronym) then				
-					stockCount = stockCount + amount
-				end
-			end
-		end
 		temp[acronym] = {info.name, info.price, info.prev, shareholders or 0, info.total, stockCount, info.mininvest, info.minsell}
 	end
 	return temp
+end
+
+function getAvailableStocks(stockName)
+	if (not stocks[stockName]) then return false end
+	local stockCount = stocks[stockName].total	
+	for i, info in pairs(shares) do
+		for acronym, amount in pairs(info) do
+			if (acronym == stockName) then
+				stockCount = stockCount - amount
+			end
+		end
+	end
+	return stockCount
 end
 
 function sendStocks(show)
@@ -126,9 +128,60 @@ end
 addEvent("UCDstocks.getStocks", true)
 addEventHandler("UCDstocks.getStocks", root, sendStocks)
 
-function buyStock()
-	
+function buyStock(stockName, amount, clientPrice)
+	if (client and stockName and amount and clientPrice) then
+		local clientPrice = exports.UCDutil:mathround(clientPrice, 2)
+		local price = exports.UCDutil:mathround(stocks[stockName].price * tonumber(amount), 2)
+		-- Mainly used for when someone has high ping
+		if (clientPrice ~= price) then	
+			exports.UCDdx:new(client, "Prices have changed since you tried to purchase these stocks. Please purchase them again.", 255, 0, 0)
+			return
+		end
+		local available = getAvailableStocks(stockName)
+		if (available == 0) then
+			exports.UCDdx:new(client, "No stocks options are available", 255, 0, 0)
+			return
+		end
+		if (available < tonumber(amount)) then
+			exports.UCDdx:new(client, "There aren't this many stock options available", 255, 0, 0)
+			return
+		end
+		if (client.money < price) then
+			exports.UCDdx:new(client, "You don't have enough money to buy this quantity of stock options", 255, 0, 0)
+		end
+		
+		if (not shareholders[stockName]) then
+			shareholders[stockName] = {}
+		end
+		
+		local hasStock
+		for _, v in pairs(shareholders[stockName]) do
+			if (v == client.account.name) then
+				hasStock = true
+				break
+			end
+		end
+		if (not hasStock) then
+			table.insert(shareholders[stockName], client.account.name)
+		end
+		if (not shares[client.account.name]) then
+			shares[client.account.name] = {}
+		end
+		if (not shares[client.account.name][stockName]) then
+			shares[client.account.name] = {}
+			db:exec("INSERT INTO `stocks__holders` VALUES (?, ?, ?)", client.account.name, stockName, amount)
+		else
+			db:exec("UPDATE `stocks__holders` SET `amount`=`amount` + ? WHERE `account`=? AND `acronym`=?", amount, client.account.name, stockName)
+		end
+		shares[client.account.name][stockName] = amount
+		client.money = client.money - price
+		exports.UCDdx:new(client, "You have bought "..amount.." stock options of "..stockName.." for $"..exports.UCDutil:tocomma(price), 0, 255, 0)
+		db:exec("INSERT INTO `stocks__history` VALUES (DEFAULT, ?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "bought")
+		triggerEvent("UCDstocks.getStocks", client)
+	end
 end
+addEvent("UCDstocks.buyStock", true)
+addEventHandler("UCDstocks.buyStock", root, buyStock)
 
 function onStockMarketUpdate()
 	triggerClientEvent(exports.UCDaccounts:getLoggedInPlayers(), "onClientStockMarketUpdate", resourceRoot)
