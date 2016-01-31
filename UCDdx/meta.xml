@@ -1,9 +1,16 @@
 <meta>
 	<script src="server.lua" type="server"/>
-	<script src="client.lua" type="client" cache="false"/>
+	<script src="client.lua" type="client"/>
+	<script src="bottomBar.lua" type="client"/>
 
 	<export function="new" type="client"/>
+	
+	<export function="add" type="client"/>
+	<export function="del" type="client"/>
+	<export function="isText" type="client"/>
+	
 	<export function="new" type="server"/>
 	<export function="createNewDxMessageBot" type="client"/>
 	<export function="createNewDxMessageBot" type="server"/>
+	<oop>true</oop>
 </meta>
