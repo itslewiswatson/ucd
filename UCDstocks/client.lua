@@ -251,6 +251,10 @@ function onClientGUIChanged()
 		return
 	end
 	buyGUI.edit.text = exports.UCDutil:tocomma(text)
+	if (tonumber(text) < 1) then
+		buyGUI.edit.text = "1"
+		text = 1
+	end
 	local available = _stocks[stockBuying][6]
 	if (tonumber(text) > available) then
 		buyGUI.edit.text = exports.UCDutil:tocomma(available)

@@ -168,12 +168,12 @@ function buyStock(stockName, amount, clientPrice)
 			shares[client.account.name] = {}
 		end
 		if (not shares[client.account.name][stockName]) then
-			shares[client.account.name] = {}
+			shares[client.account.name][stockName] = 0
 			db:exec("INSERT INTO `stocks__holders` VALUES (?, ?, ?)", client.account.name, stockName, amount)
 		else
 			db:exec("UPDATE `stocks__holders` SET `amount`=`amount` + ? WHERE `account`=? AND `acronym`=?", amount, client.account.name, stockName)
 		end
-		shares[client.account.name][stockName] = amount
+		shares[client.account.name][stockName] = shares[client.account.name][stockName] + amount
 		client.money = client.money - price
 		exports.UCDdx:new(client, "You have bought "..amount.." stock options of "..stockName.." for $"..exports.UCDutil:tocomma(price), 0, 255, 0)
 		db:exec("INSERT INTO `stocks__history` VALUES (DEFAULT, ?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "bought")
