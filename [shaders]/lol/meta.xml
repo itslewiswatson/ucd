@@ -8,7 +8,9 @@
 	<script src="colorpicker.lua" type="client" />
 	<file src="palette.png" />
 	<file src="alpha.png" />
+	
 	<file src="marker.png" />
+	<file src="bike.png" />
 	
 	<oop>true</oop>
 </meta>

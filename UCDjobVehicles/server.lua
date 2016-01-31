@@ -78,7 +78,7 @@ function createJobVehicle(plr, model, rot, pos)
 	if (not isElement(plr) or plr.type ~= "player") then return false end
 	
 	local jobName = plr:getData("Occupation")
-	local playerRank = 1
+	local playerRank = 9
 	local r, g, b
 	if (not jobName or not playerRank) then
 		return

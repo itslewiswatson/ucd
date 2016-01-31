@@ -1,11 +1,15 @@
 addEventHandler("onClientResourceStart", resourceRoot,
 	function ()		
-		wires = dxCreateShader('tex_names.fx', 0, 0, false)
-		engineApplyShaderToWorldTexture(wires, 'telewires_law')
-		engineApplyShaderToWorldTexture(wires, 'telewireslong')
-		engineApplyShaderToWorldTexture(wires, 'telewireslong2')
-		engineApplyShaderToWorldTexture(wires, 'antenna1')
-		dxSetShaderValue(wires, 'gColor', 255, 0, 0, 0)
+		local wires = dxCreateShader("tex_names.fx", 0, 0, false)
+		engineApplyShaderToWorldTexture(wires, "telewires_law")
+		engineApplyShaderToWorldTexture(wires, "telewireslong")
+		engineApplyShaderToWorldTexture(wires, "telewireslong2")
+		engineApplyShaderToWorldTexture(wires, "antenna1")
+		dxSetShaderValue(wires, "gColor", 255, 0, 0, 0)
+		
+		local markers = dxCreateShader("overlay.fx")
+		dxSetShaderValue(markers, "gTexture", dxCreateTexture("marker.png"))
+		engineApplyShaderToWorldTexture(markers, "CJ_W_GRAD")
 	end
 )
 
@@ -45,14 +49,7 @@ addEventHandler( "onClientResourceStart", resourceRoot,
     function()
  
         -- Create shader
-        local myShader = dxCreateShader ( "overlay.fx" )
- 
-            -- get texture and set dxSetShaderValues
-           local additionalTexture = dxCreateTexture ( "marker.png" );
-           dxSetShaderValue ( myShader, "gTexture", additionalTexture );
- 
-            -- Apply to global txd
-            engineApplyShaderToWorldTexture ( myShader, "CJ_W_GRAD" )
+        
     end
 )
  
