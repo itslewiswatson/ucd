@@ -1,0 +1,7 @@
+
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawText("Press N for directions", 1147, 729, 1356, 748, tocolor(254, 254, 254, 255), 1.20, "default-bold", "right", "top", false, false, false, false, false)
+    end
+)

@@ -1,0 +1,21 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {}
+}
+GUIEditor.window[1] = guiCreateWindow(1085, 205, 281, 361, "UCD | Vehicle Shop - Low End", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.gridlist[1] = guiCreateGridList(9, 28, 262, 280, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Price", 0.5)
+guiGridListAddRow(GUIEditor.gridlist[1])
+guiGridListSetItemText(GUIEditor.gridlist[1], 0, 1, "Hotring Racer 3", false, false)
+guiGridListSetItemText(GUIEditor.gridlist[1], 0, 2, "1,250,000", false, false)
+GUIEditor.button[1] = guiCreateButton(10, 318, 80, 30, "Buy", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(101, 318, 80, 30, "Colour", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(191, 318, 80, 30, "Close", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")

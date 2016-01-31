@@ -8,3 +8,7 @@
 :guieditor/output/PHONE_TEMPLATE_2016-1-21_22-39.txt
 :guieditor/output/phone_marking_2016-1-22_9-0.txt
 :guieditor/output/UCDSTOCKMARKET_2016-1-24_1-25.txt
+:guieditor/output/withvehhudon_2016-1-30_17-13.txt
+:guieditor/output/withvehhudoff_2016-1-30_17-14.txt
+:guieditor/output/vehiclestockmockup_2016-1-30_19-12.txt
+:guieditor/output/ucdvehicleshops_2016-1-30_19-41.txt

@@ -1,0 +1,25 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(1129, 204, 237, 382, "", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.gridlist[1] = guiCreateGridList(9, 28, 218, 283, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle", 0.5)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Price", 0.5)
+        guiGridListAddRow(GUIEditor.gridlist[1])
+        guiGridListSetItemText(GUIEditor.gridlist[1], 0, 1, "Hotring Racer 3", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 0, 2, "1,250,000", false, false)
+        GUIEditor.button[1] = guiCreateButton(10, 318, 101, 30, "Buy", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(126, 318, 101, 30, "Choose Colour", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(77, 354, 83, 19, "Cancel", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")    
+    end
+)
