@@ -23,6 +23,7 @@
 	<export function="getVehicleData" type="server"/>
 	<export function="setVehicleData" type="server"/>
 	<export function="getPlayerSpecificIDToVehicle" type="server"/>
+	<export function="purchase" type="server"/>
 	
 	<include resource="UCDmarket"/>
 	

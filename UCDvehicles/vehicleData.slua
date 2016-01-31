@@ -75,6 +75,16 @@ addEvent("UCDvehicles.requestVehicleTableSync", true)
 addEventHandler("UCDvehicles.requestVehicleTableSync", root, function () syncVehicleTable(source) end)
 addEventHandler("onPlayerLogin", root, function () Timer(syncVehicleTable, 500, 1, source) end)
 
+function forceSync(plr)
+	local temp = {}
+	for i, vehicleData in pairs(vehicles) do
+		if (vehicleData.owner == plr.account.name) then
+			temp[i] = vehicleData
+		end
+	end
+	triggerLatentClientEvent(plr, "UCDvehicles.forceSync", plr, temp)
+end
+
 function getPlayerVehicleTable(plr)
 	-- Avoid MySQL as much as possible
 	if (not plr or plr.type ~= "player") then return false end

@@ -124,6 +124,50 @@ function saveAllVehicles()
 end
 addEventHandler("onResourceStop", resourceRoot, saveAllVehicles)
 
+function purchase(plr, model, xyz, rot, colour, price)
+	local _xyz = toJSON({xyz.x, xyz.y, xyz.z})
+	local _colour = toJSON(colour)
+	
+	outputDebugString(_colour)
+	outputDebugString(price)
+	
+	db:exec("INSERT INTO `vehicles` SET `model`=?, `owner`=?, `xyz`=?, `rotation`=?, `colour`=?, `plates`=?, `health`=?, `fuel`=?, `price`=?",
+		model,
+		plr.account.name,
+		_xyz,
+		rot,
+		_colour,
+		"UCD",
+		1000,
+		100,
+		price
+	)
+	local vehicleID = db:query("SELECT Max(`vehicleID`) AS `id` FROM `vehicles` WHERE `owner`=?", plr.account.name):poll(-1)[1].id
+	vehicles[vehicleID] = {["model"] = model, ["owner"] = plr.account.name, ["xyz"] =  _xyz, ["rotation"] = rot, ["colour"] = _colour, ["plates"] = "UCD", ["health"] = 1000, ["fuel"] = 100, ["price"] = price}
+	
+	syncSpecific(plr, vehicleID, vehicles[vehicleID])
+	
+	if (activeVehicles[plr]) then
+		if (#activeVehicles[plr] >= 2) then
+			hideVehicle(activeVehicles[plr][1]:getData("vehicleID"), true, true)
+		end
+	else
+		activeVehicles[plr] = {}
+	end
+	
+	
+	local vehicle = Vehicle(model, xyz)
+	vehicle:setRotation(0, 0, rot)
+	vehicle:setColor(unpack(colour))
+	vehicle:setData("vehicleID", vehicleID)
+	vehicle:setData("owner", plr.name)
+	table.insert(activeVehicles[plr], vehicle)
+	idToVehicle[vehicleID] = vehicle
+	triggerClientEvent(plr, "UCDvehicles.syncIdToVehicle", plr, getPlayerSpecificIDToVehicle(plr))
+	
+	return vehicle
+end
+
 function spawnVehicle(vehicleID)
 	if (not vehicleID) then return end
 	
@@ -148,7 +192,7 @@ function spawnVehicle(vehicleID)
 	-- Spawn the vehicle and set it's properties
 	local vehicle = Vehicle(model, vX, vY, vZ + 0.5, 0, 0, rot)
 	vehicle:setColor(r1, g1, b1, r2, g2, b2, r3, g3, b3, r4, g4, b4)
-	vehicle:setData("owner", client:getName())
+	vehicle:setData("owner", client.name)
 	vehicle:setData("vehicleID", vehicleID)
 	vehicle:setRotation(0, 0, vehicles[vehicleID].rotation)
 	
@@ -314,7 +358,7 @@ addEventHandler("UCDvehicles.recoverVehicle", root, recoverVehicle)
 function sellVehicle(vehicleID)
 	-- Hide the vehicle, but don't sync it to the database
 	if (idToVehicle[vehicleID]) then
-		triggerEvent("UCDvehicles.hideVehicle", resourceRoot, vehicleID, false)
+		triggerEvent("UCDvehicles.hideVehicle", resourceRoot, vehicleID, false, true)
 	end
 	for _, v in ipairs(playerVehicles[client]) do
 		if (v == vehicleID) then
@@ -329,10 +373,11 @@ function sellVehicle(vehicleID)
 	exports.UCDdx:new(client, "You have successfully sold your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." for $"..exports.UCDutil:tocomma(newPrice), 0, 255, 0)
 	client:giveMoney(newPrice)
 	vehicles[vehicleID] = nil
-	-- Remove it from SQL, sync to player
-	triggerEvent("UCDvehicles.requestVehicleTableSync", client)
-	triggerEvent("UCDvehicles.getIdToVehicleTable", client, true)
 	db:exec("DELETE FROM `vehicles` WHERE `vehicleID`=?", vehicleID)
+	-- Remove it from SQL, sync to player
+	--triggerEvent("UCDvehicles.requestVehicleTableSync", client)
+	triggerEvent("UCDvehicles.getIdToVehicleTable", client, true)
+	forceSync(client)
 end
 addEvent("UCDvehicles.sellVehicle", true)
 addEventHandler("UCDvehicles.sellVehicle", root, sellVehicle)

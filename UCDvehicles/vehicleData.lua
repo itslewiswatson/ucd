@@ -25,6 +25,28 @@ end
 addEvent("UCDvehicles.syncVehicleTable", true)
 addEventHandler("UCDvehicles.syncVehicleTable", root, syncVehicleTable)
 
+function forceSync(sync)
+	if (not sync) then outputDebugString("Table not sent.") return end
+	local temp = {}
+	--GUIEditor.gridlist[1]:clear()
+	for k,v in pairs(sync) do
+		vehicles[k] = v
+		temp[k] = true
+		if (not vehicles[k]) then
+			outputDebugString("Table is empty.")
+		end
+		
+		updateVehicleGrid(k)
+	end
+	for i = 0, guiGridListGetRowCount(GUIEditor.gridlist[1]) - 1 do
+		if (not temp[guiGridListGetItemData(GUIEditor.gridlist[1], i, 1)]) then
+			guiGridListRemoveRow(GUIEditor.gridlist[1], i)
+		end
+	end
+end
+addEvent("UCDvehicles.forceSync", true)
+addEventHandler("UCDvehicles.forceSync", root, forceSync)
+
 function requestVehicleTableSync()
 	-- This should allow the sync to properly go through if the resource is restarted
 	if (exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then

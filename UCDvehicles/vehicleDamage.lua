@@ -35,11 +35,11 @@ addEventHandler("onClientVehicleDamage", root,
 addEventHandler("onClientPlayerVehicleEnter", root,
 	function (vehicle)
 		if (vehicle == localPlayer.vehicle and isElement(source) and vehicle.type == "vehicle") then
-			if (source.health <= 250) then
-				source:setEngineState(false)
-				source:setDamageProof(true)
-				triggerServerEvent("dmgproof", source)
-				source.health = 250
+			if (vehicle.health <= 250) then
+				vehicle:setEngineState(false)
+				vehicle:setDamageProof(true)
+				triggerServerEvent("dmgproof", vehicle)
+				vehicle.health = 250
 				exports.UCDdx:new("This vehicle is critically damaged. It must be repaired!", 255, 0, 0)
 			end
 		end
