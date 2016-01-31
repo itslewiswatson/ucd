@@ -72,23 +72,30 @@ function zToHouse(_, _, plr, thePickup)
 		triggerEvent("UCDhousing.fetchHouse.client", plr, thePickup:getData("houseID"))
 	end
 end
-function drawHouseNotification()
-	dxDrawText("Press 'Z' to open the housing GUI", (492 / nX) * sX, (658 / nY) * sY, (863 / nX) * sX, (688 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
-	dxDrawText("Press 'Z' to open the housing GUI", (494 / nX) * sX, (658 / nY) * sY, (865 / nX) * sX, (688 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
-	dxDrawText("Press 'Z' to open the housing GUI", (492 / nX) * sX, (660 / nY) * sY, (863 / nX) * sX, (690 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
-	dxDrawText("Press 'Z' to open the housing GUI", (494 / nX) * sX, (660 / nY) * sY, (865 / nX) * sX, (690 / nY) * sY, tocolor(0, 0, 0, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
-	dxDrawText("Press 'Z' to open the housing GUI", (493 / nX) * sX, (659 / nY) * sY, (864 / nX) * sX, (689 / nY) * sY, tocolor(235, 105, 19, 255), 1.00, "pricedown", "left", "top", false, false, false, false, false)
-end
 function addHouseNotification(plr, thePickup)
+	--[[
 	if (#getEventHandlers("onClientRender", root, drawHouseNotification) == 0) then
 		addEventHandler("onClientRender", root, drawHouseNotification)
 	end
+	--]]
+	--if (not exports.UCDdx:isText("Press Z: House Info") and not exports.UCDdx:isText("Press N: House Rob")) then
+		exports.UCDdx:add("Press Z: House Info", 255, 255, 0)
+		if (plr:getData("Occupation") == "Criminal" or plr:getData("Occupation") == "Gangster") then
+			exports.UCDdx:add("Press N: House Rob", 255, 0, 0)
+		end
+	--end
 	bindKey("z", "down", zToHouse, plr, thePickup)
 end
 function removeHouseNotification()
+	--[[
 	if (#getEventHandlers("onClientRender", root, drawHouseNotification) > 0) then
 		removeEventHandler("onClientRender", root, drawHouseNotification)
 	end
+	--]]
+	--if (exports.UCDdx:isText("Press Z: House Info") or exports.UCDdx:isText("Press N: House Rob")) then
+		exports.UCDdx:del("Press Z: House Info")
+		exports.UCDdx:del("Press N: House Rob")
+	--end
 	unbindKey("z", "down", zToHouse)
 	--UCDhousing = nil
 end
@@ -163,31 +170,32 @@ function createGUI(houseTable)
 	end
 	
 	-- Create the actual GUI
-	UCDhousing.window[1] = guiCreateWindow(457, 195, 471, 336, "UCD | Housing [ID: "..houseID.."]", false)
-	UCDhousing.window[1]:setSizable(false)
+	UCDhousing.window[1] = GuiWindow(457, 195, 471, 336, "UCD | Housing [ID: "..houseID.."]", false)
+	UCDhousing.window[1].sizable = false
+	UCDhousing.window[1].alpha = 1
 	exports.UCDutil:centerWindow(UCDhousing.window[1])
 	
-	UCDhousing.label[1] = guiCreateLabel(10, 23, 88, 20, "House name:", false, UCDhousing.window[1])
-	UCDhousing.label[2] = guiCreateLabel(10, 43, 88, 20, "Owner:", false, UCDhousing.window[1])
-	UCDhousing.label[3] = guiCreateLabel(10, 63, 88, 20, "Initial price:", false, UCDhousing.window[1])
-	UCDhousing.label[4] = guiCreateLabel(10, 83, 88, 20, "Bought for:", false, UCDhousing.window[1])
-	UCDhousing.label[5] = guiCreateLabel(10, 103, 88, 20, "Price:", false, UCDhousing.window[1])
-	UCDhousing.label[6] = guiCreateLabel(10, 123, 88, 20, "Interior:", false, UCDhousing.window[1])
-	UCDhousing.label[7] = guiCreateLabel(10, 143, 88, 20, "Open:", false, UCDhousing.window[1])
-	UCDhousing.label[8] = guiCreateLabel(10, 163, 88, 20, "On sale:", false, UCDhousing.window[1])
+	UCDhousing.label[1] = GuiLabel(10, 23, 88, 20, "House name:", false, UCDhousing.window[1])
+	UCDhousing.label[2] = GuiLabel(10, 43, 88, 20, "Owner:", false, UCDhousing.window[1])
+	UCDhousing.label[3] = GuiLabel(10, 63, 88, 20, "Initial price:", false, UCDhousing.window[1])
+	UCDhousing.label[4] = GuiLabel(10, 83, 88, 20, "Bought for:", false, UCDhousing.window[1])
+	UCDhousing.label[5] = GuiLabel(10, 103, 88, 20, "Price:", false, UCDhousing.window[1])
+	UCDhousing.label[6] = GuiLabel(10, 123, 88, 20, "Interior:", false, UCDhousing.window[1])
+	UCDhousing.label[7] = GuiLabel(10, 143, 88, 20, "Open:", false, UCDhousing.window[1])
+	UCDhousing.label[8] = GuiLabel(10, 163, 88, 20, "On sale:", false, UCDhousing.window[1])
 	
 	-- These are dynamic
-	UCDhousing.label[9] = guiCreateLabel(108, 23, 115, 20, houseName, false, UCDhousing.window[1])
-	UCDhousing.label[10] = guiCreateLabel(108, 43, 115, 20, tostring(owner), false, UCDhousing.window[1])
-	UCDhousing.label[11] = guiCreateLabel(108, 63, 115, 20, "$"..exports.UCDutil:tocomma(initialPrice), false, UCDhousing.window[1])
-	UCDhousing.label[12] = guiCreateLabel(108, 83, 115, 20, "$"..exports.UCDutil:tocomma(boughtForPrice), false, UCDhousing.window[1])
-	UCDhousing.label[13] = guiCreateLabel(108, 103, 115, 20, "$"..exports.UCDutil:tocomma(currentPrice), false, UCDhousing.window[1])
-	UCDhousing.label[14] = guiCreateLabel(108, 123, 115, 20, interiorID, false, UCDhousing.window[1])
-	UCDhousing.label[15] = guiCreateLabel(108, 143, 115, 20, "nil", false, UCDhousing.window[1])
-	UCDhousing.label[16] = guiCreateLabel(108, 163, 115, 20, "nil", false, UCDhousing.window[1])
-	UCDhousing.label[17] = guiCreateLabel(0, 179, 471, 19, "__________________________________________________________________________________________", false, UCDhousing.window[1])
+	UCDhousing.label[9] = GuiLabel(108, 23, 115, 20, houseName, false, UCDhousing.window[1])
+	UCDhousing.label[10] = GuiLabel(108, 43, 115, 20, tostring(owner), false, UCDhousing.window[1])
+	UCDhousing.label[11] = GuiLabel(108, 63, 115, 20, "$"..exports.UCDutil:tocomma(initialPrice), false, UCDhousing.window[1])
+	UCDhousing.label[12] = GuiLabel(108, 83, 115, 20, "$"..exports.UCDutil:tocomma(boughtForPrice), false, UCDhousing.window[1])
+	UCDhousing.label[13] = GuiLabel(108, 103, 115, 20, "$"..exports.UCDutil:tocomma(currentPrice), false, UCDhousing.window[1])
+	UCDhousing.label[14] = GuiLabel(108, 123, 115, 20, interiorID, false, UCDhousing.window[1])
+	UCDhousing.label[15] = GuiLabel(108, 143, 115, 20, "nil", false, UCDhousing.window[1])
+	UCDhousing.label[16] = GuiLabel(108, 163, 115, 20, "nil", false, UCDhousing.window[1])
+	UCDhousing.label[17] = GuiLabel(0, 179, 471, 19, "__________________________________________________________________________________________", false, UCDhousing.window[1])
 	guiLabelSetHorizontalAlign(UCDhousing.label[17], "center", false)
-	UCDhousing.label[18] = guiCreateLabel(238, 23, 15, 160, "|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|", false, UCDhousing.window[1])
+	UCDhousing.label[18] = GuiLabel(238, 23, 15, 160, "|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|", false, UCDhousing.window[1])
 
 	local housingLabels1 = {UCDhousing.label[1], UCDhousing.label[2], UCDhousing.label[3], UCDhousing.label[4], UCDhousing.label[5], UCDhousing.label[6], UCDhousing.label[7], UCDhousing.label[8]}
 	local housingLabels2 = {UCDhousing.label[9], UCDhousing.label[10], UCDhousing.label[11], UCDhousing.label[12], UCDhousing.label[13], UCDhousing.label[14], UCDhousing.label[15], UCDhousing.label[16], UCDhousing.label[17], UCDhousing.label[18]}
@@ -201,14 +209,14 @@ function createGUI(houseTable)
 		v:setVerticalAlign("center") 
 	end
 	
-	UCDhousing.button[1] = guiCreateButton(278, 33, 161, 60, "Purchase house", false, UCDhousing.window[1])
-	UCDhousing.button[2] = guiCreateButton(278, 113, 161, 60, "Enter this house", false, UCDhousing.window[1])
-	UCDhousing.edit[1]	 = guiCreateEdit(20, 212, 270, 44, "", false, UCDhousing.window[1])
-	UCDhousing.button[3] = guiCreateButton(319, 212, 120, 44, "Set price", false, UCDhousing.window[1])
-	UCDhousing.button[4] = guiCreateButton(20, 273, 94, 46, "Toggle sale", false, UCDhousing.window[1])
-	UCDhousing.button[5] = guiCreateButton(129, 273, 94, 46, "Toggle open house", false, UCDhousing.window[1])
-	UCDhousing.button[6] = guiCreateButton(235, 273, 94, 46, "Sell house to bank", false, UCDhousing.window[1])
-	UCDhousing.button[7] = guiCreateButton(345, 273, 94, 46, "Close", false, UCDhousing.window[1])
+	UCDhousing.button[1] = GuiButton(278, 33, 161, 60, "Purchase house", false, UCDhousing.window[1])
+	UCDhousing.button[2] = GuiButton(278, 113, 161, 60, "Enter this house", false, UCDhousing.window[1])
+	UCDhousing.edit[1]	 = GuiEdit(20, 212, 270, 44, "", false, UCDhousing.window[1])
+	UCDhousing.button[3] = GuiButton(319, 212, 120, 44, "Set price", false, UCDhousing.window[1])
+	UCDhousing.button[4] = GuiButton(20, 273, 94, 46, "Toggle sale", false, UCDhousing.window[1])
+	UCDhousing.button[5] = GuiButton(129, 273, 94, 46, "Toggle open house", false, UCDhousing.window[1])
+	UCDhousing.button[6] = GuiButton(235, 273, 94, 46, "Sell house to bank", false, UCDhousing.window[1])
+	UCDhousing.button[7] = GuiButton(345, 273, 94, 46, "Close", false, UCDhousing.window[1])
 	
 	-- Check if the house is open, and set the text accordingly
 	if (open == 1) then
@@ -278,7 +286,7 @@ function closeGUI()
 	if (isCursorShowing()) then
 		showCursor(false)
 	end
-	--removeHouseNotification()
+	removeHouseNotification()
 	UCDhousing = nil
 end
 addEvent("UCDhousing.closeGUI", true)
@@ -306,7 +314,7 @@ function handleGUIInput()
 			outputDebugString("Entering house... ID = "..houseID)
 			--triggerServerEvent("UCDhousing.enterHouse", localPlayer, houseID, interiorID)
 			triggerServerEvent("UCDhousing.enterHouse", localPlayer, houseID)
-			--removeHouseNotification()
+			removeHouseNotification()
 			triggerEvent("UCDhousing.closeGUI", localPlayer)
 		end
 	-- Purchase house
@@ -458,13 +466,13 @@ function createConfirmationWindow(houseID, text, func, arg1, arg2, arg3)
 	if (isElement(confirmation.window[1])) then return false end
 	confirmation = {window={}, label={}, button={}}
 	
-	confirmation.window[1] = guiCreateWindow(819, 425, 282, 132, "UCD | Housing - Confirmation", false)
+	confirmation.window[1] = GuiWindow(819, 425, 282, 132, "UCD | Housing - Confirmation", false)
 	guiWindowSetSizable(confirmation.window[1], false)
 
-	confirmation.label[1] = guiCreateLabel(10, 26, 262, 44, tostring(text), false, confirmation.window[1])
+	confirmation.label[1] = GuiLabel(10, 26, 262, 44, tostring(text), false, confirmation.window[1])
 	guiLabelSetHorizontalAlign(confirmation.label[1], "center", false)
-	confirmation.button[1] = guiCreateButton(47, 85, 76, 36, "Yes", false, confirmation.window[1])
-	confirmation.button[2] = guiCreateButton(164, 85, 76, 36, "No", false, confirmation.window[1])
+	confirmation.button[1] = GuiButton(47, 85, 76, 36, "Yes", false, confirmation.window[1])
+	confirmation.button[2] = GuiButton(164, 85, 76, 36, "No", false, confirmation.window[1])
 	
 	-- The purchase house bit underneath is not part of this general function.
 	function confirmationWindowClick()
@@ -496,3 +504,5 @@ function createConfirmationWindow(houseID, text, func, arg1, arg2, arg3)
 	end
 	addEventHandler("onClientGUIClick", confirmation.window[1], confirmationWindowClick)
 end
+
+addEventHandler("onClientResourceStop", resourceRoot, function () removeHouseNotification() end)
