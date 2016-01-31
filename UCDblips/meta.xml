@@ -6,4 +6,22 @@
 	<export function="isPlayerBlipShowing" type="server"/>
 	<export function="hidePlayerBlip" type="server"/>
 	<export function="unhidePlayerBlip" type="server"/>
+	
+	<!-- Custom blips -->
+	<script src="customblips/imagelib.lua" type="client" />
+	<script src="customblips/blipstreamer_client.lua" type="client" />
+	<script src="customblips/customblips.lua" type="client" />
+	<script src="customblips/utility.lua" type="client" />
+	
+	<export function="guiConvertToCustomBlip" type="client" />
+	<export function="createCustomBlip" type="client" />
+	<export function="getCustomBlipStreamRadius" type="client" />
+	<export function="setCustomBlipStreamRadius" type="client" />
+	<export function="getCustomBlipPosition" type="client" />
+	<export function="setCustomBlipPosition" type="client" />
+	<export function="setCustomBlipAlpha" type="client" />
+	<export function="setCustomBlipRadarScale" type="client" />
+	<export function="setCustomBlipVisible" type="client" />
+	<export function="isCustomBlipVisible" type="client" />
+	<export function="destroyCustomBlip" type="client" />
 </meta>
