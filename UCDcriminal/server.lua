@@ -3,7 +3,7 @@ function doCriminal(plr)
 		return
 	end
 	if (plr.vehicle) then
-		exports.UCDdx:new(plr, "You can't become a criminal while in a vehicle", 255, 0, 0)
+		exports.UCDdx:new(plr, "Exit your vehicle to become a criminal", 255, 0, 0)
 		return
 	end
 	if (exports.UCDteams:isPlayerInTeam(plr, "Criminals")) then
@@ -14,9 +14,11 @@ function doCriminal(plr)
 	end
 	if (exports.UCDmafiaWars:isElementInLV(plr)) then
 		exports.UCDjobs:setPlayerJob(plr, "Gangster")
+		exports.UCDdx:new(plr, "You are now a Gangster", 112, 13, 200)
 		return
 	end
 	exports.UCDjobs:setPlayerJob(plr, "Criminal")
+	exports.UCDdx:new(plr, "You are now a Criminal", 255, 0, 0)
 end
 addCommandHandler("criminal", doCriminal, false, false)
 
