@@ -8,6 +8,7 @@ serials = {
 	["73F46AEC1A8A786C9380A0DBF63B24E3"] = true,
 	["149D42DF5C80AC8654CCD13AC2306384"] = true, -- fuckprino
 	["1484D1C8D24BE2569CDC389134212583"] = true, -- soap
+	["E0AD3B1CA3C2A3FEC851DAADB18E1C02"] = true, -- carl
 }
 
 addEventHandler("onPlayerConnect", root,
