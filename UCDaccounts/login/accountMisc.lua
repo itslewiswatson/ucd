@@ -35,7 +35,7 @@ function registerAccount(plr, usr, passwd, email)
 		toJSON({Team.getFromName("Citizens"):getColor()}),
 		plr.name
 	)
-	db:exec("INSERT INTO `friends` SET `account`=?, `friends`=?", usr, toJSON({}))
+	db:exec("INSERT INTO `sms_friends` SET `account`=?, `friends`=?", usr, toJSON({}))
 	
 	accountData[usr] = {x = 2001, y = -788, z = 134, rot = 0, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 500, model = 61, walkstyle = 0, wanted = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name}
 	--cacheAccount(usr) -- Minimize SQL usage so we just create the table here
