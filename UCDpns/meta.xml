@@ -1,0 +1,6 @@
+<meta>
+    <info author="Noki" version="1" name="" description="" />
+    <script src="client.lua" type="client" />
+    <script src="server.lua" />
+	<oop>true</oop>
+</meta>
