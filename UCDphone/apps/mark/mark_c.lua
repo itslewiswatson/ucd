@@ -12,14 +12,14 @@ function Mark.create()
 	Mark.all = {
 		phone.mark.edit["search_players"], phone.mark.gridlist["players"], phone.mark.button["toggle_mark"]
 	}
-	for _, gui in pairs(Mark.all) do
+	for _, gui in ipairs(Mark.all) do
 		gui.visible = false
 	end
 end
 Mark.create()
 
 function Mark.toggle()
-	for _, gui in pairs(Mark.all) do
+	for _, gui in ipairs(Mark.all) do
 		gui.visible = not gui.visible
 	end
 end
@@ -59,7 +59,7 @@ function Mark.onQuit()
 end
 
 function Mark.onSearchForPlayer()
-	guiGridListClear(phone.mark.gridlist["players"])
+	phone.mark.gridlist["players"]:clear()
 	local text = phone.mark.edit["search_players"].text
 	for _, plr in ipairs(Element.getAllByType("player")) do
 		if (plr ~= localPlayer and plr.name:lower():find(text:lower())) then

@@ -7,8 +7,8 @@ function Money.create()
 	phone.money.edit["amount"] = GuiEdit(25, 466, 131, 44, "", false, phone.image["phone_window"])
 	phone.money.gridlist["players"] = GuiGridList(18, 139, 274, 317, false, phone.image["phone_window"])
 	guiGridListAddColumn(phone.money.gridlist["players"], "Players", 0.9)
-	phone.money.button["send_money"] = guiCreateButton(169, 466, 112, 44, "Transfer", false, phone.image["phone_window"])
-	phone.money.button["send_money"].alpha = 255
+	phone.money.button["send_money"] = GuiButton(169, 466, 112, 44, "Transfer", false, phone.image["phone_window"])
+	phone.money.button["send_money"].alpha = 1
 	
 	Money.all = {
 		phone.money.edit["search_players"], phone.money.edit["amount"], phone.money.gridlist["players"], phone.money.button["send_money"]
@@ -50,11 +50,11 @@ function Money.sendMoney(ele)
 		return
 	end
 	amount = tonumber(amount)
-	amount = math.floor(amount)
-	if (amount > 90000000 or amount < 1) then
-		exports.UCDdx:new("You must enter a number smaller than 90,000,000 and larger than 0", 255, 0, 0)
+	if (amount < 1 or amount > 90000000 or math.floor(amount) < 1 or math.floor(amount) > 90000000) then
+		exports.UCDdx:new("You must enter an amount ranging from $1 to $90,000,000", 255, 0, 0)
 		return
 	end
+	amount = math.floor(amount)
 	if (amount > localPlayer:getMoney()) then
 		exports.UCDdx:new("You don't have this much money on you", 255, 0, 0)
 		return
@@ -80,7 +80,7 @@ end
 addEventHandler("onClientGUIChanged", phone.money.edit["amount"], Money.onAmountEdit, false)
 
 function Money.onSearchForPlayer()
-	guiGridListClear(phone.money.gridlist["players"])
+	phone.money.gridlist["players"]:clear()
 	local text = phone.money.edit["search_players"].text
 	for _, plr in ipairs(Element.getAllByType("player")) do
 		if (plr ~= localPlayer and plr.name:lower():find(text:lower())) then

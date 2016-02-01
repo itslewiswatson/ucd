@@ -3,8 +3,21 @@ IM.f2a = {}
 
 -- Request list on resource start (in case the resource is restarted while the player is online)
 if (exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
-	triggerServerEvent("UCDphone.requestFriendList", localPlayer)
+	Timer(
+		function ()
+			triggerServerEvent("UCDphone.requestFriendList", localPlayer)
+		end, 500, 1
+	)
 end
+
+-- Already handled on the server
+--[[
+addEventHandler("onClientPlayerLogin", localPlayer
+	function ()
+		triggerServerEvent("UCDphone.requestFriendList", localPlayer)
+	end	
+)
+--]]
 
 function IM.create()
 	phone.im = {button = {}, edit = {}, gridlist = {}}
@@ -16,9 +29,9 @@ function IM.create()
 	phone.im.edit["search_players"] = GuiEdit(18, 347, 137, 27, "", false, phone.image["phone_window"])
 	phone.im.edit["search_friends"] = GuiEdit(155, 347, 137, 27, "", false, phone.image["phone_window"])
 
-	phone.im.gridlist["players"] = guiCreateGridList(18, 374, 138, 132, false, phone.image["phone_window"])
+	phone.im.gridlist["players"] = GuiGridList(18, 374, 138, 132, false, phone.image["phone_window"])
 	guiGridListAddColumn(phone.im.gridlist["players"], "Players", 0.9)
-	phone.im.gridlist["friends"] = guiCreateGridList(154, 374, 138, 132, false, phone.image["phone_window"])
+	phone.im.gridlist["friends"] = GuiGridList(154, 374, 138, 132, false, phone.image["phone_window"])
 	guiGridListAddColumn(phone.im.gridlist["friends"], "Friends", 0.9)
 
 	phone.im.button["mute"] = GuiButton(18, 506, 68, 23, "Mute", false, phone.image["phone_window"])
@@ -42,7 +55,7 @@ function IM.toggle()
 end
 
 function IM.onSearchForPlayer()
-	guiGridListClear(phone.im.gridlist["players"])
+	phone.im.gridlist["players"]:clear()
 	local text = phone.im.edit["search_players"].text
 	for _, plr in ipairs(Element.getAllByType("player")) do
 		if (plr ~= localPlayer and plr.name:lower():find(text:lower())) then
@@ -108,7 +121,7 @@ addEvent("UCDphone.appendMessage", true)
 addEventHandler("UCDphone.appendMessage", root, IM.appendMessage)
 
 function IM.onReceivedFriendsList(list)
-	guiGridListClear(phone.im.gridlist["friends"])
+	phone.im.gridlist["friends"]:clear()
 	for _, info in pairs(list) do
 		local row = guiGridListAddRow(phone.im.gridlist["friends"])
 		IM.f2a[row] = info

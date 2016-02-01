@@ -38,6 +38,7 @@ function Clock.toggle()
 		gui.visible = not gui.visible
 	end
 	if (phone.clock.label["hms"].visible) then
+		Clock.update()
 		Clock.timer = Timer(Clock.update, 100, 0)
 	else
 		if (Clock.timer and Clock.timer.valid) then

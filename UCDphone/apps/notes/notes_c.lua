@@ -19,6 +19,8 @@ function Notes.create()
 		local contents = f:read(f.size)
 		phone.notes.memo["notes"].text = contents
 		f:close()
+	else
+		phone.notes.memo["notes"].text = ""
 	end
 end
 Notes.create()
@@ -32,10 +34,9 @@ end
 -- Save the notes every time the app closes
 addEventHandler("onClientGUIClick", phone.button["home"],
 	function ()
-		if (isHomeScreenOpen()) then
-			return
+		if (not isHomeScreenOpen()) then
+			Notes.save()
 		end
-		Notes.save()
 	end, false, "high"
 )
 

@@ -22,16 +22,25 @@ phone =
 	{
 		button = {}, image = {}, label = {},
 	},
+	-- Each app will have their own nested table within, example below
+	-- These table declarations are declared in the apps folder
+	--[[
+	stocks = 
+	{
+		button = {},
+		gridlist = {}
+	}
+	--]]
 }
 phone.image["phone_window"] = GuiStaticImage(sX - 320 --[[abs = 1600]], sY - 622 --[[abs = 458]], 310, 600, ":UCDphone/iphone2.png", false)
 phone.image["phone_window"].visible = false
---GUIEditor.label[1] = GuiLabel(20, 71, 268, 17, "UCDphone                                            19:23", false, phone.image["phone_window"])
 phone.label["banner"] = GuiLabel(20, 71, 268, 17, " UCDphone", false, phone.image["phone_window"])
 phone.label["banner"].font = "default-bold-small"
 
 phone.button["home"] = GuiButton(130, 535, 50, 50, "", false, phone.image["phone_window"])
 phone.button["home"].alpha = 0
 
+-- Hacky fix for 800 x 600, note we need to kick people whose resolutions are lower than this 800 x 600 threshold
 if (sX == 800 and sY == 600) then
 	phone.image["phone_window"]:setPosition(sX - 310, 0, false)
 end
@@ -86,14 +95,11 @@ for i, info in ipairs(apps) do
 	
 	-- If it's a docked row
 	if (info[3][1] == -1) then
-		--y = 449
 		y = 455
 	else
 		y = baseY + (offY * info[3][1])
 	end
 	
-	--phone.home.button[i] = GuiButton(x, y, app.width, app.height, info[1], false, phone.image["phone_window"])
-	--phone.home.button[i].alpha = 0
 	phone.home.image[i] = GuiStaticImage(x, y, app.width, app.height, ":UCDphone/images/"..info[2], false, phone.image["phone_window"])
 	phone.home.label[i] = GuiLabel(x, y + app.height, app.width, 15, info[1], false, phone.image["phone_window"])
 	guiLabelSetHorizontalAlign(phone.home.label[i], "center", false)
@@ -121,18 +127,17 @@ function isHomeScreenOpen()
 	return true
 end
 
-addEventHandler("onClientGUIClick", guiRoot,
-	function ()
-		if (source.parent == phone.image["phone_window"] and source.type == "gui-staticimage") then
-			local index, appName
-			for i, ele in ipairs(phone.home.image) do
-				if (ele == source) then
-					index = i
-					break
-				end
+function onClickApp()
+	if (source.type == "gui-staticimage") then
+		local index, appName
+		for i, ele in ipairs(phone.home.image) do
+			if (ele == source) then
+				index = i
+				break
 			end
-			toggleApp(index)
-			triggerEvent("UCDphone.onOpenApp", localPlayer, index)
 		end
+		toggleApp(index)
+		triggerEvent("UCDphone.onOpenApp", localPlayer, index)
 	end
-)
+end
+addEventHandler("onClientGUIClick", phone.image["phone_window"], onClickApp)
