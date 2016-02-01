@@ -1,9 +1,9 @@
 <meta>
-	<min_mta_version server="1.5.1"></min_mta_version>
-    <info author="Noki" type="" name="" />
+	<min_mta_version server="1.5.2"></min_mta_version>
+    <info author="Noki" type="" name=""/>
 	<script src="script.lua" type="server"/>
-	<export function="isPlayerInTeam" type="server" />
-	<export function="setPlayerTeam" type="server" />
-	<export function="getTeamTable" type="server" />
+	<export function="setPlayerTeam" type="server"/>
+	<export function="isPlayerInTeam" type="server"/>
+	<export function="isPlayerInTeams" type="server"/>
 	<oop>true</oop>
 </meta>
