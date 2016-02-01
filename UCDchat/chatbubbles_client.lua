@@ -1,6 +1,6 @@
 local textsToDraw = {}
 
-local hideown = false
+local hideown = true -- We hide our own messages as I've realized they're pretty ugly and clog up the whole screen
 local showtime = 10000
 local characteraddition = 50
 local maxbubbles = 3
