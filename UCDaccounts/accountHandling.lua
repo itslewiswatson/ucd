@@ -74,22 +74,20 @@ function Accounts.Save(plr)
 	if (plr.type ~= "player" or plr.account.guest) then return end
 	
 	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	local playerX, playerY, playerZ = plr:getPosition().x, plr:getPosition().y, plr:getPosition().z
+	local p = plr.position
 	local rot = getPedRotation(plr) -- I would use Element:getRotation, but that doesn't return quite correct values yet
-	local dim = plr:getDimension()
-	local interior = plr:getInterior()
+	local dim = plr.dimension or 0
+	local interior = plr.interior or 0
 	local team = plr.team.name or "Unemployed"
-	local money = plr:getMoney()
-	local model
+	local money = plr.money
 	local walkstyle = plr:getWalkingStyle() --exports.UCDwalkstyle:getPlayerWalkingStyle(plr)
 	local wanted = plr:getWantedLevel()
 	local health = plr:getHealth()
 	local armour = plr:getArmor()
-	local occupation = plr:getData("Occupation")
+	local occupation = exports.UCDjobs:getPlayerJob(plr) --plr:getData("Occupation")
 	local nametag = toJSON({plr:getNametagColor()})
 
-	db:exec("UPDATE `accounts` SET `lastUsedName`=?, `ip`=?, `serial`=? WHERE `account`=?", 
-		plr.name,
+	db:exec("UPDATE `accounts` SET `ip`=?, `serial`=? WHERE `account`=?",
 		plr.ip,
 		plr.serial,
 		plr.account.name
@@ -97,9 +95,9 @@ function Accounts.Save(plr)
 		
 	-- It's more efficient here to have one query and not 16 different ones that would come from using SAD
 	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
-		playerX,
-		playerY,
-		playerZ,
+		p.x,
+		p.y,
+		p.z,
 		rot,
 		dim,
 		interior,
@@ -114,6 +112,10 @@ function Accounts.Save(plr)
 		plr.name,
 		plr.account.name
 	)
+	
+	-- I might as well just use SAD to update the table instead of having to bother with a large query which has a much larger load than what multiple SQL queries does
+	-- And I'm pretty sure SQL executions can be queued (need to ask Jusonex about that) and as long as we don't have hundreds of players, small optimizations like this shouldn't have too much effect
+	-- Plus, the tables will be updated which is a big bonus
 	
 	-- Use a timer here to reduce load on the server at once (from SQL queries and tables being accessed)
 	setTimer(
@@ -133,8 +135,8 @@ addEventHandler("onPlayerQuit", root, Accounts.OnQuit)
 
 function Accounts.SaveAll()
 	--for _, v in pairs(Element.getAllByType("player")) do
-	for _, v in pairs(getAllLoggedInPlayers()) do
-		Accounts.Save(v)
+	for _, plr in ipairs(getLoggedInPlayers()) do
+		Accounts.Save(plr)
 	end
 end
 --addCommandHandler("saveall", Accounts.SaveAll)

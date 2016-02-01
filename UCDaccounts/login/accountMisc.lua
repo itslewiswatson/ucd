@@ -38,44 +38,25 @@ function registerAccount(plr, usr, passwd, email)
 	db:exec("INSERT INTO `sms_friends` SET `account`=?, `friends`=?", usr, toJSON({}))
 	
 	accountData[usr] = {x = 2001, y = -788, z = 134, rot = 0, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 500, model = 61, walkstyle = 0, wanted = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name}
-	--cacheAccount(usr) -- Minimize SQL usage so we just create the table here
-	passwd = nil -- Clear their password out of memory
 	db:exec("INSERT INTO `playerWeapons` SET `account`=?, `weaponString`=?", usr, toJSON({})) -- Empty JSON string
 	return true
 end
 
-function deleteAccount(accountKey)
-	if (not accountKey) then return nil end
-
-	local type_
-
-	if (type(accountKey) == "string") then
-		acc = Account(accountName)
-		type_ = "accName"
-	elseif (tonumber(accountKey) ~= nil) then
-		acc = Account(accountData[accountKey][accName])
-		type_ = "id"
-	else
-		return false
-	end
-
+function deleteAccount(accName)
+	if (not accName or type(accName) ~= "string") then return false end
+	
+	acc = Account(accountName)
+	
 	-- If the account has someone on it
-	if (plr) then
-		kickPlayer(plr, getResourceName(getThisResource()), "Your account has been deleted")
+	if (acc.player) then
+		acc.player:kick(getThisResource().name, "Your account has been deleted")
 	end
-
-	-- Important we check for this first
-	if type_ == "id" then
-		db:exec("DELETE FROM `playerWeapons` WHERE `id`=?", accountKey)
-	else
-		local newAccountKey = db:query("SELECT `id` FROM `accounts` WHERE `accName`=?", accountKey):poll(-1)[1].id
-		db:exec("DELETE FROM `playerWeapons` WHERE `id`=?", newAccountKey)
-
-	end
-
-	db:exec("DELETE FROM `accounts` WHERE `??`=?", type_, accountKey)
-	db:exec("DELETE FROM `accountData` WHERE `??`=?", type_, accountKey)
-
+	
+	-- Delete from all SQL tables
+	db:exec("DELETE FROM `accounts` WHERE `account`=?", accName)
+	db:exec("DELETE FROM `accountData` WHERE `account`=?", type_, accName)
+	db:exec("DELETE FROM `sms_friends` WHERE `account`=?", type_, accName)
+	--db:exec("DELETE FROM `` WHERE `account`=?", type_, accName)
 	acc:remove()
 
 	return true

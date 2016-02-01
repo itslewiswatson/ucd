@@ -1,4 +1,5 @@
 function getAllLoggedInPlayers()
+	outputDebugString(sourceResource.name.." is using getAllLoggedInPlayers")
 	local loggedIn = {}
 	for _, plr in ipairs(Element.getAllByType("player")) do
 		if (not plr.account:isGuest()) then
@@ -42,6 +43,7 @@ function getPlayerAccountName(plr)
 	return plr.account.name
 end
 
+-- Need to unfuck this
 emailCache = {}
 function getAccountEmail(account)
 	if (not account) then return end
