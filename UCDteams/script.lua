@@ -89,7 +89,7 @@ end
 
 function isPlayerInTeams(plr, _teams)
 	if (not plr or not _teams) then return end
-	if (not isElement(plr) plr.type ~= "player" or type(_teams) ~= "table" or #teams == 0) then return false end
+	if (not isElement(plr) or plr.type ~= "player" or type(_teams) ~= "table" or #teams == 0) then return false end
 	for _, t in ipairs(teams) do
 		if (plr.team == Team.getFromName(t)) then
 			return true
