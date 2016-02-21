@@ -84,7 +84,7 @@ function Accounts.Save(plr)
 	local wanted = plr:getWantedLevel()
 	local health = plr:getHealth()
 	local armour = plr:getArmor()
-	local occupation = exports.UCDjobs:getPlayerJob(plr) --plr:getData("Occupation")
+	local occupation = plr:getData("Occupation")
 	local nametag = toJSON({plr:getNametagColor()})
 
 	db:exec("UPDATE `accounts` SET `ip`=?, `serial`=? WHERE `account`=?",
@@ -94,6 +94,7 @@ function Accounts.Save(plr)
 	)
 		
 	-- It's more efficient here to have one query and not 16 different ones that would come from using SAD
+	--[[
 	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
 		p.x,
 		p.y,
@@ -112,12 +113,29 @@ function Accounts.Save(plr)
 		plr.name,
 		plr.account.name
 	)
+	--]]
 	
 	-- I might as well just use SAD to update the table instead of having to bother with a large query which has a much larger load than what multiple SQL queries does
 	-- And I'm pretty sure SQL executions can be queued (need to ask Jusonex about that) and as long as we don't have hundreds of players, small optimizations like this shouldn't have too much effect
 	-- Plus, the tables will be updated which is a big bonus
+	SAD(plr.account.name, "x", p.x)
+	SAD(plr.account.name, "y", p.y)
+	SAD(plr.account.name, "z", p.z)
+	SAD(plr.account.name, "rot", rot)
+	SAD(plr.account.name, "dim", dim)
+	SAD(plr.account.name, "interior", interior)
+	SAD(plr.account.name, "team", team)
+	SAD(plr.account.name, "money", money)
+	SAD(plr.account.name, "walkstyle", walkstyle) -- Need to change this to a per-change basis
+	SAD(plr.account.name, "wanted", wanted)
+	SAD(plr.account.name, "health", health)
+	SAD(plr.account.name, "armour", armour)
+	SAD(plr.account.name, "occupation", occupation)
+	SAD(plr.account.name, "nametag", nametag)
+	SAD(plr.account.name, "lastUsedName", plr.name)
 	
 	-- Use a timer here to reduce load on the server at once (from SQL queries and tables being accessed)
+	--[[
 	setTimer(
 		function (account)
 			-- We cache the account here only because we didn't in the above query
@@ -125,6 +143,7 @@ function Accounts.Save(plr)
 			cacheAccount(account) -- This is a rather inefficent method come to think of it
 		end, 1000, 1, plr.account.name
 	)
+	--]]
 end
 
 function Accounts.OnQuit()

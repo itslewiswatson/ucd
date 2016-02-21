@@ -123,7 +123,7 @@ function login_handler()
 	if (UCDhud:getState() == "running" or UCDhud:getState() == "starting") then
 		setTimer(
 			function (source)
-				for _, v in pairs(exports.UCDhud:getDisabledHUD()) do
+				for _, v in pairs(exports.UCDhud:getDisabledHUD() or {}) do
 					source:setHudComponentVisible(v, false)
 				end
 				source:setHudComponentVisible("radar", true)

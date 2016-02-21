@@ -72,8 +72,8 @@ end
 function setOwnedWeapon(plr, weaponID)
 	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player" or not isPlayerLoggedIn(plr)) then return false end
-	local t = fromJSON(GAD(plr, "ownedWeapons"))
-	for _, v in ipairs(t) do
+	local t = fromJSON(GAD(plr, "ownedWeapons")) or {}
+	for _, v in ipairs(t or {}) do
 		if (v == weaponID) then
 			return
 		end
