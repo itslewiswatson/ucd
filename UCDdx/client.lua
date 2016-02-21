@@ -19,9 +19,11 @@ function ContextBar.add(text, r, g, b)
 	local y = sY - ContextBar.height
 	y = sY - (#ContextBar.entries * ContextBar.height) - ContextBar.height
 	y = sY - y
+	--local y = -(ContextBar.height)
+	
 	if text == "" or text == nil then return false end
 	if #ContextBar.entries > 0 then
-	--[[
+		--[[
 		for k,v in pairs(ContextBar.entries) do
 			if v.text == text then return false end
 		end
@@ -37,7 +39,6 @@ function ContextBar.add(text, r, g, b)
 		end
 		--y = ContextBar.entries[#ContextBar.entries].y - ContextBar.height
 	end
-	--y=sY-y
 
 	ContextBar.entries[#ContextBar.entries + 1] = 
 	{
@@ -48,6 +49,7 @@ function ContextBar.add(text, r, g, b)
 		g = g,
 		b = b,
 		landed = false,
+		--finished = false,
 	}
 	outputConsole(text)
 	return true
@@ -66,8 +68,8 @@ addEventHandler("onClientRender", root,
 			dxDrawLine(0, bar.y, sX, bar.y, tocolor(ContextBar.lineColour[1], ContextBar.lineColour[2], ContextBar.lineColour[3], math.lerp(0, 255, bar.alpha)), 1, true)
 			--]]
 			
-			dxDrawRectangle(sX / 4, bar.y, sX / 2, ContextBar.height, tocolor(0, 0, 0, 63), false)
-			dxDrawText(bar.text, sX / 4, bar.y, (sX / 4) * 3, ContextBar.height + bar.y, tocolor(bar.r, bar.g, bar.b, 255), 1.00, "default-bold", "center", "center", false, false, false, false, false)
+			dxDrawRectangle(sX / 4, bar.y, sX / 2, ContextBar.height, tocolor(0, 0, 0, 63), false)			
+			dxDrawText(bar.text, sX / 4, bar.y, (sX / 4) * 3, ContextBar.height + bar.y, tocolor(bar.r, bar.g, bar.b, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
 			
 			-- default
 			--[[
@@ -82,11 +84,17 @@ addEventHandler("onClientRender", root,
 			ContextBar.update = tick
 
 			if #ContextBar.entries > 0 then
-				for i = 1,#ContextBar.entries do
+				for i = 1, #ContextBar.entries do
 					if ContextBar.entries[i] then
+					--	if (ContextBar.entries[i].y >= ((i * 23) - 23)) then
+					--		ContextBar.entries[i].finished = true
+					--	end
 						if ContextBar.entries[i].y < -23 then
 							table.remove(ContextBar.entries, i)
 						else
+							--if (not ContextBar.entries[i].finished) then
+							--	ContextBar.entries[i].y = ContextBar.entries[i].y - ContextBar.step
+							--end
 							local num = (i * 23) - 23
 							if ContextBar.entries[i].y > num then
 								ContextBar.entries[i].y = ContextBar.entries[i].y + ContextBar.step
@@ -101,7 +109,7 @@ addEventHandler("onClientRender", root,
 				end
 			end
 			
-			local toAdd=0
+			local toAdd = 0
 			if #ContextBar.entries > 2 then
 				toAdd = 2000
 			elseif #ContextBar.entries > 3 then
@@ -127,7 +135,7 @@ addEventHandler("onClientRender", root,
 					-- We step that out of the screen [acting as an animation]
 					ContextBar.entries[1].y = ContextBar.entries[1].y + ContextBar.step
 					-- Let's push the other ones up
-					for i=1, #ContextBar.entries do
+					for i = 1, #ContextBar.entries do
 						ContextBar.entries[i].y = ContextBar.entries[i].y + ContextBar.step
 					end
 				end
