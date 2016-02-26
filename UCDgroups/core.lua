@@ -439,7 +439,7 @@ function handleInvite(groupName, state)
 				end
 			end
 			-- Make the player join the group
-			messageGroup(groupName, client.name.." has joined the group", "info")
+			-- messageGroup(groupName, client.name.." has joined the group", "info") -- Already handled in joinGroup function
 			triggerEvent("UCDgroups.joinGroup", client, groupName)
 		elseif (state == "deny") then
 			messageGroup(groupName, client.name.." has declined the invitation to join the group", "info")
