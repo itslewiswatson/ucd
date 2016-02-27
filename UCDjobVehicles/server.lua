@@ -1,6 +1,8 @@
 spawnerData = {} -- Table of spawner data
 PJV = {} -- Table of player spawned vehicles
 
+-- Handled client-side for now (because binds are easier)
+--[[
 -- Create markers
 function init()
 	for _, info in ipairs(jobVehicles) do
@@ -33,6 +35,7 @@ function markerHit(ele, matchingDimension)
 		end
 	end
 end
+--]]
 
 function getPlayerJobVehicle(plr)
 	if (not plr) then return end
