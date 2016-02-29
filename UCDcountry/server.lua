@@ -321,6 +321,6 @@ end
 addEventHandler("onPlayerJoin", root, setPlayerCountry_)
 addEventHandler("onPlayerLogin", root, setPlayerCountry_)
 
-for _, v in pairs(Element.getAllByType("player")) do
+for _, v in ipairs(Element.getAllByType("player")) do
 	setPlayerCountry(v)
 end
