@@ -128,6 +128,17 @@ end
 addEvent("UCDstocks.getStocks", true)
 addEventHandler("UCDstocks.getStocks", root, sendStocks)
 
+function sellStocks(stockName, amount, clientPrice)
+	if (client and stockName and amount and clientPrice) then
+		local clientPrice = exports.UCDutil:mathround(clientPrice, 2)
+		local price = exports.UCDutil:mathround(stocks[stockName].price * tonumber(amount), 2)
+		if (clientPrice ~= price) then
+			exports.UCDdx:new(client, "Prices have changed since you tried to sell these stocks. Please sell them again.", 255, 0, 0)
+			return
+		end
+	end
+end
+
 function buyStock(stockName, amount, clientPrice)
 	if (client and stockName and amount and clientPrice) then
 		local clientPrice = exports.UCDutil:mathround(clientPrice, 2)
@@ -169,7 +180,7 @@ function buyStock(stockName, amount, clientPrice)
 		end
 		if (not shares[client.account.name][stockName]) then
 			shares[client.account.name][stockName] = 0
-			db:exec("INSERT INTO `stocks__holders` VALUES (?, ?, ?)", client.account.name, stockName, amount)
+			db:exec("INSERT INTO `stocks__holders` VALUES (?, ?, ?)", client.account.name, stockName, amount) -- Use column names
 		else
 			db:exec("UPDATE `stocks__holders` SET `amount`=`amount` + ? WHERE `account`=? AND `acronym`=?", amount, client.account.name, stockName)
 		end
@@ -177,7 +188,9 @@ function buyStock(stockName, amount, clientPrice)
 		client.money = client.money - price
 		exports.UCDdx:new(client, "You have bought "..amount.." stock options of "..stockName.." for $"..exports.UCDutil:tocomma(price), 0, 255, 0)
 		db:exec("INSERT INTO `stocks__history` VALUES (DEFAULT, ?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "bought")
+		
 		triggerEvent("UCDstocks.getStocks", client)
+		triggerEvent("UCDphone.getStocks", plr)
 	end
 end
 addEvent("UCDstocks.buyStock", true)
