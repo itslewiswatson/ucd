@@ -1,6 +1,6 @@
 <meta>
-    <info author="Noki" version="1" name="NGAaccounts" type="script" />
+    <info author="Noki" version="1" name="" type="script" />
     <min_mta_version server="1.4"></min_mta_version>
-    <script src="glitch.lua" type="server" />
+    <!--<script src="glitch.lua" type="server" />-->
     <script src="weapon_mods.lua" type="server" />
 </meta>
