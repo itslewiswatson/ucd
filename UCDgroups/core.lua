@@ -605,11 +605,11 @@ function kickMember(accName, reason)
 				
 				if (acc.player) then
 					acc.player:removeData("group")
-					triggerEvent("UCDgroups.viewUI", acc.player, true)
 					local r, g, b = getGroupChatColour(group_)
 					exports.UCDdx:new(acc.player, "You have been kicked from "..group_.." by "..client.name.." ("..reason..")", r, g, b)
 					group[acc.player] = nil
 					messageGroup(group_, client.name.." has kicked "..acc.player.name.." ("..reason..")", "info")
+					triggerEvent("UCDgroups.viewUI", acc.player, true)
 				else
 					messageGroup(group_, client.name.." has kicked "..accName.." ("..reason..")", "info")
 				end
@@ -995,8 +995,11 @@ end
 
 addEventHandler("onPlayerQuit", root, 
 	function ()
+		onlineTime[source] = nil
+		group[source] = nil
+		
 		local account = source.account.name
-		if (account and exports.UCDaccounts:isPlayerLoggedIn(source)) then
+		if (account and exports.UCDaccounts:isPlayerLoggedIn(source) and getPlayerGroup(source)) then
 			db:exec("UPDATE `groups_members` SET `timeOnline`=?, `lastOnline`=? WHERE `account`=?", getPlayerOnlineTime(source), getRealTime().yearday, account)
 			playerGroupCache[account][6] = getPlayerOnlineTime(source)
 			onlineTime[source] = nil

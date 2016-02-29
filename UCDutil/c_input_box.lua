@@ -10,6 +10,7 @@ confirm.window[1] = nil
 function createInputBox(title, message, default, action, var1, var2)
 	if (confirm.window[1] == nil) then
 		confirm.window[1] = guiCreateWindow(792, 480, 324, 111, "", false)
+		confirm.window[1].alpha = 255
 		guiWindowSetSizable(confirm.window[1], false)
 		centerWindow(confirm.window[1])
 		confirm.button[1] = guiCreateButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
