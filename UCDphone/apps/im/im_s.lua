@@ -52,7 +52,8 @@ end
 
 function IM.addFriend(plrName)
 	if (client and plrName) then
-		if (not Player(plrName) or not exports.UCDaccounts:isPlayerLoggedIn(Player(plrName))) then
+		local plr = Player(plrName)
+		if (not plr or not exports.UCDaccounts:isPlayerLoggedIn(plr)) then
 			return
 		end
 		if (not IM.friends[client.account.name]) then
@@ -63,14 +64,15 @@ function IM.addFriend(plrName)
 			return
 		end
 		for k, v in ipairs(IM.friends[client.account.name]) do
-			if (v == Player(plrName).account.name) then
+			if (v == plr.account.name) then
 				exports.UCDdx:new(client, "This player is already your friend", 255, 0, 0)
 				return
 			end
 		end
-		table.insert(IM.friends[client.account.name], Player(plrName).account.name)
+		table.insert(IM.friends[client.account.name], plr.account.name)
+		outputDebugString("IM.addFriend -> "..tostring(toJSON(IM.friends[client.account.name])).." ["..client.account.name.."]")
 		db:exec("UPDATE `sms_friends` SET `friends`=? WHERE `account`=?", toJSON(IM.friends[client.account.name]), client.account.name)
-		exports.UCDdx:new(client, "You have added "..tostring(Player(plrName).account.name).." to your friends list", 0, 255, 0)
+		exports.UCDdx:new(client, "You have added "..tostring(plr.name).." to your friends list", 0, 255, 0)
 		IM.sendFriends(client)
 	end
 end
@@ -95,8 +97,9 @@ function IM.removeFriend(accName)
 		if (Account(accName).player) then
 			exports.UCDdx:new(client, Account(accName).player.name.." has been removed from your friends list", 0, 255, 0)
 		else
-			exports.UCDdx:new(client, accName.." has been removed from your friends list", 0, 255, 0)
+			exports.UCDdx:new(client, tostring(exports.UCDaccounts:GAD(accName, "lastUsedName")).." has been removed from your friends list", 0, 255, 0)
 		end
+		outputDebugString("IM.removeFriend -> "..tostring(toJSON(IM.friends[client.account.name])).." ["..client.account.name.."]")
 		db:exec("UPDATE `sms_friends` SET `friends`=? WHERE `account`=?", toJSON(IM.friends[client.account.name]), client.account.name)
 		IM.sendFriends(client)
 	end
