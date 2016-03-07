@@ -73,31 +73,18 @@ function zToHouse(_, _, plr, thePickup)
 	end
 end
 function addHouseNotification(plr, thePickup)
-	--[[
-	if (#getEventHandlers("onClientRender", root, drawHouseNotification) == 0) then
-		addEventHandler("onClientRender", root, drawHouseNotification)
-	end
-	--]]
-	--if (not exports.UCDdx:isText("Press Z: House Info") and not exports.UCDdx:isText("Press N: House Rob")) then
-		exports.UCDdx:add("Press Z: House Info", 255, 255, 0)
-		if (plr:getData("Occupation") == "Criminal" or plr:getData("Occupation") == "Gangster") then
-			exports.UCDdx:add("Press N: House Rob", 255, 0, 0)
-		end
-	--end
+	exports.UCDdx:add("Press Z: House Info", 255, 255, 0)
 	bindKey("z", "down", zToHouse, plr, thePickup)
+	if (plr:getData("Occupation") == "Criminal" or plr:getData("Occupation") == "Gangster") then
+		exports.UCDdx:add("Press N: House Rob", 255, 0, 0)
+		bindKey("n", "down", nToRob, plr, thePickup)
+	end
 end
 function removeHouseNotification()
-	--[[
-	if (#getEventHandlers("onClientRender", root, drawHouseNotification) > 0) then
-		removeEventHandler("onClientRender", root, drawHouseNotification)
-	end
-	--]]
-	--if (exports.UCDdx:isText("Press Z: House Info") or exports.UCDdx:isText("Press N: House Rob")) then
-		exports.UCDdx:del("Press Z: House Info")
-		exports.UCDdx:del("Press N: House Rob")
-	--end
+	exports.UCDdx:del("Press Z: House Info")
+	exports.UCDdx:del("Press N: House Rob")
 	unbindKey("z", "down", zToHouse)
-	--UCDhousing = nil
+	unbindKey("n", "down", nToRob)
 end
 
 local function onHitHouseMarker(thePickup, matchingDimension)

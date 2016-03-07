@@ -69,8 +69,13 @@ addEvent("UCDhousing.fetchHouse.server", true)
 addEventHandler("UCDhousing.fetchHouse.server", root, fetchHouse)
 
 function leaveHouse(houseID)
-	if (not source or not houseID) then return nil end
-	-- if (source:getType() ~= "player") then return false end -- Don't need this check as client is always a player
+	if (not client or not houseID) then return nil end
+	-- if (client:getType() ~= "player") then return false end -- Don't need this check as client is always a player
+	
+	-- A check for house robbing
+	if (houseID >= 30000) then
+		houseID = houseID - 30000
+	end
 	
 	-- Get the coordinates
 	local hX, hY, hZ = getHouseData(houseID, "x"), getHouseData(houseID, "y"), getHouseData(houseID, "z")
@@ -79,7 +84,7 @@ function leaveHouse(houseID)
 	if (hX == nil or hY == nil or hZ == nil) then
 		-- Shit, we don't. Some sort of bug. Let the player know and make sure that it's shown in debugscript
 		outputChatBox("[UCDhousing] We could not get the coordinates for this house. Contact a developer as soon as possible.", client)
-		outputDebugString("[UCDhousing] Player ("..source.name..") was not able to exit house with houseID = "..houseID)
+		outputDebugString("[UCDhousing] Player ("..client.name..") was not able to exit house with houseID = "..houseID)
 		return
 	end
 	
@@ -90,17 +95,19 @@ end
 addEvent("UCDhousing.leaveHouse", true)
 addEventHandler("UCDhousing.leaveHouse", root, leaveHouse)
 
-function enterHouse(houseID)
+function enterHouse(houseID, rob)
 	if (not houseID) then return false end
 	--if (getHouseData(houseID, "open") == 0) and (not ) then return false end -- The owner needs to enter, so disregard this
 	
 	local interiorID = getHouseData(houseID, "interiorID")
 	local houseInt, hX, hY, hZ = unpack(intIDs[interiorID])
-	client:setInterior(houseInt)
-	client:setDimension(houseID)
-	client:setPosition(hX, hY, hZ + 1)
-	
-	--triggerClientEvent("UCDhousing.closeGUI", client) -- This can go on the client as we aren't performing important checks here anyway
+	source:setInterior(houseInt)
+	if (rob) then
+		source:setDimension(houseID + 30000)
+	else
+		source:setDimension(houseID + 30000)
+	end
+	source:setPosition(hX, hY, hZ + 1)
 end
 addEvent("UCDhousing.enterHouse", true)
 addEventHandler("UCDhousing.enterHouse", root, enterHouse)
