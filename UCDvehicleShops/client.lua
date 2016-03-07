@@ -9,7 +9,7 @@ GUI = {
 GUI.window = GuiWindow(1085, 205, 281, 361, "UCD | Vehicle Shop - Low End", false)
 GUI.window.sizable = false
 GUI.window.visible = false
-GUI.window.alpha = 1
+GUI.window.alpha = 255
 GUI.gridlist = GuiGridList(9, 28, 262, 280, false, GUI.window)
 guiGridListAddColumn(GUI.gridlist, "Vehicle", 0.6)
 guiGridListAddColumn(GUI.gridlist, "Price", 0.3)
@@ -79,7 +79,7 @@ function closeGUI()
 	end
 	_markerInfo = nil
 	if (veh and isElement(veh)) then
-		veh:destroy()	
+		veh:destroy()
 	end
 	veh = nil
 end
@@ -128,7 +128,7 @@ function onClickBuy()
 	if (row and row ~= -1) then
 		local id = getVehicleModelFromName(guiGridListGetItemText(GUI.gridlist, row, 1))
 		if (id and veh and isElement(veh)) then
-			triggerServerEvent("UCDvehicleShops.purchase", localPlayer, id, {veh:getColor()}, _markerInfo[2])
+			triggerServerEvent("UCDvehicleShops.purchase", localPlayer, id, {veh:getColor(true)}, _markerInfo[2])
 			closeGUI()
 		end
 	end
