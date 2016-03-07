@@ -2,13 +2,17 @@ IM = {}
 IM.f2a = {}
 
 -- Request list on resource start (in case the resource is restarted while the player is online)
-if (exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
-	Timer(
-		function ()
-			triggerServerEvent("UCDphone.requestFriendList", localPlayer)
-		end, 500, 1
-	)
-end
+addEventHandler("onClientResourceStart", resourceRoot, 
+	function ()
+		if (exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+			Timer(
+				function ()
+					triggerServerEvent("UCDphone.requestFriendList", localPlayer)
+				end, 500, 1
+			)
+		end
+	end
+)
 
 -- Already handled on the server
 --[[
@@ -104,7 +108,7 @@ addEventHandler("onClientKey", root, IM.onAttemptSendMessage)
 
 function IM.onSendMessage(plrName, message)
 	phone.im.edit["msg"].text = ""
-	triggerServerEvent("UCDchat.onSendIMFromPhone", localPlayer, plrName, message)
+	triggerEvent("UCDchat.onSendIMFromPhone", localPlayer, plrName, message)
 end
 
 -- wasReceived = bool (true for received, false for sent)

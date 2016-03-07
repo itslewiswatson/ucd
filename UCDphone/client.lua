@@ -4,11 +4,26 @@
 	- Row -1 is the dock
 --]]
 
+
+
+-- Phone positioning
 local sX, sY = guiGetScreenSize()
+local pX, pY = sX - 320, sY - 622
+local pW, pH = 310, 600
+if (sX == 800 and sY == 600) then
+	pX, pY = sX - 310, 0
+end
+
+-- Apps
 local app = {width = 54, height = 54}
 local baseX, baseY = 31, 95--100
 local offX, offY = 64, 76--79
-local blur
+
+local bX, bY, bW, bH = sX + 10, pY + 30, pW - 20, pH - 40
+function hhhh()
+	dxDrawRectangle(bX, bY, bW, bH, tocolor(0, 0, 0, 100), false, false)
+end
+addEventHandler("onClientHUDRender", root, hhhh)
 
 phone = 
 {
@@ -32,18 +47,21 @@ phone =
 	}
 	--]]
 }
-phone.image["phone_window"] = GuiStaticImage(sX - 320 --[[abs = 1600]], sY - 622 --[[abs = 458]], 310, 600, ":UCDphone/iphone2.png", false)
+--phone.image["phone_window"] = GuiStaticImage(sX - 320 --[[abs = 1600]], sY - 622 --[[abs = 458]], 310, 600, ":UCDphone/iphone2.png", false)
+--phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, pW, pH, ":UCDphone/iphone2.png", false)
+phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, 310, 600, ":UCDphone/iphone2.png", false)
 phone.image["phone_window"].visible = false
 phone.label["banner"] = GuiLabel(20, 71, 268, 17, " UCDphone", false, phone.image["phone_window"])
 phone.label["banner"].font = "default-bold-small"
-
 phone.button["home"] = GuiButton(130, 535, 50, 50, "", false, phone.image["phone_window"])
 phone.button["home"].alpha = 0
 
+--[[
 -- Hacky fix for 800 x 600, note we need to kick people whose resolutions are lower than this 800 x 600 threshold
 if (sX == 800 and sY == 600) then
 	phone.image["phone_window"]:setPosition(sX - 310, 0, false)
 end
+--]]
 
 addEventHandler("onClientGUIClick", phone.button["home"], 
 	function ()
@@ -109,16 +127,70 @@ function togglePhone()
 	if (not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
 		return
 	end
+	
+	local now = getTickCount()
 	guiSetInputMode("no_binds_when_editing")
-	if (blur and isElement(blur)) then
-		exports.blur_box:destroyBlurBox(blur)
+	showCursor(not phone.image["phone_window"].visible)
+	
+	if (phone.image["phone_window"].visible) then
+		if (#getEventHandlers("onClientRender", root, closePhone) == 0) then
+			addEventHandler("onClientRender", root, closePhone)
+			
+			phone.start = getTickCount()
+			phone.finish = phone.start + 150
+		else
+			outputDebugString("In prog")
+		end
 	else
-		blur = exports.blur_box:createBlurBox(sX - 310, sY - 560, 290, 490, 0, 0, 0, 100, false)
+		if (#getEventHandlers("onClientRender", root, openPhone) == 0) then
+			phone.image["phone_window"].visible = true
+			addEventHandler("onClientRender", root, openPhone)
+			
+			phone.start = getTickCount()
+			phone.finish = phone.start + 300
+		else
+			outputDebugString("In prog")
+		end
 	end
-	phone.image["phone_window"].visible = not phone.image["phone_window"].visible
-	showCursor(phone.image["phone_window"].visible)
 end
 bindKey("b", "up", togglePhone)
+
+function openPhone()	
+	local now = getTickCount()
+	local duration = phone.finish - phone.start
+	local elapsed = now - phone.start
+	local prog = elapsed / duration
+	
+	local x1, y1 = guiGetPosition(phone.image["phone_window"], false)
+	local x2, y2 = pX, pY
+	
+	local x, y = interpolateBetween(x1, y1, 0, x2, y2, 0, prog, "Linear") --, 0.04, 1.7)
+	bX, bY = x + 10, y + 20
+	phone.image["phone_window"]:setPosition(x, y, false)
+	
+	if (now >= phone.finish and prog >= 1) then
+		removeEventHandler("onClientRender", root, openPhone)
+	end
+end
+
+function closePhone()
+	local now = getTickCount()
+	local duration = phone.finish - phone.start
+	local elapsed = now - phone.start
+	local prog = elapsed / duration
+	
+	local x1, y1 = guiGetPosition(phone.image["phone_window"], false)
+	local x2, y2 = sX + 10, pY
+	
+	local x, y = interpolateBetween(x1, y1, 0, x2, y2, 0, prog, "Linear")
+	bX, bY = x + 10, y + 20
+	phone.image["phone_window"]:setPosition(x, y, false)
+	
+	if (now >= phone.finish and prog >= 1) then
+		removeEventHandler("onClientRender", root, closePhone)
+		phone.image["phone_window"].visible = false
+	end
+end
 
 function isHomeScreenOpen()
 	if (not phone.image["phone_window"].visible or not phone.home.image[1].visible) then

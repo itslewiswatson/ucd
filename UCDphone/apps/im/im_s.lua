@@ -5,42 +5,58 @@ db = exports.UCDsql:getConnection()
 addEvent("UCDphone.requestFriendList", true)
 addEventHandler("UCDphone.requestFriendList", root,
 	function ()
+		if (not IM.friends[client.account.name]) then
+			return
+		end
 		IM.sendFriends(client)
 	end
 )
 
 addEventHandler("onPlayerLogin", root,
 	function ()
-		IM.sendFriends(source)
+		--IM.sendFriends(source)
+		db:query(IM.loadFriends, {source}, "SELECT * FROM `sms_friends` WHERE `account` = ?", source.account.name)
 	end
 )
 
-function IM.loadFriends(qh)
-	local result = qh:poll(-1)
-	if (result and #result >= 1) then
-		for _, t in ipairs(result) do
-			IM.friends[t.account] = fromJSON(t.friends)
-			-- If a player is online
-			if (Account(t.account) and Account(t.account).player) then
-				local plr = Account(t.account).player
-				IM.sendFriends(plr)
-			end
+addEventHandler("onResourceStart", resourceRoot,
+	function ()
+		for _, plr in ipairs(exports.UCDaccounts:getLoggedInPlayers()) do
+			db:query(IM.loadFriends, {plr}, "SELECT * FROM `sms_friends` WHERE `account` = ?", plr.account.name)
 		end
 	end
+)
+
+function IM.loadFriends(qh, plr)
+	local result = qh:poll(-1)
+	if (result and #result >= 1) then
+		--for _, t in ipairs(result) do
+		--	IM.friends[t.account] = fromJSON(t.friends)
+		--	-- If a player is online
+		--	if (Account(t.account) and Account(t.account).player) then
+		--		local plr = Account(t.account).player
+		--		IM.sendFriends(plr)
+		--	end
+		--end
+		for _, t in ipairs(result) do
+			IM.friends[plr.account.name] = fromJSON(t.friends)
+		end
+		IM.sendFriends(plr)
+	end
 end
-db:query(IM.loadFriends, {}, "SELECT * FROM `sms_friends`") -- Placing it here removes debug issues when editing the client apps
+-- db:query(IM.loadFriends, {}, "SELECT * FROM `sms_friends`") -- Placing it here removes debug issues when editing the client apps
 
 function IM.sendFriends(plr)
 	local temp = {}
 	if (IM.friends[plr.account.name]) then
 		for i, accountName in ipairs(IM.friends[plr.account.name]) do
-			local displayName, online, LUN
+			local displayName, online
 			if (Account(accountName).player) then
 				displayName = Account(accountName).player.name
 				online = true
 			else
-				--displayName = exports.UCDaccounts:GAD(accountName, "lastUsedName")
-				displayName = accountName
+				displayName = exports.UCDaccounts:GAD(accountName, "lastUsedName") or accountName
+				--displayName = accountName
 			end
 			temp[i] = {[1] = displayName, [2] = online, [3] = accountName}
 		end
@@ -87,7 +103,6 @@ function IM.removeFriend(accName)
 		if (not IM.friends[client.account.name]) then
 			return
 		end
-		local x
 		for k, v in ipairs(IM.friends[client.account.name]) do
 			if (v == accName) then
 				table.remove(IM.friends[client.account.name], k)
