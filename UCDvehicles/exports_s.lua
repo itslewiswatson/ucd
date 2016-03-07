@@ -60,6 +60,7 @@ addEvent("onVehicleHidden")
 addEventHandler("onVehicleHidden", root, onVehicleHidden)
 
 function onVehicleFixed(whatFixed)
+	outputDebugString("onVehicleFixed called -> exports.UCDvehicles:fix(element:vehicle veh) instead")
 	-- This should pass the vehicle with it's prior state to being fixed
 	if (exports.UCDvehicles:isVehicleBrokenDown(source)) then
 		
@@ -71,3 +72,13 @@ function onVehicleFixed(whatFixed)
 end
 addEvent("onVehicleFixed")
 addEventHandler("onVehicleFixed", root, onVehicleFixed)
+
+function fix(vehicle)
+	if (vehicle and isElement(vehicle)) then
+		if (exports.UCDvehicles:isVehicleBrokenDown(source)) then
+			source:setEngineState(true)
+			source:setDamageProof(false)
+		end
+		vehicle:fix()
+	end
+end
