@@ -383,7 +383,7 @@ addEventHandler("UCDaccounts.login.showLoginInterface", root, showLoginInterface
 -- Hide login window
 function hideLoginInterface()
 	guiSetInputEnabled(false)
-	for _, v in ipairs(loginPanelElements) do
+	for _, v in pairs(loginPanelElements) do
 		v:setVisible(false)
 	end
 	if (registration.window[1]:getVisible() == true) then
@@ -414,7 +414,7 @@ function destroyInterface()
 		registration = nil
 	end
 	if (isElement(login.button[1])) then
-		for _, v in ipairs(loginPanelElements) do
+		for _, v in pairs(loginPanelElements) do
 			v:destroy()
 		end
 		login = nil
