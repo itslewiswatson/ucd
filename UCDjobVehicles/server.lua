@@ -100,7 +100,7 @@ function createJobVehicle(plr, model, rot, pos)
 					break
 				end
 			end
-			exports.UCDdx:new(client, "This vehicle requires you be L"..tostring(reqRank).." ("..tostring(ranks[vehicleRestricted].name)..") or above", 255, 0, 0)
+			exports.UCDdx:new(plr, "This vehicle requires you be L"..tostring(reqRank).." ("..tostring(ranks[vehicleRestricted].name)..") or above", 255, 0, 0)
 			return
 		end
 	end
@@ -125,8 +125,8 @@ function createJobVehicle(plr, model, rot, pos)
 	PJV[plr]:setData("owner", plr.name)
 end
 
-function createFromMarker(model, rot, marker)
-	createJobVehicle(client, model, rot, Vector3(marker.position.x, marker.position.y, marker.position.z))
+function createFromMarker(model, rot, coords)
+	createJobVehicle(client, model, rot, coords)
 end
 addEvent("UCDjobVehicles.createFromMarker", true)
 addEventHandler("UCDjobVehicles.createFromMarker", root, createFromMarker)

@@ -6,6 +6,7 @@ local spawnerData = {}
 GUI.window = guiCreateWindow(819, 448, 259, 256, "UCD | Jobs - Vehicles", false)
 GUI.window.sizeable = false
 GUI.window.visible = false
+GUI.window.alpha = 255
 exports.UCDutil:centerWindow(GUI.window)
 GUI.gridlist = guiCreateGridList(9, 26, 240, 182, false, GUI.window)
 guiGridListSetSortingEnabled(GUI.gridlist, false)
@@ -30,7 +31,7 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, init)
 
 function markerHit(ele, matchingDimension)
-	if (ele and ele.type == "player" and not ele.vehicle and matchingDimension) then
+	if (ele and ele.type == "player" and not ele.vehicle and matchingDimension and ele == localPlayer) then
 		if (ele.position.z - 1.5 < source.position.z and ele.position.z + 1.5 > source.position.z) then
 			if (spawnerData[source]) then
 				_mkr = source
@@ -43,7 +44,7 @@ end
 
 function removeText()
 	unbindKey("z", "down", onHitZ)
-	exports.UCDdx:del("Press Z: Spawn Vehicle", 255, 255, 0)
+	exports.UCDdx:del("Press Z: Spawn Vehicle")
 end
 
 function onHitZ()
@@ -75,7 +76,7 @@ function onClickSpawn()
 	if (row and row ~= -1) then
 		local vehicleModel = getVehicleModelFromName(guiGridListGetItemText(GUI.gridlist, row, 1))
 		local rot = _data[2]
-		triggerServerEvent("UCDjobVehicles.createFromMarker", localPlayer, vehicleModel, rot, _marker)
+		triggerServerEvent("UCDjobVehicles.createFromMarker", resourceRoot, vehicleModel, rot, {x = _marker.position.x, y = _marker.position.y, z = _marker.position.z}) -- Workaround until vectors can be passed as parameters
 		toggleGUI()
 	else
 		exports.UCDdx:new("You need to select a vehicle from the list", 255, 0, 0)
