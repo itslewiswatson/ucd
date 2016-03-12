@@ -1,5 +1,6 @@
 GUI = {gridlist = {}, window = {}, button = {}, label = {}}
 buyGUI = {button = {}, window = {}, label = {}, edit = {}}
+historyGUI = {}
 
 addEvent("onClientStockMarketUpdate", true)
 addEventHandler("onClientStockMarketUpdate", root, 
@@ -24,6 +25,16 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		buyGUI.button[2] = GuiButton(152, 97, 122, 37, "Close", false, buyGUI.window)
 		buyGUI.label = GuiLabel(9, 25, 265, 17, "Buying stock options of ", false, buyGUI.window)
 		guiLabelSetHorizontalAlign(buyGUI.label, "center", false)
+		
+		historyGUI.window = GuiWindow(539, 278, 359, 263, "UCD | Stock Market - History", false)
+        historyGUI.window.sizable = false
+        historyGUI.window.visible = false
+		exports.UCDutil:centerWindow(historyGUI.window)
+        historyGUI.gridlist = GuiGridList(10, 25, 339, 176, false, historyGUI.window)
+        guiGridListAddColumn(historyGUI.gridlist, "Stock", 0.3)
+        guiGridListAddColumn(historyGUI.gridlist, "Date", 0.3)
+        guiGridListAddColumn(historyGUI.gridlist, "Price", 0.3)
+        historyGUI.button = GuiButton(116, 211, 129, 38, "Close", false, historyGUI.window)  
 
 		GUI.window = GuiWindow(447, 150, 560, 511, "UCD | Stock Market", false)
 		GUI.window.alpha = 1
@@ -79,6 +90,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		addEventHandler("onClientGUIClick", buyGUI.button[2], onClickBuyStock, false)
 		addEventHandler("onClientGUIClick", buyGUI.button[1], onBuyStock, false)
 		addEventHandler("onClientGUIChanged", buyGUI.edit, onClientGUIChanged, false)
+		addEventHandler("onClientGUIClick", GUI.button["all.view_history"], showHistory, false)
 	end
 )
 
@@ -100,11 +112,17 @@ function toggleGUI(data, own, show)
 			local prev = exports.UCDutil:mathround(v[3], 2)
 			local diff = curr - prev
 			local per = exports.UCDutil:mathround((diff / prev) * 100, 2) -- delta over original muliplied by 100%
+			local sign
+			if (diff <= 0) then
+				sign = ""
+			else
+				sign = "+"
+			end
 			
 			local row = guiGridListAddRow(GUI.gridlist["all"])
 			guiGridListSetItemText(GUI.gridlist["all"], row, 1, tostring(k), false, false)
 			guiGridListSetItemText(GUI.gridlist["all"], row, 2, tostring(curr), false, false)
-			guiGridListSetItemText(GUI.gridlist["all"], row, 3, tostring(per).."% ("..tostring(diff)..")", false, false)
+			guiGridListSetItemText(GUI.gridlist["all"], row, 3, tostring(per).."% ("..tostring(sign)..tostring(diff)..")", false, false)
 			
 			if (per < 0) then
 				guiGridListSetItemColor(GUI.gridlist["all"], row, 1, 255, 0, 0)
@@ -158,6 +176,30 @@ addEvent("UCDstocks.toggleGUI", true)
 addEventHandler("UCDstocks.toggleGUI", root, toggleGUI)
 addCommandHandler("stocks", toggleGUI)
 
+function showHistory(data)
+	if (type(data) == "table") then
+		historyGUI.gridlist:clear()
+		for i = #data, 1, -1 do
+			local row = guiGridListAddRow(historyGUI.gridlist)
+			guiGridListSetItemText(historyGUI.gridlist, row, 1, data[i].acronym)
+			guiGridListSetItemText(historyGUI.gridlist, row, 2, data[i].datum)
+			guiGridListSetItemText(historyGUI.gridlist, row, 3, data[i].price)
+		end
+	else
+		if (historyGUI.window.visible) then
+			historyGUI.window.visible = false
+		else
+			local row = guiGridListGetSelectedItem(GUI.gridlist["all"])
+			if (row and row ~= -1) then
+				local stockName = guiGridListGetItemText(GUI.gridlist["all"], row, 1)
+				triggerServerEvent("UCDstocks.getHistory", resourceRoot, stockName)
+			end
+		end
+	end
+end
+addEvent("UCDstocks.showHistory", true)
+addEventHandler("UCDstocks.showHistory", root, showHistory)
+
 function onClickStock()
 	local row = guiGridListGetSelectedItem(GUI.gridlist["all"])
 	if (row and row ~= -1) then
@@ -165,7 +207,7 @@ function onClickStock()
 		local data = _stocks[acronym]
 		
 		--local totalworth = math.floor(data[5] * data[4])
-		local totalworth = exports.UCDutil:mathround(data[2] * data[6], 2)
+		local totalworth = exports.UCDutil:mathround(data[2] * data[5], 2)
 		local available = data[6]
 		local sg
 		if (data[7] == 1) then
@@ -209,7 +251,7 @@ function onClickStock()
 		GUI.label["own.share_name"].text = "Name: "..tostring(_stocks[acronym][1]).." ("..tostring(acronym)..")"
 		GUI.label["own.worth"].text = "Worth of own shares: $"..tostring(exports.UCDutil:tocomma(worth))
 		GUI.label["own.worth_at_pur"].text = "Worth at purchase: $"..tostring(exports.UCDutil:tocomma(data[2]))
-		GUI.label["own.my_shares"].text = "My shares: "..tostring(data[1])
+		GUI.label["own.my_shares"].text = "My shares: "..tostring(exports.UCDutil:tocomma(data[1]))
 		GUI.label["own.percentage"].text = "Stakeholder percentage: "..tostring(stake).."%"
 		GUI.label["own.min_sell"].text = "Minimum Sellout: "..tostring(_stocks[acronym][8])
 		
@@ -235,7 +277,7 @@ function onClickBuyStock()
 		if (row and row ~= -1) then
 			local acronym = guiGridListGetItemText(GUI.gridlist["all"], row, 1)
 			buyGUI.label.text = "Buying stock options of "..acronym
-			buyGUI.button[1].text = "Buy ($"..tostring(exports.UCDutil:tocomma(exports.UCDutil:mathround(_stocks[acronym][2], 2)))..")"
+			buyGUI.button[1].text = "Buy ($"..tostring(exports.UCDutil:tocomma(math.floor(_stocks[acronym][2])))..")"
 			stockBuying = acronym
 		end
 	else
@@ -256,13 +298,18 @@ function onClientGUIChanged()
 		text = 1
 	end
 	local available = _stocks[stockBuying][6]
-	if (tonumber(text) > available) then
+	if (tonumber(text) >= available) then
 		buyGUI.edit.text = exports.UCDutil:tocomma(available)
 	end
 	if (not getKeyState("backspace")) then
 		guiEditSetCaretIndex(buyGUI.edit, buyGUI.edit.text:len())
 	end
-	buyGUI.button[1].text = "Buy ($"..tostring(exports.UCDutil:tocomma(exports.UCDutil:mathround(_stocks[stockBuying][2] * tonumber(text), 2)))..")"
+	local i = _stocks[stockBuying][2] * tonumber(text)
+	if (i > _stocks[stockBuying][2] * _stocks[stockBuying][6]) then
+		
+		return
+	end
+	buyGUI.button[1].text = "Buy ($"..tostring(exports.UCDutil:tocomma(math.floor(exports.UCDutil:mathround(i))))..")"
 end
 
 function onBuyStock()
@@ -271,7 +318,16 @@ function onBuyStock()
 	if (not tonumber(text)) then
 		return
 	end
+	text = tonumber(text)
 	local approxPrice = text * _stocks[stockBuying][2]
+	if (_stocks[stockBuying][2] * text ~= approxPrice) then
+		outputDebugString("noo")
+		return
+	end
+	if (_stocks[stockBuying][6] > text) then
+		outputDebugString("there aren't this many stock")
+		return
+	end
 	triggerServerEvent("UCDstocks.buyStock", localPlayer, stockBuying, text, approxPrice)
 	buyGUI.window.visible = false
 	buyGUI.edit.text = "1"
