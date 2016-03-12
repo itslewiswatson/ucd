@@ -4,7 +4,7 @@
 -- Fluctuation: 50 (5%)
 
 Vehicles = {
-	rate = 920,	fluc = 50,	default = {rate = 920},	old = {},
+	rate = 92,	fluc = 5,	default = {rate = 92},	old = {},
 }
 
 function getVehicleRate()
@@ -29,7 +29,7 @@ end
 
 function onVehiclePriceChange()
 	outputDebugString("UCDmarket[vehicles] - New: r="..Vehicles.rate.." Old: r="..Vehicles.old.rate.." [static fluc="..Vehicles.fluc.."]")
-	exports.UCDdx:new(root, "Vehicle market: The new vehicle selling percentage is "..tostring(Vehicles.rate / 10).."%", 255, 255, 255)
+	exports.UCDdx:new(root, "Vehicle market: The new vehicle selling percentage is "..tostring(Vehicles.rate).."%", 255, 255, 255)
 	
 	-- This is synced client-side, so we don't need to worry about a client file or manual syncing
 	-- Removed this as it is unneeded

@@ -4,7 +4,7 @@
 -- Fluctuation: 100 (10%)
 
 Housing = {
-	rate = 888,	fluc = 100,	default = {rate = 888, fluc = 100},	old = {},
+	rate = 90, fluc = 10, default = {rate = 90, fluc = 10},	old = {},
 }
 
 function getHouseRate()
@@ -20,7 +20,7 @@ function setHouseRate()
 		Housing.old.fluc = Housing.fluc
 	end
 	
-	local fluc = math.random(default_fluc - 40, default_fluc)
+	local fluc = math.random(default_fluc - 4, default_fluc)
 	local rate = math.random(default_rate - fluc, default_rate + fluc)
 	
 	-- Set it in the table
@@ -33,7 +33,7 @@ end
 
 function onHousePriceChange()
 	outputDebugString("UCDmarket[housing] - New: r="..Housing.rate.." f="..Housing.fluc.."; Old: r="..Housing.old.rate.." f="..Housing.old.fluc)
-	exports.UCDdx:new(root, "Housing market: The new housing selling percentage is "..tostring(Housing.rate / 10).."%", 255, 255, 255)
+	exports.UCDdx:new(root, "Housing market: The new housing selling percentage is "..tostring(Housing.rate).."%", 255, 255, 255)
 	
 	-- This is synced client-side, so we don't need to worry about a client file or manual syncing
 	-- Removed this as it is unneeded
