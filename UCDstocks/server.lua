@@ -141,8 +141,8 @@ end
 
 function buyStock(stockName, amount, clientPrice)
 	if (client and stockName and amount and clientPrice) then
-		local clientPrice = exports.UCDutil:mathround(clientPrice, 2)
-		local price = exports.UCDutil:mathround(stocks[stockName].price * tonumber(amount), 2)
+		local clientPrice = math.floor(clientPrice)
+		local price = math.floor(stocks[stockName].price * tonumber(amount))
 		-- Mainly used for when someone has high ping
 		if (clientPrice ~= price) then	
 			exports.UCDdx:new(client, "Prices have changed since you tried to purchase these stocks. Please purchase them again.", 255, 0, 0)
