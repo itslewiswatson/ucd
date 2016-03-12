@@ -319,8 +319,7 @@ function fixVehicle_(plr, vehicle)
 			end
 			exports.UCDvehicles:setVehicleData(vehicle:getData("vehicleID"), "health", 1000)
 		end
-		triggerEvent("onVehicleFixed", vehicle)
-		vehicle:fix()
+		exports.UCDvehicles:fix(vehicle)
 		vehicle.health = 1000
 		exports.UCDdx:new(client, "You have fixed "..plr.name.."'s "..vehicle.name, 0, 255, 0)
 		exports.UCDdx:new(plr, client.name.." has fixed your "..vehicle.name, 0, 255, 0)

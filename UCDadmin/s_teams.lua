@@ -10,6 +10,7 @@ serials = {
 	["1484D1C8D24BE2569CDC389134212583"] = true, -- soap
 	["E0AD3B1CA3C2A3FEC851DAADB18E1C02"] = true, -- carl
 	["68B41277286394C74AD831B2DEF48902"] = true, -- felix
+	["8D77ADDACDD9DAAF56F7850F63B5B7E2"] = true, -- metall
 }
 
 addEventHandler("onPlayerConnect", root,
@@ -26,6 +27,7 @@ local adminRanks = {
 	[3] = "L3 Admin",
 	[4] = "L4 Admin",
 	[5] = "L5 Admin",
+	[1337] = "L1337 Admin",
 }
 
 if (not getTeamFromName("Admins")) then
@@ -38,11 +40,11 @@ function gg(client)
 		-- Only here for debug purposes - will be removed upon release
 		if (client:getWantedLevel() > 0 and not isPlayerOwner(client)) then exports.dx:new(client, "You cannot go on-duty whilst being wanted", 255, 255, 255) return false end
 
-		if (isPlayerOwner(client)) then
-			client:setData("Occupation", "L1337 Admin")
-		else
+		--if (isPlayerOwner(client)) then
+		--	client:setData("Occupation", "L1337 Admin")
+		--else
 			client:setData("Occupation", adminRanks[getPlayerAdminRank(client)])
-		end
+		--end
 		
 		exports.UCDjobs:setPlayerJob(client, "Admin", 217)
 		client:setNametagColor(false)
