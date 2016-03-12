@@ -22,6 +22,26 @@ local offX, offY = 64, 76--79
 local bX, bY, bW, bH = sX + 10, pY + 30, pW - 20, pH - 40
 function hhhh()
 	dxDrawRectangle(bX, bY, bW, bH, tocolor(0, 0, 0, 100), false, false)
+	
+	-- Update the time on the phone
+	if (phone and phone.label and phone.label["time"] and isElement(phone.label["time"])) then
+		
+		local t = getRealTime()
+		local h, m, m2 = t.hour, t.minute, "AM"
+		if (h > 12) then
+			h = h - 12
+			m2 = "PM"
+		end
+		if m < 10 then
+		m = "0"..m
+		end
+		if h < 10 then
+			h = "0"..h
+		end
+		phone.label["time"].text = tostring(h)..":"..tostring(m).." "..tostring(m2)
+	else
+		outputDebugString("D:")
+	end
 end
 addEventHandler("onClientHUDRender", root, hhhh)
 
@@ -37,6 +57,7 @@ phone =
 	{
 		button = {}, image = {}, label = {},
 	},
+	
 	-- Each app will have their own nested table within, example below
 	-- These table declarations are declared in the apps folder
 	--[[
@@ -47,21 +68,17 @@ phone =
 	}
 	--]]
 }
---phone.image["phone_window"] = GuiStaticImage(sX - 320 --[[abs = 1600]], sY - 622 --[[abs = 458]], 310, 600, ":UCDphone/iphone2.png", false)
---phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, pW, pH, ":UCDphone/iphone2.png", false)
+
 phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, 310, 600, ":UCDphone/iphone2.png", false)
 phone.image["phone_window"].visible = false
-phone.label["banner"] = GuiLabel(20, 71, 268, 17, " UCDphone", false, phone.image["phone_window"])
+
+phone.label["banner"] = GuiLabel(20, 71, 60, 17, " UCDphone", false, phone.image["phone_window"])
 phone.label["banner"].font = "default-bold-small"
+phone.label["time"] = GuiLabel((310 / 2) - 15, 71, 60, 17, "zyzz brah", false, phone.image["phone_window"])
+phone.label["time"].font = "default-bold-small"
+
 phone.button["home"] = GuiButton(130, 535, 50, 50, "", false, phone.image["phone_window"])
 phone.button["home"].alpha = 0
-
---[[
--- Hacky fix for 800 x 600, note we need to kick people whose resolutions are lower than this 800 x 600 threshold
-if (sX == 800 and sY == 600) then
-	phone.image["phone_window"]:setPosition(sX - 310, 0, false)
-end
---]]
 
 addEventHandler("onClientGUIClick", phone.button["home"], 
 	function ()

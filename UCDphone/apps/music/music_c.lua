@@ -72,8 +72,14 @@ function Music.changeVolume()
 		return
 	end
 	if (source == phone.music.button["vol_down"]) then
+		if (stream.volume - 0.1 < 0) then
+			return
+		end
 		stream.volume = stream.volume - 0.1
 	else
+		if (stream.volume + 0.1 > 1) then
+			return
+		end
 		stream.volume = stream.volume + 0.1
 	end
 	phone.music.progress["volume"].progress = stream.volume * 100
