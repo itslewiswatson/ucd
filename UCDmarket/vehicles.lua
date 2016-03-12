@@ -28,7 +28,7 @@ function setVehicleRate()
 end
 
 function onVehiclePriceChange()
-	outputDebugString("UCDmarket[vehicles] - New: r="..Vehicles.rate.." Old: r="..Vehicles.old.rate.." [static fluc="..Vehicles.fluc.."]")
+	--outputDebugString("UCDmarket[vehicles] - New: r="..Vehicles.rate.." Old: r="..Vehicles.old.rate.." [static fluc="..Vehicles.fluc.."]")
 	exports.UCDdx:new(root, "Vehicle market: The new vehicle selling percentage is "..tostring(Vehicles.rate).."%", 255, 255, 255)
 	
 	-- This is synced client-side, so we don't need to worry about a client file or manual syncing

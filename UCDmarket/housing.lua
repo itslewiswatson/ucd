@@ -32,7 +32,7 @@ function setHouseRate()
 end
 
 function onHousePriceChange()
-	outputDebugString("UCDmarket[housing] - New: r="..Housing.rate.." f="..Housing.fluc.."; Old: r="..Housing.old.rate.." f="..Housing.old.fluc)
+	--outputDebugString("UCDmarket[housing] - New: r="..Housing.rate.." f="..Housing.fluc.."; Old: r="..Housing.old.rate.." f="..Housing.old.fluc)
 	exports.UCDdx:new(root, "Housing market: The new housing selling percentage is "..tostring(Housing.rate).."%", 255, 255, 255)
 	
 	-- This is synced client-side, so we don't need to worry about a client file or manual syncing
