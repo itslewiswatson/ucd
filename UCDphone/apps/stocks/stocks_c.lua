@@ -45,11 +45,17 @@ function Stocks.populate(all, own)
 		local prev = exports.UCDutil:mathround(info[3], 2)
 		local diff = curr - prev
 		local per = exports.UCDutil:mathround((diff / prev) * 100, 2) -- delta over original muliplied by 100%
+		local sign
+		if (diff <= 0) then
+			sign = ""
+		else
+			sign = "+"
+		end
 			
 		local row = guiGridListAddRow(phone.stocks.gridlist["all"])
 		guiGridListSetItemText(phone.stocks.gridlist["all"], row, 1, tostring(i), false, false)
 		guiGridListSetItemText(phone.stocks.gridlist["all"], row, 2, tostring(curr), false, false)
-		guiGridListSetItemText(phone.stocks.gridlist["all"], row, 3, tostring(per).."% ("..tostring(diff)..")", false, false)
+		guiGridListSetItemText(phone.stocks.gridlist["all"], row, 3, tostring(per).."% ("..tostring(sign)..tostring(diff)..")", false, false)
 			
 		if (per < 0) then
 			guiGridListSetItemColor(phone.stocks.gridlist["all"], row, 1, 255, 0, 0)
