@@ -11,6 +11,7 @@ serials = {
 	["E0AD3B1CA3C2A3FEC851DAADB18E1C02"] = true, -- carl
 	["68B41277286394C74AD831B2DEF48902"] = true, -- felix
 	["8D77ADDACDD9DAAF56F7850F63B5B7E2"] = true, -- metall
+	["7B8CA70E3161C1AD51D076A2B669F252"] = true, -- foley
 }
 
 addEventHandler("onPlayerConnect", root,
