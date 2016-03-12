@@ -349,7 +349,7 @@ function handleGUIInput()
 			--local price = getHouseData(houseID, "boughtForPrice")
 			local price = UCDhousing.houseData[6]
 			local rate = root:getData("housing.rate")
-			createConfirmationWindow(houseID, "Current rate is "..tostring(rate / 10).."% \nDo you want to sell your house for \n"..tostring(rate / 10).."% of what it is worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", sellHouseToBank)
+			createConfirmationWindow(houseID, "Current rate is "..tostring(rate).."% \nDo you want to sell your house for \n"..tostring(rate).."% of what it is worth [$"..exports.UCDutil:tocomma(tostring(math.floor(price * (rate / 100)))).."]?", sellHouseToBank)
 			--sellHouseToBank(houseID)
 		end
 	end

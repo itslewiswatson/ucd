@@ -237,10 +237,10 @@ function sellHouseToBank(houseID)
 	setHouseData(houseID, "open", 1)
 	triggerClientEvent("UCDhousing.closeGUI", client)
 	
-	local jewmoney = price * (rate / 1000)
+	local jewmoney = math.floor(price * (rate / 100))
 	
 	client:giveMoney(jewmoney)
-	exports.UCDdx:new(client, "You have sold your house to the bank for $"..tostring(exports.UCDutil:tocomma(exports.UCDutil:mathround(jewmoney))).." which is "..tostring(rate / 10).."% of what you bought it for!", 0, 255, 0)
+	exports.UCDdx:new(client, "You have sold your house to the bank for $"..tostring(exports.UCDutil:tocomma((jewmoney))).." which is "..tostring(rate).."% of what you bought it for!", 0, 255, 0)
 end
 addEvent("UCDhousing.sellHouseToBank", true)
 addEventHandler("UCDhousing.sellHouseToBank", root, sellHouseToBank)
