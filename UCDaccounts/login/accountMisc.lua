@@ -14,7 +14,7 @@ function registerAccount(plr, usr, passwd, email)
 	local salt = bcrypt_salt(6)
 	local passwd = bcrypt_digest(passwd, salt)
 
-	db:exec("INSERT INTO `accounts` SET `account`=?, `pw`=?, `ip`=?, `serial`=?, `email`=?", usr, passwd, plr.name, plr.ip, plr.serial, email)
+	db:exec("INSERT INTO `accounts` (`account`, `pw`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?, ?) ", usr, passwd, plr.ip, plr.serial, email)
 	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=?",
 		usr,
 		2001,
@@ -45,7 +45,7 @@ end
 function deleteAccount(accName)
 	if (not accName or type(accName) ~= "string") then return false end
 	
-	acc = Account(accountName)
+	local acc = Account(accName)
 	
 	-- If the account has someone on it
 	if (acc.player) then

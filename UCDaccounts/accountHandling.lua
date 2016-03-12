@@ -59,7 +59,7 @@ function Accounts.Login(_, theCurrentAccount)
 	
 	setCameraTarget(source, source)
 	fadeCamera(source, true, 2)
-	db:exec("UPDATE `accounts` SET `serial`=?, `ip`=?, `lastUsedName`=? WHERE `account`=?", source.serial, source.ip, source.name, source.account.name)
+	db:exec("UPDATE `accounts` SET `serial` = ?, `ip` = ? WHERE `account` = ?", source.serial, source.ip, source.account.name)
 	--source:setData("accountID", accountID, true)
 	source:setData("accountName", source.account.name, true)
 	SAD(source, "lastUsedName", source.name)
