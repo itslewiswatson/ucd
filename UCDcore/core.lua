@@ -40,14 +40,14 @@ local ARR = {
 	"UCDdata",
 	"UCDplaytime",
 }
-
+--[[
 function autoRestart()
 	for i, resource in pairs(ARR) do
 		local restart = restartResource(getResourceFromName(resource))
 		if (restart == true) then
-			outputDebugString("[[ARR]] Resource '"..resource.."' automatically restarted")
+			outputDebugString("[ARR] Resource '"..resource.."' automatically restarted")
 		else
-			outputDebugString("[[ARR]] Cannot restart resource: "..resource.." - contact developer")
+			outputDebugString("[ARR] Cannot restart resource: "..resource.." - contact developer")
 			break
 		end
 	end
@@ -57,7 +57,7 @@ function autoRestartTimer()
 	restartTimer = setTimer(autoRestart, 2400000, 0) -- restart on every hour of server uptime
 end
 addEventHandler("onResourceStart", resourceRoot, autoRestartTimer)
-
+--]]
 
 -----------------------------------------------------
 -- Kill command
