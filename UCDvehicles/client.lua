@@ -263,7 +263,7 @@ function handleInput(button, state)
 				local price = getVehicleData(vehicleID, "price")
 				local rate = root:getData("vehicles.rate") --exports.UCDmarket:getVehicleRate()
 				--exports.UCDutil:createConfirmationWindow("Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicles:callback_sellVehicle("..vehicleID..")")
-				exports.UCDutil:createConfirmationWindow("UCDvehicles.sellVehicle.client", vehicleID, nil, "UCD | Player Vehicles - Confirmation", "Are you sure you want to sell this vehicle\n for "..tostring(rate / 10).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(exports.UCDutil:mathround(price * (rate / 1000), 2))).."]?", "exports.UCDvehicles:callback_sellVehicle("..vehicleID..")")
+				exports.UCDutil:createConfirmationWindow("UCDvehicles.sellVehicle.client", vehicleID, nil, "UCD | Player Vehicles - Confirmation", "Are you sure you want to sell this vehicle\n for "..tostring(rate).."% of what it's worth [$"..exports.UCDutil:tocomma(tostring(math.floor(price * (rate / 100)))).."]?", "exports.UCDvehicles:callback_sellVehicle("..vehicleID..")")
 				
 			end
 		elseif (source == GUIEditor.button[5]) then
