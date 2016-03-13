@@ -3,7 +3,12 @@ local locs =
 {
 	{2290.5786, -1676.5746, 14.3835}, -- Grove Street
 	{1854.7446, -2409.2378, 13.5547}, -- LS Airport
-	{ 721.8774, -1634.1714, -0.05}, -- Near canal boat shop, LS
+	{721.8774, -1634.1714, -0.05}, -- Near canal boat shop, LS
+	{720.0313, -457.2752, 16.3359}, -- Dillimore
+	{2409.7002, 91.0102, 26.4733}, -- Palomino Creek
+	{1025.2513, -1023.9696, 32.1016}, -- LS Mech
+	{1974.2849, 2162.6072, 11.0703}, -- LV Mech
+	{345.5509, 2543.4856, 16.7615}, -- Verdant Meadows
 }
 
 addEventHandler("onClientResourceStart", resourceRoot,
