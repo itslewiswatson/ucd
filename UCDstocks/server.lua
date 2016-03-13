@@ -79,6 +79,8 @@ function getPlayerStocks(plr)
 			end
 		end
 		if (own and own[acronym] and #own[acronym] > 0) then
+			-- OLD METHOD
+			--[[
 			local p = 0
 			local result = db:query("SELECT `price` FROM `stocks__transactions` WHERE `account` = ? AND `acronym` = ? AND `action` = ?", plr.account.name, acronym, "bought"):poll(-1)
 			if (result and #result > 0) then
@@ -91,6 +93,21 @@ function getPlayerStocks(plr)
 				end
 				table.insert(own[acronym], p)
 				--outputDebugString(#own[acronym])
+			end
+			]]--
+			local p = 0
+			local sind = -1
+			local result = db:query("SELECT `price`, `action` FROM `stocks__transactions` WHERE `account` = ? AND `acronym` = ? ORDER BY `transacID` DESC", plr.account.name, acronym):poll(-1)
+			if (result and #result >= 1) then
+				for i = 1, #result do
+					if (result[i].action == "sold") then
+						p = p - result[i].price
+					else
+						p = p + result[i].price
+					end
+				end
+				table.insert(own[acronym], p)
+				--outputDebugString(tostring(acronym).." -> "..tostring(p))
 			end
 		end
 	end
@@ -130,17 +147,42 @@ addEventHandler("UCDstocks.getStocks", root, sendStocks)
 
 function sellStocks(stockName, amount, clientPrice)
 	if (client and stockName and amount and clientPrice) then
+		local amount = tonumber(amount)
 		local clientPrice = math.floor(clientPrice)
-		local price = math.floor(stocks[stockName].price * tonumber(amount))
+		local price = math.floor(stocks[stockName].price * amount)
+		local options = shares[client.account.name][acronym]
+		
 		if (not stocks[stockName]) then
 			exports.UCDdx:new(client, "This stock no longer exists", 255, 0, 0)
+			return
+		end
+		if (not shares[client.account.name] or not shares[client.account.name][acronym]) then
+			exports.UCDdx:new(client, "You do not own any options of this stock", 255, 0, 0)
 			return
 		end
 		if (clientPrice ~= price) then
 			exports.UCDdx:new(client, "Prices have changed since you tried to sell these stocks. Please sell them again.", 255, 0, 0)
 			return
 		end
+		if (amount > stocks[stockName].total or amount > options) then
+			exports.UCDdx:new(client, "You don't own this many stock options", 255, 0, 0)
+			return
+		end
 		
+		if (options - amount == 0) then
+			shares[client.account.name][stockName] = nil
+			db:exec("DELETE FROM `stocks__holders` WHERE `account` = ? AND `acronym` = ?", client.account.name, stockName)
+		else
+			shares[client.account.name][stockName] = options - amount
+			db:exec("UPDATE `stocks__holders` SET `amount` = `amount` - ? WHERE `account` = ? AND `acronym` = ?", amount, client.account.name, stockName)
+		end
+		
+		client.money = client.money + price
+		exports.UCDdx:new(client, "Sold "..tostring(exports.UCDutil:tocomma(amount)).." stock options of "..tostring(stockName).." for $"..tostring(exports.UCDutil:tocomma(price)), 0, 255, 0)
+		db:exec("INSERT INTO `stocks__transactions` (`acronym`, `account`, `price`, `options`, `action`) VALUES (?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "sold")
+		
+		triggerEvent("UCDstocks.getStocks", client)
+		triggerEvent("UCDphone.getStocks", client)
 	end
 end
 
@@ -237,11 +279,11 @@ addCommandHandler("fuckstocks", updateStockMarket)
 
 function appendStockHistory(stockName)
 	local price = stocks[stockName]["price"]
-	db:exec("INSERT INTO `stocks__history` (`datum`, `acronym`, `price`) VALUES (CURRENT_TIMESTAMP(), ?, ?)", stockName, price)
+	db:exec("INSERT INTO `stocks__history` (`datum`, `acronym`, `price`) VALUES (UNIX_TIMESTAMP(), ?, ?)", stockName, price)
 end
 
 function getStockHistory(stockName, limit)
-	local result = db:query("SELECT * FROM `stocks__history` WHERE `acronym` = ? ORDER BY `datum` DESC LIMIT ?", stockName, limit):poll(-1)
+	local result = db:query("SELECT `acronym`, `price`, FROM_UNIXTIME(`datum`) AS `datum` FROM `stocks__history` WHERE `acronym` = ? ORDER BY `datum` DESC LIMIT ?", stockName, limit):poll(-1)
 	return result or {}
 end
 

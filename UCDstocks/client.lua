@@ -31,9 +31,9 @@ addEventHandler("onClientResourceStart", resourceRoot,
         historyGUI.window.visible = false
 		exports.UCDutil:centerWindow(historyGUI.window)
         historyGUI.gridlist = GuiGridList(10, 25, 339, 176, false, historyGUI.window)
-        guiGridListAddColumn(historyGUI.gridlist, "Stock", 0.3)
-        guiGridListAddColumn(historyGUI.gridlist, "Date", 0.3)
-        guiGridListAddColumn(historyGUI.gridlist, "Price", 0.3)
+        guiGridListAddColumn(historyGUI.gridlist, "Stock", 0.2)
+        guiGridListAddColumn(historyGUI.gridlist, "Date", 0.45)
+        guiGridListAddColumn(historyGUI.gridlist, "Price", 0.25)
         historyGUI.button = GuiButton(116, 211, 129, 38, "Close", false, historyGUI.window)  
 
 		GUI.window = GuiWindow(447, 150, 560, 511, "UCD | Stock Market", false)
@@ -91,6 +91,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		addEventHandler("onClientGUIClick", buyGUI.button[1], onBuyStock, false)
 		addEventHandler("onClientGUIChanged", buyGUI.edit, onClientGUIChanged, false)
 		addEventHandler("onClientGUIClick", GUI.button["all.view_history"], showHistory, false)
+		addEventHandler("onClientGUIClick", historyGUI.button, showHistory, false)
 	end
 )
 
@@ -179,11 +180,14 @@ addCommandHandler("stocks", toggleGUI)
 function showHistory(data)
 	if (type(data) == "table") then
 		historyGUI.gridlist:clear()
-		for i = #data, 1, -1 do
+		guiBringToFront(historyGUI.window)
+		historyGUI.window.visible = true
+		--for i = #data, 1, -1 do
+		for i = 1, #data do
 			local row = guiGridListAddRow(historyGUI.gridlist)
-			guiGridListSetItemText(historyGUI.gridlist, row, 1, data[i].acronym)
-			guiGridListSetItemText(historyGUI.gridlist, row, 2, data[i].datum)
-			guiGridListSetItemText(historyGUI.gridlist, row, 3, data[i].price)
+			guiGridListSetItemText(historyGUI.gridlist, row, 1, tostring(data[i].acronym), false, false)
+			guiGridListSetItemText(historyGUI.gridlist, row, 2, tostring(data[i].datum), false, false)
+			guiGridListSetItemText(historyGUI.gridlist, row, 3, tostring(data[i].price), false, false)
 		end
 	else
 		if (historyGUI.window.visible) then
