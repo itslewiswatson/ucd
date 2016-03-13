@@ -77,8 +77,8 @@ function isPlayerInRangeOfPoint(player, x, y, z, range)
 end
 
 function getTimeStamp()
-	local time = getRealTime()
-	local year, month, day, hours, mins, secs = time.year + 1900, time.month + 1, time.monthday, time.hour, time.minute, time.second
+	local t = getRealTime()
+	local year, month, day, hours, mins, secs = t.year + 1900, t.month + 1, t.monthday, t.hour, t.minute, t.second
 	
 	if (month < 10) then
 		month = "0"..month
@@ -100,9 +100,9 @@ function getTimeStamp()
 		secs = "0" .. secs
 	end
 	
-	aTime = day .. "-" .. month .. "-" .. year
+	at = day .. "-" .. month .. "-" .. year
 	aDate = hours .. ":" .. mins .. ":" .. secs
-	return aTime, aDate--, time.timestamp
+	return at, aDate--, t.timestamp
 end
 
 -- 

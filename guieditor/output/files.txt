@@ -12,3 +12,4 @@
 :guieditor/output/withvehhudoff_2016-1-30_17-14.txt
 :guieditor/output/vehiclestockmockup_2016-1-30_19-12.txt
 :guieditor/output/ucdvehicleshops_2016-1-30_19-41.txt
+:guieditor/output/stocks_history_2016-3-12_23-44.txt

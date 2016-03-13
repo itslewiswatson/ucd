@@ -1,0 +1,51 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(539, 278, 359, 263, "UCD | Stock Market - History", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.gridlist[1] = guiCreateGridList(10, 25, 339, 176, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Stock", 0.3)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Date", 0.3)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Price", 0.3)
+        for i = 1, 10 do
+            guiGridListAddRow(GUIEditor.gridlist[1])
+        end
+        guiGridListSetItemText(GUIEditor.gridlist[1], 0, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 0, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 0, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 1, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 1, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 1, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 2, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 2, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 2, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 3, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 3, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 3, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 4, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 4, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 4, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 5, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 5, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 5, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 6, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 6, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 6, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 7, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 7, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 7, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 8, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 8, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 8, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 9, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 9, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[1], 9, 3, "-", false, false)
+        GUIEditor.button[1] = guiCreateButton(116, 211, 129, 38, "Close", false, GUIEditor.window[1])    
+    end
+)
