@@ -9,6 +9,17 @@
 
 jobVehicles = 
 {
+	-- Free vehicles [-- Caddy, BMX & Sanchez]
+	{x = 1183.4351, y = -1332.3489, z = 13.5823, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- All Saints
+	{x = 1183.4351, y = -1314.9749, z = 13.5823, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- All Saints
+	{x = 2000.1630, y = -1447.6506, z = 13.5604, rot = 135, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- Jefferson Hospital
+	{x = 2462.5354, y = -1670.5311, z = 13.4966 , rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- Grove Street
+	
+	{x = 1629.8534, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
+	{x = 1633.8729, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
+	{x = 1583.5, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
+	{x = 1587.5, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
+	
 	-- Aviator
 	-- Small planes (Beagle, Dodo, Shamal, Stuntplane)
 	{x = 1364.3641, y = 1756.73, z = 10.8203, rot = 270, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Las Venturas

@@ -17,7 +17,7 @@ GUI.close = guiCreateButton(135, 214, 114, 31, "Close", false, GUI.window)
 -- Create markers
 function init()
 	if (not jobVehicles or type(jobVehicles) ~= "table") then
-		outputDebugString("No table to loop through - trying again")
+		outputDebugString("No table to loop through")
 		--init()
 		return
 	end
@@ -57,10 +57,15 @@ function markerOpen(mkr)
 	local job = localPlayer:getData("Occupation")
 	local isAbleTo
 	if (not job) then return end
-	for i, v in ipairs(spawnerData[mkr][1] or {}) do
-		if (job == v) then
-			isAbleTo = true
-			break
+	outputDebugString(tostring(#spawnerData[mkr][1]))
+	if (#spawnerData[mkr][1] == 0) then
+		isAbleTo = true
+	else
+		for i, v in ipairs(spawnerData[mkr][1] or {}) do
+			if (job == v) then
+				isAbleTo = true
+				break
+			end
 		end
 	end
 	if (isAbleTo) then
@@ -89,7 +94,10 @@ function toggleGUI()
 	if (GUI.window.visible) then
 		showCursor(true, true)
 		--localPlayer.frozen = true
-		GUI.window.text = "UCD | "..source:getData("Occupation").." - Vehicles"
+		GUI.window.text = "UCD | "..localPlayer:getData("Occupation").." - Vehicles"
+		if (#spawnerData[_marker][1] == 0) then
+			GUI.window.text = "UCD | Complimentary Vehicles"
+		end
 	else
 		showCursor(false, false)
 		--localPlayer.frozen = false
@@ -101,9 +109,9 @@ addEventHandler("onClientGUIClick", GUI.close, toggleGUI, false)
 function toggleSpawner(data, marker)
 	if (source and source.type == "player" and source == localPlayer) then
 		guiGridListClear(GUI.gridlist)
-		toggleGUI()
 		_data = data
 		_marker = marker
+		toggleGUI()
 		if (data and type(data) == "table") then
 			for _, v in ipairs(data[3]) do
 				local row = guiGridListAddRow(GUI.gridlist)

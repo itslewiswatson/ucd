@@ -105,7 +105,9 @@ function createJobVehicle(plr, model, rot, pos)
 		end
 	end
 	
-	r1, g1, b1, r2, g2, b2 = ranks[playerRank].colour.r1, ranks[playerRank].colour.g1, ranks[playerRank].colour.b1, ranks[playerRank].colour.r2, ranks[playerRank].colour.g2, ranks[playerRank].colour.b2
+	if (ranks) then
+		r1, g1, b1, r2, g2, b2 = ranks[playerRank].colour.r1, ranks[playerRank].colour.g1, ranks[playerRank].colour.b1, ranks[playerRank].colour.r2, ranks[playerRank].colour.g2, ranks[playerRank].colour.b2
+	end
 	
 	plr.position = Vector3(pos.x, pos.y, pos.z + 2)
 	plr.rotation = Vector3(0, 0, rot)
@@ -118,7 +120,8 @@ function createJobVehicle(plr, model, rot, pos)
 	plr:warpIntoVehicle(PJV[plr])
 	
 	-- If it's not a tug or a baggage
-	if (model ~= 583 and model ~= 485) then
+	--if (model ~= 583 and model ~= 485) then
+	if (r1 and g1) then
 		PJV[plr]:setColor(r1, g1, b1, r2, g2, b2)
 	end
 	
