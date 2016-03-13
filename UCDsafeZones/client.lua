@@ -20,12 +20,14 @@ function zoneEntry(element, matchingDimension)
 		toggleControl("aim_weapon", false)
 		toggleControl("fire", false)
 	end
-	exports.UCDdx:new("You have entered a safe zone", 50, 200, 70)
+	--exports.UCDdx:new("You have entered a safe zone", 50, 200, 70)
+	exports.UCDdx:add("Safe Zone", 0, 255, 0)
 end
 
 function zoneExit(element, matchingDimension)
 	if (element ~= localPlayer or not matchingDimension) then return end
-	exports.UCDdx:new("You have left a safe zone", 50, 200, 70)
+	--exports.UCDdx:new("You have left a safe zone", 50, 200, 70)
+	exports.UCDdx:del("Safe Zone")
 end
 	
 for i, sZone in pairs(sZone) do
