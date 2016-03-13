@@ -41,6 +41,7 @@ function onClientResourceStart()
 				end
 				
 				addEventHandler("onClientMarkerHit", markers[jobName][i], onJobMarkerHit)
+				addEventHandler("onClientMarkerLeave", markers[jobName][i], onJobMarkerLeave)
 			end
 		end
 	end
@@ -52,16 +53,36 @@ function onJobMarkerHit(plr, matchingDimension)
 		local jobName = source:getData("job")
 		if (markers[jobName] and blips[jobName]) then
 			if (plr.position.z - 1.5 < source.position.z and plr.position.z + 1.5 > source.position.z) then
-				toggleJobGUI(jobName)
-				for _, ctrl in ipairs(disabledControls) do
-					setControlState(ctrl, false)
-				end
+				--toggleJobGUI(jobName)
+				--for _, ctrl in ipairs(disabledControls) do
+				--	setControlState(ctrl, false)
+				--end
+				bindZ(jobName)
 			end
 		end
 	end
 end
 
-function toggleJobGUI(jobName)
+function onJobMarkerLeave(plr, matchingDimension)
+	if (plr and isElement(plr) and plr.type == "player" and plr == localPlayer and not plr.vehicle and matchingDimension) then
+		local jobName = source:getData("job")
+		if (markers[jobName]) then
+			unbindZ()
+		end
+	end
+end
+
+function bindZ(jobName)
+	bindKey("z", "down", toggleJobGUI, jobName)
+	exports.UCDdx:add("Press Z: Job GUI", 255, 215, 0)
+end
+function unbindZ()
+	unbindKey("z", "down", toggleJobGUI)
+	exports.UCDdx:del("Press Z: Job GUI")
+end
+
+function toggleJobGUI(_, _, jobName)
+	unbindZ()
 	GUI.window.visible = not GUI.window.visible
 	if (GUI.window.visible) then
 		if (jobName) then
@@ -76,8 +97,8 @@ function toggleJobGUI(jobName)
 			end
 		end
 		showCursor(true)
-		localPlayer.frozen = true
-		frozen = true
+		--localPlayer.frozen = true
+		--frozen = true
 		originalSkin[localPlayer] = localPlayer.model
 	else
 		guiGridListClear(GUI.gridlist)
@@ -88,10 +109,10 @@ function toggleJobGUI(jobName)
 			localPlayer.model = originalSkin[localPlayer]
 			originalSkin[localPlayer] = nil
 		end
-		if (localPlayer.frozen and frozen == true) then
-			localPlayer.frozen = false
-			frozen = false
-		end
+		--if (localPlayer.frozen and frozen == true) then
+		--	localPlayer.frozen = false
+		--	frozen = false
+		--end
 	end
 end
 
