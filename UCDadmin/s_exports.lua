@@ -14,7 +14,7 @@ function getPlayerAdminRank(plr)
 	if (not plr) then return end
 	if (plr.type ~= "player") then return false end
 	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
-	if isPlayerOwner(plr) then return 5 end
+	if isPlayerOwner(plr) then return 1337 end
 	if (adminTable and adminTable[plr.account.name]) then
 		return adminTable[plr.account.name].rank 
 	end

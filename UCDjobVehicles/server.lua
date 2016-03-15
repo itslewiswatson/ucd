@@ -87,6 +87,7 @@ function createJobVehicle(plr, model, rot, pos)
 		return
 	end
 	
+	local r1, g1, b1, r2, g2, b2
 	local ranks = exports.UCDjobsTable:getJobRanks(jobName)
 	local restricted = exports.UCDjobsTable:getRestricedVehicles(jobName)
 	
@@ -105,7 +106,7 @@ function createJobVehicle(plr, model, rot, pos)
 		end
 	end
 	
-	if (ranks) then
+	if (ranks and ranks[playerRank]) then
 		r1, g1, b1, r2, g2, b2 = ranks[playerRank].colour.r1, ranks[playerRank].colour.g1, ranks[playerRank].colour.b1, ranks[playerRank].colour.r2, ranks[playerRank].colour.g2, ranks[playerRank].colour.b2
 	end
 	

@@ -26,15 +26,17 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		buyGUI.label = GuiLabel(9, 25, 265, 17, "Buying stock options of ", false, buyGUI.window)
 		guiLabelSetHorizontalAlign(buyGUI.label, "center", false)
 		
-		historyGUI.window = GuiWindow(539, 278, 359, 263, "UCD | Stock Market - History", false)
+		historyGUI.window = GuiWindow(539, 278, 359, 240, "UCD | Stock Market - History", false)
         historyGUI.window.sizable = false
         historyGUI.window.visible = false
+        historyGUI.window.alpha = 255
 		exports.UCDutil:centerWindow(historyGUI.window)
         historyGUI.gridlist = GuiGridList(10, 25, 339, 176, false, historyGUI.window)
+		guiGridListSetSortingEnabled(historyGUI.gridlist, false)
         guiGridListAddColumn(historyGUI.gridlist, "Stock", 0.2)
         guiGridListAddColumn(historyGUI.gridlist, "Date", 0.45)
         guiGridListAddColumn(historyGUI.gridlist, "Price", 0.25)
-        historyGUI.button = GuiButton(116, 211, 129, 38, "Close", false, historyGUI.window)  
+        historyGUI.button = GuiButton(359 / 2 - 130 / 2, 206, 123, 28, "Close", false, historyGUI.window)  
 
 		GUI.window = GuiWindow(447, 150, 560, 511, "UCD | Stock Market", false)
 		GUI.window.alpha = 1
@@ -44,6 +46,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 
 		-- All stocks
 		GUI.gridlist["all"] = GuiGridList(10, 42, 253, 315, false, GUI.window)
+		guiGridListSetSortingEnabled(GUI.gridlist["all"], false)
 		guiGridListAddColumn(GUI.gridlist["all"], "Name", 0.3)
 		guiGridListAddColumn(GUI.gridlist["all"], "Value", 0.2)
 		guiGridListAddColumn(GUI.gridlist["all"], "Change", 0.4)
@@ -53,22 +56,23 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		GUI.label["all.available_shares"] = GuiLabel(10, 415, 253, 16, "Available Shares: ", false, GUI.window)
 		GUI.label["all.shareholders"] = GuiLabel(10, 431, 253, 16, "Shareholders: ", false, GUI.window)
 		GUI.label["all.minimum_investment"] = GuiLabel(10, 447, 253, 16, "Minimum Investment: ", false, GUI.window)
-		GUI.button["all.buy_shares"] = GuiButton(10, 473, 123, 27, "Buy Shares", false, GUI.window)
+		GUI.button["all.buy_shares"] = GuiButton(10, 473, 123, 28, "Buy Shares", false, GUI.window)
 		GUI.button["all.view_history"] = GuiButton(140, 472, 123, 28, "View History", false, GUI.window)
 		
 		GUI.button["all.buy_shares"].enabled = false
 		GUI.button["all.view_history"].enabled = false
 		
 		-- Misc labels
-		GUI.label["all_shares"] = GuiLabel(12, 23, 251, 15, "All shares:", false, GUI.window)
+		GUI.label["all_shares"] = GuiLabel(12, 23, 251, 15, "All stock", false, GUI.window)
 		guiLabelSetHorizontalAlign(GUI.label["all_shares"], "center", false)
 		GUI.label["divider"] = GuiLabel(263, 20, 34, 492, "|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|", false, GUI.window)
 		guiLabelSetHorizontalAlign(GUI.label["divider"], "center", false)
-		GUI.label["own_shares"] = GuiLabel(297, 23, 251, 15, "My shares:", false, GUI.window)
+		GUI.label["own_shares"] = GuiLabel(297, 23, 251, 15, "My stock", false, GUI.window)
 		guiLabelSetHorizontalAlign(GUI.label["own_shares"], "center", false)
 
 		-- Own stocks
 		GUI.gridlist["own"] = GuiGridList(296, 43, 252, 314, false, GUI.window)
+		guiGridListSetSortingEnabled(GUI.gridlist["own"], false)
 		guiGridListAddColumn(GUI.gridlist["own"], "Name", 0.45)
 		guiGridListAddColumn(GUI.gridlist["own"], "Shares", 0.45)
 		GUI.label["own.share_name"] = GuiLabel(297, 367, 253, 16, "Name: ", false, GUI.window)
@@ -168,6 +172,9 @@ function toggleGUI(data, own, show)
 		if (GUI.window.visible) then
 			GUI.window.visible = false
 			showCursor(false)
+			historyGUI.visible = false
+			buyGUI.window.visible = false
+			buyGUI.edit.text = "1"
 		else
 			triggerServerEvent("UCDstocks.getStocks", localPlayer)
 		end

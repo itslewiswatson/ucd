@@ -75,9 +75,9 @@ addEventHandler("onVehicleFixed", root, onVehicleFixed)
 
 function fix(vehicle)
 	if (vehicle and isElement(vehicle)) then
-		if (exports.UCDvehicles:isVehicleBrokenDown(source)) then
-			source:setEngineState(true)
-			source:setDamageProof(false)
+		if (exports.UCDvehicles:isVehicleBrokenDown(vehicle)) then
+			vehicle:setEngineState(true)
+			vehicle:setDamageProof(false)
 		end
 		vehicle:fix()
 	end

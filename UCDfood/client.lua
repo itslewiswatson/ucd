@@ -1,11 +1,13 @@
+local sX, sY = guiGetScreenSize()
+
 GUIEditor = {button = {}, window = {}, staticimage = {}}
-GUIEditor.window[1] = guiCreateWindow(730, 812, 444, 227, "", false)
+GUIEditor.window[1] = GuiWindow((sX / 2) - (444 / 2), sY - 227, 444, 227, "", false)
 GUIEditor.window[1].sizable = false
 GUIEditor.window[1].visible = false
-GUIEditor.button[1] = guiCreateButton(10, 160, 135, 24, "$20", false, GUIEditor.window[1])
-GUIEditor.button[2] = guiCreateButton(155, 160, 135, 24, "$50", false, GUIEditor.window[1])
-GUIEditor.button[3] = guiCreateButton(300, 160, 135, 24, "$100", false, GUIEditor.window[1])
-GUIEditor.button[4] = guiCreateButton(313, 194, 122, 23, "Close", false, GUIEditor.window[1])
+GUIEditor.button[1] = GuiButton(10, 160, 135, 24, "$20", false, GUIEditor.window[1])
+GUIEditor.button[2] = GuiButton(155, 160, 135, 24, "$50", false, GUIEditor.window[1])
+GUIEditor.button[3] = GuiButton(300, 160, 135, 24, "$100", false, GUIEditor.window[1])
+GUIEditor.button[4] = GuiButton(313, 194, 122, 23, "Close", false, GUIEditor.window[1])
 
 function disablePedDamage()
 	cancelEvent()
@@ -76,9 +78,9 @@ for _, info in pairs(markers) do
 end
 
 function createGUI(key)
-	GUIEditor.staticimage[1] = guiCreateStaticImage(10, 26, 135, 134, ":UCDfood/"..key.."_small.png", false, GUIEditor.window[1])
-	GUIEditor.staticimage[2] = guiCreateStaticImage(155, 26, 135, 134, ":UCDfood/"..key.."_medium.png", false, GUIEditor.window[1])
-	GUIEditor.staticimage[3] = guiCreateStaticImage(304, 26, 131, 134, ":UCDfood/"..key.."_large.png", false, GUIEditor.window[1])	
+	GUIEditor.staticimage[1] = GuiStaticImage(10, 26, 135, 134, ":UCDfood/"..key.."_small.png", false, GUIEditor.window[1])
+	GUIEditor.staticimage[2] = GuiStaticImage(155, 26, 135, 134, ":UCDfood/"..key.."_medium.png", false, GUIEditor.window[1])
+	GUIEditor.staticimage[3] = GuiStaticImage(304, 26, 131, 134, ":UCDfood/"..key.."_large.png", false, GUIEditor.window[1])	
 end
 
 function toggleGUI(i)
