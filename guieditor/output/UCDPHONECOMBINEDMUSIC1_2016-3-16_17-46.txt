@@ -1,0 +1,34 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    tab = {},
+    staticimage = {},
+    tabpanel = {},
+    label = {},
+    gridlist = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(1264, 459, 310, 600, ":UCDphone/iphone2.png", false)
+
+        GUIEditor.tabpanel[1] = guiCreateTabPanel(19, 87, 271, 388, false, GUIEditor.staticimage[1])
+
+        GUIEditor.tab[1] = guiCreateTab("Music", GUIEditor.tabpanel[1])
+
+        GUIEditor.gridlist[1] = guiCreateGridList(3, 20, 268, 260, false, GUIEditor.tab[1])
+
+        GUIEditor.tab[2] = guiCreateTab("Radio", GUIEditor.tabpanel[1])
+
+        GUIEditor.gridlist[2] = guiCreateGridList(0, 26, 267, 334, false, GUIEditor.tab[2])
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Station", 0.9)
+        GUIEditor.label[1] = guiCreateLabel(0, 0, 271, 22, "Double click on a station to play", false, GUIEditor.tab[2])
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")    
+    end
+)

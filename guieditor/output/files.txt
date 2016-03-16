@@ -13,3 +13,5 @@
 :guieditor/output/vehiclestockmockup_2016-1-30_19-12.txt
 :guieditor/output/ucdvehicleshops_2016-1-30_19-41.txt
 :guieditor/output/stocks_history_2016-3-12_23-44.txt
+:guieditor/output/UCDPHONECOMBINEDMUSIC1_2016-3-16_17-46.txt
+:guieditor/output/UCDphone.music.final5_2016-3-16_18-4.txt
