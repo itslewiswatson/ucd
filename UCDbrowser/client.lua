@@ -2,7 +2,14 @@ screenWidth, screenHeight = guiGetScreenSize()
 
 function toggleBrowser()
 	if (WebBrowserGUI.instance) then
-		WebBrowserGUI.instance:CloseButton_Click("left", "up")
+		local b = WebBrowserGUI.instance
+		if b.m_Window.visible then
+			showCursor(false)
+			b.m_Window.visible = false
+		else
+			showCursor(true)
+			b.m_Window.visible = true
+		end
 	else
 		showBrowser()
 	end
