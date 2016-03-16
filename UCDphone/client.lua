@@ -103,7 +103,7 @@ local apps =
 	-- [id] = {string name, string icon, {int row, int pos}}
 	-- Docked
 	[1] = {"IM", "im.png", {-1, 0}},
-	[2] = {"Music", "music.png", {-1, 1}},
+	[2] = {"Music Beta", "music.png", {-1, 1}},
 	[3] = {"Browser", "browser.png", {-1, 2}},
 	[4] = {"Settings", "settings.png", {-1, 3}},
 	
@@ -136,7 +136,7 @@ for i, info in ipairs(apps) do
 	end
 	
 	phone.home.image[i] = GuiStaticImage(x, y, app.width, app.height, ":UCDphone/images/"..info[2], false, phone.image["phone_window"])
-	phone.home.label[i] = GuiLabel(x, y + app.height, app.width, 15, info[1], false, phone.image["phone_window"])
+	phone.home.label[i] = GuiLabel(x, y + app.height, app.width + 3, 15, tostring(info[1]), false, phone.image["phone_window"])
 	guiLabelSetHorizontalAlign(phone.home.label[i], "center", false)
 end
 
