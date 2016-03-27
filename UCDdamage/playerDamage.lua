@@ -1,30 +1,16 @@
--- Disable stealth kill
-addEventHandler( "onClientPlayerStealthKill", localPlayer,
-	function ()
-		cancelEvent()
-	end
-)
-
-addEventHandler("onClientPlayerDamage", localPlayer,
-	function (attacker, weapon, bodypart, loss)
-		if (attacker and isElement(attacker) and attacker:getType() == "player") then
-			-- Disable nightstick damage [This is still needed for a law system]
-			--[[
-			if (weapon == 3) then
-				cancelEvent()
+function onPlayerDamage(attacker, _, _, loss)
+	if (not wasEventCancelled()) then
+		outputDebugString("Go forth")
+		if (attacker == localPlayer) then
+			if (source.health - loss <= 0) then
+				outputDebugString("This would kill the player... Returning to avoid issues")
+				return
 			end
-			--]]
-			
-			-- Disable katana 1 hit kill
-			if (weapon == 8 and loss > 50) then
-				cancelEvent()
-			end
+			cancelEvent()
+			triggerServerEvent("UCDdamage.onPlayerDamage", resourceRoot, source, loss)
 		end
+	else
+		outputDebugString("fuck me dead")
 	end
-)
-
-addEventHandler("onClientPlayerHeliKilled", localPlayer,
-	function ()
-		cancelEvent()
-	end
-)
+end
+addEventHandler("onClientPlayerDamage", root, onPlayerDamage, true, "low")
