@@ -1,0 +1,8 @@
+<meta>
+	<info author="Noki" version="1" name="core" type="script" />
+	<script src="server.lua" type="server"/>
+	<export function="setAction" type="server"/>
+	<export function="clearAction" type="server"/>
+	<export function="getAction" type="server"/>
+	<oop>true</oop>
+</meta>
