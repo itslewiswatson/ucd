@@ -21,13 +21,13 @@ function zoneEntry(element, matchingDimension)
 		toggleControl("fire", false)
 	end
 	--exports.UCDdx:new("You have entered a safe zone", 50, 200, 70)
-	exports.UCDdx:add("Safe Zone", 0, 255, 0)
+	exports.UCDdx:add("safezone", "Safe Zone", 0, 255, 0)
 end
 
 function zoneExit(element, matchingDimension)
 	if (element ~= localPlayer or not matchingDimension) then return end
 	--exports.UCDdx:new("You have left a safe zone", 50, 200, 70)
-	exports.UCDdx:del("Safe Zone")
+	exports.UCDdx:del("safezone")
 end
 	
 for i, sZone in pairs(sZone) do
@@ -36,9 +36,9 @@ for i, sZone in pairs(sZone) do
 end
 
 function cancelDmg()
-	if (isElementWithinSafeZone(localPlayer)) then
-		if (getPlayerWantedLevel(localPlayer) > 0) then return end
+	if (isElementWithinSafeZone(source)) then
+		if (getPlayerWantedLevel(source) > 0) then return end
 		cancelEvent()
 	end
 end
-addEventHandler("onClientPlayerDamage", root, cancelDmg)
+addEventHandler("onClientPlayerDamage", root, cancelDmg, true, "high")
