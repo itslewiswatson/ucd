@@ -4,8 +4,14 @@ local bar = {}
 --bar[0] = {t = "Press Z: House Info", r = 255, g = 255, b = 0}
 --bar[1] = {t = "Press N: House Rob", r = 255, g = 0, b = 0}
 
-function add(text, red, green, blue, ind)
+function add(key, text, red, green, blue, ind)
 	if (not text or not red or not green or not blue) then return end
+	for i, v in pairs(bar) do
+		if (v.k == key) then
+			bar[i] = {k = key, t = text, r = red, g = green, b = blue}
+			return
+		end
+	end
 	if (not ind) then
 		ind = #bar + 1
 	end
@@ -17,16 +23,16 @@ function add(text, red, green, blue, ind)
 			ind = ind - 1
 		end
 	end
-	table.insert(bar, ind, {t = text, r = red, g = green, b = blue})
+	table.insert(bar, ind, {k = key, t = text, r = red, g = green, b = blue})
 	return true
 end
 --add("Press Z: House Info", 255, 0, 0)
 
-function del(text)
-	if (not text) then return false end
-	for k, v in pairs(bar) do
-		if (v.t == text) then
-			table.remove(bar, k)
+function del(key)
+	if (not key) then return false end
+	for ind, v in pairs(bar) do
+		if (v.k == key) then
+			table.remove(bar, ind)
 			return true
 		end
 	end
