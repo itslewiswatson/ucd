@@ -73,16 +73,16 @@ function zToHouse(_, _, plr, thePickup)
 	end
 end
 function addHouseNotification(plr, thePickup)
-	exports.UCDdx:add("Press Z: House Info", 255, 255, 0)
+	exports.UCDdx:add("houseinfo", "Press Z: House Info", 255, 255, 0)
 	bindKey("z", "down", zToHouse, plr, thePickup)
 	if (plr:getData("Occupation") == "Criminal" or plr:getData("Occupation") == "Gangster") then
-		exports.UCDdx:add("Press N: House Rob", 255, 0, 0)
+		exports.UCDdx:add("houserob", "Press N: House Rob", 255, 0, 0)
 		bindKey("n", "down", nToRob, plr, thePickup)
 	end
 end
 function removeHouseNotification()
-	exports.UCDdx:del("Press Z: House Info")
-	exports.UCDdx:del("Press N: House Rob")
+	exports.UCDdx:del("houseinfo")
+	exports.UCDdx:del("houserob")
 	unbindKey("z", "down", zToHouse)
 	unbindKey("n", "down", nToRob)
 end

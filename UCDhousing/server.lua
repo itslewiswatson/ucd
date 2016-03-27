@@ -91,23 +91,39 @@ function leaveHouse(houseID)
 	client:setDimension(0)
 	client:setInterior(0)
 	client:setPosition(hX, hY, hZ)
+	
+	triggerClientEvent(client, "onClientLeaveHouse", client, houseID)
 end
 addEvent("UCDhousing.leaveHouse", true)
 addEventHandler("UCDhousing.leaveHouse", root, leaveHouse)
 
 function enterHouse(houseID, rob)
 	if (not houseID) then return false end
-	--if (getHouseData(houseID, "open") == 0) and (not ) then return false end -- The owner needs to enter, so disregard this
+	if not rob then rob = false end
+	
+	if (rob) then
+		if (not exports.UCDchecking:canPlayerDoAction(source, "RobHouse")) then
+			return false
+		end
+	else
+		if (not exports.UCDchecking:canPlayerDoAction(source, "EnterHouse")) then
+			return false
+		end
+	end
 	
 	local interiorID = getHouseData(houseID, "interiorID")
 	local houseInt, hX, hY, hZ = unpack(intIDs[interiorID])
+	source:setPosition(hX, hY, hZ + 1)
+	
 	source:setInterior(houseInt)
 	if (rob) then
+		setPedWeaponSlot(source, 0)
 		source:setDimension(houseID + 30000)
 	else
-		source:setDimension(houseID + 30000)
+		source:setDimension(houseID)
 	end
-	source:setPosition(hX, hY, hZ + 1)
+	
+	triggerClientEvent(source, "onClientEnterHouse", source, houseID, interiorID, rob)
 end
 addEvent("UCDhousing.enterHouse", true)
 addEventHandler("UCDhousing.enterHouse", root, enterHouse)
