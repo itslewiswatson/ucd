@@ -36,7 +36,7 @@ function markerHit(ele, matchingDimension)
 			if (spawnerData[source]) then
 				_mkr = source
 				bindKey("z", "down", onHitZ)
-				exports.UCDdx:add("Press Z: Spawn Vehicle", 255, 255, 0)
+				exports.UCDdx:add("vehiclespawn", "Press Z: Spawn Vehicle", 255, 255, 0)
 			end
 		end
 	end
@@ -44,7 +44,7 @@ end
 
 function removeText()
 	unbindKey("z", "down", onHitZ)
-	exports.UCDdx:del("Press Z: Spawn Vehicle")
+	exports.UCDdx:del("vehiclespawn")
 end
 
 function onHitZ()

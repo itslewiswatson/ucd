@@ -75,11 +75,11 @@ end
 
 function bindZ(jobName)
 	bindKey("z", "down", toggleJobGUI, jobName)
-	exports.UCDdx:add("Press Z: Job GUI", 255, 215, 0)
+	exports.UCDdx:add("jobgui", "Press Z: Job GUI", 255, 215, 0)
 end
 function unbindZ()
 	unbindKey("z", "down", toggleJobGUI)
-	exports.UCDdx:del("Press Z: Job GUI")
+	exports.UCDdx:del("jobgui")
 end
 
 function toggleJobGUI(_, _, jobName)
