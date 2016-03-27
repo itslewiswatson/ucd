@@ -23,7 +23,7 @@ function canPlayerDoAction(plr, action)
 	if (not plr or not action or not actions[action] or not isElement(plr) or plr.type ~= "player" or plr.account.guest) then
 		return false
 	end
-	local currentActivity = plr:getData("a")
+	local currentActivity = exports.UCDactions:getAction(plr) -- plr:getData("a")
 	for _, dat in pairs(actions[action]) do
 		for i, dat2 in pairs(dat) do
 			if (dat[1] == "a" and dat2 == currentActivity) then
