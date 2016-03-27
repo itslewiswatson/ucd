@@ -20,7 +20,7 @@ GUI.button["close"] = GuiButton(191, 318, 80, 30, "Close", false, GUI.window)
 function onHitShopMarker(plr, matchingDimension)
 	if (plr == localPlayer and not localPlayer.vehicle and matchingDimension and plr.interior == 0) then
 		if (localPlayer.position.z < source.position.z + 1.5 and localPlayer.position.z > source.position.z - 1.5) then
-			exports.UCDdx:add("Press Z: Buy Vehicle", 255, 255, 0)
+			exports.UCDdx:add("vehicleshop", "Press Z: Buy Vehicle", 255, 255, 0)
 			bindKey("z", "down", openGUI, source)
 		end
 	end
@@ -28,7 +28,7 @@ end
 
 function onLeaveShopMarker(plr, matchingDimension)
 	if (plr == localPlayer and not localPlayer.vehicle and matchingDimension and plr.interior == 0) then
-		exports.UCDdx:del("Press Z: Buy Vehicle")
+		exports.UCDdx:del("vehicleshop")
 		unbindKey("z", "down", closeGUI)
 		closeGUI()
 	end
@@ -62,7 +62,7 @@ function openGUI(_, _, m)
 	GUI.window.visible = true
 	GUI.window:setPosition(sX - 281, sY / 2 - (361 / 2), false)
 	showCursor(true)
-	exports.UCDdx:del("Press Z: Buy Vehicle")
+	exports.UCDdx:del("vehicleshop")
 	unbindKey("z", "down", closeGUI)
 	_markerInfo = markerInfo[m]
 end
@@ -72,7 +72,7 @@ function closeGUI()
 	GUI.gridlist:clear()
 	GUI.window.visible = false
 	showCursor(false)
-	exports.UCDdx:del("Press Z: Buy Vehicle")
+	exports.UCDdx:del("vehicleshop")
 	unbindKey("z", "down", closeGUI)
 	if (Camera.target ~= localPlayer) then
 		Camera.target = localPlayer
