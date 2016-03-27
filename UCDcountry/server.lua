@@ -285,8 +285,8 @@ function getCountry(ip)
 end
 
 manual = {
-	["Noki"] = "TN",
-	["Noki2"] = "TN",
+	["Noki"] = "AU",
+	["Noki2"] = "AU",
 }
 
 function setPlayerCountry(plr)

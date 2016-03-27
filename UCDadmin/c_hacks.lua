@@ -6,4 +6,4 @@ function disableAdministratorDamage(attacker, weapon, bodypart, loss)
 		end
 	end
 end
-addEventHandler("onClientPlayerDamage", root, disableAdministratorDamage)
+addEventHandler("onClientPlayerDamage", root, disableAdministratorDamage, true, "high")
