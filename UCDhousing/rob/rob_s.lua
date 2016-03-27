@@ -8,7 +8,7 @@
 -------------------------------------------------------------------
 
 local robTimer = 20 -- Minute interval for robbing houses
-local objects = {1208, 1518, 2103, 2648, 2595, 1786, 2296, 2229, 2230}
+local objects = {1208, 1518, 2103, 2648, 2595, 1786, 2229, 2230}
 local robbed = {} -- A table containing all houses that have been robbed recently
 local objj = {}
 

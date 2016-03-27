@@ -132,7 +132,9 @@ function onLeaveHouse(houseID)
 		exports.UCDdx:add("houserob_post", "Go to a truck blip to finish the robbery", 255, 0, 0)
 		sprintDisabler = Timer(disableSprint, 1000, 1)
 		toggleControl("sprint", false)
-	end
+	else
+		exports.UCDactions:clearAction()
+	end	
 	
 	markerCount = 0
 	hitCount = 0
