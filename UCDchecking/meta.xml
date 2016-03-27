@@ -1,0 +1,6 @@
+<meta>
+	<info author="Noki" version="1" name="core" type="script" />
+	<script src="server.lua" type="server"/>
+	<export function="canPlayerDoAction" type="server"/>
+	<oop>true</oop>
+</meta>
