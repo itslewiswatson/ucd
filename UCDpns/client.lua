@@ -24,14 +24,14 @@ addEventHandler("onClientResourceStart", resourceRoot,
 
 function onMarkerHit(plr, matchingDimension)
 	if (plr == localPlayer and plr.vehicle and matchingDimension and plr.position.z < source.position.z + 1.5 and plr.position.z > source.position.z - 1.5 and plr.vehicle.controller == plr) then
-		exports.UCDdx:add("Press Z: Repair Vehicle", 255, 0, 0)
+		exports.UCDdx:add("pns", "Press Z: Repair Vehicle", 255, 0, 0)
 		bindKey("z", "down", onTryRepair)
 	end
 end
 
 function onMarkerLeave(plr, matchingDimension)
 	if (plr == localPlayer and matchingDimension) then
-		exports.UCDdx:del("Press Z: Repair Vehicle")
+		exports.UCDdx:del("pns")
 		unbindKey("z", "down", onTryRepair)
 	end
 end
