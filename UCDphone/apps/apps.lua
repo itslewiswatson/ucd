@@ -2,7 +2,8 @@ allapps =
 {
 	[1] = IM,
 	[2] = Music,
-	[3] = "exports.UCDwebBrowser:toggleBrowser() togglePhone()",
+	--[3] = "exports.UCDbrowser:toggleBrowser() togglePhone()",
+	[3] = Browser,
 	[5] = Notes,
 	[6] = Clock,
 	[9] = Money,
@@ -12,12 +13,14 @@ allapps =
 
 function toggleApp(i)
 	if (allapps[i]) then
-		if (type(allapps[i]) == "string") then
-			loadstring(allapps[i])()
-			return
-		end
+		--if (type(allapps[i]) == "string") then
+		--	loadstring(allapps[i])()
+		--	return
+		--end
 		allapps[i].toggle()
-		t(not allapps[i].all[1].visible)
+		if (allapps[i].all) then
+			t(not allapps[i].all[1].visible)
+		end
 	end
 end
 

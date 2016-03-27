@@ -52,10 +52,10 @@ function IM.sendFriends(plr)
 		for i, accountName in ipairs(IM.friends[plr.account.name]) do
 			local displayName, online
 			if (Account(accountName).player) then
-				displayName = Account(accountName).player.name
+				displayName = Account(accountName).player.name.." ("..accountName..")"
 				online = true
 			else
-				displayName = exports.UCDaccounts:GAD(accountName, "lastUsedName") or accountName
+				displayName = exports.UCDaccounts:GAD(accountName, "lastUsedName").." ("..accountName..")" or accountName
 				--displayName = accountName
 			end
 			temp[i] = {[1] = displayName, [2] = online, [3] = accountName}
