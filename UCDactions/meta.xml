@@ -1,8 +1,10 @@
 <meta>
 	<info author="Noki" version="1" name="core" type="script" />
 	<script src="server.lua" type="server"/>
+	<script src="client.lua" type="client"/>
 	<export function="setAction" type="server"/>
 	<export function="clearAction" type="server"/>
+	<export function="clearAction" type="client"/>
 	<export function="getAction" type="server"/>
 	<oop>true</oop>
 </meta>

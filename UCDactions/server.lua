@@ -24,6 +24,7 @@ end
 
 function clearAction(plr)
 	if (actions[plr]) then
+		plr:removeData("a")
 		actions[plr] = nil
 	end
 	return true
@@ -32,3 +33,10 @@ end
 function onQuit()
 	clearAction(source)
 end
+
+addEvent("UCDactions.clearAction", true)
+addEventHandler("UCDactions.clearAction", root, 
+	function ()
+		clearAction(client)
+	end
+)
