@@ -1,8 +1,12 @@
 <meta>
+	<min_mta_version server="1.5.2" client="1.5.2"/>
 	<script src="server.lua" type="server"/>
-	<script src="LV_shared.lua" type="shared"/>
-	<script src="LV_s.lua" type="server"/>
-	<script src="LV_c.lua" type="client"/>
+	<script src="client.lua" type="client"/>
+	
+	<script src="LV/shared.lua" type="shared"/>
+	<script src="LV/server.lua" type="server"/>
+	<script src="LV/client.lua" type="client"/>
+	
 	<export function="isElementInLV" type="shared"/>
 	<oop>true</oop>
 </meta>
