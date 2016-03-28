@@ -26,6 +26,9 @@
 	<export function="isRankHigherThan" type="server"/>
 	<export function="createGroupLog" type="server"/>
 	<export function="setDefaultRanks" type="server"/>
+	<export function="getGroupColour" type="server"/>
+	<export function="messageGroup" type="server"/>
+	<export function="getGroupOnlineMembers" type="server"/>
 	
 	<oop>true</oop>
 </meta>

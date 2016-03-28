@@ -189,7 +189,7 @@ function createGroup(name)
 		end
 		
 		local d, t = exports.UCDutil:getTimeStamp()
-		db:exec("INSERT INTO `groups_` SET `groupName`=?, `colour`=?, `info`=?, `created`=?", groupName, toJSON(settings.default_colour), settings.default_info_text, d) -- Perform the inital group creation	
+		db:exec("INSERT INTO `groups_` SET `groupName`=?, `colour`=?, `chatColour`=?, `info`=?, `created`=?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d) -- Perform the inital group creation	
 		db:exec("INSERT INTO `groups_members` VALUES (?, ?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, client.name, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
 		setDefaultRanks(groupName)
 		

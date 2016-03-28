@@ -123,6 +123,10 @@ end
 function messageGroup(groupName, msg, type_)
 	if (not groupName or not msg) then return end
 	local r, g, b = getGroupChatColour(groupName)
+	if (not r or not g or not b) then
+		r, g, b = 200, 0, 0
+		outputDebugString(groupName.." chat colour is fucked up")
+	end
 	for _, plr in ipairs(getGroupOnlineMembers(groupName) or {}) do
 		if (type_ == "chat") then
 			outputChatBox(msg, plr, r, g, b, true) -- Group chat colours
