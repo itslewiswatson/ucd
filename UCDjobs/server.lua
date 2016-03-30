@@ -29,7 +29,12 @@ addEventHandler("UCDjobs.takeJob", root, takeJob)
 function setPlayerJob(plr, jobName, skinID)
 	if (not plr or not jobName) then return end
 	if (not isElement(plr) or plr.type ~= "player" or type(jobName) ~= "string" or (not jobs[jobName] and jobName ~= "Admin")) then return false end
-		
+	
+	if (not skinID or skinID == nil) then
+		--outputDebugString("skinID nil")
+		skinID = exports.UCDaccounts:GAD(plr, "model")
+	end
+	
 	if (jobName == "Admin") then
 		exports.UCDteams:setPlayerTeam(plr, "Admins")
 		plr:setModel(skinID)
@@ -44,8 +49,9 @@ function setPlayerJob(plr, jobName, skinID)
 		plr:setModel(skinID)
 		exports.UCDaccounts:SAD(plr, "jobModel", skinID)
 	else
-		local _s = exports.UCDaccounts:GAD(plr, "model")
-		plr:setModel(_s)
+		--local _s = exports.UCDaccounts:GAD(plr, "model")
+		--plr:setModel(_s)
+		--outputDebugString("fuark")
 	end
 	
 	-- Team
@@ -59,6 +65,12 @@ function setPlayerJob(plr, jobName, skinID)
 	triggerEvent("onPlayerGetJob", plr, jobName)
 	-- Client event
 	triggerClientEvent(plr, "onClientPlayerGetJob", plr, jobName)
+	
+	if (jobName == "Criminal") then
+		exports.UCDdx:new(plr, "You are now a Criminal", 255, 0, 0)
+	elseif (jobName == "Gangster") then
+		exports.UCDdx:new(plr, "You are now a Gangster", 112, 13, 200)
+	end
 	return true
 end
 

@@ -9,22 +9,25 @@ local disabledControls = {"forwards", "backwards", "jump", "sprint", "left", "ri
 function onClientResourceStart()
 	local sX, sY = guiGetScreenSize()
 	-- GUI
-	GUI.window = guiCreateWindow(781, 377, 337, 418, "UCD | Jobs - ", false)
+	GUI.window = GuiWindow(781, 377, 337, 418, "UCD | Jobs - ", false)
 	GUI.window.visible = false
 	GUI.window.sizable = false
 	GUI.window.alpha = 255
 	guiSetPosition(GUI.window, 0, (sY - 377) / 2, false)
 	GUI.label = guiCreateLabel(8, 30, 319, 198, "", false, GUI.window)
-	GUI.gridlist = guiCreateGridList(11, 238, 316, 120, false, GUI.window)
+	
+	--[[
+	GUI.gridlist = GuiGridList(11, 238, 316, 120, false, GUI.window)
 	guiGridListAddColumn(GUI.gridlist, "Skin Name", 0.7)
 	guiGridListAddColumn(GUI.gridlist, "Skin ID", 0.2)
-	GUI.take = guiCreateButton(11, 368, 141, 36, "Take Job", false, GUI.window)
-	GUI.close = guiCreateButton(186, 368, 141, 36, "Close", false, GUI.window)
+	--]]
+	
+	GUI.take = GuiButton(11, 368, 141, 36, "Take Job", false, GUI.window)
+	GUI.close = GuiButton(186, 368, 141, 36, "Close", false, GUI.window)
 	
 	-- Event handlers
 	addEventHandler("onClientGUIClick", GUI.take, takeJob, false)
 	addEventHandler("onClientGUIClick", GUI.close, toggleJobGUI, false)
-	addEventHandler("onClientGUIClick", GUI.gridlist, previewSkin)
 	
 	-- Create markers
 	for jobName, info in pairs(jobs) do
@@ -37,7 +40,7 @@ function onClientResourceStart()
 				markers[jobName][i].interior = v.interior
 				markers[jobName][i].dimension = v.dimension
 				
-				if (v.interior == 0) then
+				if (v.interior == 0 and info.blipID) then
 					blips[jobName][i] = Blip.createAttachedTo(markers[jobName][i], info.blipID, nil, nil, nil, nil, nil, 5, 255)
 				end
 				
@@ -48,6 +51,14 @@ function onClientResourceStart()
 	end
 end
 addEventHandler("onClientResourceStart", resourceRoot, onClientResourceStart)
+
+function createGridList()
+	GUI.gridlist = GuiGridList(11, 238, 316, 120, false, GUI.window)
+	guiGridListAddColumn(GUI.gridlist, "Skin Name", 0.7)
+	guiGridListAddColumn(GUI.gridlist, "Skin ID", 0.2)
+	guiGridListSetSortingEnabled(GUI.gridlist, false)
+	addEventHandler("onClientGUIClick", GUI.gridlist, previewSkin)
+end
 
 function onJobMarkerHit(plr, matchingDimension)
 	if (plr and isElement(plr) and plr.type == "player" and plr == localPlayer and not plr.vehicle and matchingDimension) then
@@ -65,11 +76,14 @@ function onJobMarkerHit(plr, matchingDimension)
 end
 
 function onJobMarkerLeave(plr, matchingDimension)
-	if (plr and isElement(plr) and plr.type == "player" and plr == localPlayer and not plr.vehicle and matchingDimension) then
+	if (plr and isElement(plr) and plr.type == "player" and plr == localPlayer and not plr.vehicle) then
 		local jobName = source:getData("job")
-		if (markers[jobName]) then
+		--if (jobName) then
+		--if (markers[jobName]) then
+			exports.UCDdx:del("jobgui")
 			unbindZ()
-		end
+		--end
+		--end
 	end
 end
 
@@ -88,6 +102,14 @@ function toggleJobGUI(_, _, jobName)
 	if (GUI.window.visible) then
 		if (jobName) then
 			-- Set text accordingly
+			if (#jobs[jobName].skins >= 1) then
+				createGridList()
+			else
+				if (GUI.gridlist) then
+					GUI.gridlist:destroy()
+					GUI.gridlist = nil
+				end
+			end
 			GUI.label.text = tostring(jobs[jobName].desc)
 			GUI.window.text = "UCD | Jobs - "..jobName
 			-- Add gridlist items for skins
@@ -102,7 +124,9 @@ function toggleJobGUI(_, _, jobName)
 		--frozen = true
 		originalSkin[localPlayer] = localPlayer.model
 	else
-		guiGridListClear(GUI.gridlist)
+		if (GUI.gridlist) then
+			guiGridListClear(GUI.gridlist)
+		end
 		GUI.label.text = ""
 		GUI.window.text = "UCD | Jobs - "
 		showCursor(false)
@@ -132,12 +156,15 @@ function takeJob()
 	if (GUI.window.visible) then
 		jobName = gettok(GUI.window.text, 2, "-"):sub(2)
 		if (jobs[jobName]) then
-			local row = guiGridListGetSelectedItem(GUI.gridlist)
-			if (not row or row == -1) then
-				exports.UCDdx:new("You need to select a skin for this job", 255, 0, 0)
-				return
+			local skinID
+			if (GUI.gridlist and isElement(GUI.gridlist)) then
+				local row = guiGridListGetSelectedItem(GUI.gridlist)
+				if (not row or row == -1) then
+					exports.UCDdx:new("You need to select a skin for this job", 255, 0, 0)
+					return
+				end
+				skinID = tonumber(guiGridListGetItemText(GUI.gridlist, row, 2))
 			end
-			local skinID = tonumber(guiGridListGetItemText(GUI.gridlist, row, 2))
 			-- Take the job
 			triggerServerEvent("UCDjobs.takeJob", localPlayer, jobName, skinID, originalSkin[localPlayer])
 			toggleJobGUI()
