@@ -128,6 +128,56 @@ local jobsTable =
 		blipID = 56,
 		desc = "",
 	},
+	["Police Officer"] = 
+	{
+		team = "Law",
+		markers = 
+		{
+			{x = 248.9846, y = 67.7826, z = 1003.6406, interior = 6, dimension = 50000},
+		},
+		skins = 
+		{
+			{280, "LSPD Officer"},
+			{281, "SFPD Officer"},
+			{282, "LVPD Officer"},
+			{283, "County Sherrif"},
+			{288, "Desert Sherrif"},
+		},
+		colour = {r = 30, g = 144, b = 255},
+		blipID = 56,
+		desc = "da popo fuark",
+	},
+	["Traffic Officer"] = 
+	{
+		team = "Law",
+		markers = 
+		{
+			{x = 1585.4943, y = -1684.302, z = 6.2252, interior = 0, dimension = 0},
+		},
+		skins = 
+		{
+			{284, "Motorbike Officer"},
+		},
+		colour = {r = 30, g = 144, b = 255},
+		blipID = nil,
+		desc = "traffic gonna get fuked lol",
+	},
+	["Detective"] = 
+	{
+		team = "Law",
+		markers = 
+		{
+			{x = 1585.4943, y = -1688.302, z = 6.2252, interior = 0, dimension = 0},
+		},
+		skins = 
+		{
+			{165, "Agent K"},
+			{166, "Agent J"},
+		},
+		colour = {r = 30, g = 144, b = 255},
+		blipID = nil,
+		desc = "detectivate some niggas lmao",
+	},
 }
 
 function getJobTable()
