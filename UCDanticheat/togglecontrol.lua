@@ -47,11 +47,11 @@ function aimCheck(button, state)
 	if (aimKeys[button] and state == true) then
 		--if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) and localPlayer.weaponSlot ~= 11 and not exceptedWeapons[localPlayer:getWeapon()] and not exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
 		if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) or exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
-			outputDebugString("true")
+			--outputDebugString("true")
 			toggleControl("aim_weapon", false)
 			toggleControl("fire", false)
 		else
-			outputDebugString("false")
+			--outputDebugString("false")
 			toggleControl("aim_weapon", true)
 			toggleControl("fire", true)
 		end
