@@ -34,10 +34,10 @@ function Accounts.Login(_, theCurrentAccount)
 	local playerWalkstyle 						= result.walkstyle
 	local playerHealth, playerArmour 			= result.health, result.armour
 	local playerMoney 							= result.money
-	local playerWanted 							= result.wanted
+	local playerWP	 							= result.wp
 	local ntR, ntG, ntB 						= unpack(fromJSON(result.nametag))
 	
-	if (playerTeam == "Admins" or playerTeam == "Law Enforcement" or (playerTeam == "Citizens" and occupation ~= "")) then
+	if (playerTeam == "Admins" or playerTeam == "Law" or (playerTeam == "Citizens" and occupation ~= "")) then
 		source:spawn(playerX, playerY, playerZ + 0.5, playerRot, jobModel, playerInterior, playerDim, Team.getFromName(playerTeam))
 	else
 		source:spawn(playerX, playerY, playerZ + 0.5, playerRot, playerModel, playerInterior, playerDim, Team.getFromName(playerTeam))
@@ -46,7 +46,8 @@ function Accounts.Login(_, theCurrentAccount)
 	setTimer(
 		function (source)
 			source:setArmor(playerArmour)
-			source:setWantedLevel(playerWanted)
+			--source:setWantedLevel(playerWanted)
+			exports.UCDwanted:setWantedPoints(source, playerWP)
 			source:setWalkingStyle(playerWalkstyle) --exports.UCDwalkstyle:setPlayerWalkingStyle(source, playerWalkstyle)			
 		end, 1000, 1, source
 	)
@@ -81,7 +82,7 @@ function Accounts.Save(plr)
 	local team = plr.team.name or "Unemployed"
 	local money = plr.money
 	local walkstyle = plr:getWalkingStyle() --exports.UCDwalkstyle:getPlayerWalkingStyle(plr)
-	local wanted = plr:getWantedLevel()
+	local wp = exports.UCDwanted:getWantedPoints(plr)
 	local health = plr:getHealth()
 	local armour = plr:getArmor()
 	local occupation = plr:getData("Occupation")
@@ -127,7 +128,7 @@ function Accounts.Save(plr)
 	SAD(plr.account.name, "team", team)
 	SAD(plr.account.name, "money", money)
 	SAD(plr.account.name, "walkstyle", walkstyle) -- Need to change this to a per-change basis
-	SAD(plr.account.name, "wanted", wanted)
+	SAD(plr.account.name, "wp", wp)
 	SAD(plr.account.name, "health", health)
 	SAD(plr.account.name, "armour", armour)
 	SAD(plr.account.name, "occupation", occupation)
