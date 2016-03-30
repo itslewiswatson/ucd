@@ -1,7 +1,7 @@
 -- People will use /sms
 addCommandHandler("sms", 
-	function (plr)
-		exports.UCDdx:new(plr, "This function is depracated. Use /im <player> <message> instead.", 255, 174, 0)
+	function ()
+		exports.UCDdx:new("Syntax is: /im <player> <message>", 255, 174, 0)
 	end
 )
 
@@ -19,7 +19,7 @@ function instantMessage(_, target, ...)
 		if (msg == "" or msg == " " or msg:gsub(" ", "") == "") then return end
 		if (msg:find("ucd")) then msg = msg:gsub("ucd", "UCD") end
 		
-		if (recipient.name == localPlayer.name) then exports.UCDdx:new(localPlayer, "You cannot send an IM to yourself", 255, 0, 0) return end
+		if (recipient.name == localPlayer.name) then exports.UCDdx:new("You cannot send an IM to yourself", 255, 0, 0) return end
 		
         outputChatBox("[IM to "..recipient.name.."] "..msg, 255, 174, 0, true)
 		
