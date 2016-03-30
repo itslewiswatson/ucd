@@ -14,6 +14,7 @@ serials = {
 	["7B8CA70E3161C1AD51D076A2B669F252"] = true, -- Foley
 	--["70BD5F0030584BBDC179E0132FFF4093"] = true, -- Swagy
 	["3B73D3F1F1CF12FA1580098CBC021D52"] = true, -- Flower Power
+	["A795D5B58ABC590056748F061E102542"] = true, -- Sotiris
 }
 
 addEventHandler("onPlayerConnect", root,
