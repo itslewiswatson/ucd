@@ -1,0 +1,2 @@
+<meta>	<min_mta_version server="1.5.2" client="1.5.2"/>
+	<script src="server.lua" type="server"/>	<script src="client.lua" type="client"/>	<oop>true</oop></meta>
