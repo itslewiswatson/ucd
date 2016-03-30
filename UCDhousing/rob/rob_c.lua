@@ -143,7 +143,7 @@ addEvent("onClientLeaveHouse", true)
 addEventHandler("onClientLeaveHouse", root, onLeaveHouse)
 
 function onHitRewardMarker(plr, matchingDimension)
-	if (plr == localPlayer and matchingDimension) then
+	if (plr == localPlayer and not plr.vehicle and matchingDimension) then
 		Camera.fade(false, 1, 0, 0, 0)
 		toggleAllControls(false, true, false)
 		Timer(function () Camera.fade(true) toggleAllControls(true) end, 1000, 1)

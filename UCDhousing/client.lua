@@ -88,18 +88,20 @@ function removeHouseNotification()
 end
 
 local function onHitHouseMarker(thePickup, matchingDimension)
-	if (source ~= localPlayer or not matchingDimension or localPlayer:isInVehicle() or thePickup.type ~= 3) then
-		return false
+	if (thePickup and isElement(thePickup)) then
+		if (source ~= localPlayer or not matchingDimension or localPlayer:isInVehicle() or thePickup.type ~= 3) then
+			return false
+		end
+		if (thePickup.model ~= 1272 and thePickup.model ~= 1273 or not thePickup:getData("houseID")) then
+			return
+		end
+		
+		-- Instead of creating the GUI, we send the houseID to the server to fetch info for the GUI
+		local houseID = thePickup:getData("houseID")
+		
+		addHouseNotification(source, thePickup)
+		outputDebugString("houseID = "..houseID)
 	end
-	if (thePickup.model ~= 1272 and thePickup.model ~= 1273 or not thePickup:getData("houseID")) then
-		return
-	end
-	
-	-- Instead of creating the GUI, we send the houseID to the server to fetch info for the GUI
-	local houseID = thePickup:getData("houseID")
-	
-	addHouseNotification(source, thePickup)
-	outputDebugString("houseID = "..houseID)
 end
 addEventHandler("onClientPlayerPickupHit", root, onHitHouseMarker)
 
