@@ -118,4 +118,8 @@ interiors =
 		{entryX = 243.2938, entryY = -178.3488, entryZ = 1.6, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13003, interior = 6, blipID = 6},
 		{entryX = 2333.0864, entryY = 61.586, entryZ = 26.7058, exitX = 296.8612, exitY = -112.0702, exitZ = 1001.6, dimension = 13004, interior = 6, blipID = 6},
 	},
+	["Police Officer"] = 
+	{
+		{entryX = 1555.2417, entryY = -1675.6389, entryZ = 16.2, exitX = 246.762, exitY = 62.3233, exitZ = 1003.65, dimension = 50000, interior = 6}, -- LSPD
+	},
 }
