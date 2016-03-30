@@ -1,0 +1,7 @@
+<meta>
+	<script src="server.lua" type="server"/>
+	<export function="addWantedPoints"/>
+	<export function="getWantedPoints"/>
+	<export function="setWantedPoints"/>
+	<oop>true</oop>
+</meta>
