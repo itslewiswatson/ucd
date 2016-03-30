@@ -89,6 +89,25 @@ function corrections()
 	end
 end
 
+function turfPayout()
+	for _, plr in ipairs(Element.getAllByType("player")) do
+		local group = exports.UCDgroups:getPlayerGroup(plr)
+		if (group and isElementInLV(plr)) then
+			local members = exports.UCDgroups:getGroupOnlineMembers(group)
+			local turfs = 0
+			for _, col in ipairs(idToCol) do
+				if (col:getData("turfOwner") == group) then
+					turfs = turfs + 1
+				end
+			end
+			if (turfs >= 1 and #members >= 1) then
+				local payout = math.floor((5000 * turfs) / #members)
+				exports.UCDdx:new()
+			end
+		end
+	end
+end
+Timer(turfPayout, 5 * 60000, 0)
 
 function getTurfGroupMembers(col, group)
 	local groupMembers = {}
@@ -133,9 +152,9 @@ function provokeTurf(col, group)
 			if (#groupMembers > #getTurfGroupMembers(col, group_) and group ~= group_) then
 				if (level[col][group_] >= 5) then
 				
-					if (groupsInTurf ~= 2) then
-						return
-					end
+					--if (groupsInTurf ~= 2) then
+					--	return
+					--end
 					
 					level[col][group] = level[col][group] + 5
 					level[col][group_] = level[col][group_] - 5
