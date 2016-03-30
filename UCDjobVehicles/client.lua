@@ -62,7 +62,7 @@ function markerOpen(mkr)
 		isAbleTo = true
 	else
 		for i, v in ipairs(spawnerData[mkr][1] or {}) do
-			if (job == v) then
+			if (job == v or localPlayer.team.name == v) then
 				isAbleTo = true
 				break
 			end

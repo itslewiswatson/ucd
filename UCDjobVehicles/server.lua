@@ -66,9 +66,9 @@ addEventHandler("onPlayerGetJob", root, function () destroyPlayerJobVehicle(sour
 function djv(plr)
 	local q = destroyPlayerJobVehicle(plr)
 	if (q == "too fast") then
-		exports.UCDdx:new(plr, "Your job vehicle cannot be destroyed as it is going too fast", 255, 255, 0)
+		exports.UCDdx:new(plr, "Your vehicle cannot be destroyed as it is going too fast", 255, 255, 0)
 	elseif (q == true) then
-		exports.UCDdx:new(plr, "Thank you for destroying your job vehicle", 0, 255, 0)
+		exports.UCDdx:new(plr, "Thank you for destroying your vehicle", 0, 255, 0)
 	--elseif (q == false or q == nil) then
 	--	exports.UCDdx:new(plr, "No vehicle to destroy", 255, 0, 0)
 	end

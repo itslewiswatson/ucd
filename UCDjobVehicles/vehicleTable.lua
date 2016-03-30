@@ -73,4 +73,20 @@ jobVehicles =
 	{x = 2484.4426, y = -2104.6243, z = 13.5469, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 	{x = 2508.5732, y = -2104.6243, z = 13.5469, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
 	{x = 2534.4783, y = -2104.6243, z = 13.5469, rot = 0, vt = {"Trucker"}, colour = {r = 255, g = 215, b = 0}, vehs = {403, 515}},
+	
+	-- Police/Law
+	-- LSPD
+	{x = 1556.9408, y = -1609.4148, z = 13.3828, rot = 180, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 1565.2158, y = -1609.4148, z = 13.3828, rot = 180, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 1574.371, y = -1609.4148, z = 13.3828, rot = 180, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 1600.889, y = -1612.8756, z = 13.4751, rot = 90, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 1600.889, y = -1624.8512, z = 13.4751, rot = 90, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 1565.3097, y = -1696.9613, z = 28.3956, rot = 90, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {497}},
+	{x = 1565.3097, y = -1656.145, z = 28.3956, rot = 90, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {497}},
+	{x = 1595.5148, y = -1710.0549, z = 5.8906, rot = 0, vt = {"Detective"}, colour = {r = 30, g = 144, b = 255}, vehs = {421, 426}},
+	{x = 1587.4016, y = -1710.0549, z = 5.8906, rot = 0, vt = {"Detective"}, colour = {r = 30, g = 144, b = 255}, vehs = {421, 426}},
+	{x = 1601, y = -1683.8301, z = 5.8906, rot = 90, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
+	{x = 1601, y = -1692.1, z = 5.8906, rot = 90, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
+	
+	
 }
