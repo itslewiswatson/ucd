@@ -53,6 +53,7 @@ end
 
 addEventHandler("onClientRender", root,
 	function ()
+		if (isPlayerMapVisible()) then return end
 		local baseY, baseX = nil, 219
 		if (localPlayer.vehicle) then
 			baseY = 105--663
