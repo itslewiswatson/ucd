@@ -41,7 +41,7 @@ addEventHandler("onClientGUIClick", phone.button["home"],
 )
 
 function Notes.save()
-	if (not File.exists("@notes.txt")) then
+	if (File.exists("@notes.txt")) then
 		File.delete("@notes.txt")
 	end
 	local f = File.new("@notes.txt")

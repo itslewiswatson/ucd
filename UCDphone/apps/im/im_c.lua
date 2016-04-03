@@ -34,9 +34,11 @@ function IM.create()
 	phone.im.edit["search_friends"] = GuiEdit(155, 347, 137, 27, "", false, phone.image["phone_window"])
 
 	phone.im.gridlist["players"] = GuiGridList(18, 374, 138, 132, false, phone.image["phone_window"])
-	guiGridListAddColumn(phone.im.gridlist["players"], "Players", 0.9)
+	guiGridListAddColumn(phone.im.gridlist["players"], "Players", 1.5)
 	phone.im.gridlist["friends"] = GuiGridList(154, 374, 138, 132, false, phone.image["phone_window"])
-	guiGridListAddColumn(phone.im.gridlist["friends"], "Friends", 0.9)
+	guiGridListAddColumn(phone.im.gridlist["friends"], "Friends", 1.5)
+	guiGridListSetSortingEnabled(phone.im.gridlist["players"], false)
+	guiGridListSetSortingEnabled(phone.im.gridlist["friends"], false)
 
 	phone.im.button["mute"] = GuiButton(18, 506, 68, 23, "Mute", false, phone.image["phone_window"])
 	phone.im.button["add_friend"] = GuiButton(86, 506, 68, 23, "Add friend", false, phone.image["phone_window"])
@@ -175,7 +177,8 @@ addEventHandler("onClientPlayerChangeNick", root,
 	function (old, new)
 		for i = 0, guiGridListGetRowCount(phone.im.gridlist["friends"]) - 1 do
 			local r, g, b = guiGridListGetItemColor(phone.im.gridlist["friends"], i, 1)
-			if (guiGridListGetItemText(phone.im.gridlist["friends"], i, 1) == old and r == 0 and g == 255 and b == 0) then
+			-- Split it via the space because of account name and LUN
+			if (gettok(guiGridListGetItemText(phone.im.gridlist["friends"], i, 1), 1, " ") == old and r == 0 and g == 255 and b == 0) then
 				guiGridListSetItemText(phone.im.gridlist["friends"], i, 1, new, false, false)
 			end
 		end
@@ -188,7 +191,10 @@ addEventHandler("onClientPlayerLogin", root,
 		outputDebugString("UCDphone catching accName = "..accName)
 		for i = 0, guiGridListGetRowCount(phone.im.gridlist["friends"]) - 1 do
 			local r, g, b = guiGridListGetItemColor(phone.im.gridlist["friends"], i, 1)
-			if (guiGridListGetItemText(phone.im.gridlist["friends"], i, 1) == accName and r == 255 and g == 0 and b == 0) then
+			local text = guiGridListGetItemText(phone.im.gridlist["friends"], i, 1)
+			text = gettok(text, 2, " ")
+			text = text:gsub("%)", "")
+			if (text == accName and r == 255 and g == 0 and b == 0) then
 				guiGridListSetItemText(phone.im.gridlist["friends"], i, 1, source.name, false, false)
 				guiGridListSetItemColor(phone.im.gridlist["friends"], i, 1, 0, 255, 0)
 			end

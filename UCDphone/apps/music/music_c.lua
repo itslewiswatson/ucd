@@ -92,10 +92,13 @@ function Music.play()
 		if (row and row ~= -1) then
 			Music.stop()
 			local link = Music.stations[row + 1][2]
+			if (not Music.volume) then
+				Music.volume = 0.5
+			end
 			outputDebugString("Playing "..link)
 			stream = Sound(link)
-			stream.volume = 0.5
-			phone.music.progress["volume"].progress = 50
+			stream.volume = Music.volume
+			phone.music.progress["volume"].progress = Music.volume * 100 --// 0.5 -> 50
 		end
 	else
 		local row = guiGridListGetSelectedItem(phone.music.gridlist["Music"])
@@ -107,9 +110,12 @@ function Music.play()
 				outputDebugString("Playing "..link)
 				track = Sound(link)
 				if (track) then
+					if (not Music.volume) then
+						Music.volume = 0.5
+					end
 					Music.trackPlaying = row + 1
-					track.volume = 0.5
-					phone.music.progress["volume"].progress = 50
+					track.volume = Music.volume
+					phone.music.progress["volume"].progress = Music.volume * 100 --// 0.5 -> 50
 				else
 					outputDebugString("Error in Music.play - couldn't resolve Sound(link)")
 				end
@@ -143,6 +149,7 @@ function Music.changeVolume()
 		m.volume = m.volume + 0.1
 	end
 	phone.music.progress["volume"].progress = m.volume * 100
+	Music.volume = m.volume
 end
 addEventHandler("onClientGUIClick", phone.music.button["vol_down"], Music.changeVolume, false)
 addEventHandler("onClientGUIClick", phone.music.button["vol_up"], Music.changeVolume, false)
