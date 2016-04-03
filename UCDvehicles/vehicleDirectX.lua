@@ -61,7 +61,6 @@ Timer(
 	function ()
 		if (localPlayer.vehicle) then
 			local veh = localPlayer.vehicle
-			vehSpeedMPH = math.floor(exports.UCDutil:getElementSpeed(veh, "mph"))
 			vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
 		end
 	end, 100, 0
@@ -71,27 +70,34 @@ function dxDrawCircle( x, y, width, height, color, angleStart, angleSweep, borde
 	exports.shader_circle:dxDrawCircle( x, y, width, height, color, angleStart, angleSweep, borderWidth )
 end
 
+--[[
+def rgb(minimum, maximum, value):
+    minimum, maximum = float(minimum), float(maximum)
+    ratio = 2 * (value-minimum) / (maximum - minimum)
+    b = int(max(0, 255*(1 - ratio)))
+    r = int(max(0, 255*(ratio - 1)))
+    g = 255 - b - r
+    return r, g, b
+--]]
+function RGB(minimum, maximum, value)
+	if (value > maximum) then
+		value = maximum
+	end
+	ratio = 2 * (value-minimum) / (maximum - minimum)
+	local b = math.max(0, 255 * (1 - ratio))
+	local r = math.max(0, 255 * (ratio - 1))
+    local g = 255 - b - r
+	return r, g, b
+end
+
 function renderVehicleHUD()
 	if (not isPlayerHudComponentVisible("radar") or not localPlayer.vehicle or isPlayerMapVisible()) then return end
-	if (not vehSpeedMPH or not vehSpeedKMH) then return end
+	if (not vehSpeedKMH) then return end
 	
 	local veh = localPlayer.vehicle
 	local vehHealth = math.floor(veh.health / 10)
-	--local vehSpeedMPH = math.floor(exports.UCDutil:getElementSpeed(veh, "mph"))
-	
 	local secretKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
-	
-	local nitro = getVehicleNitroCount(veh) or 0
-	local zone = getZoneName(veh.position)
-	--local dial = (sX - 219) * ((vehSpeedMPH / sX) + 1)
-	--if (dial > (sX - 20)) then
-	--	dial = (sX - 20)
-	--end	
-	local dial2 = secretKMH
-	if (dial2 > 205) then
-		dial2 = 205
-	end
-	
+		
 	local hR, hG, hB
 	if (vehHealth <= 80 and vehHealth > 60) then
 		hR, hG, hB = 79, 115, 32
@@ -106,6 +112,41 @@ function renderVehicleHUD()
 	else
 		hR, hG, hB = 18, 90, 14
 	end
+	
+	local sR, sG, sB = RGB(0, 220, vehSpeedKMH)
+	--[[
+	if (vehSpeedKMH >= 200) then
+		sR, sG, sB = 160, 25, 25
+	elseif (vehSpeedKMH < 200 and vehSpeedKMH >= 160) then
+		sR, sG, sB = 255, 135, 25
+	elseif (vehSpeedKMH < 160 and vehSpeedKMH >= 120) then
+		sR, sG, sB = 255, 200, 55
+	elseif (vehSpeedKMH < 120 and vehSpeedKMH >= 90) then
+		sR, sG, sB = 150, 200, 55
+	elseif (vehSpeedKMH < 90 and vehSpeedKMH >= 50) then
+		sR, sG, sB = 65, 200, 150
+	else
+		sR, sG, sB = 65, 200, 220
+	end
+	--]]
+	--[[
+	if (vehSpeedKMH <= 255) then
+		sR = vehSpeedKMH
+	else
+		sR = 255
+	end
+	if (255 - vehSpeedKMH >= 0) then
+		sB = 255 - vehSpeedKMH
+	else
+		sB = 0
+	end
+	if (vehSpeedKMH > 0) then
+		sG = getEasingValue(vehSpeedKMH / 360, "SineCurve") * 150 --math.asin(math.log(vehSpeedKMH) / 10) * 20
+	else
+		sG = 0
+	end
+	--]]
+	
 	--[[
 	dxDrawRectangle(1701, 998, 209, 15, tocolor(0, 0, 0, 100), false)
 	dxDrawRectangle(1701, 1038, 209, 15, tocolor(0, 0, 0, 100), false)
@@ -144,7 +185,7 @@ function renderVehicleHUD()
 	-- Speed
 	--dxDrawCircle(sX - 65, sY - 75, 110, 110, tocolor(0, 0, 0, 100), 0, 360, 17.5)
 	
-	dxDrawCircle(sX - 65, sY - 75, 105, 105, tocolor(255, 0, 0, 255), 0, secretKMH * 2, 5)
+	dxDrawCircle(sX - 65, sY - 75, 105, 105, tocolor(sR, sG, sB, 255), 0, secretKMH * 1.5, 5)
 	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5, sY - 77.5, sX - 12.5, sY - 63.5, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
 
 	dxDrawCircle(sX - 65, sY - 75, 90, 90, tocolor(hR, hG, hB, 255), 0, vehHealth * 3.6, 5)
@@ -172,4 +213,4 @@ function renderVehicleHUD()
 	--outputDebugString(dial)
 	--dxDrawRectangle(dial, sY - 77, 3, 17, tocolor(255, 255, 255, 255), false) -- Speed thing
 end
-addEventHandler("onClientRender", root, renderVehicleHUD)
+addEventHandler("onClientHUDRender", root, renderVehicleHUD)
