@@ -67,6 +67,10 @@ Timer(
 	end, 100, 0
 )
 
+function dxDrawCircle( x, y, width, height, color, angleStart, angleSweep, borderWidth )
+	exports.shader_circle:dxDrawCircle( x, y, width, height, color, angleStart, angleSweep, borderWidth )
+end
+
 function renderVehicleHUD()
 	if (not isPlayerHudComponentVisible("radar") or not localPlayer.vehicle or isPlayerMapVisible()) then return end
 	if (not vehSpeedMPH or not vehSpeedKMH) then return end
@@ -74,26 +78,33 @@ function renderVehicleHUD()
 	local veh = localPlayer.vehicle
 	local vehHealth = math.floor(veh.health / 10)
 	--local vehSpeedMPH = math.floor(exports.UCDutil:getElementSpeed(veh, "mph"))
-	--local vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
+	
+	local secretKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
+	
 	local nitro = getVehicleNitroCount(veh) or 0
 	local zone = getZoneName(veh.position)
-	local dial = (sX - 219) * ((vehSpeedMPH / sX) + 1)
-	if (dial > (sX - 20)) then
-		dial = (sX - 20)
+	--local dial = (sX - 219) * ((vehSpeedMPH / sX) + 1)
+	--if (dial > (sX - 20)) then
+	--	dial = (sX - 20)
+	--end	
+	local dial2 = secretKMH
+	if (dial2 > 205) then
+		dial2 = 205
 	end
-	local r, g, b
+	
+	local hR, hG, hB
 	if (vehHealth <= 80 and vehHealth > 60) then
-		r, g, b = 79, 115, 32
+		hR, hG, hB = 79, 115, 32
 	elseif (vehHealth <= 60 and vehHealth > 50) then
-		r, g, b = 110, 105, 34
+		hR, hG, hB = 110, 105, 34
 	elseif (vehHealth <= 50 and vehHealth > 40) then
-		r, g, b = 108, 63, 33
+		hR, hG, hB = 108, 63, 33
 	elseif (vehHealth <= 40 and vehHealth > 30) then
-		r, g, b = 89, 54, 43
+		hR, hG, hB = 89, 54, 43
 	elseif (vehHealth <= 30) then
-		r, g, b = 150, 54, 43
+		hR, hG, hB = 150, 54, 43
 	else
-		r, g, b = 18, 90, 14
+		hR, hG, hB = 18, 90, 14
 	end
 	--[[
 	dxDrawRectangle(1701, 998, 209, 15, tocolor(0, 0, 0, 100), false)
@@ -130,20 +141,35 @@ function renderVehicleHUD()
 	--]]
 	-- 1038 --> 1045 (7)
 	
-	dxDrawRectangle(sX - 219, sY - 75, 209, 15, tocolor(0, 0, 0, 100), false)
-	dxDrawRectangle(sX - 219, sY - 35, 209, 15, tocolor(0, 0, 0, 100), false)
-	dxDrawText("GPS: "..tostring(zone), sX - 219, sY - 28, sX - 10, sY - 27, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
-	dxDrawRectangle(sX - 219, sY - 55, 102, 15, tocolor(0, 0, 0, 100), false)
-	dxDrawRectangle(sX - 112, sY - 55, 102, 15, tocolor(0, 0, 0, 100), false)
+	-- Speed
+	--dxDrawCircle(sX - 65, sY - 75, 110, 110, tocolor(0, 0, 0, 100), 0, 360, 17.5)
 	
+	dxDrawCircle(sX - 65, sY - 75, 105, 105, tocolor(255, 0, 0, 255), 0, secretKMH * 2, 5)
+	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5, sY - 77.5, sX - 12.5, sY - 63.5, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
+
+	dxDrawCircle(sX - 65, sY - 75, 90, 90, tocolor(hR, hG, hB, 255), 0, vehHealth * 3.6, 5)
+	
+	-- Health
+	--dxDrawCircle(sX - 65, sY - 75, 90, 90, tocolor(0, 0, 0, 100), 0, 360, 10)
+
+	--dxDrawRectangle(sX - 219, sY - 75, 209, 15, tocolor(0, 0, 0, 100), false)
+	--dxDrawRectangle(sX - 219, sY - 35, 209, 15, tocolor(0, 0, 0, 100), false)
+	--dxDrawText("GPS: "..tostring(zone), sX - 219, sY - 28, sX - 10, sY - 27, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
+	
+	--dxDrawRectangle(sX - 112, sY - 55, 102, 15, tocolor(0, 0, 0, 100), false)
+	
+	--dxDrawRectangle(sX - 219, sY - 77.5, 102, 15, tocolor(0, 0, 0, 100), false)
 	--dxDrawRectangle(1703, 1020, 98, 11, tocolor(18, 90, 14, 255), false)
-	dxDrawRectangle(sX - 217, sY - 53, vehHealth * 0.98, 11, tocolor(r, g, b, 255), false)
-	dxDrawText(tostring(vehHealth).."%", sX - 219, sY - 48, sX - 112, sY - 47, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
+	--dxDrawRectangle(sX - 217, sY - 75.5, vehHealth * 0.98, 11, tocolor(r, g, b, 255), false)
+	--dxDrawText(tostring(vehHealth).."%", sX - 219, sY - 75.5, sX - 112, sY - 63.5, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
 	
-	dxDrawRectangle(sX - 110, sY - 53, 98, 11, tocolor(255, 255, 255, 25), false)
-	dxDrawText("Fuel: 100", sX - 112, sY - 48, sX - 10, sY - 47, tocolor(100, 100, 150, 255), 1.00, "default", "center", "center", false, false, false, false, false)
-	dxDrawText(tostring(vehSpeedKMH).." KPH | "..tostring(vehSpeedMPH).." MPH | "..tostring(nitro).." NOS", sX - 209, sY - 68, sX - 10, sY - 67, tocolor(255, 255, 255, 255), 1, "default", "left", "center", false, false, false, false, false)
+	--dxDrawRectangle(sX - 110, sY - 53, 98, 11, tocolor(255, 255, 255, 25), false)
+	--dxDrawText("Fuel: 100", sX - 112, sY - 48, sX - 10, sY - 47, tocolor(100, 100, 150, 255), 1.00, "default", "center", "center", false, false, false, false, false)
 	
-	dxDrawRectangle(dial, sY - 77, 3, 17, tocolor(255, 255, 255, 255), false) -- Speed thing
+	--dxDrawRectangle(sX - 217, sY - 73, 205, 11, tocolor(0, 255, 0, 100), false)
+	--dxDrawRectangle(sX - 217, sY - 73, dial2, 11, tocolor(0, 255, 0, 100), false)
+	--dxDrawText(tostring(vehSpeedKMH).." KPH | "..tostring(vehSpeedMPH).." MPH | "..tostring(nitro).." NOS", sX - 219, sY - 68, sX - 10, sY - 67, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
+	--outputDebugString(dial)
+	--dxDrawRectangle(dial, sY - 77, 3, 17, tocolor(255, 255, 255, 255), false) -- Speed thing
 end
 addEventHandler("onClientRender", root, renderVehicleHUD)
