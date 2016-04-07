@@ -17,6 +17,10 @@ local actions = {
 		{"a", "RobHouse", "AFK"},
 		{"ld", 3}, {"i", 0}, {"d", 0}, {"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead"},
 	},
+	["Builder"] = {
+		{"a", "RobHouse", "AFK"},
+		{"i", 0}, {"d", 0}, {"s", "NoVehicle", "NoDead", "NoArrest", "NoJailed", "NoJetpack", "NoDead"}
+	},
 }
 
 function canPlayerDoAction(plr, action)
@@ -36,11 +40,11 @@ function canPlayerDoAction(plr, action)
 					return false
 				end
 			end
-			if (dat[1] == "i" and plr.interior ~= dat2) then
+			if (dat[1] == "i" and plr.interior ~= dat2 and i ~= 1) then
 				exports.UCDdx:new(plr, "Your interior blocks this action", 255, 0, 0)
 				return false
 			end
-			if (dat[1] == "d" and plr.dimension ~= dat2) then
+			if (dat[1] == "d" and plr.dimension ~= dat2 and i ~= 1) then
 				exports.UCDdx:new(plr, "Your dimension blocks this action", 255, 0, 0)
 				return false
 			end
