@@ -90,6 +90,8 @@ function RGB(minimum, maximum, value)
 	return r, g, b
 end
 
+local diff = (1 + (1/3))
+
 function renderVehicleHUD()
 	if (not isPlayerHudComponentVisible("radar") or not localPlayer.vehicle or isPlayerMapVisible()) then return end
 	if (not vehSpeedKMH) then return end
@@ -185,7 +187,7 @@ function renderVehicleHUD()
 	-- Speed
 	--dxDrawCircle(sX - 65, sY - 75, 110, 110, tocolor(0, 0, 0, 100), 0, 360, 17.5)
 	
-	dxDrawCircle(sX - 65, sY - 75, 105, 105, tocolor(sR, sG, sB, 255), 0, secretKMH * 1.5, 5)
+	dxDrawCircle(sX - 65, sY - 75, 105, 105, tocolor(sR, sG, sB, 255), 0, secretKMH * diff, 5)
 	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5, sY - 77.5, sX - 12.5, sY - 63.5, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
 
 	dxDrawCircle(sX - 65, sY - 75, 90, 90, tocolor(hR, hG, hB, 255), 0, vehHealth * 3.6, 5)
