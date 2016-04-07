@@ -30,7 +30,7 @@ function createHouse(houseID, houseTable, syncToClient)
 	
 	housePickup[houseID] = createPickup(hX, hY, hZ, 3, modelID, 0)
 	housePickup[houseID]:setData("houseID", houseID)
-	houseBlip[houseID] = createBlipAttachedTo(housePickup[houseID]) -- Debug purposes
+	houseBlip[houseID] = createBlipAttachedTo(housePickup[houseID], 31, nil, nil, nil, nil, nil, 0, 500) -- Debug purposes
 	
 	-- Do a per house update system
 	housingData[houseID] = {}
