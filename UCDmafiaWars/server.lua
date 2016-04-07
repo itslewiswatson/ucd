@@ -92,7 +92,7 @@ end
 function turfPayout()
 	for _, plr in ipairs(Element.getAllByType("player")) do
 		local group = exports.UCDgroups:getPlayerGroup(plr)
-		if (group and isElementInLV(plr)) then
+		if (group and isElementInLV(plr) and exports.UCDaccounts:isPlayedLoggedIn(plr)) then
 			local members = exports.UCDgroups:getGroupOnlineMembers(group)
 			local turfs = 0
 			for _, col in ipairs(idToCol) do
@@ -102,7 +102,7 @@ function turfPayout()
 			end
 			if (turfs >= 1 and #members >= 1) then
 				local payout = math.floor((5000 * turfs) / #members)
-				exports.UCDdx:new()
+				exports.UCDdx:new(plr, "You have earned "..exports.UCDutil:tocomma(payout).." from your turfs in the past 5 minutes", 0, 255, 0)
 			end
 		end
 	end
