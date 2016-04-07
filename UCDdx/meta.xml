@@ -1,12 +1,15 @@
 <meta>
 	<script src="server.lua" type="server"/>
 	<script src="client.lua" type="client"/>
-	<script src="bottomBar.lua" type="client"/>
+	<script src="bar_c.lua" type="client"/>
+	<script src="bar_s.lua" type="server"/>
 
 	<export function="new" type="client"/>
 	
 	<export function="add" type="client"/>
+	<export function="add" type="server"/>
 	<export function="del" type="client"/>
+	<export function="del" type="server"/>
 	<export function="isText" type="client"/>
 	
 	<export function="new" type="server"/>

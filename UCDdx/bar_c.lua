@@ -26,7 +26,9 @@ function add(key, text, red, green, blue, ind)
 	table.insert(bar, ind, {k = key, t = text, r = red, g = green, b = blue})
 	return true
 end
---add("Press Z: House Info", 255, 0, 0)
+--add("x", "The mitochrondria is the powerhouse of the cell", 255, 255, 255)
+addEvent("UCDdx.bar:add", true)
+addEventHandler("UCDdx.bar:add", root, add)
 
 function del(key)
 	if (not key) then return false end
@@ -38,6 +40,8 @@ function del(key)
 	end
 	return false
 end
+addEvent("UCDdx.bar:del", true)
+addEventHandler("UCDdx.bar:del", root, del)
 
 function isText(text)
 	if (not text) then return false end
@@ -56,9 +60,9 @@ addEventHandler("onClientRender", root,
 		if (isPlayerMapVisible()) then return end
 		local baseY, baseX = nil, 219
 		if (localPlayer.vehicle) then
-			baseY = 105--663
+			baseY = 150
 		else
-			baseY = 39--729
+			baseY = 39
 		end
 		--for i = 0, #bar do
 		for i = #bar, 1, -1 do
