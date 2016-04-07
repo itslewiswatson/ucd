@@ -15,6 +15,7 @@ serials = {
 	--["70BD5F0030584BBDC179E0132FFF4093"] = true, -- Swagy
 	["3B73D3F1F1CF12FA1580098CBC021D52"] = true, -- Flower Power
 	["A795D5B58ABC590056748F061E102542"] = true, -- Sotiris
+	["52DA46FA1AC97F1E45CF10F82ED91192"] = true, -- Thor
 }
 
 addEventHandler("onPlayerConnect", root,
