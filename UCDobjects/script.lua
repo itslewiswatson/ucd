@@ -76,6 +76,11 @@ function applyMods()
 	engineReplaceCOL(engineLoadCOL("airPbar.col"), 3970)
 	engineReplaceCOL(engineLoadCOL("airPbagBelt.col"), 3969)
 	
+	-- New house object
+	engineReplaceCOL(engineLoadCOL("house2fls.col"), 5464)
+	engineImportTXD(engineLoadTXD("house2fls.txd", true), 5464)
+	engineReplaceModel(engineLoadDFF("house2fls.dff", 5464), 5464)
+	
 	-- 0, 1, 2
 	-- One for each airport
 	for i=50000,50002 do

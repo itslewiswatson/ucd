@@ -7,6 +7,11 @@
 	<file src="island.dff"/>
 	<file src="island.txd"/>
 	
+	<file src="house2fls.col"/>
+	<file src="house2fls.dff"/>
+	<file src="house2fls.txd"/>
+	
+	
 	<file src="airPbagBelt.col"/>
 	<file src="airPbar.col"/>
 	<file src="airPint.col"/>
