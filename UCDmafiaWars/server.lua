@@ -83,7 +83,7 @@ function corrections()
 			local rR, rG, rB = colToArea[idToCol[i]]:getColor()
 			if (gR ~= rR or gG ~= rG or gB ~= rB) then
 				colToArea[idToCol[i]]:setColor(gR, gG, gB, 175)
-				outputDebugString("Setting colour")
+				--outputDebugString("Setting colour")
 			end
 		end
 	end
@@ -92,7 +92,7 @@ end
 function turfPayout()
 	for _, plr in ipairs(Element.getAllByType("player")) do
 		local group = exports.UCDgroups:getPlayerGroup(plr)
-		if (group and isElementInLV(plr) and exports.UCDaccounts:isPlayedLoggedIn(plr)) then
+		if (group and isElementInLV(plr) and exports.UCDaccounts:isPlayerLoggedIn(plr)) then
 			local members = exports.UCDgroups:getGroupOnlineMembers(group)
 			local turfs = 0
 			for _, col in ipairs(idToCol) do
@@ -267,7 +267,7 @@ end
 
 function onExitTurf(plr, matchingDimension)
 	if (plr and plr.type == "player" and plr.dimension == 0 and plr.interior == 0 and matchingDimension) then
-		triggerLatentClientEvent(plr, "onClientExitTurf", plr) -- Need this to trigger regardless of groups
+		triggerLatentClientEvent(plr, "onClientExitTurf", plr) -- Need this to trigger regardless of groups, as people can change occupations inside turfs
 		
 		local group = exports.UCDgroups:getPlayerGroup(plr)
 		if (group) then
