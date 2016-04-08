@@ -77,6 +77,10 @@ function loginPlayer(usr, passwd)
 					outputDebugString("Player "..client.name.." could not log in - data is nil")
 					return false
 				end
+				if (exports.UCDadmin:isAccountBanned(usr)) then
+					exports.UCDdx:new(client, "This account is banned", 255, 255, 255)
+					return
+				end
 				triggerClientEvent(client, "UCDaccounts.login.saveAccountCredentials", client, usr, passwd)
 				logIn(client, getAccount(usr), passwd)
 				exports.UCDlogging:new(client, "login", "Logged into account: "..usr, client:getIP())

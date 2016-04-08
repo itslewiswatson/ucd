@@ -24,6 +24,8 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, 
 	function ()
 		if (not isPlayerLoggedIn(localPlayer)) then		
+			triggerServerEvent("UCDadmin.banCheck", resourceRoot)
+		
 			guiSetInputEnabled(true)
 			showCursor(true)
 			
@@ -57,6 +59,10 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			guiEditSetMasked(login.edit[2], true)    
 	
 			loginPanelElements = {login.button[1], login.button[2], login.button[3], login.edit[1], login.edit[2], login.label[1], login.label[2], login.checkbox[1], login.checkbox[2]}
+			for k, v in pairs(loginPanelElements) do
+				v.visible = false
+			end
+			
 			
 			addEventHandler("onClientGUIClick", login.button[1], onClickLogin, false)
 			addEventHandler("onClientGUIClick", login.button[2], onClickRegister, false)
@@ -373,9 +379,8 @@ function showLoginInterface()
 		registration.window[1]:setVisible(false)
 	end
 	for _, v in pairs(loginPanelElements) do
-		v:setVisible(true)
+		v.visible = true
 	end
-	if (not isCursorShowing()) then showCursor(true) end
 end
 addEvent("UCDaccounts.login.showLoginInterface", true)
 addEventHandler("UCDaccounts.login.showLoginInterface", root, showLoginInterface)
