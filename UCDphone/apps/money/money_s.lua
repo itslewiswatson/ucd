@@ -2,7 +2,7 @@ Money = {}
 
 function Money.sendMoney(plr, amount)
 	if (client and plr and isElement(plr) and plr.type == "player" and amount and tonumber(amount)) then
-		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then
 			exports.UCDdx:new(client, "This player is not logged in", 255, 0, 0)
 			return 
 		end
