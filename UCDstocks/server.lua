@@ -96,14 +96,15 @@ function getPlayerStocks(plr)
 			end
 			]]--
 			local p = 0
-			local sind = -1
 			local result = db:query("SELECT `price`, `action` FROM `stocks__transactions` WHERE `account` = ? AND `acronym` = ? ORDER BY `transacID` DESC", plr.account.name, acronym):poll(-1)
 			if (result and #result >= 1) then
 				for i = 1, #result do
 					if (result[i].action == "sold") then
 						p = p - result[i].price
-					else
+					elseif (result[i].action == "bought") then
 						p = p + result[i].price
+					else
+						outputDebugString("Erorr: wrong action in getPlayerStocks for "..tostring(plr.name).." in stock "..tostring(acronym))
 					end
 				end
 				table.insert(own[acronym], p)
