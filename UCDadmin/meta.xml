@@ -14,6 +14,9 @@
 	<script src="GUI/c_input_box.lua" type="client" />
 	
 	<script src="restricted/cmds.lua" type="server" />
+	
+	<script src="punishments/ban.lua" type="server" />
+	<script src="punishments/ban_c.lua" type="client" />
 
 	<export function="setPlayerAdminRank" type="server" />
 	<export function="getPlayerAdminRank" type="server" />
@@ -25,5 +28,9 @@
 	
 	<export function="isAdminOnDuty" type="server" />
 	<export function="getOnlineAdmins" type="server" />
+	
+	<export function="isAccountBanned" type="server" />
+	<export function="isSerialBanned" type="server" />
+	<export function="addBan" type="server" />
 	<oop>true</oop>
 </meta>

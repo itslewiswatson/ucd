@@ -177,7 +177,7 @@ local punishmentTimes = {
 			"Uzi", "MP5", "Tec-9", "AK-47", "M4", "Rifle", "Sniper",
 			"Rocket Launcher", "Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
 		}
-		giveWeapon_.window[1] = guiCreateWindow(244, 682, 317, 126, "UCD | Admin - Give Weapon", false)
+		giveWeapon_.window[1] = guiCreateWindow(244, 682, 317, 160, "UCD | Admin - Give Weapon", false)
 		giveWeapon_.window[1].sizable = false
 		giveWeapon_.window[1].visible = false
 		giveWeapon_.edit[1] = guiCreateEdit(226, 48, 81, 25, "", false, giveWeapon_.window[1])
@@ -191,8 +191,8 @@ local punishmentTimes = {
 		giveWeapon_.label[2] = guiCreateLabel(226, 24, 81, 19, "Ammo", false, giveWeapon_.window[1])
 		guiLabelSetHorizontalAlign(giveWeapon_.label[2], "center", false)
 		guiLabelSetVerticalAlign(giveWeapon_.label[2], "center")
-		giveWeapon_.button[1] = guiCreateButton(66, 92, 87, 22, "Confirm", false, giveWeapon_.window[1])
-		giveWeapon_.button[2] = guiCreateButton(168, 92, 87, 22, "Close", false, giveWeapon_.window[1])
+		giveWeapon_.button[1] = guiCreateButton(66, 120, 87, 22, "Confirm", false, giveWeapon_.window[1])
+		giveWeapon_.button[2] = guiCreateButton(168, 120, 87, 22, "Close", false, giveWeapon_.window[1])
 
 		windows = {adminPanel.window[1], giveWeapon_.window[1], WPT.window[1]}
 		for _, gui in ipairs(windows) do
