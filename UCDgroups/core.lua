@@ -189,12 +189,12 @@ function createGroup(name)
 		end
 		
 		local d, t = exports.UCDutil:getTimeStamp()
-		db:exec("INSERT INTO `groups_` SET `groupName`=?, `colour`=?, `chatColour`=?, `info`=?, `created`=?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d) -- Perform the inital group creation	
+		db:exec("INSERT INTO `groups_` SET `groupName `= ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t) -- Perform the inital group creation	
 		db:exec("INSERT INTO `groups_members` VALUES (?, ?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, client.name, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
 		setDefaultRanks(groupName)
 		
 		groupTable[groupName] = { 
-			["info"] = settings.default_info_text, ["memberCount"] = 1, ["created"] = nil, ["colour"] = toJSON(settings.default_colour),
+			["info"] = settings.default_info_text, ["memberCount"] = 1, ["created"] = d.." "..t, ["colour"] = toJSON(settings.default_colour),
 			["balance"] = 0, ["chatColour"] = toJSON(settings.default_chat_colour), ["gmotd"] = "",
 		}
 		
@@ -1022,12 +1022,21 @@ addEventHandler("onResourceStop", resourceRoot,
 function toggleGUI(update)
 	--if (source.type == "player" and not plr) then plr = source end
 	local groupName = getPlayerGroup(source) or ""
+	--if (groupName == "") then return end
 	local groupInfo = getGroupInfo(groupName) or ""
 	local rank = getPlayerGroupRank(source)
 	local permissions = getRankPermissions(groupName, rank)
 	local ranks = {}
+	local memberCount = #groupMembers[groupName] --or "N" --[[groupTable[groupName].memberCount]]
+	local groupSlots = 20
+	local created = groupTable[groupName].created or "N/A"
 	
-	triggerLatentClientEvent(source, "UCDgroups.toggleGUI", 15000, false, source, update, groupName, groupInfo, permissions, rank, ranks)
+	if (groupName == "" or not groupName) then
+		memberCount = "N"
+		groupSlots = "A"
+	end
+	
+	triggerLatentClientEvent(source, "UCDgroups.toggleGUI", 15000, false, source, update, groupName, groupInfo, permissions, rank, ranks, memberCount, groupSlots, created)
 end
 addEvent("UCDgroups.viewUI", true)
 addEventHandler("UCDgroups.viewUI", root, toggleGUI)

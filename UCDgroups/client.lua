@@ -53,7 +53,7 @@ forbiddenPermsForTrial = {[1] = true, [2] = true, [3] = true, [4] = true, [7] = 
 -- These are GUI buttons, don't confuse with the permissions
 local notInGroup = {[1] = true, [2] = false, [3] = false, [4] = false, [5] = true, [6] = false, [7] = false, [8] = false, [9] = true, [10] = false, [11] = false, [12] = false, [13] = false, [14] = false, [15] = false, [16] = true}
 
-function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, ranks)
+function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, ranks, memberCount, groupSlots, created)
 	if (updateOnly ~= true) then
 		if (not mainGUI.window[1].visible) then
 			mainGUI.window[1].visible = true
@@ -110,6 +110,8 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		-- Combobox for highest ranks only
 		groupSettings.combobox[1].enabled = boolean(permissions[-1])
 		groupSettings.combobox[2].enabled = boolean(permissions[-1])
+		mainGUI.label[1].text = "Founded: "..tostring(created)
+		mainGUI.label[2].text = "Members: "..tostring(memberCount).."/"..tostring(groupSlots)
 	else
 		-- If they get kicked, leave or delete the group, this should trigger
 		mainGUI.window[1].text = "UCD | Groups"
@@ -128,6 +130,8 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		if (banking.window[1] and isElement(banking.window[1])) then
 			banking.window[1].visible = false
 		end
+		mainGUI.label[1].text = "Founded: N/A"
+		mainGUI.label[2].text = "Members: N/A"
 	end
 end
 addEvent("UCDgroups.toggleGUI", true)
