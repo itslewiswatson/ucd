@@ -28,7 +28,9 @@ function lol(pm)
 end
 
 function render(vehicle)
-	dxDrawText(tostring(vehicle.name), 0, 840, 1920, 887, tocolor(255, 255, 255, alpha), 3.00, "default", "center", "center", false, false, false, false, false)
+	if (not isPlayerMapVisible()) then
+		dxDrawText(tostring(vehicle.name), 0, sY - (sY / 4), sX, sY, tocolor(255, 255, 255, alpha), 3.00, "default", "center", "center", false, false, false, false, false)
+	end
 end
 
 function lolrender()
@@ -45,8 +47,8 @@ function lolrender()
 	end
 end
 
-function renderVehicleName(plr)
-	if (plr ~= localPlayer) then return end
+function renderVehicleName(vehicle)
+	--if (vehicle ~= localPlayer.vehicle) then return end
 	alpha = 0
 	lol("+")
 	setTimer(lol, 3500, 1, "-")
@@ -83,14 +85,14 @@ function RGB(minimum, maximum, value)
 	if (value > maximum) then
 		value = maximum
 	end
-	ratio = 2 * (value-minimum) / (maximum - minimum)
+	ratio = 2 * (value - minimum) / (maximum - minimum)
 	local b = math.max(0, 255 * (1 - ratio))
 	local r = math.max(0, 255 * (ratio - 1))
     local g = 255 - b - r
 	return r, g, b
 end
 
-local diff = (1 + (1/3))
+local diff = (1 + (1 / 3))
 
 function renderVehicleHUD()
 	if (not isPlayerHudComponentVisible("radar") or not localPlayer.vehicle or isPlayerMapVisible()) then return end
@@ -188,6 +190,12 @@ function renderVehicleHUD()
 	--dxDrawCircle(sX - 65, sY - 75, 110, 110, tocolor(0, 0, 0, 100), 0, 360, 17.5)
 	
 	dxDrawCircle(sX - 65, sY - 75, 105, 105, tocolor(sR, sG, sB, 255), 0, secretKMH * diff, 5)
+	
+	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 - 1, sY - 77.5 - 1, sX - 12.5 - 1, sY - 63.5 - 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 - 1, sY - 77.5 + 1, sX - 12.5 - 1, sY - 63.5 + 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 + 1, sY - 77.5 - 1, sX - 12.5 + 1, sY - 63.5 - 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 + 1, sY - 77.5 + 1, sX - 12.5 + 1, sY - 63.5 + 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	
 	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5, sY - 77.5, sX - 12.5, sY - 63.5, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
 
 	dxDrawCircle(sX - 65, sY - 75, 90, 90, tocolor(hR, hG, hB, 255), 0, vehHealth * 3.6, 5)

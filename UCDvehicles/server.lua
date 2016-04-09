@@ -369,7 +369,7 @@ function sellVehicle(vehicleID)
 	
 	local price = getVehicleData(vehicleID, "price")
 	local rate = root:getData("vehicles.rate")
-	local newPrice = exports.UCDutil:mathround(price * (rate / 1000), 2)
+	local newPrice = math.floor(price * (rate / 100))
 	exports.UCDdx:new(client, "You have successfully sold your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." for $"..exports.UCDutil:tocomma(newPrice), 0, 255, 0)
 	client:giveMoney(newPrice)
 	vehicles[vehicleID] = nil

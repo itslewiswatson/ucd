@@ -19,7 +19,11 @@ end
 addEventHandler("onClientVehicleDamage", root,
 	function (_, _, loss)
 		if (isElement(source) and source.type == "vehicle") then
-			if (source.health < 250 or (source.health - loss) < 250) then
+			local r  = source.rotation
+			if (source.blown) then
+				return
+			end
+			if (source.health < 250 or (source.health - loss) < 250 or (r.x > 90 and r.x < 270 and (source.health <= 250 or source.health - loss < 250))) then
 				if (source.damageProof == false or source.engineState == true) then
 					triggerServerEvent("dmgproof", source)
 					source:setDamageProof(true)
