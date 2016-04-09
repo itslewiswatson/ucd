@@ -138,10 +138,11 @@ function getAvailableStocks(stockName)
 	return stockCount
 end
 
-function sendStocks(show)
+function sendStocks(updateOnly)
 	local temp = getStocks()
 	local own = getPlayerStocks(source)
-	triggerLatentClientEvent(source, "UCDstocks.toggleGUI", source, temp or {}, own or {}, show)
+	triggerLatentClientEvent(source, "UCDstocks.toggleGUI", source, updateOnly, temp or {}, own or {})
+	triggerLatentClientEvent(source, "UCDphone.populateStocks", source, temp or {}, own or {})
 end
 addEvent("UCDstocks.getStocks", true)
 addEventHandler("UCDstocks.getStocks", root, sendStocks)
@@ -183,7 +184,7 @@ function sellStocks(stockName, amount, clientPrice)
 		db:exec("INSERT INTO `stocks__transactions` (`acronym`, `account`, `price`, `options`, `action`) VALUES (?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "sold")
 		
 		triggerEvent("UCDstocks.getStocks", client)
-		triggerEvent("UCDphone.getStocks", client)
+		--triggerEvent("UCDphone.getStocks", client)
 	end
 end
 
@@ -244,7 +245,7 @@ function buyStock(stockName, amount, clientPrice)
 		db:exec("INSERT INTO `stocks__transactions` (`acronym`, `account`, `price`, `options`, `action`) VALUES (?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "bought")
 		
 		triggerEvent("UCDstocks.getStocks", client)
-		triggerEvent("UCDphone.getStocks", client)
+		--triggerEvent("UCDphone.getStocks", client)
 	end
 end
 addEvent("UCDstocks.buyStock", true)
@@ -253,8 +254,10 @@ addEventHandler("UCDstocks.buyStock", root, buyStock)
 function onStockMarketUpdate()
 	--triggerClientEvent(exports.UCDaccounts:getLoggedInPlayers(), "onClientStockMarketUpdate", resourceRoot)
 	for _, plr in ipairs(exports.UCDaccounts:getLoggedInPlayers()) do
-		triggerEvent("UCDstocks.getStocks", plr, false)
-		triggerEvent("UCDphone.getStocks", plr)
+		--exports.UCDdx:new(plr, "The stock market has changed!", 255, 255, 255)
+		triggerEvent("UCDstocks.getStocks", plr, true)
+		--triggerEvent("UCDphone.getStocks", plr)
+		--triggerLatentClientEvent()
 	end
 end
 addEvent("onStockMarketUpdate")
@@ -269,14 +272,14 @@ function updateStockMarket()
 		local low = math.random(percent[20], currPrice)
 		local high = math.random(currPrice, percent[150])
 		
-		
 		stocks[name]["prev"] = currPrice
 		stocks[name]["price"] = math.random(low, high)
 		triggerEvent("onStockMarketUpdate", resourceRoot)
-		appendStockHistory(name)
+		--appendStockHistory(name)
 	end
 end
-addCommandHandler("fuckstocks", updateStockMarket)
+--addCommandHandler("fuckstocks", updateStockMarket)
+Timer(updateStockMarket, (25 * 60) * 1000, 1)
 
 function appendStockHistory(stockName)
 	local price = stocks[stockName]["price"]

@@ -99,10 +99,13 @@ addEventHandler("onClientResourceStart", resourceRoot,
 	end
 )
 
-function toggleGUI(data, own, show)
-	if (not show) then
-		show = true
+function toggleGUI(updateOnly, data, own)
+	if (updateOnly) then
+		show = GUI.window.visible
+	else
+		show = not GUI.window.visible
 	end
+	
 	GUI.gridlist["all"]:clear()
 	GUI.gridlist["own"]:clear()
 	buyGUI.window.visible = false
