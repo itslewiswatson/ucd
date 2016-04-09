@@ -19,7 +19,7 @@ function ContextBar.add(text, r, g, b)
 	--local y = sY - ContextBar.height
 	--y = sY - (#ContextBar.entries * ContextBar.height) - ContextBar.height
 	--y = sY - y
-	local y = -22
+	local y = -23
 	
 	--if text == "" or text == nil then return false end
 	if #ContextBar.entries > 0 then
@@ -55,7 +55,7 @@ function ContextBar.add(text, r, g, b)
 	outputConsole(text)
 	return true
 end
---addCommandHandler("dx", function () ContextBar.add("The quick brown fox jumps over the lazy dog "..exports.UCDutil:randomstring(2), math.random(0, 255), math.random(0, 255), math.random(0, 255)) end)
+addCommandHandler("dx", function () ContextBar.add("The quick brown fox jumps over the lazy dog "..exports.UCDutil:randomstring(2), math.random(0, 255), math.random(0, 255), math.random(0, 255)) end)
 --addCommandHandler("getdx", function () outputDebugString(#ContextBar.entries) end)
 
 addEventHandler("onClientRender", root,
@@ -96,13 +96,7 @@ addEventHandler("onClientRender", root,
 			if #ContextBar.entries > 0 then
 				for i = 1, #ContextBar.entries do
 					if ContextBar.entries[i] and i <= 4 then
-					--	if (ContextBar.entries[i].y >= ((i * 23) - 23)) then
-					--		ContextBar.entries[i].finished = true
-					--	end
-						--if ContextBar.entries[i].y <= -23 and not ContextBar.entries[i].inAnim then
-						--	ContextBar.entries[i].inAnim = true
-						--end
-						if ContextBar.entries[i].y < -23 then
+						if ContextBar.entries[i].y < -23 and ContextBar.entries[i].inAnim then --if it has landed
 							table.remove(ContextBar.entries, i)
 						else
 							if (not ContextBar.entries[i].inAnim) then
@@ -112,7 +106,7 @@ addEventHandler("onClientRender", root,
 							if ContextBar.entries[i].y > num then
 								ContextBar.entries[i].y = ContextBar.entries[i].y + ContextBar.step
 							end
-							if ContextBar.entries[i].y >= (num) and not ContextBar.entries[i].inAnim then
+							if ContextBar.entries[i].y >= num and not ContextBar.entries[i].inAnim then
 								ContextBar.entries[i].inAnim = true
 							end
 							--if ContextBar.entries[i].y == 0 then ContextBar.entries[i].landed = true end
@@ -136,6 +130,7 @@ addEventHandler("onClientRender", root,
 				toAdd = 0
 			end
 			
+			
 			if ContextBar.entries[1] ~= nil then
 				if not ContextBar.entries[1].landed then
 					ContextBar.entries[1].landed = true
@@ -143,19 +138,17 @@ addEventHandler("onClientRender", root,
 				end
 
 				if tick + toAdd > (ContextBar.entries[1].creation + ContextBar.life) then
-					--if ContextBar.entries[1].y < -23 then
-					--	table.remove(ContextBar.entries, 1)
-					--	outputDebugString("table.remove 1")
-					--	return
-					--end
 					-- We step that out of the screen [acting as an animation]
 					ContextBar.entries[1].y = ContextBar.entries[1].y + ContextBar.step
 					-- Let's push the other ones up
 					for i = 1, #ContextBar.entries do
-						ContextBar.entries[i].y = ContextBar.entries[i].y + ContextBar.step
+						if (i ~= 1) then
+							ContextBar.entries[i].y = ContextBar.entries[i].y + ContextBar.step
+						end
 					end
 				end
 			end 
+			
 		end
 	end
 )
