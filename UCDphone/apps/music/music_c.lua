@@ -1,10 +1,14 @@
 Music = {}
 Music.stations = 
 {
+	{"[All] 102.9 Hot Tomato", "http://s4.viastreaming.net:8765/listen.pls"},
+	{"[Hardcore] HARDCORERADIO.nl", "http://www.hardcoreradio.nl/hr.m3u"},
 	{"[Hard Dance] Q-Dance Radio", "http://radio.q-dance.nl/q-danceradio.pls"},
 	{"[Hardstyle] NERadio Hardstyle", "http://listen.hardstyle.nu/listen.pls"},
 	{"[House/Trance] NERadio House/Trance", "http://listen.neradio.fm/listen.pls"},
+	{"[Other] Radio Metro", "http://www.radiometro.com.au/songapp/Radio-Metro.pls"},
 	{"[Top 40] Power 181", "http://www.181.fm/winamp.pls?station=181-power&file=181-power.pls"},
+	--{"[Top 40] Power 181", "http://www.181.fm/winamp.pls?station=181-power&file=181-power.pls"},
 	{"[Swedish] NERadio Sweden", "http://www.neradio.se/listen.pls"},
 }
 Music.trackPlaying = nil
@@ -27,7 +31,7 @@ function Music.create()
 	phone.music.button["add_track"] = GuiButton(185, 303, 76, 51, "Add song", false, phone.music.tab["Music"])
 	phone.music.button["remove_track"] = GuiButton(95, 270, 76, 23, "Remove", false, phone.music.tab["Music"])
 	
-	-- Load in from XML file into Music.tracks
+	-- Load in from XML file into Music.tracks table
 	
 	
 	-- Create user tracks here if they exist
@@ -43,12 +47,14 @@ function Music.create()
 	guiGridListSetSortingEnabled(phone.music.gridlist["Radio"], false)
 	guiGridListAddColumn(phone.music.gridlist["Radio"], "Station", 0.9)
 	phone.music.label["banner"] = GuiLabel(0, 0, 271, 22, "Double click on a station to play", false, phone.music.tab["Radio"])
+	--phone.music.label["banner"]:setColor(195, 195, 195)
 	guiLabelSetHorizontalAlign(phone.music.label["banner"], "center", false)
 	guiLabelSetVerticalAlign(phone.music.label["banner"], "center")
 	
 	for i, info in ipairs(Music.stations) do
 		local row = guiGridListAddRow(phone.music.gridlist["Radio"])
 		guiGridListSetItemText(phone.music.gridlist["Radio"], row, 1, info[1], false, false)
+		guiGridListSetItemColor(phone.music.gridlist["Radio"], row, 1, 0, 255, 0)
 	end
 	
 	-- Shared
@@ -76,12 +82,21 @@ function Music.stop()
 	if (stream and isElement(stream)) then
 		stream:stop()
 		outputDebugString("Stopped radio")
-		phone.music.progress["volume"].progress = 0
+		--phone.music.progress["volume"].progress = 0
+		--phone.music.label["banner"].text = "Double click on a station to play"
+		--phone.music.label["banner"]:setColor(255, 195, 195)
 	end
 	if (track and isElement(track)) then
 		track:stop()
 		outputDebugString("Stopped track")
-		phone.music.progress["volume"].progress = 0
+		--phone.music.progress["volume"].progress = 0
+	end
+	exports.UCDdx:del("music")
+	for i = 0, guiGridListGetRowCount(phone.music.gridlist["Radio"]) - 1 do
+		--local r, g, b = guiGridListGetItemColor(phone.music.gridlist["Radio"], i, 1)
+		--if (r ~= 0 and g ~= 255 and b ~= 0) then
+			guiGridListSetItemColor(phone.music.gridlist["Radio"], i, 1, 0, 255, 0)
+		--end
 	end
 end
 addEventHandler("onClientGUIClick", phone.music.button["stop"], Music.stop, false)
@@ -99,6 +114,8 @@ function Music.play()
 			stream = Sound(link)
 			stream.volume = Music.volume
 			phone.music.progress["volume"].progress = Music.volume * 100 --// 0.5 -> 50
+			
+			guiGridListSetItemColor(phone.music.gridlist["Radio"], row, 1, 255, 200, 0)
 		end
 	else
 		local row = guiGridListGetSelectedItem(phone.music.gridlist["Music"])
@@ -156,8 +173,13 @@ addEventHandler("onClientGUIClick", phone.music.button["vol_up"], Music.changeVo
 
 function Music.onStreamTitleChange(title)
 	if (stream and isElement(stream) and source == stream) then
+		--outputDebugString("title > "..tostring(title))
+		--outputDebugString("stream_title > "..tostring(stream:getMetaTags()["stream_title"]))
 		if (stream:getMetaTags()["stream_title"] == title) then
-			exports.UCDdx:new("Now playing: "..tostring(title), 255, 200, 0)
+			--exports.UCDdx:new("Now playing: "..tostring(title), 255, 200, 0)
+			exports.UCDdx:add("music", tostring(title), 255, 200, 0)
+			--phone.music.label["banner"].text = tostring(title) -- I would put 'Now playing'at the start, but it clips off the phone
+			--phone.music.label["banner"]:setColor(255, 200, 0)
 		end
 	end
 end
@@ -168,13 +190,17 @@ function Music.onPlayerUserTrack(suc)
 		if (Music.trackPlaying) then
 			local name = Music.tracks[Music.trackPlaying][1]
 			if (suc) then
-				exports.UCDdx:new("Now playing: "..tostring(name), 255, 200, 0)
+				--exports.UCDdx:new("Now playing: "..tostring(name), 255, 200, 0)
+				exports.UCDdx:add("music", tostring(name), 255, 200, 0)
 			else
 				exports.UCDdx:new("Failed to play: "..tostring(name), 255, 200, 0)
 				Music.stop()
 			end
 		end
 	end
+	--if (stream and isElement(stream) and source == stream) then
+	--	outputDebugString("Stream > "..tostring(title))
+	--end
 end
 addEventHandler("onClientSoundStream", root, Music.onPlayerUserTrack) -- Maybe add in Music.play instead?
 
@@ -194,4 +220,3 @@ function Music.cacheTracks()
 	f:unload()
 end
 Music.cacheTracks()
-

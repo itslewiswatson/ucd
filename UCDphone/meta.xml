@@ -18,7 +18,7 @@
 	
 	
 	<script src="client.lua" type="client"/>
-	<script src="server.lua" type="server"/>
+	<!--<script src="server.lua" type="server"/>-->
 	
 	<script src="apps/im/im_c.lua" type="client"/>
 	<script src="apps/im/im_s.lua" type="server"/>
