@@ -49,3 +49,19 @@ addEventHandler("onClientPlayerVehicleEnter", root,
 		end
 	end
 )
+
+Timer(
+	function ()
+		local vehicle = localPlayer.vehicle
+		if (vehicle) then
+			if (vehicle.health <= 250) then
+				if (vehicle.damageProof == false or vehicle.engineState == true) then
+					triggerServerEvent("dmgproof", vehicle)
+					vehicle:setDamageProof(true)
+					vehicle:setEngineState(false)
+					vehicle.health = 250
+				end
+			end
+		end
+	end, 1500, 0
+)
