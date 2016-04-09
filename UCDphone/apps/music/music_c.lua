@@ -13,7 +13,7 @@ Music.stations =
 }
 Music.trackPlaying = nil
 Music.tracks = {
-	[1] = {"Girls' Generation - Gee", "http://music.zorque.xyz/gg/gee.mp3"}
+	--[1] = {"Girls' Generation - Gee", "http://music.zorque.xyz/gg/gee.mp3"}
 }
 
 function Music.create()
@@ -35,11 +35,7 @@ function Music.create()
 	
 	
 	-- Create user tracks here if they exist
-	for i = 1, #Music.tracks do
-		local row = guiGridListAddRow(phone.music.gridlist["Music"])
-		guiGridListSetItemText(phone.music.gridlist["Music"], row, 1, tostring(Music.tracks[i][1]), false, false)
-		guiGridListSetItemText(phone.music.gridlist["Music"], row, 2, tostring(Music.tracks[i][2]), false, false)
-	end
+	
 	
 	-- Radio
 	phone.music.tab["Radio"] = GuiTab("Radio", phone.music.tabpanel["all"])
@@ -78,25 +74,29 @@ function Music.toggle()
 	end
 end
 
+function Music.loadUserTracks()
+	phone.music.gridlist["Music"]:clear()
+	Music.stop()
+	for i = 1, #Music.tracks do
+		local row = guiGridListAddRow(phone.music.gridlist["Music"])
+		guiGridListSetItemText(phone.music.gridlist["Music"], row, 1, tostring(Music.tracks[i][1]), false, false)
+		guiGridListSetItemText(phone.music.gridlist["Music"], row, 2, tostring(Music.tracks[i][2]), false, false)
+	end
+end
+
 function Music.stop()
 	if (stream and isElement(stream)) then
 		stream:stop()
 		outputDebugString("Stopped radio")
-		--phone.music.progress["volume"].progress = 0
-		--phone.music.label["banner"].text = "Double click on a station to play"
-		--phone.music.label["banner"]:setColor(255, 195, 195)
 	end
 	if (track and isElement(track)) then
 		track:stop()
 		outputDebugString("Stopped track")
-		--phone.music.progress["volume"].progress = 0
+		Music.trackPlaying = nil
 	end
 	exports.UCDdx:del("music")
 	for i = 0, guiGridListGetRowCount(phone.music.gridlist["Radio"]) - 1 do
-		--local r, g, b = guiGridListGetItemColor(phone.music.gridlist["Radio"], i, 1)
-		--if (r ~= 0 and g ~= 255 and b ~= 0) then
-			guiGridListSetItemColor(phone.music.gridlist["Radio"], i, 1, 0, 255, 0)
-		--end
+		guiGridListSetItemColor(phone.music.gridlist["Radio"], i, 1, 0, 255, 0)
 	end
 end
 addEventHandler("onClientGUIClick", phone.music.button["stop"], Music.stop, false)
@@ -198,9 +198,6 @@ function Music.onPlayerUserTrack(suc)
 			end
 		end
 	end
-	--if (stream and isElement(stream) and source == stream) then
-	--	outputDebugString("Stream > "..tostring(title))
-	--end
 end
 addEventHandler("onClientSoundStream", root, Music.onPlayerUserTrack) -- Maybe add in Music.play instead?
 
@@ -214,9 +211,75 @@ function Music.cacheTracks()
 	local tracks = f:getChildren()
 	for i, v in ipairs(tracks) do
 		local title, link = v:getAttribute("title"), v:getAttribute("link")
-		outputDebugString(tostring(title))
-		outputDebugString(tostring(v))
+		table.insert(Music.tracks, {title, link})
 	end
+	f:saveFile()
 	f:unload()
+	Music.loadUserTracks()
 end
 Music.cacheTracks()
+
+function Music.addTrack()
+	local title = phone.music.edit["track_title"].text
+	local link = phone.music.edit["track_link"].text
+	
+	if (title:gsub(" ", "") == "" or title:gsub(" ", ""):lower() == "title") then
+		exports.UCDdx:new("Please enter a title for this track", 255, 0, 0)
+		return
+	end
+	if (link:gsub(" ", "") == "" or link:gsub(" ", ""):lower() == "link") then
+		exports.UCDdx:new("Please enter a link for this track", 255, 0, 0)
+		return
+	end
+	if (link:sub(1, 7) ~= "http://" and link:sub(1, 8) ~= "https://") then
+		exports.UCDdx:new("Links must start with 'http://' or 'https://'", 255, 0, 0)
+		return
+	end
+	
+	link = link:gsub(" ", "%20")
+	
+	if (track and isElement(track)) then
+		Music.stop()
+	end
+	
+	table.insert(Music.tracks, {title, link})
+	
+	local f = XML.load("@usertracks.xml")
+	local newTrack = f:createChild("track")
+	newTrack:setAttribute("title", tostring(title))
+	newTrack:setAttribute("link", tostring(link))
+	
+	f:saveFile()
+	f:unload()
+	
+	Music.loadUserTracks()
+end
+addEventHandler("onClientGUIClick", phone.music.button["add_track"], Music.addTrack, false)
+
+function Music.removeTrack()
+	local row = guiGridListGetSelectedItem(phone.music.gridlist["Music"])
+	if (row and row ~= -1) then
+		-- Only stop playing if there is a track playing, not a radio stream
+		if (track and isElement(track)) then
+			Music.stop()
+		end
+		
+		table.remove(Music.tracks, row + 1)
+		
+		-- Unload node from file
+		local f = XML.load("@usertracks.xml")
+		if (not f) then
+			outputDebugString("fuck xml")
+			return false
+		end
+		
+		f:getChildren()[row + 1]:destroy()
+		f:saveFile()
+		f:unload()
+		
+		Music.loadUserTracks()
+	else
+		exports.UCDdx:new("You must select a track to remove", 255, 0, 0)
+	end
+end
+addEventHandler("onClientGUIClick", phone.music.button["remove_track"], Music.removeTrack, false)
