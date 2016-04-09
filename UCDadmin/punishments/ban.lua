@@ -60,7 +60,7 @@ function addBan(val, banisher, reason, duration)
     reason = reason:gsub("'", "")
     reason = reason:gsub("\\", "")
 	
-	for _, ent in ipairs(bans) do
+	for _, ent in pairs(bans) do
 		if (ent[1] == val) then
 			return false
 		end
@@ -80,7 +80,7 @@ end
 
 function isAccountBanned(account)
 	account = "acc:"..account
-	for _, ent in ipairs(bans) do
+	for _, ent in pairs(bans) do
 		if (ent[1] == account) then
 			return true, ent
 		end
@@ -90,7 +90,7 @@ end
 
 function isSerialBanned(serial)
 	if (serial:len() == 32) then
-		for _, ent in ipairs(bans) do
+		for _, ent in pairs(bans) do
 			if (ent[1]:len() == 32 and ent[1] == serial) then
 				outputDebugString(ent[1])
 				return true, ent
@@ -101,7 +101,7 @@ function isSerialBanned(serial)
 end
 
 function isIPBanned(ip)
-	for _, ent in ipairs(bans) do
+	for _, ent in pairs(bans) do
 		if (ent[1] == ip) then
 			outputDebugString(ent[1])
 			return true, ent
@@ -126,3 +126,38 @@ function banCheck()
 end
 addEvent("UCDadmin.banCheck", true)
 addEventHandler("UCDadmin.banCheck", root, banCheck)
+
+function removeBan(val, unbanisher)
+	local foundBan, banInfo = false, nil
+	for ind, ent in pairs(bans) do
+		if (ent[1] == val) then
+			foundBan = true
+			banInfo = ind
+			break
+		end
+	end
+	
+	if (not foundBan or not banInfo) then
+		return false
+	end
+	
+	if (type(unbanisher) == "userdata") then
+		unbanisher = unbanisher.name
+	end
+	if (type(unbanisher) ~= "string") then
+		unbanisher = "N/A"
+	end
+	
+	bans[banInfo] = nil
+	db:exec("DELETE FROM `bans` WHERE `val` = ?", val)
+	
+	if (val:sub(1, 4) ~= "acc:") then
+		for _, plr in ipairs(Element.getAllByType("player")) do
+			if (plr.serial == val or plr.ip == val) then
+				removePlayer(plr) -- Reconnect them as their ban is over
+			end
+		end
+	end
+	
+	return true
+end
