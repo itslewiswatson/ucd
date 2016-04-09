@@ -27,7 +27,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			triggerServerEvent("UCDadmin.banCheck", resourceRoot)
 		
 			guiSetInputEnabled(true)
-			showCursor(true)
+			--showCursor(true)
 			
 			login.button[1] = guiCreateButton((sX / 2) - (87 / 2) - 100, (sY / 2), 87, 34, "Login", false)
 			login.button[1]:setFont("default-bold-small")
@@ -381,6 +381,7 @@ function showLoginInterface()
 	for _, v in pairs(loginPanelElements) do
 		v.visible = true
 	end
+	showCursor(true)
 end
 addEvent("UCDaccounts.login.showLoginInterface", true)
 addEventHandler("UCDaccounts.login.showLoginInterface", root, showLoginInterface)
@@ -394,8 +395,9 @@ function hideLoginInterface()
 	if (registration.window[1]:getVisible() == true) then
 		registration.window[1]:setVisible(false)
 	end
-	if (isCursorShowing()) then showCursor(false) end
+	--if (isCursorShowing()) then showCursor(false) end
 	--removeEventHandler("onClientRender", root, blackBars)
+	showCursor(false)
 end
 addEvent("UCDaccounts.login.hideLoginInterface", true)
 addEventHandler("UCDaccounts.login.hideLoginInterface", root, hideLoginInterface)

@@ -7,14 +7,15 @@
 --// FILE: \UCDaccounts\s_accounts.lua [server]
 --------------------------------------------------------------------
 
+-- Settings
+local SAVE_INTERVAL = 15 -- Minutes in which to save all accounts periodically
+
+-- Util
 db = exports.UCDsql:getConnection()
 Accounts = {}
 
 function Accounts.Login(_, theCurrentAccount)
-	--outputDebugString("Accounts.Login")
-	if (theCurrentAccount:isGuest()) then return end
-	
-	--local accountID = getPlayerAccountID(source)
+	if (theCurrentAccount.guest) then return end
 	
 	local result = GAD(source, "*")
 	if result == nil then
@@ -30,7 +31,7 @@ function Accounts.Login(_, theCurrentAccount)
 	local playerModel 							= result.model
 	local jobModel								= result.jobModel
 	local playerTeam 							= result.team
-	local occupation 					= result.occupation
+	local occupation 							= result.occupation
 	local playerWalkstyle 						= result.walkstyle
 	local playerHealth, playerArmour 			= result.health, result.armour
 	local playerMoney 							= result.money
@@ -61,7 +62,6 @@ function Accounts.Login(_, theCurrentAccount)
 	setCameraTarget(source, source)
 	fadeCamera(source, true, 2)
 	db:exec("UPDATE `accounts` SET `serial` = ?, `ip` = ? WHERE `account` = ?", source.serial, source.ip, source.account.name)
-	--source:setData("accountID", accountID, true)
 	source:setData("accountName", source.account.name, true)
 	SAD(source, "lastUsedName", source.name)
 	
@@ -72,7 +72,7 @@ addEventHandler("onPlayerLogin", root, Accounts.Login)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function Accounts.Save(plr)
-	if (plr.type ~= "player" or plr.account.guest) then return end
+	if (not plr or not isElement(plr) or plr.type ~= "player" or plr.account.guest) then return end
 	
 	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	local p = plr.position
@@ -93,28 +93,6 @@ function Accounts.Save(plr)
 		plr.serial,
 		plr.account.name
 	)
-		
-	-- It's more efficient here to have one query and not 16 different ones that would come from using SAD
-	--[[
-	db:exec("UPDATE `accountData` SET `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `team`=?, `money`=?, `walkstyle`=?, `wanted`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=? WHERE `account`=?",
-		p.x,
-		p.y,
-		p.z,
-		rot,
-		dim,
-		interior,
-		team,
-		money,
-		walkstyle,
-		wanted,
-		health,
-		armour,
-		occupation,
-		nametag,
-		plr.name,
-		plr.account.name
-	)
-	--]]
 	
 	-- I might as well just use SAD to update the table instead of having to bother with a large query which has a much larger load than what multiple SQL queries does
 	-- And I'm pretty sure SQL executions can be queued (need to ask Jusonex about that) and as long as we don't have hundreds of players, small optimizations like this shouldn't have too much effect
@@ -134,17 +112,6 @@ function Accounts.Save(plr)
 	SAD(plr.account.name, "occupation", occupation)
 	SAD(plr.account.name, "nametag", nametag)
 	SAD(plr.account.name, "lastUsedName", plr.name)
-	
-	-- Use a timer here to reduce load on the server at once (from SQL queries and tables being accessed)
-	--[[
-	setTimer(
-		function (account)
-			-- We cache the account here only because we didn't in the above query
-			--cachePlayerAccount(plr)
-			cacheAccount(account) -- This is a rather inefficent method come to think of it
-		end, 1000, 1, plr.account.name
-	)
-	--]]
 end
 
 function Accounts.OnQuit()
@@ -158,8 +125,10 @@ function Accounts.SaveAll()
 	for _, plr in ipairs(getLoggedInPlayers()) do
 		Accounts.Save(plr)
 	end
+	outputDebugString("Saved all accounts!")
 end
 --addCommandHandler("saveall", Accounts.SaveAll)
+Timer(Accounts.SaveAll, (SAVE_INTERVAL * 60) * 1000, 0)
 
 function Accounts.Stop()
 	Accounts.SaveAll()
