@@ -1,7 +1,7 @@
 local markerInfo = {}
 local sX, sY = guiGetScreenSize()
 GUI = {
-    gridlist = {},
+    gridlist = nil,
     window = {},
     button = {}
 }
@@ -10,9 +10,18 @@ GUI.window = GuiWindow(1085, 205, 281, 361, "UCD | Vehicle Shop - Low End", fals
 GUI.window.sizable = false
 GUI.window.visible = false
 GUI.window.alpha = 255
-GUI.gridlist = GuiGridList(9, 28, 262, 280, false, GUI.window)
-guiGridListAddColumn(GUI.gridlist, "Vehicle", 0.6)
-guiGridListAddColumn(GUI.gridlist, "Price", 0.3)
+function createGridList()
+	if (GUI.gridlist and isElement(GUI.gridlist)) then
+		GUI.gridlist:destroy()
+		GUI.gridlist = nil
+	end
+	GUI.gridlist = GuiGridList(9, 28, 262, 280, false, GUI.window)
+	guiGridListAddColumn(GUI.gridlist, "Vehicle", 0.6)
+	guiGridListAddColumn(GUI.gridlist, "Price", 0.3)
+	addEventHandler("onClientGUIClick", GUI.gridlist, onClickVehicle, false)
+end
+addEventHandler("onClientResourceStart", resourceRoot, createGridList)
+
 GUI.button["buy"] = GuiButton(10, 318, 80, 30, "Buy", false, GUI.window)
 GUI.button["colour"] = GuiButton(101, 318, 80, 30, "Colour", false, GUI.window)
 GUI.button["close"] = GuiButton(191, 318, 80, 30, "Close", false, GUI.window)
@@ -56,9 +65,12 @@ function openGUI(_, _, m)
 		if (getDistanceBetweenPoints3D(localPlayer.position, m.position) > 1.5) then
 			return
 		end
+		createGridList()
 		GUI.window.text = "UCD | Vehicle Shop - "..tostring(markerInfo[m][1])
 		populateGridList(markerInfo[m][1])
 	end
+	--GUI.gridlist = GuiGridList(9, 28, 262, 280, false, GUI.window)
+	
 	GUI.window.visible = true
 	GUI.window:setPosition(sX - 281, sY / 2 - (361 / 2), false)
 	showCursor(true)
@@ -69,7 +81,7 @@ end
 
 function closeGUI()
 	if (not GUI.window.visible) then return end
-	GUI.gridlist:clear()
+	createGridList()
 	GUI.window.visible = false
 	showCursor(false)
 	exports.UCDdx:del("vehicleshop")
@@ -86,7 +98,9 @@ end
 addEventHandler("onClientGUIClick", GUI.button["close"], closeGUI, false)
 
 function populateGridList(var)
-	GUI.gridlist:clear()
+	--GUI.gridlist:destroy()
+	--GUI.gridlist = GuiGridList(9, 28, 262, 280, false, GUI.window)
+	--createGridList()
 	for k, v in ipairs(vehicles[var] or {}) do
 		local name = getVehicleNameFromModel(v)
 		local price = prices[name]
@@ -121,7 +135,7 @@ function onClickVehicle()
 		end
 	end
 end
-addEventHandler("onClientGUIClick", GUI.gridlist, onClickVehicle, false)
+--addEventHandler("onClientGUIClick", GUI.gridlist, onClickVehicle, false)
 
 function onClickBuy()
 	local row = guiGridListGetSelectedItem(GUI.gridlist)
