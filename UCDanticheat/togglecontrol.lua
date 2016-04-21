@@ -14,7 +14,7 @@ local disallowedTeams = {["Citizens"] = true, ["Not logged in"] = true}
 -- Firing checks (also disables firing without aiming)
 function fireCheck(button, state)
 	if (localPlayer.vehicle) then return end
-	if (fireKeys[button] and state == true) then
+	if (fireKeys[button] and state == true and not isCursorShowing()) then
 		-- If they are in a safezone, disable firing regardless of everything else
 		if (exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
 			toggleControl("fire", false)
@@ -44,7 +44,7 @@ addEventHandler("onClientKey", root, fireCheck)
 
 function aimCheck(button, state)
 	if (localPlayer.vehicle) then return end
-	if (aimKeys[button] and state == true) then
+	if (aimKeys[button] and state == true and not isCursorShowing()) then
 		--if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) and localPlayer.weaponSlot ~= 11 and not exceptedWeapons[localPlayer:getWeapon()] and not exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
 		if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) or exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
 			--outputDebugString("true")
