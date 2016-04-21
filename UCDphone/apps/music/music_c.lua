@@ -125,7 +125,7 @@ function Music.play()
 			local name = guiGridListGetItemText(phone.music.gridlist["Music"], row, 1)
 			if (link) then
 				outputDebugString("Playing "..link)
-				track = Sound(link)
+				track = Sound(link, true)
 				if (track) then
 					if (not Music.volume) then
 						Music.volume = 0.5

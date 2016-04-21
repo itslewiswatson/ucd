@@ -84,16 +84,18 @@ end
 addEvent("UCDphone.populateStocks", true)
 addEventHandler("UCDphone.populateStocks", root, Stocks.populate)
 
+--[[
 addEvent("onClientPlayerLogin", true)
 addEventHandler("onClientPlayerLogin", localPlayer, 
 	function ()
 		triggerServerEvent("UCDphone.getStocks", localPlayer)
 	end
 )
+--]]
 
 function Stocks.onOpen(i)
 	if (i == 12) then
-		triggerServerEvent("UCDphone.getStocks", localPlayer)
+		triggerServerEvent("UCDstocks.getStocks", localPlayer, true)
 	end
 end
 addEvent("UCDphone.onOpenApp")
