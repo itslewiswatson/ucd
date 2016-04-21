@@ -189,7 +189,7 @@ function createGroup(name)
 		end
 		
 		local d, t = exports.UCDutil:getTimeStamp()
-		db:exec("INSERT INTO `groups_` SET `groupName `= ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t) -- Perform the inital group creation	
+		db:exec("INSERT INTO `groups_` SET `groupName` = ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t) -- Perform the inital group creation	
 		db:exec("INSERT INTO `groups_members` VALUES (?, ?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, client.name, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
 		setDefaultRanks(groupName)
 		
@@ -1027,13 +1027,19 @@ function toggleGUI(update)
 	local rank = getPlayerGroupRank(source)
 	local permissions = getRankPermissions(groupName, rank)
 	local ranks = {}
-	local memberCount = #groupMembers[groupName] --or "N" --[[groupTable[groupName].memberCount]]
+	--local memberCount = #groupMembers[groupName] --or "N" --[[groupTable[groupName].memberCount]]
+	local memberCount
 	local groupSlots = 20
-	local created = groupTable[groupName].created or "N/A"
+	local created-- = groupTable[groupName].created or "N/A"
 	
 	if (groupName == "" or not groupName) then
+		created = "N/A"
 		memberCount = "N"
 		groupSlots = "A"
+	else
+		memberCount = #groupMembers[groupName]
+		groupSlots = 20
+		created = groupTable[groupName].created or "N/A"
 	end
 	
 	triggerLatentClientEvent(source, "UCDgroups.toggleGUI", 15000, false, source, update, groupName, groupInfo, permissions, rank, ranks, memberCount, groupSlots, created)
