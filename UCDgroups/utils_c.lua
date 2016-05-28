@@ -37,6 +37,26 @@ function onClientGUIChanged()
 		end
 	-- Group log search
 	elseif (source == historyGUI.edit[1]) then
+		if (_hist) then
+			local text = historyGUI.edit[1].text
+			if (text == "" or text == " " or text:gsub(" ", "") == "") then
+				historyGUI.gridlist[1]:clear()
+				for _, data in pairs(_hist) do
+					local row = guiGridListAddRow(historyGUI.gridlist[1])
+					guiGridListSetItemText(historyGUI.gridlist[1], row, 1, tostring(data.log_), false, false)
+					guiGridListSetItemColor(historyGUI.gridlist[1], row, 1, 0, 200, 200)
+				end
+				return
+			end
+			historyGUI.gridlist[1]:clear()
+			for _, data in pairs(_hist) do
+				if (data.log_:lower():find(text:lower())) then
+					local row = guiGridListAddRow(historyGUI.gridlist[1])
+					guiGridListSetItemText(historyGUI.gridlist[1], row, 1, tostring(data.log_), false, false)
+					guiGridListSetItemColor(historyGUI.gridlist[1], row, 1, 0, 200, 200)
+				end
+			end
+		end
 	end
 end
 

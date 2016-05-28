@@ -74,6 +74,11 @@ onlineTime = {} -- Resolves player online time
 blacklistCache = {} -- Cache's a group's blacklist
 groupEditingRanks = {} -- A table that tells us when a group is editing ranks so we do not promote/demote anyone in the meantime
 
+-- Alliances
+g_alliance = {} -- Group to alliance
+allianceTable = {} -- groups_alliances_
+allianceMembers = {} -- groups_alliances_members
+
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		if (not db) then outputDebugString("["..Resource.getName(resourceRoot).."] Unable to load groups") return end
@@ -83,7 +88,7 @@ addEventHandler("onResourceStart", resourceRoot,
 
 function cacheGroupTable(qh)
 	local result = qh:poll(-1)
-	for _, row in pairs(result) do
+	for _, row in ipairs(result) do
 		groupTable[row.groupName] = {}
 		for column, data in pairs(row) do
 			if (column ~= "groupName") then
@@ -98,7 +103,7 @@ end
 
 function cacheGroupMembers(qh)
 	local result = qh:poll(-1)
-	for _, row in pairs(result) do
+	for _, row in ipairs(result) do
 		if (groupTable[row.groupName]) then
 			if (not groupMembers[row.groupName]) then
 				groupMembers[row.groupName] = {}
@@ -121,7 +126,7 @@ end
 
 function cacheGroupRanks(qh)
 	local result = qh:poll(-1)
-	for _, row in pairs(result) do
+	for _, row in ipairs(result) do
 		if (not groupRanks[row.groupName]) then groupRanks[row.groupName] = {} end
 		if (row.rankIndex == -1) then
 			groupRanks[row.groupName][row.rankName] = {nil, row.rankIndex}
@@ -133,6 +138,7 @@ function cacheGroupRanks(qh)
 			groupRanks[row.groupName][row.rankName] = {tbl, row.rankIndex}
 		end
 	end
+	db:query(cacheAlliances, {}, "SELECT * FROM `groups_alliances_`")
 end
 
 function cacheGroupInvites(qh)
@@ -151,6 +157,25 @@ function cacheGroupInvites(qh)
 	end
 end
 
+function cacheAlliances(qh)
+	local result = qh:poll(-1)
+	for _, row in ipairs(result) do		
+		allianceTable[row.alliance] = {row.info, row.colour, row.balance, row.created}
+	end
+	db:query(cacheAllianceMembers, {}, "SELECT * FROM `groups_alliances_members`")
+end
+
+function cacheAllianceMembers(qh)
+	local result = qh:poll(-1)
+	for _, row in ipairs(result) do
+		if (not allianceMembers[row.alliance]) then
+			allianceMembers[row.alliance] = {}
+		end
+		allianceMembers[row.alliance][row.groupName] = row.rank
+		g_alliance[row.groupName] = row.alliance
+	end
+end
+
 function createGroup(name)
 	local groupName = name
 	if (client and name) then
@@ -163,8 +188,12 @@ function createGroup(name)
 			return
 		end
 		for index, row in pairs(groupTable) do
-			if row.name == name then
+			if (row.name == name) then
 				exports.UCDdx:new("A group with this name already exists", 255, 0, 0)
+				return false
+			end
+			if (row.name:lower() == name:lower()) then
+				exports.UCDdx:new("A group with this name, but in different case, already exists", 255, 0, 0)
 				return false
 			end
 		end
@@ -198,7 +227,7 @@ function createGroup(name)
 			["balance"] = 0, ["chatColour"] = toJSON(settings.default_chat_colour), ["gmotd"] = "",
 		}
 		
-		createGroupLog(groupName, client.name.." ("..client.account.name..") has created "..groupName)
+		createGroupLog(groupName, client.name.." ("..client.account.name..") has created "..groupName, true)
 		groupMembers[groupName] = {}
 		table.insert(groupMembers[groupName], client.account.name)
 		client:setData("group", groupName)
@@ -259,15 +288,35 @@ function deleteGroup()
 			return
 		end
 		
-		createGroupLog(group_, client.name.." ("..client.account.name..") has deleted "..groupName)
+		-- Must also check if they are in an alliance
+		local alliance = g_alliance[groupName]
+		if (alliance) then
+			local leaderCount = 0
+			for g, rank in pairs(allianceMembers[alliance]) do
+				if (rank == "Leader" and g ~= groupName) then
+					leaderCount = leaderCount + 1
+				end
+			end
+			if (leaderCount == 0) then
+				exports.UCDdx:new(client, "You cannot delete this group until you give leadership of the alliance to another group, or delete the alliance", 255, 0, 0)
+				return false
+			end
+			
+			db:exec("DELETE FROM `groups_alliances_members` WHERE `groupName` = ? AND `alliance` = ?", groupName, alliance)
+			allianceMembers[alliance][groupName] = nil
+			g_alliance[groupName] = nil
+		end
+		
+		createGroupLog(group_, client.name.." ("..client.account.name..") has deleted "..groupName, true)
 		
 		outputDebugString("Deleting group where groupName = "..groupName)
-		db:exec("DELETE FROM `groups_` WHERE `groupName`=?", groupName)
-		db:exec("DELETE FROM `groups_members` WHERE `groupName`=?", groupName)
-		db:exec("DELETE FROM `groups_ranks` WHERE `groupName`=?", groupName)
-		db:exec("DELETE FROM `groups_invites` WHERE `groupName`=?", groupName)
-		db:exec("DELETE FROM `groups_blacklist` WHERE `groupName`=?", groupName)
-		db:exec("DELETE FROM `groups_whitelist` WHERE `groupName`=?", groupName)
+		db:exec("DELETE FROM `groups_` WHERE `groupName` = ?", groupName)
+		db:exec("DELETE FROM `groups_members` WHERE `groupName` = ?", groupName)
+		db:exec("DELETE FROM `groups_ranks` WHERE `groupName` = ?", groupName)
+		db:exec("DELETE FROM `groups_invites` WHERE `groupName` = ?", groupName)
+		db:exec("DELETE FROM `groups_blacklist` WHERE `groupName` = ?", groupName)
+		db:exec("DELETE FROM `groups_whitelist` WHERE `groupName` = ?", groupName)
+		db:exec("DELETE FROM `groups_logs` WHERE `groupName` = ? AND `important` <> 1", groupName)
 		
 		-- Remove the invite from the table
 		for acc, row in pairs(playerInvites) do
@@ -756,7 +805,7 @@ function requestGroupList()
 		local temp = {}
 		for groupName, data in pairs(groupTable) do
 			if (getGroupMemberCount(groupName) and getGroupMemberCount(groupName) >= 1) then
-				temp[groupName] = {members = getGroupMemberCount(groupName), slots = data.slots or 20}
+				temp[groupName] = {members = getGroupMemberCount(groupName), slots = data.slots or 50}
 			end
 		end
 		if (temp) then
@@ -1029,7 +1078,7 @@ function toggleGUI(update)
 	local ranks = {}
 	--local memberCount = #groupMembers[groupName] --or "N" --[[groupTable[groupName].memberCount]]
 	local memberCount
-	local groupSlots = 20
+	local groupSlots = 50
 	local created-- = groupTable[groupName].created or "N/A"
 	
 	if (groupName == "" or not groupName) then
@@ -1038,7 +1087,7 @@ function toggleGUI(update)
 		groupSlots = "A"
 	else
 		memberCount = #groupMembers[groupName]
-		groupSlots = 20
+		groupSlots = 50
 		created = groupTable[groupName].created or "N/A"
 	end
 	
@@ -1383,3 +1432,139 @@ end
 addEvent("UCDgroups.requestGroupsForPD", true)
 addEventHandler("UCDgroups.requestGroupsForPD", root, requestGroupsForPD)
 
+-- Alliances
+function createAlliance(name)
+	if (client and name) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
+			exports.UCDdx:new(client, "You cannot create an alliance because you are not in a group", 255, 0, 0)
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			exports.UCDdx:new(client, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		for _, g in pairs(allianceMembers) do
+			if (g[groupName]) then
+				exports.UCDdx:new(client, "This group is already in an alliance", 255, 0, 0)
+				return false
+			end
+		end
+		if (allianceTable[name]) then
+			exports.UCDdx:new(client, "An alliance with this name already exists", 255, 0, 0)
+			return false
+		end
+		for g in pairs(allianceTable) do
+			if (g:lower() == name:lower()) then
+				exports.UCDdx:new("An alliance with this name, in different case, already exists", 255, 0, 0)
+				return false
+			end
+		end
+		for type_, row in pairs(forbidden) do
+			for _, chars in pairs(row) do
+				if type_ == "whole" then
+					if (name == chars) then
+						exports.UCDdx:new(client, "The specified alliance name is prohibited. If you believe this is a mistake, please notify an administrator.", 255, 0, 0)
+						return false
+					end
+				else
+					if (name:lower():find(chars)) then
+						exports.UCDdx:new(client, "The specified alliance name contains forbidden phrases or characters. If you believe this is a mistake, please notify an administrator.", 255, 0, 0)
+						return false
+					end
+				end
+			end
+		end
+		
+		local d, t = exports.UCDutil:getTimeStamp()
+		
+		db:exec("INSERT INTO `groups_alliances_` (`alliance`, `info`, `colour`, `balance`, `created`) VALUES (?, ?, ?, ?, ?)", name, "Enter alliance information here!", "[ [ 255, 255, 255 ] ]", 0, d.." "..t)
+		db:exec("INSERT INTO `groups_alliances_members` (`alliance`, `groupName`, `rank`) VALUES (?, ?, ?)", name, groupName, "Leader")
+		
+		allianceMembers[name] = {}
+		allianceMembers[name][groupName] = "Leader"
+		allianceTable[name] = {"Enter alliance information here!", "[ [ 255, 255, 255 ] ]", 0, d.." "..t} -- [1] = info, [2] = colour, [3] = balance, [4] = created
+		g_alliance[groupName] = name
+		
+		createAllianceLog(name, groupName, client.name.." ("..client.account.name..") created "..name, true)
+		exports.UCDdx:new(client, "You have successfully created alliance "..name, 0, 255, 0)
+		
+		triggerEvent("UCDgroups.alliance.viewUI", client, true)
+	end
+end
+addEvent("UCDgroups.createAlliance", true)
+addEventHandler("UCDgroups.createAlliance", root, createAlliance)
+
+function deleteAlliance()
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
+			exports.UCDdx:new(client, "You are not in a group", 255, 0, 0)
+			return false
+		end
+		local alliance = getGroupAlliance(groupName)
+		if (not alliance) then
+			exports.UCDdx:new(client, "Your group is not in an alliance", 255, 0, 0)
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			exports.UCDdx:new(client, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		if (allianceMembers[alliance][groupName] ~= "Leader") then
+			exports.UCDdx:new(client, "You do not have permission to delete the alliance", 255, 0, 0)
+			return false
+		end
+		
+		createAllianceLog(alliance, groupName, client.name.." ("..client.account.name..") has deleted "..alliance, true)
+		
+		db:exec("DELETE FROM `groups_alliances_` WHERE `alliance` = ?", alliance)
+		db:exec("DELETE FROM `groups_alliances_members` WHERE `alliance` = ?", alliance)
+		db:exec("DELETE FROM `groups_alliances_logs` WHERE `alliance` = ? AND `important` <> 1", alliance)
+		
+		for _, g in ipairs(getAllianceGroups(alliance)) do
+			g_alliance[g] = nil
+			messageGroup(g, client.name.." ("..client.account.name..") has deleted "..alliance, "info")
+			for i, plr in ipairs(getGroupOnlineMembers(g)) do
+				triggerEvent("UCDgroups.alliance.viewUI", plr, true)
+			end
+		end
+		
+		allianceMembers[alliance] = nil
+		allianceTable[alliance] = nil
+		
+		exports.UCDdx:new(client, "You have deleted the alliance "..alliance, 255, 0, 0)
+	end
+end
+addEvent("UCDgroups.deleteAlliance", true)
+addEventHandler("UCDgroups.deleteAlliance", root, deleteAlliance)
+
+function toggleAllianceGUI(update)
+	local groupName = getPlayerGroup(source)
+	if (not groupName) then
+		return false
+	end
+	
+	local alliance, info, created
+	local alliancePerms = {}
+	alliance = getGroupAlliance(groupName) or false
+	--outputDebugString(tostring(alliance))
+	
+	if (alliance ~= false and allianceTable[alliance]) then
+		created = allianceTable[alliance][4]
+		info = allianceTable[alliance][1]
+		
+		if (allianceMembers[alliance][groupName] == "Leader") then
+			alliancePerms = {[3] = true, [6] = true}
+		else
+			alliancePerms = {[3] = false, [6] = false}
+		end
+	else
+		info = ""
+		created = "N/A"
+	end
+	
+	triggerLatentClientEvent(source, "UCDgroups.alliance.toggleGUI", 15000, false, source, update, alliance, info, alliancePerms, created)
+end
+addEvent("UCDgroups.alliance.viewUI", true)
+addEventHandler("UCDgroups.alliance.viewUI", root, toggleAllianceGUI)

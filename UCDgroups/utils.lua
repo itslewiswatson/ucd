@@ -312,9 +312,14 @@ function getGroupChatColour(groupName)
 	return 200, 0, 0
 end
 
-function createGroupLog(groupName, log_)
+function createGroupLog(groupName, log_, important)
 	if (groupName and log_) then
 		if (groupTable[groupName]) then
+			-- If it's an important log (meaning it is kept even if the group is deleted)
+			if (important) then
+				db:exec("INSERT INTO `groups_logs` (`groupName`, `log`, `important`) VALUES (?, CONCAT('[', CURDATE(), '] [', CURTIME(), '] ', ?), 1)", groupName, log_)
+				return true
+			end
 			db:exec("INSERT INTO `groups_logs` (`groupName`, `log`) VALUES (?, CONCAT('[', CURDATE(), '] [', CURTIME(), '] ', ?))", groupName, log_)
 			return true
 		else
@@ -322,4 +327,48 @@ function createGroupLog(groupName, log_)
 			return false
 		end
 	end
+end
+
+function createAllianceLog(alliance, groupName, log_, important)
+	if (alliance and groupName and log_) then
+		if (groupTable[groupName] and g_alliance[groupName] == alliance) then
+			if (important) then
+				db:exec("INSERT INTO `groups_alliances_logs` (`alliance`, `groupName`, `log`, `important`) VALUES (?, ?, CONCAT('[', CURDATE(), '] [', CURTIME(), '] ', ?), 1)", alliance, groupName, log_)
+				return true
+			end
+			db:exec("INSERT INTO `groups_alliances_logs` (`alliance`, `groupName`, `log`, `important`) VALUES (?, ?, CONCAT('[', CURDATE(), '] [', CURTIME(), '] ', ?), 0)", alliance, groupName, log_)
+			return true
+		else
+			outputDebugString("Critial error - groupTable[groupName] or g_alliance[groupName] in 'createAllianceLog'")
+		end
+	end
+	return false
+end
+
+function getGroupAlliance(groupName)
+	if (g_alliance[groupName]) then
+		return g_alliance[groupName]
+	end
+	return false
+end
+
+function isGroupInAlliance(groupName, alliance)
+	if (allianceMembers and allianceMembers[alliance] and allianceMembers[alliance][groupName]) then
+		return true
+	end
+	return false
+end
+
+function getAllianceGroups(alliance)
+	if (allianceMembers and allianceMembers[alliance]) then
+		local temp = {}
+		for g in pairs(allianceMembers[alliance]) do
+			table.insert(temp, g)
+		end
+		if (#temp == 0) then
+			outputDebugString("Alliance '"..tostring(alliance).."' has 0 members")
+		end
+		return temp, true
+	end
+	return false, false
 end
