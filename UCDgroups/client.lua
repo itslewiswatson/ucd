@@ -15,6 +15,11 @@ addRankGUI = {checkbox = {}, scrollpane = {}, edit = {}, button = {}, window = {
 editRankGUI = {checkbox = {}, scrollpane = {}, edit = {}, button = {}, window = {}, label = {}}
 PD = {edit = {}, button = {}, window = {}, label = {}, combobox = {}}
 allianceGUI = {button = {}, window = {}, label = {}, edit = {}}
+a_members = {window = {}, gridlist = {}, button = {}}
+a_info = {button = {}, window = {}, memo = {}}
+a_history = {edit = {}, button = {}, window = {}, label = {}, gridlist = {}}
+a_banking = {button = {}, window = {}, edit = {}, label = {}}
+a_send_invite = {gridlist = {}, window = {}, button = {}}
 
 original = {}
 groupList_ = {}
@@ -115,8 +120,7 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		mainGUI.button[15].enabled = true -- boolean(permissions[15]) -- Alliances, so you should be able to open it regardless
 		mainGUI.button[16].enabled = true
 		
-		allianceGUI.button[1].enabled = boolean(permissions_[15])
-		outputDebugString("-> "..tostring(boolean(permissions_[15])))
+		--allianceGUI.button[1].enabled = boolean(permissions_[15]) and 
 		
 		infoGUI.memo[1].text = groupInfo
 		guiMemoSetReadOnly(infoGUI.memo[1], not boolean(permissions[5]))
@@ -181,18 +185,20 @@ function toggleAllianceUI(updateOnly, alliance, allianceInfo, alliancePerms, cre
 	if (updateOnly ~= true) then
 		if (not allianceGUI.window[1].visible) then
 			allianceGUI.window[1].visible = true
+			guiBringToFront(allianceGUI.window[1])
 		else
 			for i = 1, #allianceGUI.window do
 				allianceGUI.window[i].visible = false
 			end
 		end
 	end
-	guiBringToFront(allianceGUI.window[1])
 	if (alliance and alliance ~= "") then
 		allianceGUI.window[1].text = "UCD | Alliances - "..alliance
 		allianceGUI.edit[1].text = alliance
 		allianceGUI.edit[1].enabled = false
 		allianceGUI.label[1].text = "Founded: "..created
+		
+		a_info.memo[1].text = allianceInfo
 		
 		allianceGUI.button[1].enabled = false
 		allianceGUI.button[2].enabled = true
@@ -204,6 +210,10 @@ function toggleAllianceUI(updateOnly, alliance, allianceInfo, alliancePerms, cre
 		allianceGUI.button[8].enabled = true
 		allianceGUI.button[9].enabled = true
 		allianceGUI.button[10].enabled = true
+		
+		a_members.button[1].enabled = boolean(permissions_[15]) and boolean(alliancePerms[3]) and boolean(alliancePerms[6])
+		a_members.button[2].enabled = boolean(permissions_[15]) and boolean(alliancePerms[3]) and boolean(alliancePerms[6])
+		a_members.button[3].enabled = boolean(permissions_[15]) and boolean(alliancePerms[3]) and boolean(alliancePerms[6])
 	else
 		allianceGUI.window[1].text = "UCD | Alliances"
 		allianceGUI.edit[1].text = ""
@@ -220,6 +230,10 @@ function toggleAllianceUI(updateOnly, alliance, allianceInfo, alliancePerms, cre
 		allianceGUI.button[8].enabled = false
 		allianceGUI.button[9].enabled = false
 		allianceGUI.button[10].enabled = false
+		
+		a_members.button[1].enabled = false
+		a_members.button[2].enabled = false
+		a_members.button[3].enabled = false
 	end	
 end
 addEvent("UCDgroups.alliance.toggleGUI", true)
@@ -534,8 +548,60 @@ function createGUI()
 	guiLabelSetHorizontalAlign(allianceGUI.label[1], "center", false)
 	guiLabelSetVerticalAlign(allianceGUI.label[1], "center")
 	
+	a_members.window[1] = GuiWindow(785, 421, 348, 206, "UCD | Alliances - Members", false)
+	a_members.window[1].visible = false
+	a_members.window[1].sizable = false
+	a_members.gridlist[1] = GuiGridList(10, 27, 326, 133, false, a_members.window[1])
+	guiGridListAddColumn(a_members.gridlist[1], "Group", 0.3)
+	guiGridListAddColumn(a_members.gridlist[1], "Members", 0.3)
+	guiGridListAddColumn(a_members.gridlist[1], "Rank", 0.3)
+	guiGridListSetSortingEnabled(a_members.gridlist[1], false)
+	a_members.button[1] = GuiButton(10, 170, 74, 22, "Promote", false, a_members.window[1])
+	a_members.button[2] = GuiButton(94, 170, 74, 22, "Demote", false, a_members.window[1])
+	a_members.button[3] = GuiButton(178, 170, 74, 22, "Kick", false, a_members.window[1])
+	a_members.button[4] = GuiButton(262, 170, 74, 22, "Close", false, a_members.window[1])
+	
+	a_info.window[1] = GuiWindow(690, 338, 571, 380, "UCD | Alliances - Information", false)
+	a_info.window[1].visible = false
+	a_info.window[1].sizable = false
+	a_info.memo[1] = guiCreateMemo(10, 23, 551, 316, "", false, a_info.window[1])
+	a_info.button[1] = GuiButton(10, 349, 270, 21, "Save alliance information", false, a_info.window[1])
+	a_info.button[2] = GuiButton(291, 349, 270, 21, "Close", false, a_info.window[1])
+	
+	a_history.window[1] = GuiWindow(684, 343, 589, 350, "UCD | Alliances - History", false)
+	a_history.window[1].sizable = false
+	a_history.window[1].visible = false
+	a_history.gridlist[1] = GuiGridList(9, 24, 570, 277, false, a_history.window[1])
+	guiGridListAddColumn(a_history.gridlist[1], "Group", 0.15)
+	guiGridListAddColumn(a_history.gridlist[1], "Log", 1.5)
+	guiGridListSetSortingEnabled(a_history.gridlist[1], false)
+	a_history.button[1] = GuiButton(455, 310, 124, 30, "Close", false, a_history.window[1])
+	a_history.label[1] = GuiLabel(15, 310, 199, 15, "Alliance:", false, a_history.window[1])
+	a_history.label[2] = GuiLabel(15, 325, 199, 15, "Viewing:", false, a_history.window[1])
+	a_history.edit[1] = GuiEdit(194, 310, 176, 35, "", false, a_history.window[1])
+	
+	a_banking.window[1] = GuiWindow(805, 430, 316, 161, "UCD | Alliances - Banking", false)
+	a_banking.window[1].sizable = false
+	a_banking.window[1].visible = false
+	a_banking.button[1] = GuiButton(10, 106, 85, 43, "Deposit", false, a_banking.window[1])
+	a_banking.label[1] = GuiLabel(10, 24, 293, 24, "Current balance:", false, a_banking.window[1])
+	guiLabelSetHorizontalAlign(a_banking.label[1], "center", false)
+	guiLabelSetVerticalAlign(a_banking.label[1], "center")
+	a_banking.edit[1] = GuiEdit(10, 58, 293, 38, "", false, a_banking.window[1])
+	a_banking.button[2] = GuiButton(116, 106, 85, 43, "Withdraw", false, a_banking.window[1])
+	a_banking.button[3] = GuiButton(218, 106, 85, 43, "Close", false, a_banking.window[1])
+	
+	-- Invitations [outgoing]
+	a_send_invite.window[1] = GuiWindow(837, 343, 235, 317, "UCD | Alliance - Send Invitation", false)
+	a_send_invite.window[1].visible = false
+	a_send_invite.window[1].sizable = false
+	a_send_invite.gridlist[1] = GuiGridList(9, 25, 216, 242, false, a_send_invite.window[1])
+	guiGridListAddColumn(a_send_invite.gridlist[1], "Group", 0.9)
+	a_send_invite.button[1] = GuiButton(9, 272, 103, 34, "Send Invite", false, a_send_invite.window[1])
+	a_send_invite.button[2] = GuiButton(122, 272, 103, 34, "Close", false, a_send_invite.window[1])
+	
 	-- All the group GUI windows
-	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1], addRankGUI.window[1], editRankGUI.window[1], PD.window[1], allianceGUI.window[1]}
+	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1], addRankGUI.window[1], editRankGUI.window[1], PD.window[1], allianceGUI.window[1], a_members.window[1], a_info.window[1], a_history.window[1], a_banking.window[1], a_send_invite.window[1]}
 	for _, gui in pairs(windows) do
 		if (gui and isElement(gui)) then
 			exports.UCDutil:centerWindow(gui)
@@ -584,7 +650,7 @@ function createGUI()
 	addEventHandler("onClientGUIClick", ranksGUI.button[4], viewGroupRanks, false)
 	-- Edit this
 	--addEventHandler("onClientGUIClick", guiRoot, pieceofshit, false)
-		
+	
 	--addEventHandler("onClientGUIClick", guiRoot, groupRankHandler, false)
 	addEventHandler("onClientGUIClick", ranksGUI.gridlist[1], groupRankHandler, false)
 	addEventHandler("onClientGUIClick", ranksGUI.button[1], groupRankHandler, false)
@@ -604,8 +670,24 @@ function createGUI()
 	
 	-- Alliances
 	addEventHandler("onClientGUIClick", allianceGUI.button[1], createAlliance, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[2], leaveAlliance, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[3], deleteAlliance, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[4], function () triggerEvent("UCDgroups.alliance.memberList", localPlayer) end, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[6], viewAllianceInviteTo, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[7], viewAllianceHistory, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[9], function () triggerServerEvent("UCDgroups.requestAllianceBalance", localPlayer) end, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[10], viewAllianceInfo, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[11], toggleAlliance, false)
+	
+	addEventHandler("onClientGUIClick", a_members.button[4], function () triggerEvent("UCDgroups.alliance.memberList", localPlayer) end, false)
+	addEventHandler("onClientGUIClick", a_members.window[1], allianceMemberListHandler, true)
+	addEventHandler("onClientGUIClick", a_info.button[1], saveAllianceInfo, false)
+	addEventHandler("onClientGUIClick", a_info.button[2], viewAllianceInfo, false)
+	addEventHandler("onClientGUIClick", a_history.button[1], viewAllianceHistory, false)
+	addEventHandler("onClientGUIClick", a_banking.button[1], function () triggerEvent("UCDgroups.alliance.balanceWindow", localPlayer, "deposit") end, false)
+	addEventHandler("onClientGUIClick", a_banking.button[2], function () triggerEvent("UCDgroups.alliance.balanceWindow", localPlayer, "withdraw") end, false)
+	addEventHandler("onClientGUIClick", a_banking.button[3], function () triggerEvent("UCDgroups.alliance.balanceWindow", localPlayer, "toggle") end, false)
+	addEventHandler("onClientGUIClick", a_send_invite.button[2], viewAllianceInviteTo, false)
 	
 	addEventHandler("onClientGUITabSwitched", guiRoot, blacklistTabSwitch)
 	addEventHandler("onClientGUIChanged", guiRoot, onClientGUIChanged)
@@ -1448,3 +1530,181 @@ function deleteAlliance()
 		end
 	end
 end
+
+function leaveAlliance()
+	-- Add some sort of account confirmation
+	if (localPlayer:getData("group")) then
+		if (boolean(permissions_[15]) == true) then
+			exports.UCDutil:createConfirmationWindow("UCDgroups.leaveAlliance", nil, true, "UCD | Alliances - Leave", "Are you sure you want to leave this alliance?")
+		end
+	end
+end
+
+function viewAllianceMemberList(list)
+	if (list and type(list) == "table") then
+		a_members.gridlist[1]:clear()
+		guiBringToFront(a_members.window[1])
+		for i = 1, #list do
+			local row = guiGridListAddRow(a_members.gridlist[1])
+			local r, g, b = list[i].colour[1], list[i].colour[2], list[i].colour[3]
+			guiGridListSetItemText(a_members.gridlist[1], row, 1, tostring(list[i].groupName), false, false)
+			guiGridListSetItemText(a_members.gridlist[1], row, 2, tostring(list[i].memberCount).."/"..tostring(list[i].slots), false, false)
+			guiGridListSetItemText(a_members.gridlist[1], row, 3, tostring(list[i].rank), false, false)
+			guiGridListSetItemColor(a_members.gridlist[1], row, 1, r, g, b)
+			guiGridListSetItemColor(a_members.gridlist[1], row, 2, r, g, b)
+			guiGridListSetItemColor(a_members.gridlist[1], row, 3, r, g, b)
+		end
+		a_members.window[1].visible = true
+	else
+		if (a_members.window[1].visible) then
+			a_members.window[1].visible = false
+			return
+		end
+		triggerServerEvent("UCDgroups.alliance.requestMemberList", source)
+	end
+end
+addEvent("UCDgroups.alliance.memberList", true)
+addEventHandler("UCDgroups.alliance.memberList", root, viewAllianceMemberList)
+
+function allianceMemberListHandler()
+	if (boolean(permissions_[15]) and (source == a_members.button[1] or source == a_members.button[2] or source == a_members.button[3])) then
+		local row = guiGridListGetSelectedItem(a_members.gridlist[1])
+		if (not row or row == -1) then
+			return false
+		end
+		local groupName = guiGridListGetItemText(a_members.gridlist[1], row, 1)
+		if (groupName == localPlayer:getData("group")) then
+			exports.UCDdx:new("You cannot perform these actions on your own group", 255, 0, 0)
+			return false
+		end
+		local rank = guiGridListGetItemText(a_members.gridlist[1], row, 3)
+		
+		if (source == a_members.button[1]) then
+			-- Promote
+			if (rank == "Leader") then
+				exports.UCDdx:new("You cannot promote this group further", 255, 0, 0)
+				return
+			end
+			triggerServerEvent("UCDgroups.promoteGroup", resourceRoot, groupName)
+		elseif (source == a_members.button[2]) then
+			-- Demote
+			if (rank == "Member") then
+				exports.UCDdx:new("You cannot demote this group further", 255, 0, 0)
+				return
+			end
+			triggerServerEvent("UCDgroups.demoteGroup", resourceRoot, groupName)
+		elseif (source == a_members.button[3]) then
+			-- Kick
+			exports.UCDutil:createConfirmationWindow("UCDgroups.kickGroup", groupName, true, "UCD | Alliances - Kick", "Are you sure you want to kick this group?")
+			--triggerServerEvent("UCDgroups.kickGroup", resourceRoot, groupName)
+		end
+	end
+end
+
+function viewAllianceInfo()
+	a_info.window[1].visible = not a_info.window[1].visible
+	if (a_info.window[1].visible) then
+		guiBringToFront(a_info.window[1])
+	end
+end
+
+function saveAllianceInfo()
+	if (a_info.window[1].visible) then
+		if (a_info.memo[1].text:len() > 10000) then
+			exports.UCDdx:new("The alliance information can't be more than 10,000 characters.", 200, 0, 0)
+			return
+		end
+		triggerServerEvent("UCDgroups.alliance.updateInfo", localPlayer, a_info.memo[1].text)
+	end
+end
+
+function viewAllianceHistory(hist, logNum, logCount, alliance)
+	a_history.gridlist[1]:clear()
+	a_history.edit[1].text = ""
+	if (hist and type(hist) == "table" and #hist) then
+		a_hist = hist
+		if (not a_history.window[1].visible) then
+			a_history.window[1].visible = true
+			guiBringToFront(a_history.window[1])
+		end
+		for _, data in pairs(hist) do
+			local row = guiGridListAddRow(a_history.gridlist[1])
+			
+			guiGridListSetItemText(a_history.gridlist[1], row, 1, tostring(data.groupName), false, false)
+			guiGridListSetItemColor(a_history.gridlist[1], row, 1, 0, 200, 200)
+			
+			guiGridListSetItemText(a_history.gridlist[1], row, 2, tostring(data.log_), false, false)
+			guiGridListSetItemColor(a_history.gridlist[1], row, 2, 0, 200, 200)
+		end
+		a_history.label[1].text = "Group: "..alliance
+		a_history.label[2].text = "Viewing: "..logCount.." of "..logNum
+	else
+		if (a_history.window[1].visible) then
+			a_history.window[1].visible = false
+		else
+			-- request from the server then call this function back from the server
+			triggerServerEvent("UCDgroups.requestAllianceHistory", localPlayer)
+		end
+	end
+end
+addEvent("UCDgroups.alliance.history", true)
+addEventHandler("UCDgroups.alliance.history", root, viewAllianceHistory)
+
+function allianceBankingHandler(action, balance)
+	if (action == "toggle") then
+		a_banking.window[1].visible = not a_banking.window[1].visible
+		if (a_banking.window[1].visible) then
+			guiBringToFront(a_banking.window[1])
+			a_banking.label[1].text = "Current balance: $"..tostring(exports.UCDutil:tocomma(balance))
+		end
+	elseif (action == "update") then
+		a_banking.label[1].text = "Current balance: $"..tostring(exports.UCDutil:tocomma(balance))
+	else
+		local balance = gettok(a_banking.label[1].text, 2, "$"):gsub(",", "")
+		local text
+		text = a_banking.edit[1].text:gsub(",", "")		
+		if (tonumber(text) == nil) then
+			exports.UCDdx:new("You must enter a valid number to "..action, 255, 255, 0)
+			return
+		end
+		if (tonumber(text) > source:getMoney() and action == "deposit") then
+			exports.UCDdx:new("You don't have this much money to "..action, 255, 255, 0)
+			return
+		end
+		if (tonumber(balance) < tonumber(text) and action == "withdraw") then
+			exports.UCDdx:new("You can't withdraw more than what is in the bank", 255, 255, 0)
+			return
+		end
+		triggerServerEvent("UCDgroups.alliance.changeBalance", source, action, tonumber(text))
+	end
+end
+addEvent("UCDgroups.alliance.balanceWindow", true)
+addEventHandler("UCDgroups.alliance.balanceWindow", root, allianceBankingHandler)
+
+------------------------------------------------------------->>>>>>>>>>>>
+
+function viewAllianceInviteTo(groups)
+	if (groups and type(groups) == "table") then
+	
+		a_send_invite.window[1].visible = true
+		
+		guiBringToFront(a_send_invite.window[1])
+		guiGridListClear(a_send_invite.gridlist[1])
+		
+		if (#groups > 0) then
+			for _, data in pairs(groups) do
+				local row = guiGridListAddRow(a_send_invite.gridlist[1])
+				guiGridListSetItemText(a_send_invite.gridlist[1], row, 1, tostring(data.group_), false, false)
+				guiGridListSetItemColor(a_send_invite.gridlist[1], row, 1, data.r, data.g, data.b)
+			end
+		end
+	else
+		if (not a_send_invite.window[1].visible) then
+			triggerServerEvent("UCDgroups.alliance.requestGroupsForInvite", localPlayer)
+		else
+			a_send_invite.window[1].visible = false
+		end
+	end
+end
+addEvent("UCDgroups.alliance.viewInviteGroups", true)
+addEventHandler("UCDgroups.alliance.viewInviteGroups", root, viewAllianceInviteTo)

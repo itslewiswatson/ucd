@@ -1539,6 +1539,234 @@ end
 addEvent("UCDgroups.deleteAlliance", true)
 addEventHandler("UCDgroups.deleteAlliance", root, deleteAlliance)
 
+function leaveAlliance()
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
+			exports.UCDdx:new(client, "You are not in a group", 255, 0, 0)
+			return false
+		end
+		local alliance = getGroupAlliance(groupName)
+		if (not alliance) then
+			exports.UCDdx:new(client, "Your group is not in an alliance", 255, 0, 0)
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			exports.UCDdx:new(client, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		if (allianceMembers[alliance][groupName] == "Leader") then
+			local leaderCount = 0
+			for g, rank in pairs(allianceMembers[alliance]) do
+				if (rank == "Leader" and g ~= groupName) then
+					leaderCount = leaderCount + 1
+				end
+			end
+			if (leaderCount == 0) then
+				exports.UCDdx:new(client, "You cannot leave this alliance as your group is the only one with the Leader rank", 255, 0, 0)
+				return false
+			end
+		end
+		
+		createAllianceLog(alliance, groupName, client.name.." ("..client.account.name..") left the alliance")
+		
+		db:exec("DELETE FROM `groups_alliances_members` WHERE `groupName` = ? AND `alliance` = ?", groupName, alliance)
+		allianceMembers[alliance][groupName] = nil
+		g_alliance[groupName] = nil
+		
+		messageGroup(groupName, client.name.." ("..client.account.name..") left the alliance "..alliance, "info")
+		
+		for i, plr in ipairs(getGroupOnlineMembers(groupName)) do
+			triggerEvent("UCDgroups.alliance.viewUI", plr, true)
+		end
+		
+		exports.UCDdx:new(client, "You have left the alliance "..alliance, 255, 0, 0)
+	end
+end
+addEvent("UCDgroups.leaveAlliance", true)
+addEventHandler("UCDgroups.leaveAlliance", root, leaveAlliance)
+
+function promoteGroup(groupName)
+	if (client) then
+		local clientGroup = getPlayerGroup(client)
+		if (not clientGroup) then
+			return false
+		end
+		local alliance = getGroupAlliance(clientGroup)
+		if (not alliance) then
+			return false
+		end
+		if (not getGroupAlliance(groupName) or getGroupAlliance(groupName) ~= alliance) then
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			exports.UCDdx:new(client, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		local clientGroupRank = allianceMembers[alliance][clientGroup]
+		if (clientGroupRank ~= "Leader") then
+			exports.UCDdx:new(client, "Your group does not have permission to do this action", 255, 0, 0)
+			return false
+		end
+		local groupRank = allianceMembers[alliance][groupName]
+		if (groupRank == "Leader") then
+			exports.UCDdx:new(client, "You cannot promote this group further", 255, 0, 0)
+			return false
+		end
+		
+		allianceMembers[alliance][groupName] = "Leader"
+		db:exec("UPDATE `groups_alliances_members` SET `rank` = ? WHERE `groupName` = ? AND `alliance` = ?", "Leader", groupName, alliance)
+		
+		createAllianceLog(alliance, clientGroup, client.name.." ("..client.account.name..") has promoted "..groupName.." to Leader")
+		
+		triggerEvent("UCDgroups.alliance.requestMemberList", client)
+		
+		for _, plr in ipairs(getGroupOnlineMembers(groupName)) do
+			triggerEvent("UCDgroups.alliance.viewUI", plr, true)
+		end
+	end
+end
+addEvent("UCDgroups.promoteGroup", true)
+addEventHandler("UCDgroups.promoteGroup", root, promoteGroup)
+
+function demoteGroup(groupName)
+	if (client) then
+		local clientGroup = getPlayerGroup(client)
+		if (not clientGroup) then
+			return false
+		end
+		local alliance = getGroupAlliance(clientGroup)
+		if (not alliance) then
+			return false
+		end
+		if (not getGroupAlliance(groupName) or getGroupAlliance(groupName) ~= alliance) then
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			exports.UCDdx:new(client, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		local clientGroupRank = allianceMembers[alliance][clientGroup]
+		if (clientGroupRank ~= "Leader") then
+			exports.UCDdx:new(client, "Your group does not have permission to do this action", 255, 0, 0)
+			return false
+		end
+		local groupRank = allianceMembers[alliance][groupName]
+		if (groupRank == "Member") then
+			exports.UCDdx:new(client, "You cannot demote this group further", 255, 0, 0)
+			return false
+		end
+		
+		allianceMembers[alliance][groupName] = "Member"
+		db:exec("UPDATE `groups_alliances_members` SET `rank` = ? WHERE `groupName` = ? AND `alliance` = ?", "Member", groupName, alliance)
+		
+		createAllianceLog(alliance, clientGroup, client.name.." ("..client.account.name..") has demoted "..groupName.." to Member")
+		
+		triggerEvent("UCDgroups.alliance.requestMemberList", client)
+		
+		for _, plr in ipairs(getGroupOnlineMembers(groupName)) do
+			triggerEvent("UCDgroups.alliance.viewUI", plr, true)
+		end
+	end
+end
+addEvent("UCDgroups.demoteGroup", true)
+addEventHandler("UCDgroups.demoteGroup", root, demoteGroup)
+
+function kickGroup(groupName)
+	if (client) then
+		local clientGroup = getPlayerGroup(client)
+		if (not clientGroup) then
+			return false
+		end
+		local alliance = getGroupAlliance(clientGroup)
+		if (not alliance) then
+			return false
+		end
+		if (not getGroupAlliance(groupName) or getGroupAlliance(groupName) ~= alliance) then
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			exports.UCDdx:new(client, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		local clientGroupRank = allianceMembers[alliance][clientGroup]
+		if (clientGroupRank ~= "Leader") then
+			exports.UCDdx:new(client, "Your group does not have permission to do this action", 255, 0, 0)
+			return false
+		end
+		
+		createAllianceLog(alliance, clientGroup, client.name.." ("..client.account.name..") has kicked "..groupName)
+		
+		allianceMembers[alliance][groupName] = nil
+		g_alliance[groupName] = nil
+		db:exec("DELETE FROM `groups_alliances_members` WHERE `groupName` = ? AND `alliance` = ?", groupName, alliance)
+		
+		triggerEvent("UCDgroups.alliance.requestMemberList", client)
+		
+		for _, plr in ipairs(getGroupOnlineMembers(groupName)) do
+			triggerEvent("UCDgroups.alliance.viewUI", plr, true)
+		end
+	end
+end
+addEvent("UCDgroups.kickGroup", true)
+addEventHandler("UCDgroups.kickGroup", root, kickGroup)
+
+function requestAllianceMemberList()
+	if (source) then
+		local groupName = getPlayerGroup(source)
+		local alliance = getGroupAlliance(groupName)
+		
+		local list = {}
+		for g, data in pairs(allianceMembers[alliance]) do
+			table.insert(list, {groupName = g, memberCount = getGroupMemberCount(g), slots = 50, rank = data, colour = {getGroupColour(g)}})
+		end
+		
+		triggerLatentClientEvent(source, "UCDgroups.alliance.memberList", source, list)
+	end
+end
+addEvent("UCDgroups.alliance.requestMemberList", true)
+addEventHandler("UCDgroups.alliance.requestMemberList", root, requestAllianceMemberList)
+
+function updateAllianceInfo(newInfo)
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (groupName) then
+			local alliance = getGroupAlliance(groupName)
+			if (not alliance) then
+				return false
+			end
+			
+			allianceTable[alliance][1] = newInfo
+			db:exec("UPDATE `groups_alliances_` SET `info` = ? WHERE `alliance` = ?", newInfo, alliance)
+			createAllianceLog(groupName, client.name.." ("..client.account.name..") has updated the alliance information")
+			
+			for g in pairs(allianceMembers[alliance]) do
+				for _, plr in pairs(getGroupOnlineMembers(g)) do
+					triggerEvent("UCDgroups.alliance.viewUI", plr, true)
+				end
+			end
+		end
+	end
+end
+addEvent("UCDgroups.alliance.updateInfo", true)
+addEventHandler("UCDgroups.alliance.updateInfo", root, updateAllianceInfo)
+
+function requestAllianceHistory()
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (groupName) then
+			local alliance = getGroupAlliance(groupName)
+			if (alliance) then
+				local history, rows = db:query("SELECT `groupName`, `log` AS `log_` FROM `groups_alliances_logs` WHERE `alliance` = ? ORDER BY `logID` DESC LIMIT 100", alliance):poll(-1)
+				local total = db:query("SELECT COUNT(*) AS `count_` FROM `groups_alliances_logs` WHERE `alliance` = ?", alliance):poll(-1)[1].count_
+				triggerLatentClientEvent(client, "UCDgroups.alliance.history", client, history or {}, total or 0, rows or 0, alliance)
+			end
+		end
+	end
+end
+addEvent("UCDgroups.requestAllianceHistory", true)
+addEventHandler("UCDgroups.requestAllianceHistory", root, requestAllianceHistory)
+
 function toggleAllianceGUI(update)
 	local groupName = getPlayerGroup(source)
 	if (not groupName) then
@@ -1568,3 +1796,97 @@ function toggleAllianceGUI(update)
 end
 addEvent("UCDgroups.alliance.viewUI", true)
 addEventHandler("UCDgroups.alliance.viewUI", root, toggleAllianceGUI)
+
+function changeAllianceBalance(type_, balanceChange)
+	if (client) then
+		if (not balanceChange or tonumber(balanceChange) == nil) then
+			exports.UCDdx:new(client, "Something went wrong!", 255, 255, 0)
+			return
+		end
+		local group_ = getPlayerGroup(client)
+		if (group_) then
+			local alliance = getGroupAlliance(group_)
+			if (not alliance) then
+				return false
+			end
+			
+			local currentBalance = allianceTable[alliance][3]
+			if (type_ == "deposit") then
+				if (client.money < balanceChange) then
+					exports.UCDdx:new(client, "You can't deposit this much because you don't have it", 255, 0, 0)
+					return
+				end
+				if (balanceChange <= 0) then
+					exports.UCDdx:new(client, "You must enter a positive number", 255, 255, 0)
+					return
+				end
+				allianceTable[alliance][3] = allianceTable[alliance][3] + balanceChange
+				client.money = client.money - balanceChange
+				db:exec("UPDATE `groups_alliances_` SET `balance` = ? WHERE `alliance` = ?", tonumber(allianceTable[alliance][3]), alliance)
+				createAllianceLog(alliance, group_, client.name.." ("..client.account.name..") has deposited $"..exports.UCDutil:tocomma(balanceChange).." into the alliance bank")
+				triggerLatentClientEvent(client, "UCDgroups.alliance.balanceWindow", client, "update", allianceTable[alliance][3])
+			elseif (type_ == "withdraw") then
+				if ((currentBalance - balanceChange) < 0) then
+					exports.UCDdx:new(client, "The alliance doesn't have this much", 255, 255, 0)
+					return
+				end
+				if (balanceChange <= 0) then
+					exports.UCDdx:new(client, "You must enter a positive number", 255, 255, 0)
+					return
+				end
+				allianceTable[alliance][3] = allianceTable[alliance][3] - balanceChange
+				client.money = client.money + balanceChange
+				db:exec("UPDATE `groups_alliances_` SET `balance` = ? WHERE `alliance` = ?", tonumber(allianceTable[alliance][3]), alliance)
+				createAllianceLog(alliance, group_, client.name.." ("..client.account.name..") has withdrawn $"..exports.UCDutil:tocomma(balanceChange).." from the alliance bank")
+				triggerLatentClientEvent(client, "UCDgroups.alliance.balanceWindow", client, "update", allianceTable[alliance][3])
+			end
+		end
+	end
+end
+addEvent("UCDgroups.alliance.changeBalance", true)
+addEventHandler("UCDgroups.alliance.changeBalance", root, changeAllianceBalance)
+
+function requestAllianceBalance()
+	if (client or source) then
+		local group_ = getPlayerGroup(source)
+		if (group_) then
+			local alliance = getGroupAlliance(group_)
+			if (not alliance) then
+				return false
+			end
+			--outputDebugString(tostring(allianceTable[alliance][3]))
+			triggerClientEvent(source, "UCDgroups.alliance.balanceWindow", source, "toggle", tonumber(allianceTable[alliance][3]))
+		end
+	end
+end
+addEvent("UCDgroups.requestAllianceBalance", true)
+addEventHandler("UCDgroups.requestAllianceBalance", root, requestAllianceBalance)
+
+function allianceGroups()
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
+			return false
+		end
+		local alliance = getGroupAlliance(groupName)
+		if (not alliance) then
+			return false
+		end
+		if (allianceMembers[alliance][groupName] ~= "Leader") then
+			return false
+		end
+		
+		if (canPlayerDoActionInGroup(client, "alliance")) then
+			local temp = {}
+			for group_, _ in pairs(groupTable) do
+				if (not getGroupAlliance(group_)) then
+					local r, g, b = getGroupColour(group_)
+					table.insert(temp, {group_ = group_, r = r, g = g, b = b})
+				end
+			end
+			triggerLatentClientEvent(client, "UCDgroups.alliance.viewInviteGroups", client, temp)
+		end
+	end
+end
+addEvent("UCDgroups.alliance.requestGroupsForInvite", true)
+addEventHandler("UCDgroups.alliance.requestGroupsForInvite", root, allianceGroups)

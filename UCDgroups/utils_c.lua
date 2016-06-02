@@ -57,6 +57,46 @@ function onClientGUIChanged()
 				end
 			end
 		end
+	-- Alliance log search
+	elseif (source == a_history.edit[1]) then
+		if (a_hist) then
+			local text = a_history.edit[1].text
+			if (text == "" or text == " " or text:gsub(" ", "") == "") then
+				a_history.gridlist[1]:clear()
+				for _, data in pairs(a_hist) do
+					local row = guiGridListAddRow(a_history.gridlist[1])
+					guiGridListSetItemText(a_history.gridlist[1], row, 1, tostring(data.groupName), false, false)
+					guiGridListSetItemColor(a_history.gridlist[1], row, 1, 0, 200, 200)
+					guiGridListSetItemText(a_history.gridlist[1], row, 2, tostring(data.log_), false, false)
+					guiGridListSetItemColor(a_history.gridlist[1], row, 2, 0, 200, 200)
+				end
+				return
+			end
+			a_history.gridlist[1]:clear()
+			for _, data in pairs(a_hist) do
+				if (data.log_:lower():find(text:lower())) then
+					local row = guiGridListAddRow(a_history.gridlist[1])
+					guiGridListSetItemText(a_history.gridlist[1], row, 1, tostring(data.groupName), false, false)
+					guiGridListSetItemColor(a_history.gridlist[1], row, 1, 0, 200, 200)
+					guiGridListSetItemText(a_history.gridlist[1], row, 2, tostring(data.log_), false, false)
+					guiGridListSetItemColor(a_history.gridlist[1], row, 2, 0, 200, 200)
+				end
+			end
+		end
+	-- Alliance banking
+	elseif (source == a_banking.edit[1]) then
+		local text = a_banking.edit[1].text
+		text = text:gsub(",", "")
+		if (tonumber(text)) then
+			a_banking.edit[1]:setText(exports.UCDutil:tocomma(tonumber(text)))
+			if (tonumber(text) > localPlayer:getMoney()) then
+				a_banking.edit[1].text = exports.UCDutil:tocomma(localPlayer:getMoney())
+			end
+			--if (guiEditGetCaretIndex(UCDhousing.edit[1]) == string.len(UCDhousing.edit[1]:getText())) then
+			if (not getKeyState("backspace")) then
+				guiEditSetCaretIndex(a_banking.edit[1], string.len(a_banking.edit[1].text))
+			end
+		end
 	end
 end
 
