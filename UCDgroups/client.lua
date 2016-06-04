@@ -19,7 +19,9 @@ a_members = {window = {}, gridlist = {}, button = {}}
 a_info = {button = {}, window = {}, memo = {}}
 a_history = {edit = {}, button = {}, window = {}, label = {}, gridlist = {}}
 a_banking = {button = {}, window = {}, edit = {}, label = {}}
-a_send_invite = {gridlist = {}, window = {}, button = {}}
+a_send_invite = {gridlist = {}, window = {}, button = {}, edit = {}}
+a_list = {gridlist = {}, window = {}, button = {}, edit = {}}
+a_invites = {gridlist = {}, window = {}, button = {}}
 
 original = {}
 groupList_ = {}
@@ -224,10 +226,10 @@ function toggleAllianceUI(updateOnly, alliance, allianceInfo, alliancePerms, cre
 		allianceGUI.button[2].enabled = false
 		allianceGUI.button[3].enabled = false
 		allianceGUI.button[4].enabled = false
-		allianceGUI.button[5].enabled = false
+		allianceGUI.button[5].enabled = true
 		allianceGUI.button[6].enabled = false
 		allianceGUI.button[7].enabled = false
-		allianceGUI.button[8].enabled = false
+		allianceGUI.button[8].enabled = true
 		allianceGUI.button[9].enabled = false
 		allianceGUI.button[10].enabled = false
 		
@@ -531,7 +533,6 @@ function createGUI()
 	allianceGUI.window[1] = guiCreateWindow(752, 413, 447, 256, "UCD | Alliances", false)
 	allianceGUI.window[1].sizable = false
 	allianceGUI.window[1].visible = false
-	
 	allianceGUI.edit[1] = GuiEdit(10, 28, 161, 30, "", false, allianceGUI.window[1])
 	allianceGUI.button[1] = GuiButton(10, 68, 130, 36, "Create Alliance", false, allianceGUI.window[1])
 	allianceGUI.button[2] = GuiButton(157, 68, 130, 36, "Leave Alliance", false, allianceGUI.window[1])
@@ -592,16 +593,38 @@ function createGUI()
 	a_banking.button[3] = GuiButton(218, 106, 85, 43, "Close", false, a_banking.window[1])
 	
 	-- Invitations [outgoing]
-	a_send_invite.window[1] = GuiWindow(837, 343, 235, 317, "UCD | Alliance - Send Invitation", false)
+	a_send_invite.window[1] = GuiWindow(837, 343, 235, 337, "UCD | Alliances - Send Invitation", false)
 	a_send_invite.window[1].visible = false
 	a_send_invite.window[1].sizable = false
-	a_send_invite.gridlist[1] = GuiGridList(9, 25, 216, 242, false, a_send_invite.window[1])
+	a_send_invite.gridlist[1] = GuiGridList(9, 25, 216, 227, false, a_send_invite.window[1])
 	guiGridListAddColumn(a_send_invite.gridlist[1], "Group", 0.9)
-	a_send_invite.button[1] = GuiButton(9, 272, 103, 34, "Send Invite", false, a_send_invite.window[1])
-	a_send_invite.button[2] = GuiButton(122, 272, 103, 34, "Close", false, a_send_invite.window[1])
+	guiGridListSetSortingEnabled(a_send_invite.gridlist[1], false)
+	a_send_invite.edit[1] = GuiEdit(9, 259, 224, 22, "", false, a_send_invite.window[1])
+	a_send_invite.button[1] = GuiButton(9, 292, 103, 34, "Send Invite", false, a_send_invite.window[1])
+	a_send_invite.button[2] = GuiButton(122, 292, 103, 34, "Close", false, a_send_invite.window[1])
+	
+	a_list.window[1] = GuiWindow(812, 336, 258, 346, "UCD | Alliances - List", false)
+	a_list.window[1].sizable = false
+	a_list.window[1].visible = false
+	a_list.button[1] = GuiButton(169, 307, 79, 29, "Close", false, a_list.window[1])
+	a_list.gridlist[1] = GuiGridList(12, 26, 276, 276, false, a_list.window[1])
+	guiGridListAddColumn(a_list.gridlist[1], "Alliance", 0.9)
+	a_list.edit[1] = GuiEdit(12, 307, 147, 29, "", false, a_list.window[1])
+	
+	a_invites.window[1] = GuiWindow(777, 425, 360, 250, "UCD | Alliances - Received Invitations", false)
+	a_invites.window[1].visible = false
+	a_invites.window[1].sizable = false
+	a_invites.gridlist[1] = GuiGridList(10, 26, 338, 169, false, a_invites.window[1])
+	guiGridListSetSortingEnabled(a_invites.gridlist[1], false)
+	guiGridListAddColumn(a_invites.gridlist[1], "Alliance", 0.4)
+	guiGridListAddColumn(a_invites.gridlist[1], "Group", 0.25)
+	guiGridListAddColumn(a_invites.gridlist[1], "Player", 0.25)
+	a_invites.button[1] = GuiButton(10, 203, 106, 35, "Accept", false, a_invites.window[1])
+	a_invites.button[2] = GuiButton(128, 203, 106, 35, "Deny", false, a_invites.window[1])
+	a_invites.button[3] = GuiButton(244, 203, 106, 35, "Close", false, a_invites.window[1])
 	
 	-- All the group GUI windows
-	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1], addRankGUI.window[1], editRankGUI.window[1], PD.window[1], allianceGUI.window[1], a_members.window[1], a_info.window[1], a_history.window[1], a_banking.window[1], a_send_invite.window[1]}
+	windows = {mainGUI.window[1], infoGUI.window[1], memberList.window[1], groupList.window[1], banking.window[1], sendInviteGUI.window[1], plrInvites.window[1], warningAdjust.window[1], blacklistGUI.window[1], addBL.window[1], historyGUI.window[1], ranksGUI.window[1], groupSettings.window[1], addRankGUI.window[1], editRankGUI.window[1], PD.window[1], allianceGUI.window[1], a_members.window[1], a_info.window[1], a_history.window[1], a_banking.window[1], a_send_invite.window[1], a_list.window[1], a_invites.window[1]}
 	for _, gui in pairs(windows) do
 		if (gui and isElement(gui)) then
 			exports.UCDutil:centerWindow(gui)
@@ -673,8 +696,10 @@ function createGUI()
 	addEventHandler("onClientGUIClick", allianceGUI.button[2], leaveAlliance, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[3], deleteAlliance, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[4], function () triggerEvent("UCDgroups.alliance.memberList", localPlayer) end, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[5], viewAllianceList, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[6], viewAllianceInviteTo, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[7], viewAllianceHistory, false)
+	addEventHandler("onClientGUIClick", allianceGUI.button[8], viewAllianceInvites, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[9], function () triggerServerEvent("UCDgroups.requestAllianceBalance", localPlayer) end, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[10], viewAllianceInfo, false)
 	addEventHandler("onClientGUIClick", allianceGUI.button[11], toggleAlliance, false)
@@ -687,7 +712,12 @@ function createGUI()
 	addEventHandler("onClientGUIClick", a_banking.button[1], function () triggerEvent("UCDgroups.alliance.balanceWindow", localPlayer, "deposit") end, false)
 	addEventHandler("onClientGUIClick", a_banking.button[2], function () triggerEvent("UCDgroups.alliance.balanceWindow", localPlayer, "withdraw") end, false)
 	addEventHandler("onClientGUIClick", a_banking.button[3], function () triggerEvent("UCDgroups.alliance.balanceWindow", localPlayer, "toggle") end, false)
+	addEventHandler("onClientGUIClick", a_send_invite.button[1], inviteGroup, false)
 	addEventHandler("onClientGUIClick", a_send_invite.button[2], viewAllianceInviteTo, false)
+	addEventHandler("onClientGUIClick", a_list.button[1], viewAllianceList, false)
+	addEventHandler("onClientGUIClick", a_invites.button[1], handleAllianceInvite, false)
+	addEventHandler("onClientGUIClick", a_invites.button[2], handleAllianceInvite, false)
+	addEventHandler("onClientGUIClick", a_invites.button[3], viewAllianceInvites, false)
 	
 	addEventHandler("onClientGUITabSwitched", guiRoot, blacklistTabSwitch)
 	addEventHandler("onClientGUIChanged", guiRoot, onClientGUIChanged)
@@ -1495,7 +1525,7 @@ end
 function handleInvite()
 	if (source ~= plrInvites.button[1] and source ~= plrInvites.button[2]) then return end
 	local row = guiGridListGetSelectedItem(plrInvites.gridlist[1])
-	if (row and row ~= false and row ~= -1 and row ~= nil) then
+	if (row and row ~= -1) then
 		local group_ = guiGridListGetItemText(plrInvites.gridlist[1], row, 1)
 		triggerServerEvent("UCDgroups.handleInvite", localPlayer, group_, source.text:lower())
 	end
@@ -1685,12 +1715,10 @@ addEventHandler("UCDgroups.alliance.balanceWindow", root, allianceBankingHandler
 
 function viewAllianceInviteTo(groups)
 	if (groups and type(groups) == "table") then
-	
+		_groups = groups
 		a_send_invite.window[1].visible = true
-		
 		guiBringToFront(a_send_invite.window[1])
 		guiGridListClear(a_send_invite.gridlist[1])
-		
 		if (#groups > 0) then
 			for _, data in pairs(groups) do
 				local row = guiGridListAddRow(a_send_invite.gridlist[1])
@@ -1708,3 +1736,74 @@ function viewAllianceInviteTo(groups)
 end
 addEvent("UCDgroups.alliance.viewInviteGroups", true)
 addEventHandler("UCDgroups.alliance.viewInviteGroups", root, viewAllianceInviteTo)
+
+function inviteGroup()
+	if (localPlayer:getData("group")) then
+		if (permissions_[15]) then
+			local row = guiGridListGetSelectedItem(a_send_invite.gridlist[1])
+			if (not row or row == -1) then
+				return false
+			end
+			local groupName = guiGridListGetItemText(a_send_invite.gridlist[1], row, 1)
+			triggerServerEvent("UCDgroups.inviteGroup", localPlayer, groupName)
+		end
+	end
+end
+
+function viewAllianceList(alliances)
+	if (alliances and type(alliances) == "table") then
+		_alliances = alliances
+		a_list.window[1].visible = true
+		guiBringToFront(a_list.window[1])
+		guiGridListClear(a_list.gridlist[1])
+		if (#alliances > 0) then
+			for _, data in pairs(alliances) do
+				local row = guiGridListAddRow(a_list.gridlist[1])
+				guiGridListSetItemText(a_list.gridlist[1], row, 1, tostring(data), false, false)
+				--guiGridListSetItemColor(a_list.gridlist[1], row, 1, data.r, data.g, data.b)
+			end
+		end
+	else
+		if (not a_list.window[1].visible) then
+			triggerServerEvent("UCDgroups.requestAllianceList", localPlayer)
+		else
+			a_list.window[1].visible = false
+		end
+	end
+end
+addEvent("UCDgroups.viewAllianceList", true)
+addEventHandler("UCDgroups.viewAllianceList", root, viewAllianceList)
+
+function viewAllianceInvites(invites)
+	if (invites and type(invites) == "table") then
+		a_invites.window[1].visible = true
+		guiBringToFront(a_invites.window[1])
+		guiGridListClear(a_invites.gridlist[1])
+		if (#invites > 0) then
+			for _, data in pairs(invites) do
+				local row = guiGridListAddRow(a_invites.gridlist[1])
+				guiGridListSetItemText(a_invites.gridlist[1], row, 1, tostring(data[1]), false, false)
+				guiGridListSetItemText(a_invites.gridlist[1], row, 2, tostring(data[2]), false, false)
+				guiGridListSetItemText(a_invites.gridlist[1], row, 3, tostring(data[3]), false, false)
+			end
+		end
+	else
+		if (not a_invites.window[1].visible) then
+			triggerServerEvent("UCDgroups.requestAllianceInvites", localPlayer)
+		else
+			a_invites.window[1].visible = false
+		end
+	end
+end
+addEvent("UCDgroups.viewAllianceInvites", true)
+addEventHandler("UCDgroups.viewAllianceInvites", root, viewAllianceInvites)
+
+function handleAllianceInvite()
+	if (source ~= a_invites.button[1] and source ~= a_invites.button[2]) then return end
+	local row = guiGridListGetSelectedItem(a_invites.gridlist[1])
+	if (row and row ~= -1) then
+		local alliance = guiGridListGetItemText(a_invites.gridlist[1], row, 1)
+		triggerServerEvent("UCDgroups.alliance.handleInvite", localPlayer, alliance, source.text:lower())
+	end
+end
+

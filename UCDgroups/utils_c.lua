@@ -97,6 +97,48 @@ function onClientGUIChanged()
 				guiEditSetCaretIndex(a_banking.edit[1], string.len(a_banking.edit[1].text))
 			end
 		end
+	-- Alliance send invite
+	elseif (source == a_send_invite.edit[1]) then
+		if (_groups) then
+			local text = source.text
+			if (text == "" or text == " " or text:gsub(" ", "") == "") then
+				a_send_invite.gridlist[1]:clear()
+				for _, data in pairs(_groups) do
+					local row = guiGridListAddRow(a_send_invite.gridlist[1])
+					guiGridListSetItemText(a_send_invite.gridlist[1], row, 1, tostring(data.group_), false, false)
+					guiGridListSetItemColor(a_send_invite.gridlist[1], row, 1, data.r, data.g, data.b)
+				end
+				return
+			end
+			a_send_invite.gridlist[1]:clear()
+			for _, data in pairs(_groups) do
+				if (data.group_:lower():find(text:lower())) then
+					local row = guiGridListAddRow(a_send_invite.gridlist[1])
+					guiGridListSetItemText(a_send_invite.gridlist[1], row, 1, tostring(data.group_), false, false)
+					guiGridListSetItemColor(a_send_invite.gridlist[1], row, 1, data.r, data.g, data.b)
+				end
+			end
+		end
+	-- Alliance list
+	elseif (source == a_list.edit[1]) then
+		if (_alliances) then
+			local text = source.text
+			if (text == "" or text == " " or text:gsub(" ", "") == "") then
+				a_list.gridlist[1]:clear()
+				for _, data in pairs(_alliances) do
+					local row = guiGridListAddRow(a_list.gridlist[1])
+					guiGridListSetItemText(a_list.gridlist[1], row, 1, tostring(data), false, false)
+				end
+				return
+			end
+			a_list.gridlist[1]:clear()
+			for _, data in pairs(_alliances) do
+				if (data:lower():find(text:lower())) then
+					local row = guiGridListAddRow(a_list.gridlist[1])
+					guiGridListSetItemText(a_list.gridlist[1], row, 1, tostring(data), false, false)
+				end
+			end
+		end
 	end
 end
 

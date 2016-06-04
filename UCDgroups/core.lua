@@ -78,6 +78,7 @@ groupEditingRanks = {} -- A table that tells us when a group is editing ranks so
 g_alliance = {} -- Group to alliance
 allianceTable = {} -- groups_alliances_
 allianceMembers = {} -- groups_alliances_members
+allianceInvites = {}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
@@ -174,6 +175,17 @@ function cacheAllianceMembers(qh)
 		allianceMembers[row.alliance][row.groupName] = row.rank
 		g_alliance[row.groupName] = row.alliance
 	end
+	db:query(cacheAllianceInvites, {}, "SELECT * FROM `groups_alliances_invites`")
+end
+
+function cacheAllianceInvites(qh)
+	local result = qh:poll(-1)
+	for _, row in ipairs(result) do
+		if (not allianceInvites[row.groupName]) then
+			allianceInvites[row.groupName] = {}
+		end
+		table.insert(allianceInvites[row.groupName], {row.alliance, row.groupBy, row.playerBy})
+	end
 end
 
 function createGroup(name)
@@ -222,7 +234,7 @@ function createGroup(name)
 		db:exec("INSERT INTO `groups_members` VALUES (?, ?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, client.name, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
 		setDefaultRanks(groupName)
 		
-		groupTable[groupName] = { 
+		groupTable[groupName] = {
 			["info"] = settings.default_info_text, ["memberCount"] = 1, ["created"] = d.." "..t, ["colour"] = toJSON(settings.default_colour),
 			["balance"] = 0, ["chatColour"] = toJSON(settings.default_chat_colour), ["gmotd"] = "",
 		}
@@ -234,7 +246,6 @@ function createGroup(name)
 		group[client] = groupName
 		playerGroupCache[client.account.name] = {groupName, client.account.name, "Founder", d, getRealTime().yearday, 0, 0} -- Should I even bother?
 		exports.UCDdx:new(client, "You have successfully created "..groupName, 0, 255, 0)
-		
 		triggerEvent("UCDgroups.viewUI", client, true)
 	end
 end
@@ -260,7 +271,7 @@ function leaveGroup(reason)
 			
 			for k, v in pairs(groupMembers[group_]) do
 				--outputDebugString(tostring(k).." || "..tostring(v))
-				if v == client.account.name then
+				if (v == client.account.name) then
 					table.remove(groupMembers[group_], k)
 					--outputDebugString("Removed "..tostring(v).." at index "..tostring(k))
 					break
@@ -270,7 +281,7 @@ function leaveGroup(reason)
 			client:removeData("group")
 			group[client] = nil
 			playerGroupCache[client.account.name] = nil
-			db:exec("DELETE FROM `groups_members` WHERE `account`=?", client.account.name)
+			db:exec("DELETE FROM `groups_members` WHERE `account` = ?", client.account.name)
 			exports.UCDdx:new(client, "You have left "..group_.." ("..reason..")", 255, 0, 0)
 			messageGroup(group_, " has left the group ("..reason..")")
 			triggerEvent("UCDgroups.viewUI", client, true)
@@ -303,8 +314,11 @@ function deleteGroup()
 			end
 			
 			db:exec("DELETE FROM `groups_alliances_members` WHERE `groupName` = ? AND `alliance` = ?", groupName, alliance)
-			allianceMembers[alliance][groupName] = nil
+			db:exec("DELETE FROM `groups_alliances_invites` WHERE `groupName` = ?", groupName)
+			
 			g_alliance[groupName] = nil
+			allianceMembers[alliance][groupName] = nil
+			allianceInvites[groupName] = nil
 		end
 		
 		createGroupLog(group_, client.name.." ("..client.account.name..") has deleted "..groupName, true)
@@ -410,7 +424,7 @@ function sendInvite(plr)
 				if (blacklistCache[group_]) then
 					result = blacklistCache[group_]
 				else
-					result = db:query("SELECT `serialAccount` FROM `groups_blacklist` WHERE `groupName`=?", group_):poll(-1)
+					result = db:query("SELECT `serialAccount` FROM `groups_blacklist` WHERE `groupName` = ?", group_):poll(-1)
 				end
 				if (result and #result > 0) then
 					for _, ent in ipairs(result) do
@@ -457,16 +471,13 @@ function handleInvite(groupName, state)
 				end
 			end
 		end
-		db:exec("DELETE FROM `groups_invites` WHERE `groupName`=? AND `account`=?", groupName, client.account.name)
-		
+		db:exec("DELETE FROM `groups_invites` WHERE `groupName` = ? AND `account` =? ", groupName, client.account.name)
 		if (state == "accept") then
-		
 			if (groupTable[groupName].lockInvites == 1) then
 				exports.UCDdx:new(client, "Unable to accept the invite - this group is locked", 255, 0, 0)
 				triggerEvent("UCDgroups.requestInviteList", client)
 				return
 			end
-			
 			local result
 			if (blacklistCache[groupName]) then
 				result = blacklistCache[groupName]
@@ -1520,6 +1531,7 @@ function deleteAlliance()
 		
 		db:exec("DELETE FROM `groups_alliances_` WHERE `alliance` = ?", alliance)
 		db:exec("DELETE FROM `groups_alliances_members` WHERE `alliance` = ?", alliance)
+		db:exec("DELETE FROM `groups_alliances_invites` WHERE `alliance` = ?", alliance)
 		db:exec("DELETE FROM `groups_alliances_logs` WHERE `alliance` = ? AND `important` <> 1", alliance)
 		
 		for _, g in ipairs(getAllianceGroups(alliance)) do
@@ -1538,6 +1550,35 @@ function deleteAlliance()
 end
 addEvent("UCDgroups.deleteAlliance", true)
 addEventHandler("UCDgroups.deleteAlliance", root, deleteAlliance)
+
+function joinAlliance(alliance)
+	if (source and source.type == "player" and alliance) then
+		local groupName = getPlayerGroup(source)
+		if (not groupName) then
+			outputDebugString("1")
+			return false
+		end
+		if (getGroupAlliance(groupName)) then
+			outputDebugString("2")
+			return false
+		end
+		if (not canPlayerDoActionInGroup(source, "alliance")) then
+			exports.UCDdx:new(source, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		
+		db:exec("INSERT INTO `groups_alliances_members` (`alliance`, `groupName`, `rank`) VALUES (?, ?, ?)", alliance, groupName, "Member")
+		allianceMembers[alliance][groupName] = "Member"
+		g_alliance[groupName] = alliance
+		
+		messageGroup(groupName, source.name.." ("..source.account.name..") joined the alliance "..alliance, "info")
+		createAllianceLog(alliance, groupName, source.name.." ("..source.account.name..") has accepted the invitation to join the alliance")
+		
+		triggerEvent("UCDgroups.alliance.viewUI", source, true)
+	end
+end
+addEvent("UCDgroups.joinAlliance", true)
+addEventHandler("UCDgroups.joinAlliance", root, joinAlliance)
 
 function leaveAlliance()
 	if (client) then
@@ -1854,7 +1895,6 @@ function requestAllianceBalance()
 			if (not alliance) then
 				return false
 			end
-			--outputDebugString(tostring(allianceTable[alliance][3]))
 			triggerClientEvent(source, "UCDgroups.alliance.balanceWindow", source, "toggle", tonumber(allianceTable[alliance][3]))
 		end
 	end
@@ -1862,7 +1902,9 @@ end
 addEvent("UCDgroups.requestAllianceBalance", true)
 addEventHandler("UCDgroups.requestAllianceBalance", root, requestAllianceBalance)
 
-function allianceGroups()
+-- Used to request the alliance invite list
+function getGroupsForAlliance()
+	--[[
 	if (client) then
 		local groupName = getPlayerGroup(client)
 		if (not groupName) then
@@ -1877,6 +1919,7 @@ function allianceGroups()
 		end
 		
 		if (canPlayerDoActionInGroup(client, "alliance")) then
+	--]]
 			local temp = {}
 			for group_, _ in pairs(groupTable) do
 				if (not getGroupAlliance(group_)) then
@@ -1884,9 +1927,144 @@ function allianceGroups()
 					table.insert(temp, {group_ = group_, r = r, g = g, b = b})
 				end
 			end
-			triggerLatentClientEvent(client, "UCDgroups.alliance.viewInviteGroups", client, temp)
+			--triggerLatentClientEvent(client, "UCDgroups.alliance.viewInviteGroups", client, temp)
+			return temp
+	--[[
+		end
+	end
+	--]]
+end
+
+function requestGroupsForAllianceInviteList()
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
+			return false
+		end
+		local alliance = getGroupAlliance(groupName)
+		if (not alliance) then
+			return false
+		end
+		if (allianceMembers[alliance][groupName] ~= "Leader") then
+			return false
+		end
+		
+		if (canPlayerDoActionInGroup(client, "alliance")) then
+			local t = getGroupsForAlliance()
+			triggerLatentClientEvent(client, "UCDgroups.alliance.viewInviteGroups", client, t)
 		end
 	end
 end
 addEvent("UCDgroups.alliance.requestGroupsForInvite", true)
-addEventHandler("UCDgroups.alliance.requestGroupsForInvite", root, allianceGroups)
+addEventHandler("UCDgroups.alliance.requestGroupsForInvite", root, requestGroupsForAllianceInviteList)
+
+function requestAllianceList()
+	if (client) then
+		local temp = {}
+		for alliance, data in pairs(allianceTable) do
+			table.insert(temp, alliance)
+		end
+		triggerLatentClientEvent(client, "UCDgroups.viewAllianceList", client, temp)
+	end
+end
+addEvent("UCDgroups.requestAllianceList", true)
+addEventHandler("UCDgroups.requestAllianceList", root, requestAllianceList)
+
+function requestAllianceInvites()
+	if (source and source.type == "player") then
+		local groupName = getPlayerGroup(source)
+		if (not groupName) then
+			return false
+		end
+		--local alliance = getGroupAlliance(groupName)
+		--if (alliance) then
+		--	return false
+		--end
+		if (not canPlayerDoActionInGroup(source, "alliance")) then
+			return false
+		end
+		
+		local invites = allianceInvites[groupName]
+		if (not invites) then
+			invites = {}
+		end
+		
+		triggerClientEvent(source, "UCDgroups.viewAllianceInvites", source, invites)
+	end
+end
+addEvent("UCDgroups.requestAllianceInvites", true)
+addEventHandler("UCDgroups.requestAllianceInvites", root, requestAllianceInvites)
+
+function inviteGroup(group_)
+	if (client) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
+			return false
+		end
+		local alliance = getGroupAlliance(groupName)
+		if (not alliance) then
+			return false
+		end
+		if (allianceMembers[alliance][groupName] ~= "Leader") then
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			return false
+		end
+		if (not allianceInvites[group_]) then
+			allianceInvites[group_] = {}
+		end
+		for index, row in pairs(allianceInvites[group_]) do
+			for _, data in pairs(row) do
+				if (data == groupName) then
+					exports.UCDdx:new(client, "This group has already been invited to the alliance", 255, 0, 0)
+					return
+				end
+			end
+		end
+		table.insert(allianceInvites[group_], {alliance, groupName, client.name})
+		exports.UCDdx:new(client, "You have invited "..tostring(group_).." to "..alliance, 255, 0, 0)
+		db:exec("INSERT INTO `groups_alliances_invites` (`groupName`, `alliance`, `groupBy`, `playerBy`) VALUES (?, ?, ?, ?)", group_, alliance, groupName, client.name)
+		createAllianceLog(alliance, groupName, client.name.." ("..client.account.name..") has invited the group "..group_.." to the alliance")
+		triggerEvent("UCDgroups.alliance.viewUI", client, true)
+	end
+end
+addEvent("UCDgroups.inviteGroup", true)
+addEventHandler("UCDgroups.inviteGroup", root, inviteGroup)
+
+function handleAllianceInvite(alliance_, state)
+	if (client and alliance_ and state) then
+		local groupName = getPlayerGroup(client)
+		if (not groupName) then
+			return false
+		end
+		if (not canPlayerDoActionInGroup(client, "alliance")) then
+			exports.UCDdx:new(client, "You do not have permission to manage alliances in your group", 255, 0, 0)
+			return false
+		end
+		
+		for index, row in pairs(allianceInvites[groupName]) do
+			if (row[1] == alliance_) then
+				table.remove(allianceInvites[groupName], index)
+			end
+		end
+		db:exec("DELETE FROM `groups_alliances_invites` WHERE `groupName` = ? AND `alliance` = ?", groupName, alliance_)
+		
+		if (state == "accept") then
+			if (getGroupAlliance(groupName)) then
+				exports.UCDdx:new(client, "Your group can't join this alliance because you are already in one", 255, 0, 0)
+				triggerEvent("UCDgroups.requestAllianceInvites", client)
+				return false
+			end
+			createGroupLog(groupName, client.name.." ("..client.account.name..") has accepted the invite to join alliance "..alliance_)
+			triggerEvent("UCDgroups.joinAlliance", client, alliance_)
+		elseif (state == "deny") then
+			createGroupLog(groupName, client.name.." ("..client.account.name..") has declined the invite to join alliance "..alliance_)
+			exports.UCDdx:new(client, "You have declined the invitation to join alliance "..groupName, 255, 255, 0)
+		end
+		
+		triggerEvent("UCDgroups.requestAllianceInvites", client)
+	end
+end
+addEvent("UCDgroups.alliance.handleInvite", true)
+addEventHandler("UCDgroups.alliance.handleInvite", root, handleAllianceInvite)
