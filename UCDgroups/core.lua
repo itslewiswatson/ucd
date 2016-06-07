@@ -1087,7 +1087,7 @@ function toggleGUI(update)
 	local rank = getPlayerGroupRank(source)
 	local permissions = getRankPermissions(groupName, rank)
 	local ranks = {}
-	--local memberCount = #groupMembers[groupName] --or "N" --[[groupTable[groupName].memberCount]]
+	--local memberCount = #groupMembers[groupName] --or "N"
 	local memberCount
 	local groupSlots = 50
 	local created-- = groupTable[groupName].created or "N/A"

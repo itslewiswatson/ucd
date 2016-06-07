@@ -23,8 +23,8 @@ end
 
 -- Get the member count of a group
 function getGroupMemberCount(groupName)
-	if (not groupMembers[groupName] or not groupTable[groupName].memberCount) then return end
-	return #groupMembers[groupName] or groupTable[groupName].memberCount
+	if (not groupMembers[groupName]) then return end
+	return #groupMembers[groupName]
 end
 
 -- Get a given player's online time
