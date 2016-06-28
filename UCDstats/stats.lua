@@ -7,13 +7,23 @@ addEventHandler("onPlayerLogin", resourceRoot,
 	end
 )
 
+addEventHandler("onResourceStart", resourceRoot,
+	function ()
+		for _, plr in ipairs(Element.getAllByType("player")) do
+			if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+				db:query(cachePlayerStats, {plr}, "SELECT * FROM `playerStats` WHERE `account`=?", plr.account.name)
+			end
+		end
+	end
+)
+
 function cachePlayerStats(qh, plr)
 	local result = qh:poll(-1)
 	playerStats[plr] = {}
 	
 	for _, row in pairs(result) do
 		for column, value in pairs(row) do
-			if (column ~= "id") then
+			if (column ~= "account") then
 				playerStats[plr][column] = value
  			end
 		end
@@ -46,6 +56,6 @@ function setPlayerAccountStat(plr, stat, value)
 		return nil
 	end
 	playerStats[plr][stat] = value
-	db:exec("UPDATE `playerStats` SET `??`=? WHERE `id`=?", stat, value, exports.UCDaccounts:getPlayerAccountID(plr))
+	db:exec("UPDATE `playerStats` SET `??`=? WHERE `account`=?", stat, value, plr.account.name)
 	return true
 end
