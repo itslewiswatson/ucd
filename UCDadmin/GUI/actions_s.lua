@@ -100,8 +100,8 @@ function kickPlayer_(plr, reason)
 			return
 		end
 		exports.UCDdx:new(client, "You have kicked "..plr.name.." for '"..reason.."'", 0, 255, 0)
-		plr:kick(client, reason) -- Set char limit on client [64]
 		outputChatBox(plr.name.." has been kicked by "..client.name.." ("..reason..")", root, 255, 140, 0)
+		plr:kick(client, reason) -- Set char limit on client [64]
 	end
 end
 addEvent("UCDadmin.kick", true)
@@ -348,7 +348,7 @@ function destroyVehicle(plr, vehicle)
 			vehicle:destroy()
 		end
 		exports.UCDdx:new(plr, "Your vehicle has been destroyed by "..client.name, 0, 255, 0)
-		exports.UCDdx:new(client, "You have destroyed "..client.name.."'s vehicle", 0, 255, 0)
+		exports.UCDdx:new(client, "You have destroyed "..plr.name.."'s vehicle", 0, 255, 0)
 	end
 end
 addEvent("UCDadmin.destroyVehicle", true)
