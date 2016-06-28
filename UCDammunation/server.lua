@@ -37,6 +37,7 @@ function buyWeapon(weaponID)
 		client:takeMoney(prices[weaponID][1])
 		giveWeapon(client, weaponID, 0)
 		triggerClientEvent(client, "UCDammunation.update", client, exports.UCDaccounts:getOwnedWeapons(client) or {})
+		exports.UCDstats:setPlayerAccountStat(client, "totalguns", exports.UCDstats:getPlayerAccountStat(client, "totalguns") + prices[weaponID][1])
 	end
 end
 addEvent("UCDammunation.buyWeapon", true)
@@ -52,6 +53,7 @@ function buyAmmo(weaponID, amount)
 		giveWeapon(client, weaponID, amount)
 		setPedWeaponSlot(client, getSlotFromWeapon(weaponID))
 		triggerClientEvent(client, "UCDammunation.update", client, exports.UCDaccounts:getOwnedWeapons(client) or {})
+		exports.UCDstats:setPlayerAccountStat(client, "totalguns", exports.UCDstats:getPlayerAccountStat(client, "totalguns") + (amount * prices[weaponID][2]))
 	end
 end
 addEvent("UCDammunation.buyAmmo", true)
