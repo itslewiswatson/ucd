@@ -259,7 +259,7 @@ function onClickStock()
 		local acronym = guiGridListGetItemText(GUI.gridlist["own"], row, 1)
 		local data = _own[acronym]
 		
-		local stake = 100 / (_stocks[acronym][5] / data[1])
+		local stake = exports.UCDutil:mathround(100 / (_stocks[acronym][5] / data[1]), 5)
 		local worth = exports.UCDutil:mathround(data[1] * _stocks[acronym][2], 2)
 		
 		GUI.label["own.share_name"].text = "Name: "..tostring(_stocks[acronym][1]).." ("..tostring(acronym)..")"
@@ -327,23 +327,32 @@ function onClientGUIChanged()
 end
 
 function onBuyStock()
-	local text = buyGUI.edit.text
-	text = text:gsub(",", "")
-	if (not tonumber(text)) then
+	local qty = buyGUI.edit.text
+	qty = qty:gsub(",", "")
+	if (not tonumber(qty)) then
 		return
 	end
-	text = tonumber(text)
-	local approxPrice = text * _stocks[stockBuying][2]
-	if (_stocks[stockBuying][2] * text ~= approxPrice) then
-		outputDebugString("noo")
+	qty = tonumber(qty)
+	local approxPrice = qty * _stocks[stockBuying][2]
+	if (_stocks[stockBuying][2] * qty ~= approxPrice) then
+		outputDebugString("Math error")
 		return
 	end
-	if (_stocks[stockBuying][6] > text) then
-		outputDebugString("there aren't this many stock")
+	if (_stocks[stockBuying][6] < qty) then
+		exports.UCDdx:new("There aren't that many stock available of "..stockBuying.." "..tostring(_stocks[stockBuying][6])..")", 255, 0, 0)
 		return
 	end
-	triggerServerEvent("UCDstocks.buyStock", localPlayer, stockBuying, text, approxPrice)
+	if (_stocks[stockBuying][8] > qty) then
+		--outputDebugString("must purchase at least minimum amount ("..tostring(_stocks[stockBuying][8])..")")
+		exports.UCDdx:new("You must at least purchase the minimum amount for this stock ("..tostring(_stocks[stockBuying][8])..")", 255, 0, 0)
+		return
+	end
+	triggerServerEvent("UCDstocks.buyStock", localPlayer, stockBuying, qty, approxPrice)
 	buyGUI.window.visible = false
 	buyGUI.edit.text = "1"
 	stockBuying = nil
+end
+
+function onSellStock()
+	local qty = sellGUI.edit.text
 end

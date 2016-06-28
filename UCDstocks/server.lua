@@ -47,13 +47,13 @@ function cacheShares(result)
 end
 
 function getStockPrice(stockName)
-	if (not stockName or not stocks[stockName] or not stocks[stockName][price]) then return false end
-	return stocks[stockName][price]
+	if (not stockName or not stocks[stockName] or not stocks[stockName].price) then return false end
+	return stocks[stockName].price
 end
 
 function getStockName(stockName)
-	if (not stockName or not stocks[stockName] or not stocks[stockName][name]) then return false end
-	return stocks[stockName][name]
+	if (not stockName or not stocks[stockName] or not stocks[stockName].name) then return false end
+	return stocks[stockName].name
 end
 
 function getShareholders(stockName)
@@ -180,10 +180,10 @@ function sellStocks(stockName, amount, clientPrice)
 		end
 		
 		client.money = client.money + price
-		exports.UCDdx:new(client, "Sold "..tostring(exports.UCDutil:tocomma(amount)).." stock options of "..tostring(stockName).." for $"..tostring(exports.UCDutil:tocomma(price)), 0, 255, 0)
+		exports.UCDdx:new(client, "Sold "..tostring(exports.UCDutil:tocomma(amount)).." stock options of "..tostring(stockName).." ("..tostring(getStockName(stockName))..") for $"..tostring(exports.UCDutil:tocomma(price)), 0, 255, 0)
 		db:exec("INSERT INTO `stocks__transactions` (`acronym`, `account`, `price`, `options`, `action`) VALUES (?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "sold")
 		
-		triggerEvent("UCDstocks.getStocks", client)
+		triggerEvent("UCDstocks.getStocks", client, true)
 		--triggerEvent("UCDphone.getStocks", client)
 	end
 end
@@ -214,6 +214,7 @@ function buyStock(stockName, amount, clientPrice)
 		end
 		if (client.money < price) then
 			exports.UCDdx:new(client, "You don't have enough money to buy this quantity of stock options", 255, 0, 0)
+			return
 		end
 		
 		if (not shareholders[stockName]) then
@@ -241,10 +242,10 @@ function buyStock(stockName, amount, clientPrice)
 		end
 		shares[client.account.name][stockName] = shares[client.account.name][stockName] + amount
 		client.money = client.money - price
-		exports.UCDdx:new(client, "You have bought "..tostring(exports.UCDutil:tocomma(amount)).." stock options of "..tostring(stockName).." for $"..tostring(exports.UCDutil:tocomma(price)), 0, 255, 0)
+		exports.UCDdx:new(client, "You have bought "..tostring(exports.UCDutil:tocomma(amount)).." stock options of "..tostring(stockName).." ("..tostring(getStockName(stockName))..") for $"..tostring(exports.UCDutil:tocomma(price)), 0, 255, 0)
 		db:exec("INSERT INTO `stocks__transactions` (`acronym`, `account`, `price`, `options`, `action`) VALUES (?, ?, ?, ?, ?)", stockName, client.account.name, price, amount, "bought")
 		
-		triggerEvent("UCDstocks.getStocks", client)
+		triggerEvent("UCDstocks.getStocks", client, true)
 		--triggerEvent("UCDphone.getStocks", client)
 	end
 end
@@ -278,7 +279,7 @@ function updateStockMarket()
 		--appendStockHistory(name)
 	end
 end
---addCommandHandler("fuckstocks", updateStockMarket)
+addCommandHandler("fuckstocks", updateStockMarket)
 Timer(updateStockMarket, (25 * 60) * 1000, 1)
 
 function appendStockHistory(stockName)
