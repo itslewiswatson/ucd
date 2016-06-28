@@ -27,7 +27,20 @@ addEventHandler("onClientPlayerGetJob", root,
 	function (jobName)
 		if (jobName == "Detective") then
 			newCase()
+			return
 		end
+		if (isElement(blip)) then
+			blip:destroy()
+		end
+		curr = nil
+		prev = nil
+		ped = nil
+		blip = nil
+		col2id = {}
+		id2obj = {}
+		hitCount = 0
+		objCount = nil
+		exports.UCDdx:del("detective")
 	end
 )
 
@@ -76,6 +89,7 @@ function onEvidenceHit(plr, matchingDimension)
 		col2id[source] = nil
 		hitCount = hitCount + 1
 		exports.UCDdx:add("detective", "Clues: "..tostring(hitCount).."/"..tostring(objCount), 30, 144, 255)
+		Sound.playFrontEnd(12)
 		
 		if (#id2obj == 0 and hitCount == objCount) then
 			ped:destroy()
