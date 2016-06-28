@@ -125,7 +125,7 @@ function Accounts.SaveAll()
 	for _, plr in ipairs(getLoggedInPlayers()) do
 		Accounts.Save(plr)
 	end
-	outputDebugString("Saved all accounts!")
+	--outputDebugString("Saved all accounts!")
 end
 --addCommandHandler("saveall", Accounts.SaveAll)
 Timer(Accounts.SaveAll, (SAVE_INTERVAL * 60) * 1000, 0)
