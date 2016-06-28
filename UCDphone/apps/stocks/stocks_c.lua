@@ -8,10 +8,12 @@ function Stocks.create()
 	phone.stocks.gridlist["own"] = GuiGridList(26, 301, 257, 169, false, phone.image["phone_window"])
 	phone.stocks.gridlist["all"]  = GuiGridList(26, 109, 257, 169, false, phone.image["phone_window"]) -- o = 113
 	
+	guiGridListSetSortingEnabled(phone.stocks.gridlist["all"], false)
 	guiGridListAddColumn(phone.stocks.gridlist["all"], "Name", 0.3)
 	guiGridListAddColumn(phone.stocks.gridlist["all"], "Value", 0.23)
 	guiGridListAddColumn(phone.stocks.gridlist["all"], "Change", 0.37)
 	
+	guiGridListSetSortingEnabled(phone.stocks.gridlist["own"], false)
 	guiGridListAddColumn(phone.stocks.gridlist["own"], "Name", 0.45)
 	guiGridListAddColumn(phone.stocks.gridlist["own"], "Stocks", 0.45)
 	
