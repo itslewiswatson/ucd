@@ -131,14 +131,15 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		banking.button[1].enabled = boolean(permissions[12])
 		banking.button[2].enabled = boolean(permissions[13])
 		
-		-- Group colour
+		-- Group colour and rank buttons
 		for i = 1, 3 do
 			groupSettings.edit[i].readOnly = not boolean(permissions[14])
+			ranksGUI.button[i].enabled = boolean(permissions[-1]) -- Only the highest rank should be able to edit other ranks
 		end
 		-- Group chat colour
 		for i = 3, 6 do
 			groupSettings.edit[i].readOnly = not boolean(permissions[16])
-		end
+		end		
 		-- Combobox for highest ranks only
 		groupSettings.combobox[1].enabled = boolean(permissions[-1])
 		groupSettings.combobox[2].enabled = boolean(permissions[-1])

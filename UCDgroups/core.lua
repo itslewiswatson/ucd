@@ -112,7 +112,7 @@ function cacheGroupMembers(qh)
 			table.insert(groupMembers[row.groupName], row.account)
 			local member = Account(row.account).player --exports.UCDaccounts:getPlayerFromID(row.account)
 			if (member) then
-				db:exec("UPDATE `groups_members` SET `name`=?, `lastOnline`=? WHERE `account`=?", member.name, getRealTime().yearday, row.account)
+				db:exec("UPDATE `groups_members` SET `lastOnline`=? WHERE `account`=?", getRealTime().yearday, row.account)
 			end
  		end
 	end
@@ -376,11 +376,10 @@ function joinGroup(group_)
 			local rank = getGroupFirstRank(group_)
 			local d, t = exports.UCDutil:getTimeStamp()
 			
-			--db:exec("INSERT INTO `groups_members` SET `groupName`=?, `account`=?, `name`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", group_, account, source.name, rank, getRealTime().yearday, onlineTime[plr])
-			db:exec("INSERT INTO `groups_members` SET `groupName`=?, `account`=?, `name`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", group_, account, source.name, rank, getRealTime().yearday, getPlayerOnlineTime(plr))
+			db:exec("INSERT INTO `groups_members` SET `groupName`=?, `account`=?, `rank`=?, `lastOnline`=?, `timeOnline`=?", group_, account, rank, getRealTime().yearday, getPlayerOnlineTime(plr))
 			
-			groupTable[group_].memberCount = groupTable[group_].memberCount + 1
-			db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
+			--groupTable[group_].memberCount = groupTable[group_].memberCount + 1
+			--db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
 			
 			createGroupLog(group_, source.name.." ("..source.account.name..") has joined "..group_)
 			
@@ -657,8 +656,8 @@ function kickMember(accName, reason)
 				end
 				
 				playerGroupCache[accName] = nil
-				groupTable[group_].memberCount = groupTable[group_].memberCount - 1
-				db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
+				--groupTable[group_].memberCount = groupTable[group_].memberCount - 1
+				--db:exec("UPDATE `groups_` SET `memberCount`=? WHERE `groupName`=?", tonumber(groupTable[group_].memberCount), group_)
 				db:exec("DELETE FROM `groups_members` WHERE `account`=?", accName)
 				
 				createGroupLog(group_, client.name.." ("..client.account.name..") has kicked "..exports.UCDaccounts:GAD(accName, "lastUsedName").." ("..accName..") ("..reason..")")
