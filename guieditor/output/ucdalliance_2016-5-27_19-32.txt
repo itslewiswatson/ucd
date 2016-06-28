@@ -1,0 +1,41 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    label = {},
+    edit = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(752, 413, 447, 256, "UCD | Alliances - Aesthetics", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 1.00)
+
+        GUIEditor.edit[1] = guiCreateEdit(10, 28, 161, 30, "Aesthetics", false, GUIEditor.window[1])
+        GUIEditor.button[1] = guiCreateButton(10, 68, 130, 36, "Create Alliance", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(157, 68, 130, 36, "Leave Alliance", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(307, 68, 130, 36, "Delete Alliance", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[4] = guiCreateButton(10, 114, 130, 36, "Alliance Members", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[5] = guiCreateButton(157, 114, 130, 36, "Alliance List", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[6] = guiCreateButton(307, 114, 130, 36, "Invite to Alliance", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[7] = guiCreateButton(157, 160, 130, 36, "Alliance History", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[7], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[8] = guiCreateButton(307, 160, 130, 36, "Alliance Invites", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[8], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[9] = guiCreateButton(10, 206, 130, 36, "Alliance Bank", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[9], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[10] = guiCreateButton(10, 160, 130, 36, "Alliance Info", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[10], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[11] = guiCreateButton(157, 206, 280, 36, "Close", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[11], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.label[1] = guiCreateLabel(170, 28, 267, 30, "Founded: 2016-04-12 11:04:00", false, GUIEditor.window[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")    
+    end
+)

@@ -15,3 +15,6 @@
 :guieditor/output/stocks_history_2016-3-12_23-44.txt
 :guieditor/output/UCDPHONECOMBINEDMUSIC1_2016-3-16_17-46.txt
 :guieditor/output/UCDphone.music.final5_2016-3-16_18-4.txt
+:guieditor/output/ucdalliance_2016-5-27_19-32.txt
+:guieditor/output/ucdalliances_members_2016-5-28_15-29.txt
+:guieditor/output/saurfriends1_2016-6-15_17-34.txt

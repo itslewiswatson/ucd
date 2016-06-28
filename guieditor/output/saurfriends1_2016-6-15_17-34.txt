@@ -1,0 +1,30 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    staticimage = {},
+    button = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(483, 224, 320, 601, ":SAURlink/phone_htc.png", false)
+
+        GUIEditor.button[1] = guiCreateButton(-214, 179, 15, 15, "", false, GUIEditor.staticimage[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.gridlist[1] = guiCreateGridList(36, 89, 250, 369, false, GUIEditor.staticimage[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Buddy", 0.5)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Last Active", 0.5)
+        GUIEditor.button[2] = guiCreateButton(34, 468, 78, 38, "View Players", false, GUIEditor.staticimage[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(122, 468, 78, 38, "Permissions", false, GUIEditor.staticimage[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[4] = guiCreateButton(208, 468, 78, 38, "Blacklist", false, GUIEditor.staticimage[1])
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")    
+    end
+)
