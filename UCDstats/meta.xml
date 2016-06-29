@@ -1,5 +1,5 @@
 <meta>
-	<min_mta_version server="1.5"></min_mta_version>
+	<min_mta_version server="1.5.2"></min_mta_version>
     <info author="Noki" type="" name="" />
 	<script src="stats.lua" type="server"/>
 	<script src="server.lua" type="server"/>

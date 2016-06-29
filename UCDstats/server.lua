@@ -9,7 +9,7 @@ function getPlayerStats(plr)
 		local ping = plr.ping or 0
 		local kills = getPlayerAccountStat(plr, "kills") or 0
 		local deaths = getPlayerAccountStat(plr, "deaths") or 6
-		local kdr = kills / deaths
+		local kdr = exports.UCDutil:mathround(kills / deaths, 2)
 		if (deaths == 0) then
 			kdr = kills
 		elseif (kills == 0 and deaths == 0) then

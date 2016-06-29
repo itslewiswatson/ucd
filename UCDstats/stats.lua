@@ -1,7 +1,7 @@
 playerStats = {}
 db = exports.UCDsql:getConnection()
 
-addEventHandler("onPlayerLogin", resourceRoot,
+addEventHandler("onPlayerLogin", root,
 	function ()
 		db:query(cachePlayerStats, {source}, "SELECT * FROM `playerStats` WHERE `account`=?", source.account.name)
 	end

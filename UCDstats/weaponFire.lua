@@ -10,7 +10,7 @@ addEventHandler("onClientPlayerWeaponFire", localPlayer, onClientPlayerWeaponFir
 
 function process()
 	if (count and count ~= 0) then
-		triggerServerEvent("UCDstats.addBulletCount", resourceRoot, count)
+		triggerLatentServerEvent("UCDstats.addBulletCount", 15000, false, resourceRoot, count)
 		count = 0
 	end
 end
