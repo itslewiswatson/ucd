@@ -1,11 +1,27 @@
 local jobs
 local vowels = {["a"] = true, ["e"] = true, ["i"] = true, ["o"] = true, ["u"] = true}
+playerRanks = {}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		jobs = exports.UCDjobsTable:getJobTable()
+		--db:query(cacheRanks, {}, "SELECT * FROM `jobs__stats`")
 	end
 )
+
+--[[
+function cacheRanks(qh)
+	local result = qh:poll(-1)
+	for _, data in ipairs(result) do
+		playerRanks[data.account] = {}
+		for jobName, rank in pairs(data) do
+			if (jobName ~= "account") then
+				playerRanks[data.account][jobName] = rank
+			end
+		end
+	end
+end
+--]]
 
 function takeJob(jobName, skinID)
 	if (source and jobName and skinID) then

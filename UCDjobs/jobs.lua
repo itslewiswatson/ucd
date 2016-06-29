@@ -2,6 +2,7 @@ local jobs = exports.UCDjobsTable:getJobTable()
 local blips = {}
 local markers = {}
 local GUI = {}
+local F5 = {}
 local originalSkin = {}
 local frozen
 local disabledControls = {"forwards", "backwards", "jump", "sprint", "left", "right"}
@@ -24,6 +25,9 @@ function onClientResourceStart()
 	
 	GUI.take = GuiButton(11, 368, 141, 36, "Take Job", false, GUI.window)
 	GUI.close = GuiButton(186, 368, 141, 36, "Close", false, GUI.window)
+	
+	-- F5 GUI
+	--F5.window = GuiWindow()
 	
 	-- Event handlers
 	addEventHandler("onClientGUIClick", GUI.take, takeJob, false)
