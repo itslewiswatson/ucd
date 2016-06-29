@@ -24,7 +24,7 @@ function processFlight(flightData, vehicle)
 	if (client and flightData and vehicle) then
 		
 		local model = vehicle.model
-		local playerRank = 9 -- Change this in the future
+		local playerRank = exports.UCDjobs:getPlayerJobRank(client, "Aviator") or 0
 		local base, bonus, distance
 		local start, finish
 		
@@ -70,10 +70,12 @@ function processFlight(flightData, vehicle)
 		if (vehicle.vehicleType == "Plane") then
 			local fA = airports[flightData[1]]
 			local sA = airports[flightData[3]]
-			exports.UCDdx:new(client, "ATC: Flight from "..sA.." to "..fA.." complete. You have been paid $"..formattedAmount..".", 255, 215, 0)
+			exports.UCDdx:new(client, "ATC: Flight from "..sA.." to "..fA.." complete ("..tostring(exports.UCDutil:mathround(distance / 1000, 2)).." km). You have been paid $"..formattedAmount..".", 255, 215, 0)
 		else
-			exports.UCDdx:new(client, "ATC: Flight complete. You have been paid $"..formattedAmount..".", 255, 215, 0)
+			exports.UCDdx:new(client, "ATC: Flight complete ("..tostring(exports.UCDutil:mathround(distance / 1000, 2)).."km). You have been paid $"..formattedAmount..".", 255, 215, 0)
 		end
+		
+		exports.UCDaccounts:SAD(client.account.name, "aviator", exports.UCDaccounts:GAD(client.account.name, "aviator") + distance)
 		
 		if (client.vehicle) then
 			--client.vehicle.frozen = false

@@ -253,7 +253,7 @@ function displayDistance()
 		local x, y, z = dest[1], dest[2], dest[3]
 		local dist = math.floor(getDistanceBetweenPoints3D(p.x, p.y, p.z, x, y, z))
 		if (dist >= 1000) then
-			dist = exports.UCDutil:mathround(dist / 1000, 1)
+			dist = exports.UCDutil:mathround(dist / 1000, 2)
 			meas = "km"
 		end
 		
