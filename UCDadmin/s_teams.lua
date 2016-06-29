@@ -17,6 +17,7 @@ serials = {
 	["A795D5B58ABC590056748F061E102542"] = true, -- Sotiris
 	["52DA46FA1AC97F1E45CF10F82ED91192"] = true, -- Thor
 	["9B4E3FBD3D71FCD5267E8B11A4FC1C53"] = true, -- Zed
+	["153917885526E4D3E13389F7015DEB94"] = true, -- Dustin
 }
 
 addEventHandler("onPlayerConnect", root,

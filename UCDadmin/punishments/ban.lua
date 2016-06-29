@@ -2,14 +2,14 @@ bans = {}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
-		db:exec("DELETE FROM `bans` WHERE `duration` < 0")
+		db:exec("DELETE FROM `bans` WHERE (`duration` + `datum`) - UNIX_TIMESTAMP() <= 0")
 		db:query(cacheBans, {}, "SELECT * FROM `bans`")
+		Timer(deleteOldBans, 15 * 60, 0) -- Once every minute
 	end
 )
 
 function cacheBans(qh)
 	local result = qh:poll(-1)
-	
 	for _, ent in ipairs(result) do
 		table.insert(bans, {ent.val, ent.reason, ent.banisher, ent.datum, ent.duration})
 	end
@@ -17,6 +17,23 @@ end
 
 function removePlayer(plr)
 	plr:redirect("", 0)
+end
+
+function deleteOldBans()
+	--db:exec("DELETE FROM `bans` WHERE (`duration` + `datum`) - UNIX_TIMESTAMP() <= 0")
+	local deletion = {}
+	for i, ent in pairs(bans) do
+		if (ent[5] ~= -1 and (ent[2] + ent[5]) - getRealTime().timestamp <= 0) then
+			table.insert(deletion, ent[1])
+			table.remove(bans, i)
+		end
+	end
+	if (#deletion >= 1) then
+		for _, val in ipairs(deletion) do
+			db:exec("DELETE FROM `bans` WHERE `val` = ?", val)
+			--exports.UCDlogging: -- Must add some form of server log here
+		end
+	end
 end
 
 function addBan(val, banisher, reason, duration)
