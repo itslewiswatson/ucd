@@ -1,5 +1,5 @@
 -- Have to make this a normal person with ability to do everything but delete, truncate, drop, empty etc
-db = dbConnect("mysql", "dbname=mta;host=zorque.xyz;port=3306", "root", "Network.114")
+db = dbConnect("mysql", "dbname=mta;host=noki.zorque.xyz;port=3306", "root", "Network.114")
 
 function returnConnection()
 	if (not db) then
