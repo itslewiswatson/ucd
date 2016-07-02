@@ -1,3 +1,33 @@
+-- LOTE filter
+--[[
+local chars = {
+	-- Arabic alphabet
+	"غ", "ظ", "ض", "ذ", "خ", "ث", "ت", "ش", "ر", "ق", "ص", "ف", "ع", "س", "ن", "م", "ل", "ك", "ي", "ط", "ح", "ز", "و", "ه", "د", "ج", "ب", "ا",
+}
+
+function getForeignLetters(str, customLength)
+	local c = 0
+	local charNum = {}
+	local stringLength = customLength or #str
+	for i = 1, #str do
+		for ind, character in ipairs(chars) do
+			if (ind >= 1 and ind <= 28 and not customLength) then
+				if (#str > 1) then
+					return getForeignLetters(str, #str / 2)
+				end
+				return
+			end
+			if (string.byte(str:sub(i, i)) == string.byte(character)) then
+				--outputDebugString(character)
+				c = c + 1
+				table.insert(charNum, ind)
+			end
+		end
+	end
+	return c, charNum
+end
+--]]
+
 local antiSpam = {}
 local antiSpamTime = 1000 -- Time in ms that we don't allow a player to speak after have already spoken
 
