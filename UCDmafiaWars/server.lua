@@ -82,6 +82,9 @@ function corrections()
 			local gR, gG, gB = exports.UCDgroups:getGroupColour(idToCol[i]:getData("turfOwner"))-- or 255, 255, 255
 			local rR, rG, rB = colToArea[idToCol[i]]:getColor()
 			if (gR ~= rR or gG ~= rG or gB ~= rB) then
+				if (not gR or not gG or not gB) then
+					gR, gG, gB = 255, 255, 255
+				end
 				colToArea[idToCol[i]]:setColor(gR, gG, gB, 175)
 				--outputDebugString("Setting colour")
 			end
