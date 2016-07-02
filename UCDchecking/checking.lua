@@ -1,6 +1,9 @@
 
 
 local actions = {
+	["Chat"] = {
+		{"s", "NoMuted"},
+	},
 	["RobHouse"] = {
 		{"a", "RobHouse", "AFK"},
 		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead"},
@@ -59,6 +62,10 @@ function canPlayerDoAction(plr, action)
 				end
 				if (dat2 == "NoJetpack" and plr:doesHaveJetpack()) then
 					exports.UCDdx:new(plr, "Having a jetpack blocks this action", 255, 0, 0)
+					return false
+				end
+				if (dat2 == "NoMuted" and plr.muted) then
+					exports.UCDdx:new(plr, "Being muted blocks this action", 255, 0, 0)
 					return false
 				end
 			end
