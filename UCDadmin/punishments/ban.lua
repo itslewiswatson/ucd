@@ -4,7 +4,7 @@ addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		db:exec("DELETE FROM `bans` WHERE (`duration` + `datum`) - UNIX_TIMESTAMP() <= 0")
 		db:query(cacheBans, {}, "SELECT * FROM `bans`")
-		Timer(deleteOldBans, 15 * 60, 0) -- Once every minute
+		Timer(deleteOldBans, 60000, 0) -- Once every minute
 	end
 )
 
@@ -23,7 +23,7 @@ function deleteOldBans()
 	--db:exec("DELETE FROM `bans` WHERE (`duration` + `datum`) - UNIX_TIMESTAMP() <= 0")
 	local deletion = {}
 	for i, ent in pairs(bans) do
-		if (ent[5] ~= -1 and (ent[2] + ent[5]) - getRealTime().timestamp <= 0) then
+		if (ent[5] ~= -1 and (ent[4] + ent[5]) - getRealTime().timestamp <= 0) then
 			table.insert(deletion, ent[1])
 			table.remove(bans, i)
 		end
@@ -67,7 +67,7 @@ function addBan(val, banisher, reason, duration)
 		return false
 	end
 	duration = math.floor(duration)
-	if (duration < 0) then
+	if (duration < 0 and duration ~= -1) then
 		return false
 	end
 	local t = getRealTime().timestamp

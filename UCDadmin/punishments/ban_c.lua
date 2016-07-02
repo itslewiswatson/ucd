@@ -85,9 +85,23 @@ function displayBanScreen(banData)
 				durationString = minutes.." minutes"
 			else
 				durationString = hours.." hours, "..minutes.." minutes"
+				if (minutes < 1) then
+					durationString = hours.." hours"
+				end
 			end
 		else
 			durationString = days.." days, "..hours.." hours, "..minutes.." minutes"
+			if (hours < 1) then
+				durationString = days.." days, "..minutes.." minutes"
+				if (minutes < 1) then
+					durationString = days.." days"
+				end
+			else
+				durationString = days.." days, "..hours.." hours, "..minutes.." minutes"
+				if (minutes < 1) then
+					durationString = days.." days, "..hours.." hours"
+				end
+			end
 		end
 	end
 	
