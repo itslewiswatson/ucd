@@ -22,25 +22,23 @@ function stdLog(plr, type1, action, type2)
 end
 --]]
 
+function adminLog()
+	
+end
+
 function new(plr, type1, action, type2)
 	if (not plr) or (not type1) or (not action) then return nil end
 	if (plr:getType() ~= "player") or (type(type1) ~= "string") or (type(action) ~= "string") then return false end
 	if (not type2) then type2 = "N/A" end
-
-	local plrAcc = plr:getAccount()
-	--if (plrAcc:isGuest()) then return false end
-	local date, time = exports.UCDutil:getTimeStamp()
-
-	db:exec("INSERT INTO `logging` SET `name`=?, `acc`=?, `type`=?, `type2`=?, `tick`=?, `date`=?, `time`=?, `action`=?, `serial`=?",
-		plr:getName(),
-		plrAcc:getName(),
+	
+	db:exec("INSERT INTO `logging` SET `name`=?, `acc`=?, `type`=?, `type2`=?, `tick`=?, `action`=?, `serial`=?",
+		plr.name,
+		plr.account.name,
 		type1,
 		type2,
-		getTickCount(),
-		date,
-		time,
+		getRealTime().timestamp,
 		action,
-		plr:getSerial()
+		plr.serial
 	)
 
 	stdLogged = stdLogged + 1
@@ -64,11 +62,11 @@ addCommandHandler("logged", outputTotal)
 
 function logConnections()
 	-- The account will be guest, so we don't need to worry about the query not being successful
-	new(source, "join", "Joined server", source:getIP())
+	new(source, "join", "Joined server", source.ip)
 end
 addEventHandler("onPlayerJoin", root, logConnections)
 
 function logDisconnections(quitType)
-	new(source, "quit", "Disconnected from server ["..quitType.."]", source:getIP())
+	new(source, "quit", "Disconnected from server ["..quitType.."]", source.ip)
 end
 addEventHandler("onPlayerQuit", root, logDisconnections)
