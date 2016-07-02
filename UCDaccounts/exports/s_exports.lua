@@ -1,17 +1,11 @@
 function getAllLoggedInPlayers()
 	outputDebugString(sourceResource.name.." is using getAllLoggedInPlayers")
-	local loggedIn = {}
-	for _, plr in ipairs(Element.getAllByType("player")) do
-		if (not plr.account:isGuest()) then
-			table.insert(loggedIn, plr)
-		end
-	end
-	return loggedIn
+	return getLoggedInPlayers()
 end
 function getLoggedInPlayers()
 	local loggedIn = {}
-	for _, plr in pairs(Element.getAllByType("player")) do
-		if (not plr.account:isGuest()) then
+	for _, plr in ipairs(Element.getAllByType("player")) do
+		if (not plr.account.guest) then
 			table.insert(loggedIn, plr)
 		end
 	end
@@ -22,7 +16,6 @@ function getPlayerAccountID(plr)
 	if (not plr) then return end
 	if (not isElement(plr) or plr.type ~= "player") then return false end
 	if (plr.account.guest) then return false end
-	--return plr:getData("accountID") or db:query("SELECT `id` FROM `accounts` WHERE `accName`=? LIMIT 1", plr.account.name):poll(-1)[1].id
 	if (sourceResource) then
 		outputDebugString(tostring(sourceResource.name).." called getPlayerAccountID...")
 		return 1

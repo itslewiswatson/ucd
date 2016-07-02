@@ -15,7 +15,7 @@ function registerAccount(plr, usr, passwd, email)
 	local passwd = bcrypt_digest(passwd, salt)
 
 	db:exec("INSERT INTO `accounts` (`account`, `pw`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?, ?) ", usr, passwd, plr.ip, plr.serial, email)
-	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wp`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=?",
+	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wp`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=?, `ownedWeapons`=?",
 		usr,
 		2001,
 		-788,
@@ -33,9 +33,11 @@ function registerAccount(plr, usr, passwd, email)
 		0,
 		"",
 		toJSON({Team.getFromName("Citizens"):getColor()}),
-		plr.name
+		plr.name,
+		toJSON({})
 	)
 	db:exec("INSERT INTO `sms_friends` SET `account`=?, `friends`=?", usr, toJSON({}))
+	db:exec("INSERT INTO `playerStats` SET `account`=?", usr)
 	
 	accountData[usr] = {x = 2001, y = -788, z = 134, rot = 0, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 500, model = 61, walkstyle = 0, wp = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name}
 	db:exec("INSERT INTO `playerWeapons` SET `account`=?, `weaponString`=?", usr, toJSON({})) -- Empty JSON string
@@ -54,9 +56,9 @@ function deleteAccount(accName)
 	
 	-- Delete from all SQL tables
 	db:exec("DELETE FROM `accounts` WHERE `account`=?", accName)
-	db:exec("DELETE FROM `accountData` WHERE `account`=?", type_, accName)
-	db:exec("DELETE FROM `sms_friends` WHERE `account`=?", type_, accName)
-	--db:exec("DELETE FROM `` WHERE `account`=?", type_, accName)
+	db:exec("DELETE FROM `accountData` WHERE `account`=?", accName)
+	db:exec("DELETE FROM `sms_friends` WHERE `account`=?", accName)
+	db:exec("DELETE FROM `playerStats` WHERE `account`=?", accName)
 	acc:remove()
 
 	return true
