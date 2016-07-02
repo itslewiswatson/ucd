@@ -5,6 +5,7 @@
 	<script src="confirmation_c.lua" type="client"/>
 	<script src="c_input_box.lua" type="client"/>
 	
+	<export function="getPlayerFromSerial" type="server"/>
 	<export function="getCityZoneFromXYZ" type="server"/>
 	<export function="getCityZoneFromXYZ" type="client"/>
 	<export function="getElementCityZone" type="server"/>

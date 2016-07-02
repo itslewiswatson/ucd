@@ -145,3 +145,12 @@ function RGBToHex(red, green, blue, alpha)
 		return string.format("#%.2X%.2X%.2X", red,green,blue)
 	end
 end
+
+function getPlayerFromSerial(serial)
+	for _, plr in ipairs(Element.getAllByType("player")) do
+		if (plr.serial == serial) then
+			return plr
+		end
+	end
+	return false
+end
