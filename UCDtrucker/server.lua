@@ -9,7 +9,7 @@ function processHaul(prev, dest)
 	local pos_ = Vector3(destinations[dest][1], destinations[dest][2], destinations[dest][3]) 
 	local distance = getDistanceBetweenPoints3D(pos, pos_)	
 	local base = math.random((distance * 1.3) - 240, (distance * 1.3) - 240)
-	local playerRank = 9
+	local playerRank = exports.UCDjobs:getPlayerJobRank(client, "Trucker") or 0
 	local bonus = ranks[playerRank].bonus
 	local newAmount = math.floor((base * (bonus / 100)) + base)
 	local formattedAmount = exports.UCDutil:tocomma(newAmount)
