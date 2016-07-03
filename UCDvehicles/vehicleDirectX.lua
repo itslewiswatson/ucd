@@ -101,7 +101,6 @@ function renderVehicleHUD()
 	local veh = localPlayer.vehicle
 	local vehHealth = math.floor(veh.health / 10)
 	local secretKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
-		
 	local hR, hG, hB
 	if (vehHealth <= 80 and vehHealth > 60) then
 		hR, hG, hB = 79, 115, 32

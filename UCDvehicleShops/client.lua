@@ -26,6 +26,16 @@ GUI.button["buy"] = GuiButton(10, 318, 80, 30, "Buy", false, GUI.window)
 GUI.button["colour"] = GuiButton(101, 318, 80, 30, "Colour", false, GUI.window)
 GUI.button["close"] = GuiButton(191, 318, 80, 30, "Close", false, GUI.window)
 
+function rotateDemoVehicle()
+	if (not veh) then
+		if (#getEventHandlers("onClientRender", root, rotateDemoVehicle) >= 1) then
+			removeEventHandler("onClientRender", root, rotateDemoVehicle)
+		end
+		return
+	end
+	veh.rotation = Vector3(0, 0, veh.rotation.z + 1)
+end
+
 function onHitShopMarker(plr, matchingDimension)
 	if (plr == localPlayer and not localPlayer.vehicle and matchingDimension and plr.interior == 0) then
 		if (localPlayer.position.z < source.position.z + 1.5 and localPlayer.position.z > source.position.z - 1.5) then
@@ -129,8 +139,14 @@ function onClickVehicle()
 			
 			local i = _markerInfo[2]
 			local p = markers[i].p
-			veh = Vehicle(id, p)
+			veh = Vehicle(id, Vector3(p.x, p.y, p.z + 0.2))
 			veh.rotation = Vector3(0, 0, markers[i].r)
+			veh.frozen = true
+			veh:setDamageProof(true)
+			--rotTimer = Timer(rotateDemoVehicle, 10, 0)
+			if (#getEventHandlers("onClientRender", root, rotateDemoVehicle) == 0) then
+				addEventHandler("onClientRender", root, rotateDemoVehicle)
+			end
 			Camera.setMatrix(markers[i].c, p, 0, 180)
 		end
 	end
