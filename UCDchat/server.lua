@@ -41,7 +41,11 @@ end
 
 function onPlayerChat(message, messageType)
 	cancelEvent()
-	local player = source
+	onPlayerChat2(source, message, messageType)
+end
+addEventHandler("onPlayerChat", root, onPlayerChat)
+
+function onPlayerChat2(player, message, messageType)
 	if (antiSpam[player]) then 
 		exports.UCDdx:new(player, "Your last sent message was less than one second ago!", 255, 0, 0)
 		return
@@ -103,4 +107,3 @@ function onPlayerChat(message, messageType)
 		return false
 	end
 end
-addEventHandler("onPlayerChat", root, onPlayerChat)

@@ -12,7 +12,11 @@ local antiSpamTimer = 1000
 function instantMessage(_, target, ...)
 	-- Actual messaging function
 	if (not target) then exports.UCDdx:new("You must specify a player", 255, 0, 0) return end
-    local recipient = exports.UCDutil:getPlayerFromPartialName(target)
+    local recipient
+	if (type(target) == "string") then
+		recipient = exports.UCDutil:getPlayerFromPartialName(target)
+	end
+	
 	-- If we found a recipient
 	if recipient then
 		local msg = table.concat({...}, " ")
@@ -47,15 +51,15 @@ addEventHandler("UCDchat.onSendIMFromPhone", root,
 	end
 )
 
-function cacheLastSender(name)
-	lastMsg = name
+function cacheLastSender(plr)
+	lastMsg = plr
 end
 addEvent("UCDchat.cacheLastSender", true)
 addEventHandler("UCDchat.cacheLastSender", root, cacheLastSender)
 
 function quickReply(_, ...)
 	if (lastMsg) then
-		local recipient = Player(lastMsg)
+		local recipient = lastMsg
 		if (not recipient) then
 			exports.UCDdx:new("The last person to IM you is offline", 255, 0, 0)
 			return

@@ -11,13 +11,14 @@ local antiSpamTimer = 1000
 
 -- This is the function we use to send the IM
 function instantMessage(recipient, msg)
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then return end
 	-- If we found a recipient
 	if (recipient and isElement(recipient) and recipient.type == "player") then
 		
         outputChatBox("[IM from "..client.name.."] "..msg, recipient, 255, 174, 0, true)
 		
 		-- source = player who got the msg, plr = player who sent it, msg = the message sent
-		triggerClientEvent("UCDchat.cacheLastSender", recipient, client.name)
+		triggerClientEvent("UCDchat.cacheLastSender", recipient, client)
 		triggerClientEvent(recipient, "UCDphone.appendMessage", recipient, true, client.name, msg)
 
 		--exports.UCDlogging:new(plr, "IM", msg, )

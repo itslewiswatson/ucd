@@ -3,7 +3,8 @@ local range = 100
 
 function doChat(plr, _, ...)
 	if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return end
-	if (antiSpam[plr] ) then 
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then return end
+	if (antiSpam[plr]) then 
 		exports.UCDdx:new(plr, "Your last sent message was less than one second ago!", 255, 0, 0)
 		return
 	end
