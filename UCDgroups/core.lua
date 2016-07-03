@@ -984,6 +984,7 @@ addEvent("UCDgroups.removeBlacklistEntry", true)
 addEventHandler("UCDgroups.removeBlacklistEntry", root, removeBlacklistEntry)
 
 function groupChat(plr, _, ...)
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then return end
 	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr)) then
 		local msg = table.concat({...}, " ")
 		messageGroup(getPlayerGroup(plr), "("..tostring(getPlayerGroup(plr))..") "..plr.name.." #FFFFFF"..msg, "chat")
@@ -993,6 +994,7 @@ addCommandHandler("gc", groupChat, false, false)
 addCommandHandler("groupchat", groupChat, false, false)
 
 function groupStaffChat(plr, _, ...)
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then return end
 	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr) and canPlayerDoActionInGroup(plr, "gsc")) then
 		local r, g, b = getGroupChatColour(getPlayerGroup(plr))
 		if (groupTable[getPlayerGroup(plr)].enableGSC == 0) then
