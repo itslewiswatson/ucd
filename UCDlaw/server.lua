@@ -53,6 +53,10 @@ function isAbleToArrest(cop, plr)
 	return false
 end
 
+function calculatePayment(wp)
+	return math.random((wp * 150) - 50, (wp * 150) + 200)
+end
+
 function takeHit(cop, plr)
 	if (not hits[plr] or not hits[plr][cop] or hits[plr][cop] == 0) then
 		hitTimers[cop][source]:destroy()
@@ -123,7 +127,7 @@ function carArrest(vehicle, _, plr)
 end
 addEventHandler("onPlayerVehicleEnter", root, carArrest)
 
-function releasePlayer(plr)
+function releasePlayer(plr, hide)
 	plr:removeData("arrested")
 	setPedAnimation(plr)
 	showCursor(plr, false)
@@ -142,9 +146,11 @@ function releasePlayer(plr)
 	setControlState(plr, "walk", false)
 	setControlState(plr, "forwards", false)
 	
-	exports.UCDdx:new(plr, "You have been released", 30, 144, 255)
 	triggerClientEvent(plr, "UCDlaw.displayArrested", plr, "remove")
-	
+	if (hide == true) then
+		return true
+	end
+	exports.UCDdx:new(plr, "You have been released", 30, 144, 255)
 	return true
 end
 
@@ -158,6 +164,8 @@ function arrestPlayer(plr, cop)
 end
 
 function onPlayerArrested(cop)
+	triggerClientEvent(cop, "UCDlaw.createPDMarkers", cop)
+	
 	if (hitTimers[cop][source] and isTimer(hitTimers[cop][source])) then
 		hitTimers[cop][source]:destroy()
 		hitTimers[cop][source] = nil
@@ -173,7 +181,7 @@ function onPlayerArrested(cop)
 		source:warpIntoVehicle(cop.vehicle, 1)
 	end
 	
-	exports.UCDdx:new(cop, "You have arrested "..source.name, 30, 144, 255)
+	exports.UCDdx:new(cop, "You have arrested "..source.name..", escort them to the nearest PD", 30, 144, 255)
 	toggleAllControls(source, false, true, false)
 	setCameraTarget(source, source)
 	triggerClientEvent(source, "UCDlaw.displayArrested", source, cop)
@@ -182,6 +190,34 @@ function onPlayerArrested(cop)
 end
 addEvent("onPlayerArrested")
 addEventHandler("onPlayerArrested", root, onPlayerArrested)
+
+function onFinishEscorting()
+	if (client) then
+		if (not getPlayerArrests(client) or #getPlayerArrests(client) == 0) then
+			return false
+		end
+		for _, plr in ipairs(getPlayerArrests(client)) do
+			local wp = exports.UCDwanted:getWantedPoints(plr)
+			local payment = calculatePayment(wp)
+			client.money = client.money + payment
+			exports.UCDdx:new(client, "You arrested "..tostring(plr.name).." and earned $"..tostring(exports.UCDutil:tocomma(payment)).." and "..tostring(wp).." arrest points", 30, 144, 255)
+			
+			-- client stats
+			exports.UCDstats:setPlayerAccountStat(client, "AP", exports.UCDstats:getPlayerAccountStat(client, "AP") + wp)
+			exports.UCDstats:setPlayerAccountStat(client, "arrests", exports.UCDstats:getPlayerAccountStat(client, "arrests") + 1)
+			
+			-- plr stats
+			exports.UCDstats:setPlayerAccountStat(plr, "timesArrested", exports.UCDstats:getPlayerAccountStat(plr, "timesArrested") + 1)
+			
+			exports.UCDwanted:setWantedPoints(plr, 0)
+			releasePlayer(plr, true)
+			-- Jail them here
+		end
+		triggerClientEvent(client, "UCDlaw.destroyPDMarkers", client)
+	end
+end
+addEvent("UCDlaw.onFinishEscorting", true)
+addEventHandler("UCDlaw.onFinishEscorting", root, onFinishEscorting)
 
 function isPlayerArrested(plr)
 	for _, a in pairs(arrests) do
@@ -202,18 +238,33 @@ function releaseCommand(cop, _, name)
 		exports.UCDdx:new(cop, "You don't have anyone in your custody at this moment", 255, 0, 0)
 		return false
 	end
+	
+	local releasedAll
 	if (name == "*") then
 		for _, p in ipairs(arrests[cop]) do
 			releasePlayer(p)
 		end
+		exports.UCDdx:new(cop, "You have released all criminals in your custody", 30, 144, 255)
+		releasedAll = true
 	end
-	local plr = exports.UCDutil:getPlayerFromPartialName(name)
-	for i, p in ipairs(arrests[cop]) do
-		if (p == plr) then
-			releasePlayer(plr)
-			return true
+	
+	if (not releasedAll) then
+		local plr = exports.UCDutil:getPlayerFromPartialName(name)
+		for i, p in ipairs(arrests[cop]) do
+			if (p == plr) then
+				exports.UCDdx:new(cop, "You have released "..plr.name, 30, 144, 255)
+				releasePlayer(plr)
+				break
+			end
 		end
 	end
+	
+	outputDebugString("release -> "..tostring(#getPlayerArrests(cop)))
+	if (not getPlayerArrests(cop) or #getPlayerArrests(cop) == 0) then
+		triggerClientEvent(cop, "UCDlaw.destroyPDMarkers", cop)
+	end
+	
+	return true
 end
 addCommandHandler("release", releaseCommand)
 
