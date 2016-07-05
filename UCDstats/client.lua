@@ -16,6 +16,11 @@ local defaults = {
 	"Total bullets fired: ",
 	"Total spent on guns: ",
 	"▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+	"Delivered arrests: ",
+	"Total arrest points: ",
+	"▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+	"Times arrested: ",
+	"Lifetime wanted points: ",
 }
 
 local selections = 0
@@ -135,7 +140,7 @@ function loadStats(data)
 	GUIEditor.label[4].text = defaults[4]..tostring(data["group"])
 	GUIEditor.label[5].text = defaults[5]..tostring(data["groupRank"])
 	GUIEditor.label[6].text = defaults[6]..tostring(pt)
-	GUIEditor.label[7].text = defaults[7]..tostring(source:getWantedLevel()).." ("..tostring(data["wanted"])..")"
+	GUIEditor.label[7].text = defaults[7]..tostring(data["wl"]).." ("..tostring(data["wanted"])..")"
 	GUIEditor.label[8].text = defaults[8].."$"..tostring(exports.UCDutil:tocomma(source:getMoney()))
 	GUIEditor.label[9].text = defaults[9]..tostring(source:getData("Country"))
 	GUIEditor.label[10].text = defaults[10]..tostring(source.ping)
@@ -144,6 +149,10 @@ function loadStats(data)
 	GUIEditor.label[14].text = defaults[14]..tostring(data["kdr"])
 	GUIEditor.label[15].text = defaults[15]..tostring(exports.UCDutil:tocomma(data["totalfired"]))
 	GUIEditor.label[16].text = defaults[16]..tostring(data["totalguns"])
+	GUIEditor.label[18].text = defaults[18]..tostring(data["arrests"])
+	GUIEditor.label[19].text = defaults[19]..tostring(data["ap"])
+	GUIEditor.label[21].text = defaults[21]..tostring(data["timesArrested"])
+	GUIEditor.label[22].text = defaults[22]..tostring(data["lifetimeWanted"])
 end
 addEvent("UCDstats.loadStats", true)
 addEventHandler("UCDstats.loadStats", root, loadStats)

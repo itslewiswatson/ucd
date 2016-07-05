@@ -7,6 +7,7 @@ function getPlayerStats(plr)
 		local cash = plr.money or 0
 		local country = plr:getData("Country") or "Unknown"
 		local ping = plr.ping or 0
+		local wl = plr.wantedLevel or 0
 		local kills = getPlayerAccountStat(plr, "kills") or 0
 		local deaths = getPlayerAccountStat(plr, "deaths") or 6
 		local kdr = exports.UCDutil:mathround(kills / deaths, 2)
@@ -17,10 +18,15 @@ function getPlayerStats(plr)
 		end
 		local totalguns = "$"..exports.UCDutil:tocomma(getPlayerAccountStat(plr, "totalguns")) or "$"..tostring(0)
 		local totalfired = getPlayerAccountStat(plr, "totalfired")
+		local ap = getPlayerAccountStat(plr, "AP") or 0
+		local arrests = getPlayerAccountStat(plr, "arrests") or 0
+		local timesArrested = getPlayerAccountStat(plr, "timesArrested") or 0
+		local lifetimeWanted = getPlayerAccountStat(plr, "lifetimeWanted") or 0
 		
 		local temp = {
 			group = group, groupRank = rank, wanted = wanted, cash, country, ping, accName = plr.account.name,
-			kills = kills, deaths = deaths, kdr = kdr, totalfired = totalfired, totalguns = totalguns,
+			kills = kills, deaths = deaths, kdr = kdr, totalfired = totalfired, totalguns = totalguns, wl = wl,
+			ap = ap, arrests = arrests,	timesArrested = timesArrested, lifetimeWanted = lifetimeWanted
 			
 		}
 		triggerLatentClientEvent(client, "UCDstats.loadStats", plr, temp or {})
