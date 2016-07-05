@@ -21,36 +21,38 @@ end
 
 addEventHandler("onPlayerLogin", root,
 	function ()
-		db:query(loadPlayerWeaponString, {source}, "SELECT `weaponString` FROM `playerWeapons` WHERE `account`=? LIMIT 1", source.account.name)
+		--db:query(loadPlayerWeaponString, {source}, "SELECT `weaponString` FROM `playerWeapons` WHERE `account`=? LIMIT 1", source.account.name)
+		loadPlayerWeaponString(source, GAD(source, "weaponString"))
 	end
 )
 
 -- Some code while we're always restarting the resource 
 -- We might keep it, even thought it is inefficient as fuck
+--[[
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		for _, plr in pairs(Element.getAllByType("player")) do
 			if isPlayerLoggedIn(plr) then
-				db:query(loadPlayerWeaponString, {plr, false}, "SELECT `weaponString` FROM `playerWeapons` WHERE `account`=? LIMIT 1", plr.account.name)
+				--db:query(loadPlayerWeaponString, {plr, false}, "SELECT `weaponString` FROM `playerWeapons` WHERE `account`=? LIMIT 1", plr.account.name)
 			end
 		end
 	end
 )
+--]]
 
-function loadPlayerWeaponString(qh, plr, togive)
-	local result = qh:poll(-1)
-	
-	if (result and #result ~= 0) then
-		if (togive ~= false) then
-			for i, v in pairs(fromJSON(result[1].weaponString)) do
+function loadPlayerWeaponString(plr, result)
+	if (result) then
+		--if (togive ~= false) then
+			for i, v in pairs(fromJSON(result)) do
 				giveWeapon(plr, v[1], v[2])
 			end
-		end
+		--end
 	end
 end
 
 function savePlayerWeaponString(plr)
-	db:exec("UPDATE `playerWeapons` SET `weaponString`=? WHERE `account`=?", toJSON(getPlayerWeaponTable(plr)), plr.account.name)
+	--db:exec("UPDATE `playerWeapons` SET `weaponString`=? WHERE `account`=?", toJSON(getPlayerWeaponTable(plr)), plr.account.name)
+	SAD(plr, "weaponString", getPlayerWeaponString(plr))
 end
 addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) end)
 addEventHandler("onPlayerWasted", root, function () savePlayerWeaponString(source)  end)
