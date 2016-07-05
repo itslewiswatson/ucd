@@ -29,6 +29,7 @@ setGameType("UCD "..getGameVersion())
 setMinuteDuration(10000)
 setFPSLimit(60)
 setServerPassword("")
+for i = 0, 49 do setGarageOpen(i, true) end
 
 -----------------------------------------------------
 -- ARR (automatic resource restarter)
