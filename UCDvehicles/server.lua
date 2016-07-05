@@ -128,8 +128,10 @@ function purchase(plr, model, xyz, rot, colour, price)
 	local _xyz = toJSON({xyz.x, xyz.y, xyz.z})
 	local _colour = toJSON(colour)
 	
-	outputDebugString(_colour)
-	outputDebugString(price)
+	--outputDebugString(_colour)
+	--outputDebugString(price)
+	
+	plr.money = plr.money - price
 	
 	db:exec("INSERT INTO `vehicles` SET `model`=?, `owner`=?, `xyz`=?, `rotation`=?, `colour`=?, `plates`=?, `health`=?, `fuel`=?, `price`=?",
 		model,

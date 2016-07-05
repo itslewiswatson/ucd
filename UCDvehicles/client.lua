@@ -35,10 +35,11 @@ triggerServerEvent("UCDvehicles.getIdToVehicleTable", localPlayer) -- Sync the i
 
 function onClientVehicleEnter(theVehicle, seat)
 	if (source ~= localPlayer) then return end
-	local owner = theVehicle:getData("owner")
-	if (not owner or seat ~= 0 or localPlayer:getName() == owner) then return end
-	
-	exports.UCDdx:new("This vehicle is owned by "..owner, 0, 255, 0)
+	if (theVehicle) then
+		local owner = theVehicle:getData("owner")
+		if (not owner or seat ~= 0 or localPlayer:getName() == owner) then return end
+		exports.UCDdx:new("This vehicle is owned by "..owner, 0, 255, 0)
+	end
 end
 addEventHandler("onClientPlayerVehicleEnter", localPlayer, onClientVehicleEnter)
 

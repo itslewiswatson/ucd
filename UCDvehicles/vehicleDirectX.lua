@@ -55,7 +55,7 @@ function renderVehicleName(vehicle)
 	addEventHandler("onClientRender", root, lolrender)
 	t = setTimer(function () removeEventHandler("onClientRender", root, lolrender) end, 4600, 1)
 end
-addEventHandler("onClientPlayerVehicleEnter", root, renderVehicleName)
+addEventHandler("onClientPlayerVehicleEnter", localPlayer, renderVehicleName)
 
 -- If you get in an out of your vehicles too fast it causes issues
 
