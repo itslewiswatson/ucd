@@ -1,22 +1,21 @@
-addCommandHandler("tog",
-	function ()
-		outputDebugString(tostring(not isControlEnabled("fire")))
-		toggleControl("fire", not isControlEnabled("fire")) 
-	end
-)
-
 local aimKeys = getBoundKeys("aim_weapon")
 local fireKeys = getBoundKeys("fire")
-local exceptedWeapons = {[0] = true, [41] = true}
+local exceptedWeapons = {[0] = true, [3] = true, [41] = true}
 local exceptedSlots = {[0] = true, [1] = true, [8] = true, [10] = true, [11] = true, [12] = true}
 local disallowedTeams = {["Citizens"] = true, ["Not logged in"] = true}
+
+-- and (localPlayer.team.name ~= "Law" and localPlayer:getWeapon() ~= 3)
 
 -- Firing checks (also disables firing without aiming)
 function fireCheck(button, state)
 	if (localPlayer.vehicle) then return end
 	if (fireKeys[button] and state == true and not isCursorShowing()) then
-		-- If they are in a safezone, disable firing regardless of everything else
+		-- If they are in a safezone, disable firing regardless of everything else (except for cops with baton)
 		if (exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
+			if (localPlayer.team.name == "Law" and localPlayer:getWeapon() == 3) then
+				toggleControl("fire", true)
+				return
+			end
 			toggleControl("fire", false)
 			return
 		end
