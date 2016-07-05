@@ -1,5 +1,5 @@
 ﻿function noki()
-	return getPlayerFromName("Noki") or getPlayerFromName("[UCD]Noki") or getPlayerFromName("UCD||Noki") or exports.UCDutil:getPlayerFromPartialName("Noki") or Account("Noki").player or Account("Noki2").player
+	return Account("Noki").player or Account("Noki2").player
 end
 
 function partial(name)
