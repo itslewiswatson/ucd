@@ -59,20 +59,20 @@ end
 
 function onPlayerWPChange(wp)
 	-- Stars
-	if (wp > 0 and wp <= 1) then
+	if (wp > 0 and wp <= 10) then
 		source.wantedLevel = 1
-	elseif (wp > 1 and wp <= 2) then
+	elseif (wp > 10 and wp <= 20) then
 		source.wantedLevel = 2
-	elseif (wp > 2 and wp <= 3) then
+	elseif (wp > 20 and wp <= 30) then
 		source.wantedLevel = 3
-	elseif (wp > 3 and wp <= 4) then
+	elseif (wp > 30 and wp <= 40) then
 		source.wantedLevel = 4
-	elseif (wp > 4 and wp <= 5) then
+	elseif (wp > 40 and wp <= 50) then
 		source.wantedLevel = 5
-	elseif (wp > 5) then
-		if (source.wantedLevel ~= 6) then
+	elseif (wp > 50) then
+		--if (source.wantedLevel ~= 60) then
 			source.wantedLevel = 6
-		end
+		--end
 	else
 		source.wantedLevel = 0
 	end
