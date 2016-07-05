@@ -68,6 +68,10 @@ function canPlayerDoAction(plr, action)
 					exports.UCDdx:new(plr, "Being muted blocks this action", 255, 0, 0)
 					return false
 				end
+				if (dat2 == "NoArrest" and exports.UCDlaw:isPlayerArrested(plr)) then
+					exports.UCDdx:new(plr, "Being arrested blocks this action", 255, 0, 0)
+					return false
+				end
 			end
 		end
 	end
