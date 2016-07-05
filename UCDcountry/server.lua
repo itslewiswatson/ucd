@@ -287,6 +287,7 @@ end
 manual = {
 	["Noki"] = "AU",
 	["Noki2"] = "AU",
+	["Dustin"] = "EG",
 }
 
 function setPlayerCountry(plr)
