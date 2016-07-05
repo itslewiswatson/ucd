@@ -92,5 +92,13 @@ function destroyRobObject(plr)
 		objj[plr] = nil
 	end
 end
---addCommandHandler("dropitem", )
+
+function stopRobbing(plr)
+	if (exports.UCDactions:getAction(plr) == "HouseRob") then
+		destroyRobObject(plr)
+		triggerClientEvent(plr, "UCDhousing.rob.restore", plr)
+		exports.UCDactions:clearAction(plr)
+	end
+end
+addCommandHandler("dropitem", stopRobbing)
 
