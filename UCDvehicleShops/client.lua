@@ -143,6 +143,7 @@ function onClickVehicle()
 			veh.rotation = Vector3(0, 0, markers[i].r)
 			veh.frozen = true
 			veh:setDamageProof(true)
+			veh:setCollidableWith(root, false)
 			--rotTimer = Timer(rotateDemoVehicle, 10, 0)
 			if (#getEventHandlers("onClientRender", root, rotateDemoVehicle) == 0) then
 				addEventHandler("onClientRender", root, rotateDemoVehicle)
