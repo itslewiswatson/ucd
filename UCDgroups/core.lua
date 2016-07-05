@@ -199,12 +199,12 @@ function createGroup(name)
 			exports.UCDdx:new(client, "A group with this name already exists", 255, 0, 0)
 			return
 		end
-		for index, row in pairs(groupTable) do
-			if (row.name == name) then
+		for g, row in pairs(groupTable) do
+			if (g == name) then
 				exports.UCDdx:new("A group with this name already exists", 255, 0, 0)
 				return false
 			end
-			if (row.name:lower() == name:lower()) then
+			if (g:lower() == name:lower()) then
 				exports.UCDdx:new("A group with this name, but in different case, already exists", 255, 0, 0)
 				return false
 			end
@@ -231,7 +231,7 @@ function createGroup(name)
 		
 		local d, t = exports.UCDutil:getTimeStamp()
 		db:exec("INSERT INTO `groups_` SET `groupName` = ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t) -- Perform the inital group creation	
-		db:exec("INSERT INTO `groups_members` VALUES (?, ?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, client.name, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
+		db:exec("INSERT INTO `groups_members` (`account`, `groupName`, `rank`, `lastOnline`, `joined`, `timeOnline`, `warningLevel`) VALUES (?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
 		setDefaultRanks(groupName)
 		
 		groupTable[groupName] = {
