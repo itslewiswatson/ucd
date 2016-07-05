@@ -242,6 +242,10 @@ function onEnterTurf(plr, matchingDimension)
 		if (not group or not allowedToTurf[plr.team.name]) then
 			return false
 		end
+		if (plr.wanted > 0 or exports.UCDwanted:getWantedPoints(plr) > 0) then
+			exports.UCDdx:new(plr, "You can only turf when not wanted", 255, 0, 0)
+			return
+		end
 		exports.UCDdx:new(plr, "You have entered a turf controlled by "..source:getData("turfOwner"), 0, 255, 0)
 		triggerLatentClientEvent(plr, "onClientTurf", plr, getTurfData(source))
 		
