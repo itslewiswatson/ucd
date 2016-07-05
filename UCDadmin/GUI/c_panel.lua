@@ -13,16 +13,20 @@ function getSelectedPlayer()
 end
 
 local reasons = {
-	"Spamming/Flooding",
-	"Trolling/Griefing",
+	"Custom Reason",
+	"#1: Flaming/Insulting",
+	"#2: Exploiting",
+	"#3: Trolling/Griefing",
+	"#4: Impersonation",
+	"#5: Illegal transactions",
+	"#6: Non-English",
+	"#7: Ignoring administrators",
 	"Bugged",
 }
 local actions = {
 	"Mute",
 	"Admin Jail",
 	"Ban",
-	"Kick",
-	"Reconnect",
 }
 
 local punishmentTimes = {
@@ -181,7 +185,7 @@ local punishmentTimes = {
 		local weapons = {
 			"Colt 45", "Silenced", "Deagle", "Shotgun", "Sawed-off", "Combat Shotgun",
 			"Uzi", "MP5", "Tec-9", "AK-47", "M4", "Rifle", "Sniper",
-			"Rocket Launcher", "Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
+			"Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
 		}
 		giveWeapon_.window[1] = GuiWindow(244, 682, 317, 160, "UCD | Admin - Give Weapon", false)
 		giveWeapon_.window[1].sizable = false
@@ -206,7 +210,6 @@ local punishmentTimes = {
         punish.window.visible = false
 		punish.window.sizable = false
 		punish.window.alpha = 255
-		
         punish.combobox["rules"] = GuiComboBox(9, 73, 253, 240, "Select rule", false, punish.window)
 		for _, reason in ipairs(reasons) do
 			guiComboBoxAddItem(punish.combobox["rules"], tostring(reason))
@@ -216,27 +219,24 @@ local punishmentTimes = {
         punish.button["punish"] = GuiButton(157, 310, 105, 38, "Punish", false, punish.window)
         punish.checkbox["custom_duration"] = GuiCheckBox(9, 141, 16, 16, "", false, false, punish.window)
         punish.label[1] = GuiLabel(34, 141, 228, 16, "Use custom duration (otherwise it's auto)", false, punish.window)
-        punish.radiobutton[1] = GuiRadioButton(10, 206, 15, 15, "", false, punish.window)
-        punish.label[2] = GuiLabel(35, 206, 40, 15, "Mins", false, punish.window)
-		
 		punish.edit["min"] = GuiEdit(10, 167, 65, 29, "", false, punish.window)
         punish.edit["hour"] = GuiEdit(99, 167, 65, 29, "", false, punish.window)
         punish.edit["day"] = GuiEdit(188, 167, 65, 29, "", false, punish.window)
-		
+		punish.radiobutton[1] = GuiRadioButton(10, 206, 15, 15, "", false, punish.window)
+        punish.label[2] = GuiLabel(35, 206, 40, 15, "Mins", false, punish.window)
         punish.radiobutton[2] = GuiRadioButton(99, 206, 15, 15, "", false, punish.window)
         punish.label[3] = GuiLabel(124, 206, 40, 15, "Hours", false, punish.window)
         punish.radiobutton[3] = GuiRadioButton(187, 206, 15, 15, "", false, punish.window)
         punish.label[4] = GuiLabel(212, 206, 40, 15, "Days", false, punish.window)
-        
 		punish.combobox["punishtype"] = GuiComboBox(9, 231, 253, 117, "Select punish type", false, punish.window)
         for _, action in ipairs(actions) do
 			guiComboBoxAddItem(punish.combobox["punishtype"], tostring(action))
 		end
-		
-		punish.edit[5] = GuiEdit(9, 106, 253, 25, "", false, punish.window)
-		
-        punish.label[5] = guiCreateLabel(10, 21, 252, 16, "Manual punish (acc:accName, serial or IP)", false, punish.window)
-        guiLabelSetHorizontalAlign(punish.label[5], "center", false)    
+		punish.edit["reason"] = GuiEdit(9, 106, 253, 25, "", false, punish.window)
+        punish.label[5] = guiCreateLabel(9, 21, 253, 16, "Manual syntax: acc:name or serial (bans only)", false, punish.window)
+        guiLabelSetHorizontalAlign(punish.label[5], "center", false)
+		punish.label[6] = guiCreateLabel(9, 271, 252, 16, "-1 minutes = permanent (bans only)", false, punish.window)
+		guiLabelSetHorizontalAlign(punish.label[6], "center", false)
 
 		windows = {adminPanel.window[1], giveWeapon_.window[1], WPT.window[1], punish.window}
 		for _, gui in ipairs(windows) do
@@ -246,6 +246,22 @@ local punishmentTimes = {
 		end
 --    end
 --)
+
+function togglePunishWindow(plr)
+	punish.window.visible = not punish.window.visible
+	guiBringToFront(punish.window)
+	punish.edit["custom"].text = ""
+	_plr = nil
+	if (plr and isElement(plr) and plr.type == "player") then
+		punish.window.text = "UCD | Admin - "..tostring(plr.name)
+		_plr = plr
+		punish.edit["custom"].enabled = false
+	else
+		punish.window.text = "UCD | Admin - Punish"
+		punish.edit["custom"].enabled = true
+	end
+end
+addEventHandler("onClientGUIClick", punish.button["cancel"], togglePunishWindow, false)
 
 function giveWeaponHandler()
 	if (source == giveWeapon_.button[1]) then
@@ -541,12 +557,12 @@ addEventHandler("onClientGUIClick", guiRoot, playerSelection)
 function toggleWPT(plr)
 	WPT.window[1].visible = not WPT.window[1].visible
 	guiGridListClear(WPT.gridlist[1])
-	if (plr) then
+	if (plr and isElement(plr) and exports.UCDaccounts:isPlayerLoggedIn(plr)) then
 		playerToWarp = plr
 		if (WPT.window[1].visible) then
 			guiBringToFront(WPT.window[1])
 			for _, player in ipairs(Element.getAllByType("player")) do
-				if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+				if (plr ~= player and exports.UCDaccounts:isPlayerLoggedIn(player)) then
 					local r, g, b
 					if (player.team) then
 						r, g, b = player.team:getColor()
@@ -581,22 +597,6 @@ function handleWPTInput()
 end
 addEventHandler("onClientGUIClick", WPT.button[1], handleWPTInput)
 addEventHandler("onClientGUIClick", WPT.button[2], handleWPTInput)
-
-function togglePunishWindow(plr)
-	punish.window.visible = not punish.window.visible
-	guiBringToFront(punish.window)
-	punish.edit["custom"].text = ""
-	_plr = nil
-	if (plr and isElement(plr) and plr.type == "player") then
-		punish.window.text = "UCD | Admin - "..tostring(plr.name)
-		_plr = plr
-		punish.edit["custom"].enabled = false
-	else
-		punish.window.text = "UCD | Admin - Punish"
-		punish.edit["custom"].enabled = true
-	end
-end
-addEventHandler("onClientGUIClick", punish.button["cancel"], togglePunishWindow, false)
 
 function adminAction()
 	if (source ~= adminPanel.gridlist[1] and source.parent == adminPanel.tab[1]) then
@@ -636,7 +636,7 @@ function adminAction()
 		elseif (action == "shout") then
 			
 		elseif (action == "spectate") then
-			triggerServerEvent("UCDadmin.spectate", localPlayer, plr)
+			triggerServerEvent("UCDadmin.spectate", resourceRoot, plr)
 		elseif (action == "slap") then
 			triggerServerEvent("UCDadmin.slap", localPlayer, plr)
 		elseif (action == "rename") then
@@ -686,8 +686,8 @@ function adminAction()
 					return
 				end
 				triggerServerEvent("UCDadmin.destroyVehicle", localPlayer, plr, plr.vehicle)
-			else
-				exports.UCDdx:new("This player is not in a vehicle", 255, 0, 0)
+			--else
+			--	exports.UCDdx:new("This player is not in a vehicle", 255, 0, 0)
 			end
 		elseif (action == "disable") then
 			
@@ -723,7 +723,7 @@ function onResourceAction()
 		end
 	end
 end
-addEventHandler("onClientGUIClick", guiRoot, onResourceAction)
+--addEventHandler("onClientGUIClick", guiRoot, onResourceAction)
 
 function toggleGUI()
 	adminPanel.window[1].visible = not adminPanel.window[1].visible

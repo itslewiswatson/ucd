@@ -150,8 +150,7 @@ addEventHandler("UCDadmin.shout", root, shoutToPlayer)
 spectating = {}
 function spectatePlayer(plr)
 	if (plr == client) then return end
-	if (isPlayerOwner(plr) and not isPlayerOwner(client)) then return end
-	if (getPlayerAdminRank(plr) == 5 and getPlayerAdminRank(client) ~= 5) then return end
+	--if (isPlayerOwner(plr) and not isPlayerOwner(client)) then return end
 	if (spectating[client] == plr) then
 		client.cameraTarget = client
 		spectating[client] = nil
@@ -291,7 +290,7 @@ function giveVehicle(plr, vehicle)
 		
 		spawnedVehicle.dimension = plr.dimension
 		spawnedVehicle.interior = plr.interior
-		client:warpIntoVehicle(spawnedVehicle)
+		plr:warpIntoVehicle(spawnedVehicle)
 		spawnedVehicle:setData("owner", client.name)
 		spawnedVehicle:setColor(math.random(0, 255), math.random(0, 255), math.random(0, 255), math.random(0, 255), math.random(0, 255), math.random(0, 255))
 		

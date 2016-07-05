@@ -31,3 +31,13 @@ function flipVehicle(plr)
 	end
 end
 addCommandHandler("flip", flipVehicle)
+
+function damageProof(plr)
+	if (isPlayerAdmin(plr)) then
+		if (plr.vehicle) then
+			plr.vehicle.damageProof = not plr.vehicle.damageProof
+			exports.UCDdx:new(plr, "Your "..tostring(plr.vehicle.name).." is "..tostring((plr.vehicle.damageProof and "now") or "no longer").." damage proof", 0, 255, 0)
+		end
+	end
+end
+addCommandHandler("dmgproof", damageProof)

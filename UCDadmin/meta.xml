@@ -1,38 +1,40 @@
 <meta>
-	<info author="admins" version="1" name="" type="script" />
+	<info author="admins" version="1" name="" type="script"/>
 	
-	<script src="s_exports.lua" type="server" />
-	<script src="adminTable.lua" type="server" />
-	<script src="s_teams.lua" type="server" />
-	<script src="c_hacks.lua" type="client" />
-	<script src="c_teams.lua" type="client" />
-	<script src="s_hacks.lua" type="server" />
+	<script src="s_exports.lua" type="server"/>
+	<script src="adminTable.lua" type="server"/>
+	<script src="s_teams.lua" type="server"/>
+	<script src="c_hacks.lua" type="client"/>
+	<script src="c_teams.lua" type="client"/>
+	<script src="s_hacks.lua" type="server"/>
 	
-	<script src="GUI/s_panel.lua" type="server" />
-	<script src="GUI/actions_s.lua" type="server" />
-	<script src="GUI/resources.lua" type="server" />
-	<script src="GUI/c_panel.lua" type="client" />
-	<script src="GUI/c_input_box.lua" type="client" />
+	<script src="GUI/s_panel.lua" type="server"/>
+	<script src="GUI/actions_s.lua" type="server"/>
+	<script src="GUI/resources.lua" type="server"/>
+	<script src="GUI/c_panel.lua" type="client"/>
+	<script src="GUI/c_input_box.lua" type="client"/>
 	
-	<script src="restricted/cmds.lua" type="server" />
+	<script src="restricted/cmds.lua" type="server"/>
 	
-	<script src="punishments/ban.lua" type="server" />
-	<script src="punishments/ban_c.lua" type="client" />
+	<script src="punishments/ban.lua" type="server"/>
+	<script src="punishments/ban_c.lua" type="client"/>
+	<script src="punishments/punishments.lua" type="server"/>
+	<script src="punishments/c_punishments.lua" type="client"/>
 
-	<export function="setPlayerAdminRank" type="server" />
-	<export function="getPlayerAdminRank" type="server" />
-	<export function="isPlayerAdmin" type="server" />
-	<export function="isPlayerDeveloper" type="server" />
-	<export function="isPlayerOwner" type="server" />
+	<export function="setPlayerAdminRank" type="server"/>
+	<export function="getPlayerAdminRank" type="server"/>
+	<export function="isPlayerAdmin" type="server"/>
+	<export function="isPlayerDeveloper" type="server"/>
+	<export function="isPlayerOwner" type="server"/>
 	
-	<export function="createInputBox" type="client" />
+	<export function="createInputBox" type="client"/>
 	
-	<export function="isAdminOnDuty" type="server" />
-	<export function="getOnlineAdmins" type="server" />
-	
-	<export function="isAccountBanned" type="server" />
-	<export function="isSerialBanned" type="server" />
-	<export function="addBan" type="server" />
-	<export function="removeBan" type="server" />
+	<export function="isAdminOnDuty" type="server"/>
+	<export function="getOnlineAdmins" type="server"/>
+	<export function="isAccountBanned" type="server"/>
+	<export function="isSerialBanned" type="server"/>
+	<export function="addBan" type="server"/>
+	<export function="removeBan" type="server"/>
+	<export function="punish" type="server"/>
 	<oop>true</oop>
 </meta>

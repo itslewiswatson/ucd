@@ -4,7 +4,7 @@ addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		db:exec("DELETE FROM `bans` WHERE (`duration` + `datum`) - UNIX_TIMESTAMP() <= 0")
 		db:query(cacheBans, {}, "SELECT * FROM `bans`")
-		Timer(deleteOldBans, 60000, 0) -- Once every minute
+		Timer(deleteOldBans, 15000, 0) -- Every 15 seconds
 	end
 )
 
