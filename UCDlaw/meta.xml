@@ -1,7 +1,9 @@
 <meta>
 	<script src="server.lua" type="server"/>
 	<script src="arrestFollow.lua" type="server"/>
+	<script src="killArrest.lua" type="server"/>
 	<script src="client.lua" type="client"/>
 	<export function="isPlayerArrested" type="server"/>
+	<export function="getPlayerArrests" type="server"/>
 	<oop>true</oop>
 </meta>

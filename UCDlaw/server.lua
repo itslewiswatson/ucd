@@ -197,21 +197,7 @@ function onFinishEscorting()
 			return false
 		end
 		for _, plr in ipairs(getPlayerArrests(client)) do
-			local wp = exports.UCDwanted:getWantedPoints(plr)
-			local payment = calculatePayment(wp)
-			client.money = client.money + payment
-			exports.UCDdx:new(client, "You arrested "..tostring(plr.name).." and earned $"..tostring(exports.UCDutil:tocomma(payment)).." and "..tostring(wp).." arrest points", 30, 144, 255)
-			
-			-- client stats
-			exports.UCDstats:setPlayerAccountStat(client, "AP", exports.UCDstats:getPlayerAccountStat(client, "AP") + wp)
-			exports.UCDstats:setPlayerAccountStat(client, "arrests", exports.UCDstats:getPlayerAccountStat(client, "arrests") + 1)
-			
-			-- plr stats
-			exports.UCDstats:setPlayerAccountStat(plr, "timesArrested", exports.UCDstats:getPlayerAccountStat(plr, "timesArrested") + 1)
-			
-			exports.UCDwanted:setWantedPoints(plr, 0)
-			releasePlayer(plr, true)
-			-- Jail them here
+			arrest(plr, client)
 		end
 		triggerClientEvent(client, "UCDlaw.destroyPDMarkers", client)
 	end
@@ -219,11 +205,34 @@ end
 addEvent("UCDlaw.onFinishEscorting", true)
 addEventHandler("UCDlaw.onFinishEscorting", root, onFinishEscorting)
 
+function arrest(plr, cop, killArrest)
+	local wp = exports.UCDwanted:getWantedPoints(plr)
+	local payment = calculatePayment(wp)
+	local duration = wp * plr.wantedLevel
+	duration = duration - math.floor(duration / 4)
+	
+	cop.money = cop.money + payment
+	exports.UCDdx:new(cop, "You "..tostring(killArrest and "kill " or "").."arrested "..tostring(plr.name).." for "..tostring(exports.UCDutil:tocomma(duration)).." seconds and earned $"..tostring(exports.UCDutil:tocomma(payment)).." and "..tostring(wp).." AP", 30, 144, 255)
+	
+	exports.UCDjail:jailPlayer(plr, duration, false)
+	exports.UCDwanted:setWantedPoints(plr, 0)
+	releasePlayer(plr, true)
+	
+	-- plr stats
+	exports.UCDstats:setPlayerAccountStat(plr, "timesArrested", exports.UCDstats:getPlayerAccountStat(plr, "timesArrested") + 1)
+	-- cop stats
+	exports.UCDstats:setPlayerAccountStat(cop, "AP", exports.UCDstats:getPlayerAccountStat(cop, "AP") + wp)
+	exports.UCDstats:setPlayerAccountStat(cop, "arrests", exports.UCDstats:getPlayerAccountStat(cop, "arrests") + 1)
+	if (killArrest) then
+		exports.UCDstats:setPlayerAccountStat(cop, "killArrests", exports.UCDstats:getPlayerAccountStat(cop, "killArrests") + 1)
+	end	
+end
+
 function isPlayerArrested(plr)
-	for _, a in pairs(arrests) do
+	for cop, a in pairs(arrests) do
 		for _, v in ipairs(a) do
 			if (plr == v) then
-				return true
+				return true, cop
 			end
 		end
 	end
@@ -271,9 +280,18 @@ addCommandHandler("release", releaseCommand)
 addEventHandler("onResourceStop", resourceRoot,
 	function ()
 		for _, plr in ipairs(Element.getAllByType("player")) do
-			if (plr:getData("arrested") == true) then
-				plr:removeData("arrested")
+			if (isPlayerArrested(plr)) then
+				releasePlayer(plr)
 			end
 		end
 	end
 )
+
+function forceArrest()
+	local arrested, cop = isPlayerArrested(source)
+	if (arrested) then
+		arrest(source, cop)
+	end
+end
+addEventHandler("onPlayerQuit", root, forceArrest, true, "high")
+
