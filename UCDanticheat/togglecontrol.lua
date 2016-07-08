@@ -19,6 +19,11 @@ function fireCheck(button, state)
 			toggleControl("fire", false)
 			return
 		end
+		-- Disallow fists in LV
+		if (exports.UCDmafiaWars:isElementInLV(localPlayer) and localPlayer:getWeapon() == 0) then
+			toggleControl("fire", false)
+			return
+		end
 		-- If they are in not in LV, are a civilian and are not currently using their fists then
 		if (not exports.UCDmafiaWars:isElementInLV(localPlayer) and disallowedTeams[localPlayer.team.name] and localPlayer:getWeapon() ~= 0) then
 			toggleControl("fire", false)
