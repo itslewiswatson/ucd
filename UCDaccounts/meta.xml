@@ -5,9 +5,9 @@
 	<script src="accountData.slua" type="server" />
 	<script src="accountHandling.lua" type="server" />
 	<script src="login/accountMisc.lua" type="server" />
-	<script src="exports/s_exports.lua" type="server" />
-	
+	<script src="exports/s_exports.lua" type="server" />	
 	<script src="exports/c_exports.lua" type="client" />
+	<script src="misc.lua" type="server" />
 	
 	<!-- This needs to start after s_exports.lua -->
 	<script src="weapons.lua" type="server" />

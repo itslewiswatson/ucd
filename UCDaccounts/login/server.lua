@@ -8,11 +8,7 @@
 -------------------------------------------------------------------
 
 local db = exports.UCDsql:getConnection()
-local restricted =
-{
-	"UCDhousing", "admin", "UCD", "UCDadmin", "nokizorque"
-}
-
+local restricted = {"UCDhousing", "admin", "UCD", "UCDadmin", "nokizorque"}
 local matrixViewPositions = {
 	-- Some CSG ones
 	-- Silly cunts ty for the coords
@@ -24,20 +20,27 @@ local matrixViewPositions = {
 	{1862.90833, -1452.45300, 140.37985, 1528.33813, -1258.09937, 215.22653},
 	{1674.29980, -895.24408, 531.87439, 1659.51709, -982.78577, 39.61652},
 	{-903.80847, 1740.82678, 171.57216, -720.15826, 2015.47437, 56.53033},
-
 	-- My own bc I am god
 	{1380.4105, -748.9726, 104.6013, 1460.8162, -1051.0956, 95.9769},
 	{2139.718, 1899.7533, 12.9899, 2034.3885, 1921.8209, 14.3957},
 	{-1211.5592, -2928.3223, 67.2434, -1071.653, -2823.7144, 46.9938},
 	{-1026.7146, -1613.5925, 89.238, -1123.5228, -1659.3414, 77.2198},
-	{964.5377, 2575.6436, 23.3776, 993.2688, 2548.8789, 20.6946},
+	--{964.5377, 2575.6436, 23.3776, 993.2688, 2548.8789, 20.6946},
 }
+local display = textCreateDisplay()
+local text = {}
+text[1] = textCreateTextItem("Welcome to the Union of Clarity and Diversity", 0.5, 0.2, "high", 255, 255, 255, 255, 2, "center", 0)
+text[2] = textCreateTextItem("Loading resources...", 0.5, 0.5, "high", 255, 255, 255, 255, 2, "center", 0)
+for i = 1, #text do
+	textDisplayAddText(display, text[i])
+	textItemSetScale(text[i], 2)
+end
 
 function startMatrix()
 	fadeCamera(source, true, 1.5)
 	local x, y, z, lx, ly, lz = unpack(matrixViewPositions[math.random(#matrixViewPositions)])
 	setCameraMatrix(source, x, y, z, lx, ly, lz)
-	showPlayerHudComponent(source, "all", true)
+	showPlayerHudComponent(source, "all", false)
 	showChat(source, false)
 	setPlayerNametagColor(source, false)
 	source.position = Vector3(0, 0, -5)
@@ -46,19 +49,15 @@ end
 addEventHandler("onPlayerJoin", root, startMatrix)
 
 function joinText()
-	text = {}
-	plr = Player("Noki")
-	display = textCreateDisplay()
-	textDisplayAddObserver(display, plr)
-	text[1] = textCreateTextItem("Welcome to the Union of Clarity and Diversity", 0.37, 0.2)
-	text[2] = textCreateTextItem("Loading resources...", 0.45, 0.5)
-	for i=1, #text do
-		textDisplayAddText(display, text[i])
-		textItemSetScale(text[i], 2)
-	end
+	textDisplayAddObserver(display, source)
 end
---addEventHandler("onPlayerJoin", root, joinText)
---addEventHandler("onPlayerLogin", root, function () text = nil end)
+addEventHandler("onPlayerJoin", root, joinText)
+
+function removeLoginText()
+	textDisplayRemoveObserver(display, client)
+end
+addEvent("UCDaccounts.removeLoginText", true)
+addEventHandler("UCDaccounts.removeLoginText", root, removeLoginText)
 
 -- Login handling
 function loginPlayer2(usr, passwd, plr)
@@ -198,29 +197,25 @@ addEventHandler("UCDaccounts.login.register", root, registerPlayer)
 function login_handler()
 	source:setData("isLoggedIn", true)
 	-- source:setData("isPlayerLoggedIn", true)
-	local UCDhud = Resource.getFromName("UCDhud")
-	if (UCDhud:getState() == "running" or UCDhud:getState() == "starting") then
-		setTimer(
-			function (source)
+	--local UCDhud = Resource.getFromName("UCDhud")
+	--if (UCDhud:getState() == "running" or UCDhud:getState() == "starting") then
+	--	setTimer(
+	--		function (source)
 				--for _, v in ipairs(:getDisabledHUD() or {}) do
 				--	source:setHudComponentVisible(v, false)
 				--end
-				source:setHudComponentVisible("radar", true)
-				source:setHudComponentVisible("radio", true)
-				source:setHudComponentVisible("crosshair", true)
-			end, 1000, 1, source
-		)
-	else
-		source:setHudComponentVisible("all", true)
-	end
+	--			source:setHudComponentVisible("radar", true)
+	--			source:setHudComponentVisible("radio", true)
+	--			source:setHudComponentVisible("crosshair", true)
+	--		end, 1000, 1, source
+	--	)
+	--else
+	source:setHudComponentVisible("all", true)
+	source:setHudComponentVisible("vehicle_name", false)
+	--end
 	showChat(source, true)
 	triggerClientEvent(source, "UCDaccounts.login.hideLoginInterface", source)
 	triggerClientEvent(source, "UCDaccounts.login.destroyInterface", source)
-
-	-- Used for debug purposes as of now
-	if (source:getDimension() ~= 0 and exports.UCDadmin:isPlayerOwner(source)) then
-		outputChatBox("You are not in dimension 0!", source, 255, 255, 255)
-	end
 end
 addEventHandler("onPlayerLogin", root, login_handler)
 

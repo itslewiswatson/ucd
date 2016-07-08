@@ -23,7 +23,8 @@ end
 -- Actual login
 addEventHandler("onClientResourceStart", resourceRoot, 
 	function ()
-		if (not isPlayerLoggedIn(localPlayer)) then		
+		if (not isPlayerLoggedIn(localPlayer)) then
+			triggerServerEvent("UCDaccounts.removeLoginText", resourceRoot)
 			triggerServerEvent("UCDadmin.banCheck", resourceRoot)
 		
 			guiSetInputEnabled(true)
