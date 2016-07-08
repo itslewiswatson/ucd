@@ -1,0 +1,9 @@
+<meta>
+	<script src="jail.lua" type="server"/>
+	<script src="server.lua" type="server"/>
+	<script src="client.lua" type="client"/>
+	<export function="jailPlayer" type="server"/>
+	<export function="isPlayerJailed" type="server"/>
+	<export function="isPlayerJailed" type="client"/>
+	<oop>true</oop>
+</meta>
