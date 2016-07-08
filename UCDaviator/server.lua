@@ -67,15 +67,17 @@ function processFlight(flightData, vehicle)
 		outputDebugString("Bonus = "..bonus.."%")
 		outputDebugString("New amount = "..newAmount)
 		
+		local roundedDist = exports.UCDutil:mathround(distance / 1000, 2)
+		
 		if (vehicle.vehicleType == "Plane") then
 			local fA = airports[flightData[1]]
 			local sA = airports[flightData[3]]
-			exports.UCDdx:new(client, "ATC: Flight from "..sA.." to "..fA.." complete ("..tostring(exports.UCDutil:mathround(distance / 1000, 2)).." km). You have been paid $"..formattedAmount..".", 255, 215, 0)
+			exports.UCDdx:new(client, "ATC: Flight from "..sA.." to "..fA.." complete ("..tostring(roundedDist).." km). You have been paid $"..formattedAmount..".", 255, 215, 0)
 		else
-			exports.UCDdx:new(client, "ATC: Flight complete ("..tostring(exports.UCDutil:mathround(distance / 1000, 2)).."km). You have been paid $"..formattedAmount..".", 255, 215, 0)
+			exports.UCDdx:new(client, "ATC: Flight complete ("..tostring(roundedDist).."km). You have been paid $"..formattedAmount..".", 255, 215, 0)
 		end
 		
-		exports.UCDaccounts:SAD(client.account.name, "aviator", exports.UCDaccounts:GAD(client.account.name, "aviator") + distance)
+		exports.UCDaccounts:SAD(client.account.name, "aviator", exports.UCDaccounts:GAD(client.account.name, "aviator") + roundedDist)
 		
 		if (client.vehicle) then
 			--client.vehicle.frozen = false
