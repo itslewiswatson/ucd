@@ -14,7 +14,7 @@ addEventHandler("onResourceStop", resourceRoot,
 	function ()
 		for _, plr in ipairs(Element.getAllByType("player")) do
 			if (not plr.account.guest) then
-				exports.UCDaccounts:GAD(plr, "wp", getWantedPoints(plr))
+				exports.UCDaccounts:SAD(plr, "wp", getWantedPoints(plr))
 			end
 		end
 	end
@@ -28,6 +28,7 @@ function addWantedPoints(plr, wp)
 			wantedPoints[a] = 0
 		end
 		setWantedPoints(plr, wantedPoints[a] + wp)
+		exports.UCDstats:setPlayerAccountStat(plr, "lifetimeWanted", exports.UCDstats:getPlayerAccountStat(plr, "lifetimeWanted") + wp)
 		return true
 	end
 end
