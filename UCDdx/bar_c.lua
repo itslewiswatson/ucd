@@ -8,7 +8,13 @@ function add(key, text, red, green, blue, ind)
 	if (not text or not red or not green or not blue) then return end
 	for i, v in pairs(bar) do
 		if (v.k == key) then
-			bar[i] = {k = key, t = text, r = red, g = green, b = blue}
+			if (not ind) then
+				ind = i
+			end
+			--bar[i] = {k = key, t = text, r = red, g = green, b = blue}
+			table.remove(bar, i)
+			table.insert(bar, ind, {k = key, t = text, r = red, g = green, b = blue})
+			
 			return
 		end
 	end
@@ -27,6 +33,12 @@ function add(key, text, red, green, blue, ind)
 	return true
 end
 --add("x", "The mitochrondria is the powerhouse of the cell", 255, 255, 255)
+addEventHandler("onClientRender", root,
+	function ()
+		add("ucd", "UCD Alpha", 255, 255, 255, 1)
+	end
+)
+
 addEvent("UCDdx.bar:add", true)
 addEventHandler("UCDdx.bar:add", root, add)
 

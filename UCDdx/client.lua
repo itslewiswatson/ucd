@@ -22,12 +22,11 @@ function ContextBar.add(text, r, g, b)
 	local y = -23
 	
 	--if text == "" or text == nil then return false end
+	--[[
 	if #ContextBar.entries > 0 then
-		--[[
-		for k,v in pairs(ContextBar.entries) do
-			if v.text == text then return false end
-		end
-		--]]
+		--for k,v in pairs(ContextBar.entries) do
+		--	if v.text == text then return false end
+		--end
 		if #ContextBar.entries > 2 then
 			ContextBar.life = 4000
 		elseif #ContextBar.entries > 3 then
@@ -39,6 +38,7 @@ function ContextBar.add(text, r, g, b)
 		end
 		--y = ContextBar.entries[#ContextBar.entries].y - ContextBar.height
 	end
+	]]
 
 	ContextBar.entries[#ContextBar.entries + 1] = 
 	{
