@@ -2,7 +2,6 @@ local jobs = exports.UCDjobsTable:getJobTable()
 local blips = {}
 local markers = {}
 local GUI = {}
-local F5 = {}
 local originalSkin = {}
 local frozen
 local disabledControls = {"forwards", "backwards", "jump", "sprint", "left", "right"}
