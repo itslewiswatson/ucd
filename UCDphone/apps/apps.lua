@@ -9,6 +9,7 @@ allapps =
 	[9] = Money,
 	[10] = Mark,
 	[12] = Stocks,
+	[14] = Friends,
 }
 
 function toggleApp(i)

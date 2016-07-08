@@ -69,7 +69,7 @@ phone =
 	--]]
 }
 
-phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, 310, 600, ":UCDphone/iphone2.png", false)
+phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, 310, 600, ":UCDphone/iphone3.png", false)
 phone.image["phone_window"].visible = false
 
 phone.label["banner"] = GuiLabel(20, 71, 60, 17, " UCDphone", false, phone.image["phone_window"])
@@ -119,6 +119,7 @@ local apps =
 	[12] = {"Stocks", "stocks.png", {1, 3}},
 	
 	[13] = {"Housing", "housing.png", {2, 0}},
+	[14] = {"Friends", "friends.png", {2, 1}},
 }
 
 -- Home screen

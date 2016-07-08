@@ -2,13 +2,11 @@ Music = {}
 Music.stations = 
 {
 	{"[All] 102.9 Hot Tomato", "http://s4.viastreaming.net:8765/listen.pls"},
-	{"[Hardcore] HARDCORERADIO.nl", "http://www.hardcoreradio.nl/hr.m3u"},
 	{"[Hard Dance] Q-Dance Radio", "http://radio.q-dance.nl/q-danceradio.pls"},
 	{"[Hardstyle] NERadio Hardstyle", "http://listen.hardstyle.nu/listen.pls"},
-	{"[House/Trance] NERadio House/Trance", "http://listen.neradio.fm/listen.pls"},
+	{"[House] NERadio House/Trance", "http://listen.neradio.fm/listen.pls"},
 	{"[Other] Radio Metro", "http://www.radiometro.com.au/songapp/Radio-Metro.pls"},
 	{"[Top 40] Power 181", "http://www.181.fm/winamp.pls?station=181-power&file=181-power.pls"},
-	--{"[Top 40] Power 181", "http://www.181.fm/winamp.pls?station=181-power&file=181-power.pls"},
 	{"[Swedish] NERadio Sweden", "http://www.neradio.se/listen.pls"},
 }
 Music.trackPlaying = nil

@@ -1,7 +1,7 @@
 <meta>
 	<min_mta_version server="1.5.1"></min_mta_version>
     <info author="Noki" type="" name="" />
-	<file src="iphone2.png"/>
+	<file src="iphone3.png"/>
 	<file src="images/im.png"/>
 	<file src="images/browser.png"/>
 	<file src="images/calc.png"/>
@@ -15,6 +15,7 @@
 	<file src="images/mark.png"/>
 	<file src="images/money.png"/>
 	<file src="images/housing.png"/>
+	<file src="images/friends.png"/>
 	
 	
 	<script src="client.lua" type="client"/>
@@ -31,6 +32,8 @@
 	<!--<script src="apps/stocks/stocks_s.lua" type="server"/>-->
 	<script src="apps/stocks/stocks_c.lua" type="client"/>
 	<script src="apps/browser/browser_c.lua" type="client"/>
+	<script src="apps/friends/friends_s.lua" type="server"/>
+	<script src="apps/friends/friends_c.lua" type="client"/>
 	
 	<script src="apps/apps.lua" type="client"/>
 	

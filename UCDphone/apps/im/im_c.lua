@@ -90,12 +90,14 @@ function IM.onAttemptSendMessage(button, state)
 			-- Player
 			if (row1 and row1 ~= -1) then
 				local txt = guiGridListGetItemText(phone.im.gridlist["players"], row1, 1)
+				txt = split(txt, " (", 1)[1]
 				if (Player(txt)) then
 					IM.onSendMessage(txt, msg)
 				end
 			-- Friend
 			elseif (row2 and row2 ~= -1) then
 				local txt = guiGridListGetItemText(phone.im.gridlist["friends"], row2, 1)
+				txt = split(txt, " (", 1)[1]
 				-- If they are online
 				if (Player(txt)) then
 					IM.onSendMessage(txt, msg)

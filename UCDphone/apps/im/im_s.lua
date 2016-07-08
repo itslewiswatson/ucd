@@ -15,18 +15,21 @@ addEventHandler("UCDphone.requestFriendList", root,
 addEventHandler("onPlayerLogin", root,
 	function ()
 		--IM.sendFriends(source)
-		db:query(IM.loadFriends, {source}, "SELECT * FROM `sms_friends` WHERE `account` = ?", source.account.name)
+		--db:query(IM.loadFriends, {source}, "SELECT * FROM `sms_friends` WHERE `account` = ?", source.account.name)
+		IM.friends[source.account.name] = fromJSON(exports.UCDaccounts:GAD(source.account.name, "sms_friends")) or "[ [ ] ]"
 	end
 )
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		for _, plr in ipairs(exports.UCDaccounts:getLoggedInPlayers()) do
-			db:query(IM.loadFriends, {plr}, "SELECT * FROM `sms_friends` WHERE `account` = ?", plr.account.name)
+			--db:query(IM.loadFriends, {plr}, "SELECT * FROM `sms_friends` WHERE `account` = ?", plr.account.name)
+			IM.friends[plr.account.name] = fromJSON(exports.UCDaccounts:GAD(plr.account.name, "sms_friends")) or "[ [ ] ]"
 		end
 	end
 )
 
+--[[
 function IM.loadFriends(qh, plr)
 	local result = qh:poll(-1)
 	if (result and #result >= 1) then
@@ -45,25 +48,24 @@ function IM.loadFriends(qh, plr)
 	end
 end
 -- db:query(IM.loadFriends, {}, "SELECT * FROM `sms_friends`") -- Placing it here removes debug issues when editing the client apps
+--]]
 
 function IM.sendFriends(plr)
 	local temp = {}
 	if (IM.friends[plr.account.name]) then
-		for i, accountName in ipairs(IM.friends[plr.account.name]) do
+		for i, accountName in pairs(IM.friends[plr.account.name]) do
 			local displayName, online
-			if (Account(accountName).player) then
-				displayName = Account(accountName).player.name.." ("..accountName..")"
+			if (Account(accountName) and Account(accountName).player) then
+				displayName = tostring(Account(accountName).player.name).." ("..tostring(accountName)..")"
 				online = true
 			else
-				displayName = exports.UCDaccounts:GAD(accountName, "lastUsedName").." ("..accountName..")" or accountName
+				displayName = tostring(exports.UCDaccounts:GAD(accountName, "lastUsedName")).." ("..tostring(accountName)..")" or tostring(accountName)
 				--displayName = accountName
 			end
 			temp[i] = {[1] = displayName, [2] = online, [3] = accountName}
 		end
-	else
-		return
 	end
-	triggerClientEvent(plr, "UCDphone.sendFriends", plr, temp or {})
+	triggerClientEvent(plr, "UCDphone.sendFriends", plr, temp)
 end
 
 function IM.addFriend(plrName)
@@ -87,7 +89,8 @@ function IM.addFriend(plrName)
 		end
 		table.insert(IM.friends[client.account.name], plr.account.name)
 		outputDebugString("IM.addFriend -> "..tostring(toJSON(IM.friends[client.account.name])).." ["..client.account.name.."]")
-		db:exec("UPDATE `sms_friends` SET `friends`=? WHERE `account`=?", toJSON(IM.friends[client.account.name]), client.account.name)
+		--db:exec("UPDATE `sms_friends` SET `friends`=? WHERE `account`=?", toJSON(IM.friends[client.account.name]), client.account.name)
+		exports.UCDaccounts:SAD(client, "sms_friends", toJSON(IM.friends[client.account.name]))
 		exports.UCDdx:new(client, "You have added "..tostring(plr.name).." to your friends list", 0, 255, 0)
 		IM.sendFriends(client)
 	end
@@ -115,7 +118,8 @@ function IM.removeFriend(accName)
 			exports.UCDdx:new(client, tostring(exports.UCDaccounts:GAD(accName, "lastUsedName")).." has been removed from your friends list", 0, 255, 0)
 		end
 		outputDebugString("IM.removeFriend -> "..tostring(toJSON(IM.friends[client.account.name])).." ["..client.account.name.."]")
-		db:exec("UPDATE `sms_friends` SET `friends`=? WHERE `account`=?", toJSON(IM.friends[client.account.name]), client.account.name)
+		--db:exec("UPDATE `sms_friends` SET `friends`=? WHERE `account`=?", toJSON(IM.friends[client.account.name]), client.account.name)
+		exports.UCDaccounts:SAD(client, "sms_friends", toJSON(IM.friends[client.account.name]))
 		IM.sendFriends(client)
 	end
 end
