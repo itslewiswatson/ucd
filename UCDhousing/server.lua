@@ -73,9 +73,9 @@ function leaveHouse(houseID)
 	-- if (client:getType() ~= "player") then return false end -- Don't need this check as client is always a player
 	
 	-- A check for house robbing
-	if (houseID >= 30000) then
-		houseID = houseID - 30000
-	end
+	--if (houseID >= 30000) then
+	--	houseID = houseID - 30000
+	--end
 	
 	-- Get the coordinates
 	local hX, hY, hZ = getHouseData(houseID, "x"), getHouseData(houseID, "y"), getHouseData(houseID, "z")
@@ -88,9 +88,9 @@ function leaveHouse(houseID)
 		return
 	end
 	
-	client:setDimension(0)
-	client:setInterior(0)
-	client:setPosition(hX, hY, hZ)
+	client.dimension = 0
+	client.interior = 0
+	client.position = Vector3(hX, hY, hZ)
 	
 	triggerClientEvent(client, "onClientLeaveHouse", client, houseID)
 end
@@ -115,14 +115,12 @@ function enterHouse(houseID, rob)
 	local houseInt, hX, hY, hZ = unpack(intIDs[interiorID])
 	source:setPosition(hX, hY, hZ + 1)
 	
-	source:setInterior(houseInt)
 	if (rob) then
 		setPedWeaponSlot(source, 0)
-		source:setDimension(houseID + 30000)
-	else
-		source:setDimension(houseID)
 	end
 	
+	source:setInterior(houseInt)
+	source:setDimension(houseID)
 	triggerClientEvent(source, "onClientEnterHouse", source, houseID, interiorID, rob)
 end
 addEvent("UCDhousing.enterHouse", true)

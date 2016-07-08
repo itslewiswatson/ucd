@@ -68,15 +68,15 @@ local houseMarkers = {
 	},
 	[6] = 
 	{
-		{{}, {}},
-		{{}, {}},
-		{{}, {}},
+		{{234.5659, 1119.7927, 1080.9922}, {243.5902, 1106.6982, 1080.9922}},
+		{{246.1019, 1112.1351, 1085.0139}, {241.4137, 1116.8788, 1084.9922}},
+		{{243.2645, 1111.6643, 1085.0391}, {233.2438, 1109.9762, 1080.9922}},
 	},
 	[7] = 
 	{
-		{{}, {}},
-		{{}, {}},
-		{{}, {}},
+		{{384.2462, 1468.9017, 1080.187}, {375.5055, 1463.0876, 1080.1875}},
+		{{384.2104, 1466.2495, 1080.1875}, {378.426, 1458.2986, 1080.1875}},
+		{{372.2294, 1464.9943, 1080.1875}, {378.4206, 1455.9886, 1080.1875}},
 	},
 	[8] = 
 	{
@@ -309,6 +309,7 @@ function onLeaveHouse(houseID)
 		end
 		MC = markerCount
 		HC = hitCount
+		exports.UCDdx:add("houserob_info", "/giveup if you want to give up", 255, 0, 0)
 		exports.UCDdx:add("houserob_post", "Go to a truck blip to finish the robbery", 255, 0, 0)
 		sprintDisabler = Timer(disableSprint, 1000, 1)
 		toggleControl("sprint", false)
@@ -326,11 +327,18 @@ function restore()
 	if (sprintDisabler and isTimer(sprintDisabler)) then
 		sprintDisabler:destroy()
 		sprintDisabler = nil
-		toggleControl("sprint", true)
 	end
+	toggleControl("sprint", true)
 	HC = nil
 	MC = nil
 	exports.UCDdx:del("houserob_post")
+	exports.UCDdx:del("houserob_info")
+	for _, v in ipairs(mab) do
+		removeEventHandler("onClientMarkerHit", v[1], onHitRewardMarker)
+		v[1]:destroy()
+		v[2]:destroy()
+	end
+	mab = {}
 end
 addEvent("UCDhousing.rob.restore", true)
 addEventHandler("UCDhousing.rob.restore", root, restore)
@@ -342,12 +350,6 @@ function onHitRewardMarker(plr, matchingDimension)
 		Timer(function () Camera.fade(true) toggleAllControls(true) end, 1000, 1)
 		triggerServerEvent("UCDhousing.completeHouseRob", resourceRoot, {HC, MC})
 		restore()
-		for _, v in ipairs(mab) do
-			removeEventHandler("onClientMarkerHit", v[1], onHitRewardMarker)
-			v[1]:destroy()
-			v[2]:destroy()
-			mab = {}
-		end
 	end
 end
 

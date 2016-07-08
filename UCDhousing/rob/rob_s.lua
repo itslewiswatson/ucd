@@ -50,13 +50,15 @@ function completeHouseRob(tbl)
 		if ((hitCount / markerCount) < 1) then
 			baseAmount = baseAmount - (500 * (markerCount - hitCount))
 		end
-		local amount = math.random(baseAmount - 500, baseAmount + 500)
+		local amount = math.random(baseAmount, baseAmount + 500) + 1000
 		
 		exports.UCDdx:new(client, "You stole "..tostring(hitCount).." "..tostring(ic)..", with a total value of $"..tostring(exports.UCDutil:tocomma(amount)), 255, 0, 0)
 		client.money = client.money + amount
 		
 		destroyRobObject(client)
 		exports.UCDactions:clearAction(client)
+		
+		exports.UCDstats:setPlayerAccountStat(plr, "housesRobbed", exports.UCDstats:getPlayerAccountStat(plr, "housesRobbed") + 1)
 	end
 end
 addEvent("UCDhousing.completeHouseRob", true)
@@ -94,11 +96,12 @@ function destroyRobObject(plr)
 end
 
 function stopRobbing(plr)
-	if (exports.UCDactions:getAction(plr) == "HouseRob") then
+	if (exports.UCDactions:getAction(plr) == "HouseRob" and objj[plr]) then
 		destroyRobObject(plr)
 		triggerClientEvent(plr, "UCDhousing.rob.restore", plr)
 		exports.UCDactions:clearAction(plr)
+		exports.UCDdx:new(plr, "You have given up and dropped the stolen items", 255, 0, 0)
 	end
 end
-addCommandHandler("dropitem", stopRobbing)
+addCommandHandler("giveup", stopRobbing)
 
