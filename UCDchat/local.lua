@@ -5,7 +5,7 @@ local range = 100
 
 function localChat(player, _, ...)
 	if (not exports.UCDaccounts:isPlayerLoggedIn(player)) then return end
-	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then return end
+	if (not exports.UCDchecking:canPlayerDoAction(player, "Chat")) then return end
 	-- Check for anti spam
 	if (antiSpam[player]) and (getTickCount() - antiSpam[player] < antiSpamTime) then
 		exports.UCDdx:new(player, "You cannot send a message in local chat more than once a second.", 255, 0, 0)

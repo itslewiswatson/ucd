@@ -5,6 +5,28 @@ addCommandHandler("sms",
 	end
 )
 
+function _getPlayerFromName(name)
+	local players = {}
+	local name = name and name:gsub("#%x%x%x%x%x%x", ""):lower() or nil
+	if name then
+		for _, player in ipairs(Element.getAllByType("player")) do
+			if (player ~= localPlayer) then
+				local name_ = player.name:gsub("#%x%x%x%x%x%x", ""):lower()
+				if name_:find(name, 1, true) then
+					table.insert(players, player)
+				end
+			end
+		end
+		if (#players == 0) then
+			return false
+		end
+		if (#players > 1) then
+			return "There is more than one player matching this name"
+		end
+		return players[1]
+	end
+end
+
 local antiSpam = {}
 local antiSpamTimer = 1000
 
@@ -12,9 +34,19 @@ local antiSpamTimer = 1000
 function instantMessage(_, target, ...)
 	-- Actual messaging function
 	if (not target) then exports.UCDdx:new("You must specify a player", 255, 0, 0) return end
+	
     local recipient
 	if (type(target) == "string") then
-		recipient = exports.UCDutil:getPlayerFromPartialName(target)
+		recipient = _getPlayerFromName(target)
+		if (type(recipient) == "string") then
+			exports.UCDdx:new(tostring(recipient), 255, 0, 0)
+			return
+		elseif (not recipient) then
+			exports.UCDdx:new("We could not find a player with this name", 255, 0, 0)
+			return
+		end
+	else
+		recipient = target
 	end
 	
 	-- If we found a recipient
@@ -25,17 +57,15 @@ function instantMessage(_, target, ...)
 		
 		if (recipient.name == localPlayer.name) then exports.UCDdx:new("You cannot send an IM to yourself", 255, 0, 0) return end
 		
-        outputChatBox("[IM to "..recipient.name.."] "..msg, 255, 174, 0, true)
+        outputChatBox("[IM to "..recipient.name.."]#FFFFFF "..msg, 255, 174, 0, true)
 		
 		-- source = player who got the msg, plr = player who sent it, msg = the message sent
 		triggerEvent("onPlayerReceiveIM", recipient, localPlayer, msg)
 		triggerEvent("UCDphone.appendMessage", localPlayer, false, recipient.name, msg)
 		
 		triggerServerEvent("UCDchat.instantMessage", localPlayer, recipient, msg)
-
-		--exports.UCDlogging:new(plr, "IM", msg, )
     else
-		exports.UCDdx:new(plr, "There is no player named "..target.." online", 255, 0, 0)
+		exports.UCDdx:new("There is no player with that name online", 255, 0, 0)	
     end
 end
 addCommandHandler("im", instantMessage, false, false)
@@ -59,8 +89,7 @@ addEventHandler("UCDchat.cacheLastSender", root, cacheLastSender)
 
 function quickReply(_, ...)
 	if (lastMsg) then
-		local recipient = lastMsg
-		if (not recipient) then
+		if (type(lastMsg) == "userdata" and not lastMsg.name) then
 			exports.UCDdx:new("The last person to IM you is offline", 255, 0, 0)
 			return
 		end
@@ -69,9 +98,8 @@ function quickReply(_, ...)
 		if (msg:find("UCD")) then msg = msg:gsub("ucd", "UCD") end
 		instantMessage(nil, lastMsg, msg)
 	else
-		exports.UCDdx:new("The last person to IM you is offline", 255, 0, 0)
+		exports.UCDdx:new("You have not been messaged by anyone", 255, 0, 0)
 	end
 end
 addCommandHandler("re", quickReply, false, false)
 addCommandHandler("r", quickReply, false, false)
-
