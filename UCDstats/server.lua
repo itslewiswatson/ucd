@@ -10,7 +10,7 @@ function getPlayerStats(plr)
 		local wl = plr.wantedLevel or 0
 		local kills = getPlayerAccountStat(plr, "kills") or 0
 		local deaths = getPlayerAccountStat(plr, "deaths") or 6
-		local kdr = exports.UCDutil:mathround(kills / deaths, 2)
+		local kdr = kills / deaths
 		if (deaths == 0) then
 			kdr = kills
 		elseif (kills == 0 and deaths == 0) then
@@ -22,12 +22,14 @@ function getPlayerStats(plr)
 		local arrests = getPlayerAccountStat(plr, "arrests") or 0
 		local timesArrested = getPlayerAccountStat(plr, "timesArrested") or 0
 		local lifetimeWanted = getPlayerAccountStat(plr, "lifetimeWanted") or 0
+		local killArrests = getPlayerAccountStat(plr, "killArrests") or 0
+		local housesRobbed = getPlayerAccountStat(plr, "housesRobbed") or 0
 		
 		local temp = {
 			group = group, groupRank = rank, wanted = wanted, cash, country, ping, accName = plr.account.name,
 			kills = kills, deaths = deaths, kdr = kdr, totalfired = totalfired, totalguns = totalguns, wl = wl,
-			ap = ap, arrests = arrests,	timesArrested = timesArrested, lifetimeWanted = lifetimeWanted
-			
+			ap = ap, arrests = arrests,	timesArrested = timesArrested, lifetimeWanted = lifetimeWanted,
+			killArrests = killArrests, housesRobbed = housesRobbed,
 		}
 		triggerLatentClientEvent(client, "UCDstats.loadStats", plr, temp or {})
 	end

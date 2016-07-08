@@ -16,11 +16,13 @@ local defaults = {
 	"Total bullets fired: ",
 	"Total spent on guns: ",
 	"▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
-	"Delivered arrests: ",
-	"Total arrest points: ",
+	"Delivered Arrests: ",
+	"Kill Arrests: ",
+	"Total Arrest Points: ",
 	"▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
-	"Times arrested: ",
-	"Lifetime wanted points: ",
+	"Times Arrested: ",
+	"Lifetime Wanted Points: ",
+	"Houses Robbed: ",
 }
 
 local selections = 0
@@ -32,6 +34,7 @@ GUIEditor = {scrollpane = {}, edit = {}, button = {}, label = {}, gridlist = {}}
 GUIEditor.window = guiCreateWindow(719, 326, 468, 446, "UCD | Player Statistics", false)
 GUIEditor.window.sizable = false
 GUIEditor.window.visible = false
+GUIEditor.window.alpha = 1
 GUIEditor.edit[1] = GuiEdit(10, 26, 176, 34, "", false, GUIEditor.window)
 GUIEditor.gridlist[1] = GuiGridList(10, 65, 176, 371, false, GUIEditor.window)
 guiGridListAddColumn(GUIEditor.gridlist[1], "Player", 0.9)
@@ -146,13 +149,15 @@ function loadStats(data)
 	GUIEditor.label[10].text = defaults[10]..tostring(source.ping)
 	GUIEditor.label[12].text = defaults[12]..tostring(exports.UCDutil:tocomma(data["kills"]))
 	GUIEditor.label[13].text = defaults[13]..tostring(exports.UCDutil:tocomma(data["deaths"]))
-	GUIEditor.label[14].text = defaults[14]..tostring(data["kdr"])
+	GUIEditor.label[14].text = defaults[14]..tostring(exports.UCDutil:mathround(data["kdr"], 2))
 	GUIEditor.label[15].text = defaults[15]..tostring(exports.UCDutil:tocomma(data["totalfired"]))
 	GUIEditor.label[16].text = defaults[16]..tostring(data["totalguns"])
 	GUIEditor.label[18].text = defaults[18]..tostring(data["arrests"])
-	GUIEditor.label[19].text = defaults[19]..tostring(data["ap"])
-	GUIEditor.label[21].text = defaults[21]..tostring(data["timesArrested"])
-	GUIEditor.label[22].text = defaults[22]..tostring(data["lifetimeWanted"])
+	GUIEditor.label[19].text = defaults[19]..tostring(data["killArrests"])
+	GUIEditor.label[20].text = defaults[20]..tostring(data["ap"])
+	GUIEditor.label[22].text = defaults[22]..tostring(data["timesArrested"])
+	GUIEditor.label[23].text = defaults[23]..tostring(data["lifetimeWanted"])
+	GUIEditor.label[24].text = defaults[24]..tostring(data["housesRobbed"])
 end
 addEvent("UCDstats.loadStats", true)
 addEventHandler("UCDstats.loadStats", root, loadStats)
