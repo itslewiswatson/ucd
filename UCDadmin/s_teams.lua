@@ -50,14 +50,14 @@ end
 function gg(client)
 	if (isPlayerAdmin(client)) then
 		-- Only here for debug purposes - will be removed upon release
-		if (client:getWantedLevel() > 0 and not isPlayerOwner(client)) then exports.UCDdx:new(client, "You cannot go on-duty whilst being wanted", 255, 255, 255) return false end
+		--if (client:getWantedLevel() > 0 and not isPlayerOwner(client)) then exports.UCDdx:new(client, "You cannot go on-duty whilst being wanted", 255, 255, 255) return false end
+		if (client:getWantedLevel() > 0) then
+			
+		end
 
-		--if (isPlayerOwner(client)) then
-		--	client:setData("Occupation", "L1337 Admin")
-		--else
-			client:setData("Occupation", adminRanks[getPlayerAdminRank(client)])
-		--end
+		client:setData("Occupation", adminRanks[getPlayerAdminRank(client)])
 		
+		exports.UCDwanted:setWantedPoints(client, 0)
 		exports.UCDjobs:setPlayerJob(client, "Admin", 217)
 		client:setNametagColor(false)
 		exports.UCDdx:new(client, "You are now an on-duty administrator", 255, 255, 255)

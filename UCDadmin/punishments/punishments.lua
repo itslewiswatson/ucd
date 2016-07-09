@@ -146,7 +146,7 @@ function punish2(val, duration, type1, who, reason)
 	local timestamp = getRealTime().timestamp
 	local serial, plr
 	
-	if (Account(val).player) then
+	if (Account(val) and Account(val).player) then
 		plr = Account(val).player
 		serial = plr.serial
 	end
@@ -155,6 +155,11 @@ function punish2(val, duration, type1, who, reason)
 	local output, offline
 	if (plr) then
 		output = plr.name
+		if (type1 == "admin jail") then
+			exports.UCDjail:jailPlayer(plr, duration, true)
+		elseif (type1 == "mute") then
+			mutePlayer(plr, duration)
+		end
 	else
 		output = val
 		offline = true

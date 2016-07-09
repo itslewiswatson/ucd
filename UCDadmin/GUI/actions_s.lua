@@ -64,8 +64,26 @@ function warpPlayerTo(plr, warpTo)
 			if (plr.interior ~= warpTo.interior) then
 				plr.interior = warpTo.interior
 			end
-			local position = warpTo.matrix.position + warpTo.matrix.forward * 2
-			plr:setPosition(position)
+			if (warpTo.vehicle) then
+				local seats = warpTo.vehicle.maxPassengers + 100
+				local i = 0
+				while (i < seats) do
+					if (not getVehicleOccupant(warpTo.vehicle, i)) then
+						plr:warpIntoVehicle(warpTo.vehicle, i)
+						break
+					end
+					i = i + 1
+				end
+				if (i >= seats) then
+					--exports.UCDdx:new(client, "This player's vehicle is full", 255, 0, 0)
+					local position = warpTo.matrix.position + warpTo.matrix.forward * 2
+					plr:setPosition(position)
+				end
+			else
+				local position = warpTo.matrix.position + warpTo.matrix.forward * 2
+				plr:setPosition(position)
+			end	
+			
 			if (warpTo == client) then
 				exports.UCDdx:new(plr, client.name.." has warped you to them", 0, 255, 0)
 				exports.UCDdx:new(client, "You have warped "..plr.name.." to you", 0, 255, 0)
@@ -95,8 +113,8 @@ function kickPlayer_(plr, reason)
 		if (isPlayerOwner(plr) and not isPlayerOwner(client)) then return end
 		if reason == " " or reason == "" then
 			exports.UCDdx:new(client, "You have kicked "..plr.name, 0, 255, 0)
-			plr:kick(client)
 			outputChatBox(plr.name.." has been kicked by "..client.name, root, 255, 140, 0)
+			plr:kick(client)
 			return
 		end
 		exports.UCDdx:new(client, "You have kicked "..plr.name.." for '"..reason.."'", 0, 255, 0)
