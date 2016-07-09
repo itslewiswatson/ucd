@@ -14,15 +14,16 @@ local actions = {
 	},
 	["Jetpack"] = {
 		{"a", "AFK"},
-		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoDead"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoDead", "NoCustody"},
+		{"w", 1},
 	},
 	["JobVehicle"] = {
 		{"a", "RobHouse", "AFK"},
-		{"ld", 3}, {"i", 0}, {"d", 0}, {"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead"},
+		{"ld", 3}, {"i", 0}, {"d", 0}, {"w", 2}, {"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead"},
 	},
 	["Builder"] = {
 		{"a", "RobHouse", "AFK"},
-		{"i", 0}, {"d", 0}, {"s", "NoVehicle", "NoDead", "NoArrest", "NoJailed", "NoJetpack", "NoDead"}
+		{"i", 0}, {"d", 0}, {"s", "NoVehicle", "NoDead", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody"},
 	},
 }
 
@@ -37,7 +38,7 @@ function canPlayerDoAction(plr, action)
 				exports.UCDdx:new(plr, "An activity you're doing blocks this action", 255, 0, 0)
 				return false
 			end
-			if (dat[1] == "w") then
+			if (dat[1] == "w" and i ~= 1) then
 				if (plr.wantedLevel >= dat2) then
 					exports.UCDdx:new(plr, "Your wanted level blocks this action", 255, 0, 0)
 					return false
@@ -70,6 +71,14 @@ function canPlayerDoAction(plr, action)
 				end
 				if (dat2 == "NoArrest" and exports.UCDlaw:isPlayerArrested(plr)) then
 					exports.UCDdx:new(plr, "Being arrested blocks this action", 255, 0, 0)
+					return false
+				end
+				if (dat2 == "NoJailed" and exports.UCDjail:isPlayerJailed(plr)) then
+					exports.UCDdx:new(plr, "Being in jail blocks this action", 255, 0, 0)
+					return false
+				end
+				if (dat2 == "NoCustody" and #exports.UCDlaw:getPlayerArrests(plr) > 0) then
+					exports.UCDdx:new(plr, "Having players in your custody blocks this action", 255, 0, 0)
 					return false
 				end
 			end
