@@ -112,6 +112,7 @@ function onPlayerJailed()
 	if (source.vehicle) then
 		source:removeFromVehicle(source.vehicle)
 	end
+	exports.UCDwanted:setWantedPoints(source, 0)
 	exports.UCDhousing:stopRobbing(source)
 	source.interior = 0
 	source.dimension = 0
