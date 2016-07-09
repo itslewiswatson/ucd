@@ -1,7 +1,7 @@
 function glue()
 	local player = getLocalPlayer()
-	if not getPlayerOccupiedVehicle(player) then
-		local vehicle = getPlayerContactElement(player)
+	if not getPedOccupiedVehicle(player) then
+		local vehicle = getPedContactElement(player)
 		if getElementType(vehicle) == "vehicle" then
 			
 			local px, py, pz = getElementPosition(player)
@@ -12,9 +12,9 @@ function glue()
 			
 			local rotpX = 0
 			local rotpY = 0
-			local rotpZ = getPlayerRotation(player)
+			local rotpZ = getPedRotation(player)
 			
-			local rotvX,rotvY,rotvZ = getVehicleRotation(vehicle)
+			local rotvX,rotvY,rotvZ = getElementRotation(vehicle)
 			
 			local t = math.rad(rotvX)
 			local p = math.rad(rotvY)
@@ -35,7 +35,7 @@ function glue()
 			local rotY = rotpY - rotvY
 			local rotZ = rotpZ - rotvZ
 			
-			local slot = getPlayerWeaponSlot(player)
+			local slot = getPedWeaponSlot(player)
 			
 			--outputDebugString("gluing ".. getPlayerName(player) .." to " .. getVehicleName(vehicle) .. "(offset: "..tostring(x)..","..tostring(y)..","..tostring(z).."; rotation:"..tostring(rotX)..","..tostring(rotY)..","..tostring(rotZ)..")")
 			

@@ -14,8 +14,10 @@
 --]]
 
 -- Windows = "C:/"; Linux = "//"
+--[[
 local FILE_SYSTEM = createFilesystemInterface()
 local rootDir = FILE_SYSTEM.createTranslator("C:/")
+--]]
  
 -- Function that returns whether the given path is a directory path.
 function isPathDirectory(path)
@@ -93,3 +95,25 @@ function callback_fetchImage(responseData, errorCode)
 end
 
 addCommandHandler("lala", fetchImage)
+
+-----------
+
+function como()
+	local key = "lol"
+	local f = File("original.png", true)
+	f.pos = 0
+	local picData = f:read(f.size)
+	local enc = teaEncode(picData, "lol")
+	outputDebugString("File length: "..picData:len())
+	outputDebugString("Encoded length: "..enc:len())
+	local n = File.new("hng.png")
+	n:write(picData)
+	n:flush()
+	n:close()
+	local x = File.new("enc.txt")
+	x:write(enc, "\n", "Ignore this line", "\n", picData)
+	x:flush()
+	x:close()
+	f:close()
+end
+addCommandHandler("como", como)

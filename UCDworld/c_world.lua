@@ -57,16 +57,3 @@ end
 addEventHandler("onClientRender", root, movePlayerHead)
 
 -----------------------------------------
-
-local fire = {
-	{2647.1387, -2073.24, 48.2891},
-	{2658.652, -2073.24, 48.289},
-	{2671.5938, -2073.24, 48.2891}
-}
-
-function burn()
-	for i, v in ipairs (fire) do
-		createFire(v[1], v[2], v[3], 10)
-	end
-end
---setTimer(burn, 1000, 0)

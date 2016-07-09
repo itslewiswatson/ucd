@@ -18,3 +18,4 @@
 :guieditor/output/ucdalliance_2016-5-27_19-32.txt
 :guieditor/output/ucdalliances_members_2016-5-28_15-29.txt
 :guieditor/output/saurfriends1_2016-6-15_17-34.txt
+:guieditor/output/ucdclickagain_2016-7-4_11-20.txt

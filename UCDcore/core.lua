@@ -65,26 +65,24 @@ addEventHandler("onResourceStart", resourceRoot, autoRestartTimer)
 -----------------------------------------------------
 
 addCommandHandler( "kill",
-	function ( client )
-		if ( getElementType( client ) ~= "player" ) then return end
-		if ( getTeamName( getPlayerTeam( client ) ) == "Not logged in" ) then return end
-		if ( not getPlayerAccount( client ) ) then return end
-		if ( isPedInVehicle( client ) ) then exports.UCDdx:new( client, "You cannot kill yourself whilst in a vehicle", 255, 0, 0 ) return end
-		if ( isPedOnGround( client ) ~= true ) then exports.UCDdx:new( client, "You must be on the ground in order to kill yourself", 255, 0, 0 ) return end
-		if ( getPlayerWantedLevel( client ) ~= 0 ) then exports.UCDdx:new( client, "You cannot kill yourself whilst wanted", 255, 0, 0 ) return end
-		if ( getTeamName( getPlayerTeam( client ) ) == "Admins" )	then
-			exports.UCDdx:new( client, "Instant administrator death", 255, 255, 255 )
-			killPed( client )
+	function (plr)
+		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return end
+		if (plr.vehicle) then exports.UCDdx:new(plr, "You cannot kill yourself while in a vehicle", 255, 0, 0) return end
+		if (not plr.onGround) then exports.UCDdx:new(plr, "You must be on the ground in order to kill yourself", 255, 0, 0) return end
+		if (plr.wantedLevel > 0) then exports.UCDdx:new(plr, "You cannot kill yourself while wanted", 255, 0, 0) return end
+		
+		if (plr.team.name == "Admins") then
+			plr:kill()
 			return
 		end
 		
-		exports.UCDdx:new( client, "You will be killed in 10 seconds", 255, 0, 0 )
-		toggleAllControls( client, false, true, false )
-		setElementFrozen( client, true )
+		exports.UCDdx:new(plr, "You will be killed in 10 seconds", 255, 0, 0)
+		toggleAllControls(plr, false, true, false)
+		plr.frozen = true
 		setTimer(
 			function ()
-				killPed( client )
-				toggleAllControls( client, true )
+				plr:kill()
+				toggleAllControls(plr, true)
 			end, 10000, 1
 		)
 		

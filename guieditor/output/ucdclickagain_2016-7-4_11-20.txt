@@ -1,0 +1,23 @@
+
+GUIEditor = {
+    button = {},
+    window = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(1632, 287, 288, 542, "", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.98)
+
+        GUIEditor.button[1] = guiCreateButton(10, 502, 268, 30, "Close", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(10, 26, 122, 30, "Repair Vehicle", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(156, 26, 122, 30, "Ask To Hide", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[4] = guiCreateButton(10, 66, 122, 30, "Close", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[5] = guiCreateButton(156, 66, 122, 30, "Close", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")    
+    end
+)
