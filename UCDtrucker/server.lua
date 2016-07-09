@@ -19,7 +19,11 @@ function processHaul(prev, dest)
 	outputDebugString("Bonus = "..bonus.."%")
 	outputDebugString("New amount = "..newAmount)
 	
-	exports.UCDdx:new(client, "Trucker: Load from "..sZ.." to "..eZ.." complete. You have been paid $"..formattedAmount..".", 255, 215, 0)
+	local dist2 = exports.UCDutil:mathround(distance / 1000, 2)
+	exports.UCDaccounts:SAD(client.account.name, "trucker", exports.UCDaccounts:GAD(client.account.name, "trucker") + dist2)
+	
+	exports.UCDdx:new(client, "Trucker: Load from "..sZ.." to "..eZ.." complete ("..tostring(dist2).." km). You have been paid $"..tostring(formattedAmount), 255, 215, 0)
+	
 	
 	if (client.vehicle) then
 		triggerClientEvent(client, "UCDtrucker.startHaul", client, client.vehicle, client.vehicleSeat)

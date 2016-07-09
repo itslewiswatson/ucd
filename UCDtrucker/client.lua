@@ -47,7 +47,23 @@ function calculateHaul()
 	b = Blip.createAttachedTo(m, 51)
 	exports.UCDdx:new("Trucker: "..text..getZoneName(pos)..", "..getZoneName(pos, true), 255, 215, 0)
 	
+	if (#getEventHandlers("onClientRender", root, displayDistance) == 0) then
+		addEventHandler("onClientRender", root, displayDistance)
+	end
+	
 	addEventHandler("onClientMarkerHit", m, onClientMarkerHit)
+end
+
+function displayDistance()
+	if (isHaul() and isElement(m)) then
+		local meas = "m"
+		local dist = math.floor(getDistanceBetweenPoints3D(localPlayer.position, m.position))
+		if (dist >= 1000) then
+			dist = exports.UCDutil:mathround(dist / 1000, 2)
+			meas = "km"
+		end
+		exports.UCDdx:add("truckerdist", "Distance: "..tostring(exports.UCDutil:tocomma(dist))..""..tostring(meas), 255, 215, 0)
+	end
 end
 
 function cancelHaul()
@@ -61,6 +77,10 @@ function cancelHaul()
 		curr = nil
 		prev = nil
 		hasHit = nil
+		if (#getEventHandlers("onClientRender", root, displayDistance) ~= 0) then
+			removeEventHandler("onClientRender", root, displayDistance)
+		end
+		exports.UCDdx:del("truckerdist")
 	end
 end
 addEventHandler("onClientPlayerVehicleExit", localPlayer, cancelHaul)
@@ -93,7 +113,7 @@ end
 function onCompleteUnload()
 	hasHit = nil
 	stopVehicle()
-	
+	exports.UCDdx:del("truckerdist")
 	if (prev) then
 		triggerServerEvent("UCDtrucker.processHaul", localPlayer, prev, curr)
 		cancelHaul()
@@ -101,3 +121,5 @@ function onCompleteUnload()
 		calculateHaul()
 	end
 end
+
+addEventHandler("onClientResourceStop", resourceRoot, function () exports.UCDdx:del("truckerdist") end)
