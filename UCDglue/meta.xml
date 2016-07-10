@@ -1,0 +1,6 @@
+<meta>
+	<info author="uPrell" name="glue" version="1.0" type="script"/>
+	<script src="glue_c.lua" type="client"/>
+	<script src="glue_s.lua" type="server"/>
+	<oop>true</oop>
+</meta>
