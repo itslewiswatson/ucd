@@ -10,12 +10,12 @@ addEventHandler("UCDbuilder.destroy", root, destroyObject)
 
 function sync(obj, pos)
 	if (client) then
-		local zones = getPlayerZones(client)
-		if (zones) then
-			if (not isPositionInZone(pos[1], pos[2], pos[3], zones[1])) then
+		--local zones = getPlayerZones(client)
+		--if (zones) then
+			if (not isPositionInZone(pos[1], pos[2], pos[3], 1)) then
 				return
 			end
-		end
+		--end
 	end
 	
 	obj.position = Vector3(pos[1], pos[2], pos[3])
@@ -38,14 +38,22 @@ end
 addCommandHandler("testobj", testObject)
 
 function toggleBuild(plr)
+	--[[
 	if (not exports.UCDchecking:canPlayerDoAction(plr, "Builder")) then return false end
 	
-	if (#getPlayerZones(plr) > 0 or exports.UCDadmin:getPlayerAdminRank(plr) >= 4) then
+	-- Set the player's action
+	if (exports.UCDactions:getAction(plr) == "Builder") then
+		exports.UCDactions:clearAction(plr)
+	else
+		exports.UCDactions:setAction(plr, "Builder")
+	end
+	
+	if (plr or exports.UCDadmin:getPlayerAdminRank(plr) >= 4) then
 		
 		local zoneID
 		for i, z in ipairs(idToZone) do
 			if (plr:isWithinColShape(z)) then
-				if (zones[i].account == plr.account.name or (plr:isWithinColShape(idToZone[i]) and exports.UCDadmin:getPlayerAdminRank(plr) >= 4)) then
+				if (zones[i].account == plr.account.name or (plr:isWithinColShape(idToZone[i]) and exports.UCDadmin:getPlayerAdminRank(plr))) then
 					zoneID = i
 					break
 				end
@@ -53,16 +61,8 @@ function toggleBuild(plr)
 		end
 		
 		if (zoneID) then
-			if (getZoneOwner(zoneID) == plr.account.name or authorizedToBuild[zoneID][plr.account.name] or exports.UCDadmin:getPlayerAdminRank(plr) >= 4) then
-				triggerClientEvent(plr, "UCDbuilder.toggleBuild", plr)
-				
-				--if (plr:getData("f") == true) then
-				--	plr:setData("f", false)
-				--else
-				--	plr:setData("f", true)
-				--end
-				--plr.frozen = plr:getData("f")
-				
+			if (getZoneOwner(zoneID) == plr.account.name or authorizedToBuild[zoneID][plr.account.name] or exports.UCDadmin:getPlayerAdminRank(plr)) then
+				triggerClientEvent(plr, "UCDbuilder.toggleBuild", plr)				
 			else
 				exports.UCDdx:new(plr, "You are not authorized to use Builder here", 255, 255, 255)
 			end
@@ -70,6 +70,8 @@ function toggleBuild(plr)
 			exports.UCDdx:new(plr, "You must be in a zone to use Builder", 255, 255, 255)
 		end
 	end
+	--]]
+	triggerClientEvent(plr, "UCDbuilder.toggleBuild", plr)	
 end
 addCommandHandler("builder", toggleBuild, false, false)
 
