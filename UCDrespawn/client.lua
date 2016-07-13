@@ -39,16 +39,20 @@ addEventHandler("onClientPlayerWasted", localPlayer,
 		end
 		
 		if not (getElementHealth(localPlayer) > 0) then
-			local hospitalDist = false
-			local nearestHospital = false
-			for i=1, #hospitalTable do
-				local pX, pY, pZ = getElementPosition(localPlayer)
-				local hX, hY, hZ = hospitalTable[i][2], hospitalTable[i][3], hospitalTable[i][4]
-				local distance = getDistanceBetweenPoints3D(pX, pY, pZ, hX, hY, hZ)
-				if not (hospitalDist) or (distance < hospitalDist) then
-					hospitalDist = distance
-					nearestHospital = i
+			if (not localPlayer:isWithinColShape(exports.UCDbr:getBank())) then
+				local hospitalDist = false
+				local nearestHospital = false
+				for i=1, #hospitalTable do
+					local pX, pY, pZ = getElementPosition(localPlayer)
+					local hX, hY, hZ = hospitalTable[i][2], hospitalTable[i][3], hospitalTable[i][4]
+					local distance = getDistanceBetweenPoints3D(pX, pY, pZ, hX, hY, hZ)
+					if not (hospitalDist) or (distance < hospitalDist) then
+						hospitalDist = distance
+						nearestHospital = i
+					end
 				end
+			else
+				nearestHospital = 1
 			end
 			
 			if (nearestHospital) then
