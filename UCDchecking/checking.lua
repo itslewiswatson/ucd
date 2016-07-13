@@ -25,6 +25,10 @@ local actions = {
 		{"a", "RobHouse", "AFK"},
 		{"i", 0}, {"d", 0}, {"s", "NoVehicle", "NoDead", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody"},
 	},
+	["BankRob"] = {
+		{"a", "Builder", "AFK", "RobHouse"},
+		{"s", "NoVehicle", "NoArrest", "NoCustody", "NoJailed", "NoDead"},
+	},
 }
 
 function canPlayerDoAction(plr, action)
