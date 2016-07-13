@@ -40,12 +40,12 @@ function IM.create()
 	guiGridListSetSortingEnabled(phone.im.gridlist["players"], false)
 	guiGridListSetSortingEnabled(phone.im.gridlist["friends"], false)
 
-	phone.im.button["mute"] = GuiButton(18, 506, 68, 23, "Mute", false, phone.image["phone_window"])
-	phone.im.button["add_friend"] = GuiButton(86, 506, 68, 23, "Add friend", false, phone.image["phone_window"])
+	--phone.im.button["mute"] = GuiButton(18, 506, 68, 23, "Mute", false, phone.image["phone_window"])
+	phone.im.button["add_friend"] = GuiButton(18, 506, 138, 23, "Add friend", false, phone.image["phone_window"])
 	phone.im.button["remove_friend"]= GuiButton(154, 506, 138, 23, "Remove friend", false, phone.image["phone_window"])
 	
 	IM.all = {
-		phone.im.button["mute"], phone.im.button["add_friend"], phone.im.button["remove_friend"], phone.im.gridlist["players"], phone.im.gridlist["friends"], phone.im.edit["msg"],
+		--[[phone.im.button["mute"],--]] phone.im.button["add_friend"], phone.im.button["remove_friend"], phone.im.gridlist["players"], phone.im.gridlist["friends"], phone.im.edit["msg"],
 		phone.im.edit["search_players"], phone.im.edit["search_friends"], phone.im.memo
 	}
 	for _, gui in pairs(IM.all) do

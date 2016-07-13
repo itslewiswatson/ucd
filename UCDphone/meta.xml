@@ -34,6 +34,8 @@
 	<script src="apps/browser/browser_c.lua" type="client"/>
 	<script src="apps/friends/friends_s.lua" type="server"/>
 	<script src="apps/friends/friends_c.lua" type="client"/>
+	<script src="apps/weather/weather_s.lua" type="server"/>
+	<script src="apps/weather/weather_c.lua" type="client"/>
 	
 	<script src="apps/apps.lua" type="client"/>
 	

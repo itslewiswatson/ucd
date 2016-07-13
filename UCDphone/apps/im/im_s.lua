@@ -17,6 +17,7 @@ addEventHandler("onPlayerLogin", root,
 		--IM.sendFriends(source)
 		--db:query(IM.loadFriends, {source}, "SELECT * FROM `sms_friends` WHERE `account` = ?", source.account.name)
 		IM.friends[source.account.name] = fromJSON(exports.UCDaccounts:GAD(source.account.name, "sms_friends")) or "[ [ ] ]"
+		IM.sendFriends(source)
 	end
 )
 
@@ -25,6 +26,7 @@ addEventHandler("onResourceStart", resourceRoot,
 		for _, plr in ipairs(exports.UCDaccounts:getLoggedInPlayers()) do
 			--db:query(IM.loadFriends, {plr}, "SELECT * FROM `sms_friends` WHERE `account` = ?", plr.account.name)
 			IM.friends[plr.account.name] = fromJSON(exports.UCDaccounts:GAD(plr.account.name, "sms_friends")) or "[ [ ] ]"
+			--IM.sendFriends(plr)
 		end
 	end
 )
