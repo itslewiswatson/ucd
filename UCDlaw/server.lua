@@ -73,6 +73,10 @@ function onHit(attacker, weapon, _, loss)
 	if (attacker and attacker.type == "player" and weapon == 3) then
 		--if (exports.UCDwanted:getWantedPoints(source) > 1 and attacker.team.name == "Law" and not isPlayerArrested(source)) then
 		if (isAbleToArrest(attacker, source)) then
+			
+			if (exports.UCDbankrob:isPlayerInBank(source) or exports.UCDbankrob:isPlayerInBank(attacker)) then
+				return false
+			end
 		
 			-- If they haven't been hit yet
 			if (not hits[source]) then
