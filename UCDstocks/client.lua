@@ -1,12 +1,18 @@
-GUI = {gridlist = {}, window = {}, button = {}, label = {}}
-buyGUI = {button = {}, window = {}, label = {}, edit = {}}
-historyGUI = {}
+local GUI = {gridlist = {}, window = {}, button = {}, label = {}}
+local buyGUI = {button = {}, window = {}, label = {}, edit = {}}
+local sellGUI = {button = {}, window = {}, label = {}, edit = {}}
+local historyGUI = {}
+
+local opens = 0
+function resetOpens()
+	opens = 0
+end
 
 addEvent("onClientStockMarketUpdate", true)
 addEventHandler("onClientStockMarketUpdate", root, 
 	function ()
 		exports.UCDdx:new("The stock market has updated", 255, 255, 255)
-		if (GUI.window.visible or buyGUI.window.visible) then
+		if (buyGUI.window.visible) then
 			buyGUI.window.visible = false
 		end
 	end
@@ -14,6 +20,7 @@ addEventHandler("onClientStockMarketUpdate", root,
 
 addEventHandler("onClientResourceStart", resourceRoot,
 	function ()
+		-- Buy
 		buyGUI.window = GuiWindow(571, 342, 285, 143, "UCD | Stock Market - Purchase", false)
 		buyGUI.window.sizable = false
 		buyGUI.window.visible = false
@@ -25,6 +32,20 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		buyGUI.button[2] = GuiButton(152, 97, 122, 37, "Close", false, buyGUI.window)
 		buyGUI.label = GuiLabel(9, 25, 265, 17, "Buying stock options of ", false, buyGUI.window)
 		guiLabelSetHorizontalAlign(buyGUI.label, "center", false)
+		
+		-- Sell
+		sellGUI.window = GuiWindow(571, 342, 285, 143, "UCD | Stock Market - Sell", false)
+		sellGUI.window.sizable = false
+		sellGUI.window.visible = false
+		sellGUI.window.alpha = 1
+		exports.UCDutil:centerWindow(sellGUI.window)
+		
+		sellGUI.edit = GuiEdit(9, 52, 266, 35, "", false, sellGUI.window)
+		sellGUI.button[1] = GuiButton(9, 97, 122, 37, "Sell", false, sellGUI.window)
+		sellGUI.button[2] = GuiButton(152, 97, 122, 37, "Close", false, sellGUI.window)
+		sellGUI.label = GuiLabel(9, 25, 265, 17, "Buying stock options of ", false, sellGUI.window)
+		guiLabelSetHorizontalAlign(sellGUI.label, "center", false)
+		
 		
 		historyGUI.window = GuiWindow(539, 278, 359, 240, "UCD | Stock Market - History", false)
         historyGUI.window.sizable = false
@@ -91,9 +112,13 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		addEventHandler("onClientGUIClick", GUI.gridlist["all"], onClickStock, false)
 		addEventHandler("onClientGUIClick", GUI.gridlist["own"], onClickStock, false)
 		addEventHandler("onClientGUIClick", GUI.button["all.buy_shares"], onClickBuyStock, false)
+		addEventHandler("onClientGUIClick", GUI.button["own.sell_shares"], onClickSellStock, false)
+		addEventHandler("onClientGUIClick", sellGUI.button[2], onClickSellStock, false)
+		addEventHandler("onClientGUIClick", sellGUI.button[1], onSellStock, false)
 		addEventHandler("onClientGUIClick", buyGUI.button[2], onClickBuyStock, false)
 		addEventHandler("onClientGUIClick", buyGUI.button[1], onBuyStock, false)
-		addEventHandler("onClientGUIChanged", buyGUI.edit, onClientGUIChanged, false)
+		addEventHandler("onClientGUIChanged", sellGUI.edit, onSellStockChanged, false)
+		addEventHandler("onClientGUIChanged", buyGUI.edit, onBuyStockChanged, false)
 		addEventHandler("onClientGUIClick", GUI.button["all.view_history"], showHistory, false)
 		addEventHandler("onClientGUIClick", historyGUI.button, showHistory, false)
 	end
@@ -179,13 +204,20 @@ function toggleGUI(updateOnly, data, own)
 			buyGUI.window.visible = false
 			buyGUI.edit.text = "1"
 		else
+			if (opens >= 1) then
+				exports.UCDdx:new("To conserve server resources, you can only view stocks once every 15 seconds", 255, 0, 0)
+				return
+			end
+			opens = opens + 1
 			triggerServerEvent("UCDstocks.getStocks", localPlayer)
+			Timer(resetOpens, 15000, 1)
 		end
 	end
 end
 addEvent("UCDstocks.toggleGUI", true)
 addEventHandler("UCDstocks.toggleGUI", root, toggleGUI)
 addCommandHandler("stocks", toggleGUI)
+bindKey("F7", "up", "stocks")
 
 function showHistory(data)
 	if (type(data) == "table") then
@@ -220,7 +252,6 @@ function onClickStock()
 		local acronym = guiGridListGetItemText(GUI.gridlist["all"], row, 1)
 		local data = _stocks[acronym]
 		
-		--local totalworth = math.floor(data[5] * data[4])
 		local totalworth = exports.UCDutil:mathround(data[2] * data[5], 2)
 		local available = data[6]
 		local sg
@@ -299,10 +330,11 @@ function onClickBuyStock()
 	end
 end
 
-function onClientGUIChanged()
+function onBuyStockChanged()
 	if (not stockBuying) then return end
 	local text = buyGUI.edit.text
 	text = text:gsub(",", "")
+	text = text:gsub(" ", "")
 	if (not tonumber(text)) then
 		return
 	end
@@ -323,7 +355,7 @@ function onClientGUIChanged()
 		
 		return
 	end
-	buyGUI.button[1].text = "Buy ($"..tostring(exports.UCDutil:tocomma(math.floor(exports.UCDutil:mathround(i))))..")"
+	buyGUI.button[1].text = "Buy ($"..tostring(exports.UCDutil:tocomma(math.floor(i)))..")"
 end
 
 function onBuyStock()
@@ -339,7 +371,7 @@ function onBuyStock()
 		return
 	end
 	if (_stocks[stockBuying][6] < qty) then
-		exports.UCDdx:new("There aren't that many stock available of "..stockBuying.." "..tostring(_stocks[stockBuying][6])..")", 255, 0, 0)
+		exports.UCDdx:new("There aren't that many stock available of "..stockBuying.." ("..tostring(_stocks[stockBuying][6])..")", 255, 0, 0)
 		return
 	end
 	if (_stocks[stockBuying][8] > qty) then
@@ -355,4 +387,68 @@ end
 
 function onSellStock()
 	local qty = sellGUI.edit.text
+	qty = qty:gsub(",", "")
+	if (not tonumber(qty)) then
+		return
+	end
+	qty = tonumber(qty)
+	local approxPrice = qty * _stocks[stockSelling][2]
+	if (_stocks[stockSelling][2] * qty ~= approxPrice) then
+		outputDebugString("Math error")
+		return
+	end
+	if (_own[stockSelling][1] < qty) then
+		exports.UCDdx:new("You don't own this many stock of "..stockSelling.." ("..tostring(exports.UCDutil:tocomma(_own[stockSelling][1]))..")", 255, 0, 0)
+		return
+	end
+	if (_stocks[stockSelling][8] > qty) then
+		exports.UCDdx:new("You must at sell at least the minimum sellout amount for this stock ("..tostring(_stocks[stockSelling][8])..")", 255, 0, 0)
+		return
+	end
+end
+
+function onClickSellStock()
+	sellGUI.window.visible = not sellGUI.window.visible
+	sellGUI.edit.text = "1"
+	guiBringToFront(sellGUI.window)
+	if (sellGUI.window.visible) then
+		local row = guiGridListGetSelectedItem(GUI.gridlist["own"])
+		if (row and row ~= -1) then
+			local acronym = guiGridListGetItemText(GUI.gridlist["own"], row, 1)
+			sellGUI.label.text = "Selling stock options of "..acronym
+			sellGUI.button[1].text = "Sell ($"..tostring(exports.UCDutil:tocomma(math.floor(_stocks[acronym][2])))..")"
+			stockSelling = acronym
+		end
+	else
+		stockSelling = nil
+	end
+end
+function onSellStockChanged()
+	if (not stockSelling) then return end
+	local text = sellGUI.edit.text
+	text = text:gsub(",", "")
+	text = text:gsub(" ", "")
+	if (not tonumber(text)) then
+		return
+	end
+	sellGUI.edit.text = exports.UCDutil:tocomma(text)
+	if (tonumber(text) < 1) then
+		sellGUI.edit.text = "1"
+		text = 1
+	end
+	local own = _own[stockSelling][1] -- How many shares client has
+	if (tonumber(text) >= own) then
+		sellGUI.edit.text = exports.UCDutil:tocomma(own)
+		text = own
+	end
+	if (not getKeyState("backspace")) then
+		guiEditSetCaretIndex(sellGUI.edit, sellGUI.edit.text:len())
+	end
+	local price = _stocks[stockSelling][2]
+	local stockCount = _stocks[stockSelling][6]
+	local i = price * tonumber(text)
+	if (i > price * stockCount) then
+		return
+	end
+	sellGUI.button[1].text = "Sell ($"..tostring(exports.UCDutil:tocomma(math.floor(i)))..")"
 end

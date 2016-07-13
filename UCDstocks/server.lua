@@ -79,22 +79,6 @@ function getPlayerStocks(plr)
 			end
 		end
 		if (own and own[acronym] and #own[acronym] > 0) then
-			-- OLD METHOD
-			--[[
-			local p = 0
-			local result = db:query("SELECT `price` FROM `stocks__transactions` WHERE `account` = ? AND `acronym` = ? AND `action` = ?", plr.account.name, acronym, "bought"):poll(-1)
-			if (result and #result > 0) then
-				for i = 1, #result do
-					if (result[i + 1]) then
-						p = result[i].price + result[i + 1].price
-					else
-						p = p + result[i].price
-					end
-				end
-				table.insert(own[acronym], p)
-				--outputDebugString(#own[acronym])
-			end
-			]]--
 			local p = 0
 			local result = db:query("SELECT `price`, `action` FROM `stocks__transactions` WHERE `account` = ? AND `acronym` = ? ORDER BY `transacID` DESC", plr.account.name, acronym):poll(-1)
 			if (result and #result >= 1) then
@@ -104,11 +88,10 @@ function getPlayerStocks(plr)
 					elseif (result[i].action == "bought") then
 						p = p + result[i].price
 					else
-						outputDebugString("Erorr: wrong action in getPlayerStocks for "..tostring(plr.name).." in stock "..tostring(acronym))
+						outputDebugString("Error: wrong action in getPlayerStocks for "..tostring(plr.name).." in stock "..tostring(acronym))
 					end
 				end
 				table.insert(own[acronym], p)
-				--outputDebugString(tostring(acronym).." -> "..tostring(p))
 			end
 		end
 	end
@@ -275,9 +258,9 @@ function updateStockMarket()
 		
 		stocks[name]["prev"] = currPrice
 		stocks[name]["price"] = math.random(low, high)
-		triggerEvent("onStockMarketUpdate", resourceRoot)
 		--appendStockHistory(name)
 	end
+	triggerEvent("onStockMarketUpdate", resourceRoot)
 end
 addCommandHandler("fuckstocks", updateStockMarket)
 Timer(updateStockMarket, (25 * 60) * 1000, 1)
