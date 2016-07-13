@@ -1,5 +1,5 @@
 ammoConfirm = {button = {}, window = {}, edit = {}}
-ammuGUI = {button = {}, window = {}, staticimage = {}, label = {}}
+ammuGUI = {button = {}, window = {}, staticimage = {}, label = {}, scrollpane = {}}
 
 local buttonToID = {
 	[1] = 22, [2] = 24, [3] = 23, [4] = 25, [5] = 26, [6] = 27, [7] = 30, [8] = 31, [9] = 28, [10] = 32, [11] = 29, [12] = 33, [13] = 34, [14] = 38, [30] = 16, [31] = 18, [32] = 39, [33] = 17,
@@ -33,88 +33,155 @@ addEventHandler("UCDammunation.update", root, updateGUI)
 
 function createGUI()
 	
-	ammuGUI.window[1] = guiCreateWindow(564, 264, 806	, 574, "UCD | Ammunation", false)
-	ammuGUI.window[1].alpha = 230
-	ammuGUI.window[1].sizable = false
-	ammuGUI.window[1].visible = false
-	exports.UCDutil:centerWindow(ammuGUI.window[1])
+        ammuGUI.window = GuiWindow(181, 100, 375, 546, "UCD | Ammunation", false)
+        ammuGUI.window.alpha = 230
+		ammuGUI.window.sizable = false
+		ammuGUI.window.visible = false
+		exports.UCDutil:centerWindow(ammuGUI.window)
+		
+        ammuGUI.scrollpane = guiCreateScrollPane(9, 24, 356, 479, false, ammuGUI.window)
+		
+		local all = {
+			{"colt 45", "Colt .45", prices[22][1], prices[22][2]},
+			{"deagle", "Deagle", prices[23][1], prices[23][2]},
+			{"silenced", "Silenced", prices[24][1], prices[24][2]},
+			{"shotgun", "Shotgun", prices[25][1], prices[25][2]},
+			{"combat shotgun", "SPAS-12", prices[26][1], prices[26][2]},
+			{"sawed-off", "Sawn-off\nShotgun", prices[27][1], prices[27][2]},
+			{"uzi", "Uzi", prices[28][1], prices[28][2]},
+			{"mp5", "MP5", prices[29][1], prices[29][2]},
+			{"tec-9", "Tec-9", prices[32][1], prices[32][2]},
+			{"ak-47", "AK-47", prices[30][1], prices[30][2]},
+			{"m4", "M4", prices[31][1], prices[31][2]},
+			{"rifle", "Country Rifle", prices[33][1], prices[33][2]},
+			{"sniper", "Sniper Rifle", prices[34][1], prices[34][2]},
+			{"minigun", "Minigun", prices[38][1], prices[38][2]},
+			
+			{"grenade", "Grenade", prices[16][2]},
+			{"molotov", "Molotov", prices[18][2]},
+			{"satchel", "Satchel", prices[17][2]},
+			{"teargas", "Teargas", prices[39][2]},
+		}
+		
+		for i = 1, #all do
+			local pos = i * 64
+			if i == 0 then pos = 0 end
+			
+			ammuGUI.staticimage[i] = guiCreateStaticImage(0, pos, 64, 64, ":UCDhud/icons/"..all[i][1]..".png", false, ammuGUI.scrollpane)
+			ammuGUI.label[i] = guiCreateLabel(64, pos, 92, 64, tostring(all[i][2]), false, ammuGUI.scrollpane)
+			
+			if (i <= 14) then
+				ammuGUI.button[i] = GuiButton(156, pos + 6, 84, 53, "Buy Weapon ($"..tostring(exports.UCDutil:tocomma(all[i][3]))..")", false, ammuGUI.scrollpane)
+				ammuGUI.button[i + 14] = GuiButton(248, pos + 6, 84, 53, "Buy Ammo\n($"..tostring(all[i][4])..")", false, ammuGUI.scrollpane)
+			else
+				local t = "Buy a "..all[i][1]
+				if (t == "Buy a teargas") then
+					t = "Buy teargas"
+				end
+				-- Armour needs to be 29 for compatibility reasons
+				local x = i
+				if (x + 14 >= 29) then
+					x = x + 1
+				end
+				ammuGUI.button[x + 14] = GuiButton(156, pos + 6, 175, 53, tostring(t).."\n("..tostring(exports.UCDutil:tocomma(all[i][3]))..")", false, ammuGUI.scrollpane)
+			end
+		end
+		
+		ammuGUI.button[29] = GuiButton(0, ((38 / 2) * 64) + 6, 330, 53, "Buy Armour\n($1,000)", false, ammuGUI.scrollpane) -- Hacky fix I'm not proud of
+        ammuGUI.button[29].enabled = false
+		ammuGUI.button[34] = GuiButton(10, 513, 355, 23, "Close", false, ammuGUI.window)
+		
+		for i = 1, #ammuGUI.label do
+			guiLabelSetHorizontalAlign(ammuGUI.label[i], "center", false)
+			guiLabelSetVerticalAlign(ammuGUI.label[i], "center")
+		end
+		
+		addEventHandler("onClientGUIClick", ammuGUI.window, handleClick)
 	
-	ammuGUI.label[1] = guiCreateLabel(84, 30, 72, 64, "Colt .45", false, ammuGUI.window[1])
-	ammuGUI.label[2] = guiCreateLabel(84, 94, 72, 64, "Desert Eagle", false, ammuGUI.window[1])
-	ammuGUI.label[3] = guiCreateLabel(84, 158, 72, 64, "Silenced", false, ammuGUI.window[1])
-	ammuGUI.label[4] = guiCreateLabel(84, 286, 72, 64, "Sawn-off\n Shotgun", false, ammuGUI.window[1])
-	ammuGUI.label[5] = guiCreateLabel(84, 350, 72, 64, "SPAS-12", false, ammuGUI.window[1])
-	ammuGUI.label[6] = guiCreateLabel(84, 222, 72, 64, "Shotgun", false, ammuGUI.window[1])
-	ammuGUI.label[7] = guiCreateLabel(84, 414, 72, 64, "AK-47", false, ammuGUI.window[1])
-	ammuGUI.label[8] = guiCreateLabel(84, 478, 72, 64, "M4", false, ammuGUI.window[1])
-	ammuGUI.label[9] = guiCreateLabel(458, 30, 72, 64, "Uzi", false, ammuGUI.window[1])
-	ammuGUI.label[10] = guiCreateLabel(458, 94, 72, 64, "Tec-9", false, ammuGUI.window[1])
-	ammuGUI.label[11] = guiCreateLabel(458, 158, 72, 64, "MP5", false, ammuGUI.window[1])
-	ammuGUI.label[12] = guiCreateLabel(458, 222, 72, 64, "Country Rifle", false, ammuGUI.window[1])
-	ammuGUI.label[13] = guiCreateLabel(458, 286, 72, 64, "Sniper Rifle", false, ammuGUI.window[1])
+	--[[
+	ammuGUI.window = GuiWindow(564, 264, 806	, 574, "UCD | Ammunation", false)
+	ammuGUI.window.alpha = 230
+	ammuGUI.window.sizable = false
+	ammuGUI.window.visible = false
+	exports.UCDutil:centerWindow(ammuGUI.window)
+	
+	ammuGUI.label[1] = GuiLabel(84, 30, 72, 64, "Colt .45", false, ammuGUI.window)
+	ammuGUI.label[2] = GuiLabel(84, 94, 72, 64, "Desert Eagle", false, ammuGUI.window)
+	ammuGUI.label[3] = GuiLabel(84, 158, 72, 64, "Silenced", false, ammuGUI.window)
+	ammuGUI.label[4] = GuiLabel(84, 286, 72, 64, "Sawn-off\n Shotgun", false, ammuGUI.window)
+	ammuGUI.label[5] = GuiLabel(84, 350, 72, 64, "SPAS-12", false, ammuGUI.window)
+	ammuGUI.label[6] = GuiLabel(84, 222, 72, 64, "Shotgun", false, ammuGUI.window)
+	ammuGUI.label[7] = GuiLabel(84, 414, 72, 64, "AK-47", false, ammuGUI.window)
+	ammuGUI.label[8] = GuiLabel(84, 478, 72, 64, "M4", false, ammuGUI.window)
+	ammuGUI.label[9] = GuiLabel(458, 30, 72, 64, "Uzi", false, ammuGUI.window)
+	ammuGUI.label[10] = GuiLabel(458, 94, 72, 64, "Tec-9", false, ammuGUI.window)
+	ammuGUI.label[11] = GuiLabel(458, 158, 72, 64, "MP5", false, ammuGUI.window)
+	ammuGUI.label[12] = GuiLabel(458, 222, 72, 64, "Country Rifle", false, ammuGUI.window)
+	ammuGUI.label[13] = GuiLabel(458, 286, 72, 64, "Sniper Rifle", false, ammuGUI.window)
 	for i = 1, 13 do
 		guiLabelSetHorizontalAlign(ammuGUI.label[i], "center", false)
 		guiLabelSetVerticalAlign(ammuGUI.label[i], "center")
 	end
 	
-	ammuGUI.button[1] = guiCreateButton(166, 36, 78, 48, "Buy Weapon\n($12,000)", false, ammuGUI.window[1]) -- Colt
-	ammuGUI.button[2] = guiCreateButton(166, 104, 78, 48, "Buy Weapon\n($24,000)", false, ammuGUI.window[1]) -- Deagle
-	ammuGUI.button[3] = guiCreateButton(166, 168, 78, 48, "Buy Weapon\n($18,000)", false, ammuGUI.window[1]) -- Silenced
-	ammuGUI.button[4] = guiCreateButton(166, 232, 78, 48, "Buy Weapon\n($36,000)", false, ammuGUI.window[1]) -- Shotgun
-	ammuGUI.button[5] = guiCreateButton(166, 296, 78, 48, "Buy Weapon\n($40,000)", false, ammuGUI.window[1]) -- Sawn-off
-	ammuGUI.button[6] = guiCreateButton(166, 360, 78, 48, "Buy Weapon\n($47,000)", false, ammuGUI.window[1]) -- SPAS-12
-	ammuGUI.button[7] = guiCreateButton(166, 424, 78, 48, "Buy Weapon\n($56,000)", false, ammuGUI.window[1]) -- AK-47
-	ammuGUI.button[8] = guiCreateButton(166, 488, 78, 48, "Buy Weapon\n($69,000)", false, ammuGUI.window[1]) -- M4
-	ammuGUI.button[9] = guiCreateButton(530, 36, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window[1]) -- Uzi
-	ammuGUI.button[10] = guiCreateButton(530, 104, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window[1]) -- Tec-9
-	ammuGUI.button[11] = guiCreateButton(530, 168, 78, 48, "Buy Weapon\n($18,000)", false, ammuGUI.window[1]) -- MP5
-	ammuGUI.button[12] = guiCreateButton(530, 232, 78, 48, "Buy Weapon\n($32,000)", false, ammuGUI.window[1]) -- Country Rifle
-	ammuGUI.button[13] = guiCreateButton(530, 296, 78, 48, "Buy Weapon\n($75,000)", false, ammuGUI.window[1]) -- Sniper Rifle
-	ammuGUI.button[14] = guiCreateButton(715, 104, 78, 48, "Buy MG-42\n($5,000,000)", false, ammuGUI.window[1])
+	ammuGUI.button[1] = GuiButton(166, 36, 78, 48, "Buy Weapon\n($12,000)", false, ammuGUI.window) -- Colt
+	ammuGUI.button[2] = GuiButton(166, 104, 78, 48, "Buy Weapon\n($24,000)", false, ammuGUI.window) -- Deagle
+	ammuGUI.button[3] = GuiButton(166, 168, 78, 48, "Buy Weapon\n($18,000)", false, ammuGUI.window) -- Silenced
+	ammuGUI.button[4] = GuiButton(166, 232, 78, 48, "Buy Weapon\n($36,000)", false, ammuGUI.window) -- Shotgun
+	ammuGUI.button[5] = GuiButton(166, 296, 78, 48, "Buy Weapon\n($40,000)", false, ammuGUI.window) -- Sawn-off
+	ammuGUI.button[6] = GuiButton(166, 360, 78, 48, "Buy Weapon\n($47,000)", false, ammuGUI.window) -- SPAS-12
+	ammuGUI.button[7] = GuiButton(166, 424, 78, 48, "Buy Weapon\n($56,000)", false, ammuGUI.window) -- AK-47
+	ammuGUI.button[8] = GuiButton(166, 488, 78, 48, "Buy Weapon\n($69,000)", false, ammuGUI.window) -- M4
+	ammuGUI.button[9] = GuiButton(530, 36, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window) -- Uzi
+	ammuGUI.button[10] = GuiButton(530, 104, 78, 48, "Buy Weapon\n($25,000)", false, ammuGUI.window) -- Tec-9
+	ammuGUI.button[11] = GuiButton(530, 168, 78, 48, "Buy Weapon\n($18,000)", false, ammuGUI.window) -- MP5
+	ammuGUI.button[12] = GuiButton(530, 232, 78, 48, "Buy Weapon\n($32,000)", false, ammuGUI.window) -- Country Rifle
+	ammuGUI.button[13] = GuiButton(530, 296, 78, 48, "Buy Weapon\n($75,000)", false, ammuGUI.window) -- Sniper Rifle
+	ammuGUI.button[14] = GuiButton(715, 104, 78, 48, "Buy MG-42\n($5,000,000)", false, ammuGUI.window)
 	
-	ammuGUI.button[15] = guiCreateButton(254, 36, 78, 48, "Buy Ammo\n($3)", false, ammuGUI.window[1]) -- Colt
-	ammuGUI.button[16] = guiCreateButton(254, 104, 78, 48, "Buy Ammo\n($20)", false, ammuGUI.window[1]) -- Deagle
-	ammuGUI.button[17] = guiCreateButton(254, 168, 78, 48, "Buy Ammo\n($3)", false, ammuGUI.window[1]) -- Silenced
-	ammuGUI.button[18] = guiCreateButton(254, 232, 78, 48, "Buy Ammo\n($30)", false, ammuGUI.window[1]) -- Shotgun
-	ammuGUI.button[19] = guiCreateButton(254, 296, 78, 48, "Buy Ammo\n($30)", false, ammuGUI.window[1]) -- Sawn-off
-	ammuGUI.button[20] = guiCreateButton(254, 360, 78, 48, "Buy Ammo\n($30)", false, ammuGUI.window[1]) -- SPAS-12
-	ammuGUI.button[21] = guiCreateButton(254, 424, 78, 48, "Buy Ammo\n($16)", false, ammuGUI.window[1]) -- AK-47
-	ammuGUI.button[22] = guiCreateButton(254, 488, 78, 48, "Buy Ammo\n($16)", false, ammuGUI.window[1]) -- M4
-	ammuGUI.button[23] = guiCreateButton(618, 36, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window[1]) -- Uzi
-	ammuGUI.button[24] = guiCreateButton(618, 104, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window[1]) -- Tec-9
-	ammuGUI.button[25] = guiCreateButton(618, 168, 78, 48, "Buy Ammo\n($8)", false, ammuGUI.window[1]) -- MP5
-	ammuGUI.button[26] = guiCreateButton(618, 232, 78, 48, "Buy Ammo\n($50)", false, ammuGUI.window[1]) -- Country Rifle
-	ammuGUI.button[27] = guiCreateButton(618, 296, 78, 48, "Buy Ammo\n($100)", false, ammuGUI.window[1]) -- Sniper
-	ammuGUI.button[28] = guiCreateButton(715, 168, 78, 48, "Buy MG-42 ammo\n($12)", false, ammuGUI.window[1])
+	ammuGUI.button[15] = GuiButton(254, 36, 78, 48, "Buy Ammo\n($3)", false, ammuGUI.window) -- Colt
+	ammuGUI.button[16] = GuiButton(254, 104, 78, 48, "Buy Ammo\n($20)", false, ammuGUI.window) -- Deagle
+	ammuGUI.button[17] = GuiButton(254, 168, 78, 48, "Buy Ammo\n($3)", false, ammuGUI.window) -- Silenced
+	ammuGUI.button[18] = GuiButton(254, 232, 78, 48, "Buy Ammo\n($30)", false, ammuGUI.window) -- Shotgun
+	ammuGUI.button[19] = GuiButton(254, 296, 78, 48, "Buy Ammo\n($30)", false, ammuGUI.window) -- Sawn-off
+	ammuGUI.button[20] = GuiButton(254, 360, 78, 48, "Buy Ammo\n($30)", false, ammuGUI.window) -- SPAS-12
+	ammuGUI.button[21] = GuiButton(254, 424, 78, 48, "Buy Ammo\n($16)", false, ammuGUI.window) -- AK-47
+	ammuGUI.button[22] = GuiButton(254, 488, 78, 48, "Buy Ammo\n($16)", false, ammuGUI.window) -- M4
+	ammuGUI.button[23] = GuiButton(618, 36, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window) -- Uzi
+	ammuGUI.button[24] = GuiButton(618, 104, 78, 48, "Buy Ammo\n($10)", false, ammuGUI.window) -- Tec-9
+	ammuGUI.button[25] = GuiButton(618, 168, 78, 48, "Buy Ammo\n($8)", false, ammuGUI.window) -- MP5
+	ammuGUI.button[26] = GuiButton(618, 232, 78, 48, "Buy Ammo\n($50)", false, ammuGUI.window) -- Country Rifle
+	ammuGUI.button[27] = GuiButton(618, 296, 78, 48, "Buy Ammo\n($100)", false, ammuGUI.window) -- Sniper
+	ammuGUI.button[28] = GuiButton(715, 168, 78, 48, "Buy MG-42 ammo\n($12)", false, ammuGUI.window)
 	
-	ammuGUI.button[29] = guiCreateButton(715, 36, 78, 48, "Buy Armour\n($1000)", false, ammuGUI.window[1])
+	ammuGUI.button[29] = GuiButton(715, 36, 78, 48, "Buy Armour\n($1000)", false, ammuGUI.window)
 	
-	ammuGUI.button[30] = guiCreateButton(469, 380, 94, 54, "Buy a grenade\n($2,000)", false, ammuGUI.window[1])
-	ammuGUI.button[31] = guiCreateButton(469, 466, 94, 54, "Buy a molotov\n($1,500)", false, ammuGUI.window[1])
-	ammuGUI.button[32] = guiCreateButton(686, 380, 94, 54, "Buy a satchel charge\n($2,000)", false, ammuGUI.window[1])
-	ammuGUI.button[33] = guiCreateButton(686, 466, 94, 54, "Buy tear gas\n($1,500)", false, ammuGUI.window[1])
+	ammuGUI.button[30] = GuiButton(469, 380, 94, 54, "Buy a grenade\n($2,000)", false, ammuGUI.window)
+	ammuGUI.button[31] = GuiButton(469, 466, 94, 54, "Buy a molotov\n($1,500)", false, ammuGUI.window)
+	ammuGUI.button[32] = GuiButton(686, 380, 94, 54, "Buy a satchel charge\n($2,000)", false, ammuGUI.window)
+	ammuGUI.button[33] = GuiButton(686, 466, 94, 54, "Buy tear gas\n($1,500)", false, ammuGUI.window)
 	
-	ammuGUI.button[34] = guiCreateButton(659, 538, 135, 26, "Close", false, ammuGUI.window[1])
+	ammuGUI.button[34] = GuiButton(659, 538, 135, 26, "Close", false, ammuGUI.window)
 	
-	addEventHandler("onClientGUIClick", ammuGUI.window[1], handleClick)
+	addEventHandler("onClientGUIClick", ammuGUI.window, handleClick)
 	
-	ammuGUI.staticimage[1] = guiCreateStaticImage(10, 30, 64, 64, ":UCDhud/icons/colt 45.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[2] = guiCreateStaticImage(10, 94, 64, 64, ":UCDhud/icons/deagle.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[3] = guiCreateStaticImage(10, 158, 64, 64, ":UCDhud/icons/silenced.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[4] = guiCreateStaticImage(10, 222, 64, 64, ":UCDhud/icons/shotgun.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[5] = guiCreateStaticImage(10, 286, 64, 64, ":UCDhud/icons/sawed-off.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[6] = guiCreateStaticImage(10, 350, 64, 64, ":UCDhud/icons/combat shotgun.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[7] = guiCreateStaticImage(10, 414, 64, 64, ":UCDhud/icons/ak-47.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[8] = guiCreateStaticImage(10, 478, 64, 64, ":UCDhud/icons/m4.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[9] = guiCreateStaticImage(374, 30, 64, 64, ":UCDhud/icons/uzi.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[10] = guiCreateStaticImage(374, 94, 64, 64, ":UCDhud/icons/tec-9.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[11] = guiCreateStaticImage(374, 158, 64, 64, ":UCDhud/icons/mp5.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[12] = guiCreateStaticImage(374, 222, 64, 64, ":UCDhud/icons/rifle.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[13] = guiCreateStaticImage(374, 286, 64, 64, ":UCDhud/icons/sniper.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[14] = guiCreateStaticImage(374, 365, 85, 85, ":UCDhud/icons/grenade.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[15] = guiCreateStaticImage(374, 450, 85, 85, ":UCDhud/icons/molotov.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[16] = guiCreateStaticImage(590, 365, 85, 85, ":UCDhud/icons/satchel.png", false, ammuGUI.window[1])
-	ammuGUI.staticimage[17] = guiCreateStaticImage(590, 450, 85, 85, ":UCDhud/icons/teargas.png", false, ammuGUI.window[1])
+	ammuGUI.staticimage[1] = guiCreateStaticImage(10, 30, 64, 64, ":UCDhud/icons/colt 45.png", false, ammuGUI.window)
+	ammuGUI.staticimage[2] = guiCreateStaticImage(10, 94, 64, 64, ":UCDhud/icons/deagle.png", false, ammuGUI.window)
+	ammuGUI.staticimage[3] = guiCreateStaticImage(10, 158, 64, 64, ":UCDhud/icons/silenced.png", false, ammuGUI.window)
+	ammuGUI.staticimage[4] = guiCreateStaticImage(10, 222, 64, 64, ":UCDhud/icons/shotgun.png", false, ammuGUI.window)
+	ammuGUI.staticimage[5] = guiCreateStaticImage(10, 286, 64, 64, ":UCDhud/icons/sawed-off.png", false, ammuGUI.window)
+	ammuGUI.staticimage[6] = guiCreateStaticImage(10, 350, 64, 64, ":UCDhud/icons/combat shotgun.png", false, ammuGUI.window)
+	ammuGUI.staticimage[7] = guiCreateStaticImage(10, 414, 64, 64, ":UCDhud/icons/ak-47.png", false, ammuGUI.window)
+	ammuGUI.staticimage[8] = guiCreateStaticImage(10, 478, 64, 64, ":UCDhud/icons/m4.png", false, ammuGUI.window)
+	ammuGUI.staticimage[9] = guiCreateStaticImage(374, 30, 64, 64, ":UCDhud/icons/uzi.png", false, ammuGUI.window)
+	ammuGUI.staticimage[10] = guiCreateStaticImage(374, 94, 64, 64, ":UCDhud/icons/tec-9.png", false, ammuGUI.window)
+	ammuGUI.staticimage[11] = guiCreateStaticImage(374, 158, 64, 64, ":UCDhud/icons/mp5.png", false, ammuGUI.window)
+	ammuGUI.staticimage[12] = guiCreateStaticImage(374, 222, 64, 64, ":UCDhud/icons/rifle.png", false, ammuGUI.window)
+	ammuGUI.staticimage[13] = guiCreateStaticImage(374, 286, 64, 64, ":UCDhud/icons/sniper.png", false, ammuGUI.window)
+	ammuGUI.staticimage[14] = guiCreateStaticImage(374, 365, 85, 85, ":UCDhud/icons/grenade.png", false, ammuGUI.window)
+	ammuGUI.staticimage[15] = guiCreateStaticImage(374, 450, 85, 85, ":UCDhud/icons/molotov.png", false, ammuGUI.window)
+	ammuGUI.staticimage[16] = guiCreateStaticImage(590, 365, 85, 85, ":UCDhud/icons/satchel.png", false, ammuGUI.window)
+	ammuGUI.staticimage[17] = guiCreateStaticImage(590, 450, 85, 85, ":UCDhud/icons/teargas.png", false, ammuGUI.window)
+	--]]
 	
 	ammoConfirm.window[1] = guiCreateWindow(1417, 441, 331, 108, "UCD | Ammunation - Ammo", false)
 	exports.UCDutil:centerWindow(ammoConfirm.window[1])
@@ -123,8 +190,8 @@ function createGUI()
 	ammoConfirm.window[1].visible = false
 	ammoConfirm.edit[1] = guiCreateEdit(9, 24, 312, 33, "", false, ammoConfirm.window[1])
 	ammoConfirm.edit[1].maxLength = 4
-	ammoConfirm.button[1] = guiCreateButton(10, 65, 148, 34, "Buy", false, ammoConfirm.window[1])
-	ammoConfirm.button[2] = guiCreateButton(173, 65, 148, 34, "Close", false, ammoConfirm.window[1])
+	ammoConfirm.button[1] = GuiButton(10, 65, 148, 34, "Buy", false, ammoConfirm.window[1])
+	ammoConfirm.button[2] = GuiButton(173, 65, 148, 34, "Close", false, ammoConfirm.window[1])
 	addEventHandler("onClientGUIClick", ammoConfirm.button[1], onClickAmmoBuy, false)
 	addEventHandler("onClientGUIClick", ammoConfirm.button[2], toggleAmmoConfirmation, false)
 	addEventHandler("onClientGUIChanged", ammoConfirm.edit[1], onAmmoConfirmationChanged, false)
@@ -132,8 +199,8 @@ end
 addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 
 function toggleGUI(tbl)
-	ammuGUI.window[1].visible = not ammuGUI.window[1].visible
-	showCursor(ammuGUI.window[1].visible)
+	ammuGUI.window.visible = not ammuGUI.window.visible
+	showCursor(ammuGUI.window.visible)
 	if (tbl and type(tbl) == "table") then
 		updateGUI(tbl)
 	end
