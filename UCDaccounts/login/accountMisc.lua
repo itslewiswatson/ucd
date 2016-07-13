@@ -11,10 +11,16 @@ function registerAccount(plr, usr, passwd, email)
 	end
 
 	-- Hash the user's passwd [Make reconsiderations with forum account sync]
-	local salt = bcrypt_salt(6)
-	local passwd_ = bcrypt_digest(passwd, salt)
+	--local salt = bcrypt_salt(6)
+	--local passwd_ = bcrypt_digest(passwd, salt)
 	
-	db:exec("INSERT INTO `accounts` (`account`, `pw`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?, ?) ", usr, passwd_, plr.ip, plr.serial, email)
+	local smf_passwd = hash("sha1", usr:lower()..passwd)
+	local blankJSON = toJSON({})
+	-- Password should now only be stored in SMF
+	
+	--db:exec("INSERT INTO `accounts` (`account`, `pw`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?, ?) ", usr, passwd_, plr.ip, plr.serial, email)
+	db:exec("INSERT INTO `accounts` (`account`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?, ?) ", usr, plr.ip, plr.serial, email)
+	--[[
 	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wp`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=?, `weaponString`=?,`ownedWeapons`=?, `sms_friends`=?",
 		usr,
 		1519.616,
@@ -38,10 +44,18 @@ function registerAccount(plr, usr, passwd, email)
 		toJSON({}),
 		toJSON({})
 	)
+	]]
+	db:exec("INSERT INTO `accountData` (`usr`, `lastUsedName`, `ownedWeapons`, `weaponString`, `sms_friends`) VALUES (?, ?, ?, ?, ?)",
+		usr,
+		plr.name,
+		blankJSON,
+		blankJSON,
+		blankJSON
+	)
 	--db:exec("INSERT INTO `sms_friends` SET `account`=?, `friends`=?", usr, toJSON({}))
 	db:exec("INSERT INTO `playerStats` SET `account`=?", usr)
 	
-	exports.UCDsql:getForumDatabase():exec("INSERT INTO `smf_members` (`member_name`, `date_registered`, `real_name`, `passwd`, `email_address`) VALUES (?, ?, ?, ?, ?)", usr, getRealTime().timestamp, usr, tostring(hash("sha1", usr:lower()..passwd)), email)
+	exports.UCDsql:getForumDatabase():exec("INSERT INTO `smf_members` (`member_name`, `date_registered`, `real_name`, `passwd`, `email_address`) VALUES (?, ?, ?, ?, ?)", usr, getRealTime().timestamp, plr.name, smf_passwd, email)
 	
 	accountData[usr] = {x = 1519.616, y = -1675.9303, z = 13.5469, rot = 270, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 500, model = 61, walkstyle = 0, wp = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name, ownedWeapons = toJSON({}), weaponString = toJSON({}), sms_friends = toJSON({}), aviator = 0, trucker = 0}
 	return true

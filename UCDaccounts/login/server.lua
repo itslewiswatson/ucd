@@ -161,7 +161,8 @@ function registerPlayer2(usr, email, passwd, plr)
 		end
 		triggerClientEvent(plr, "UCDaccounts.login.hideRegistrationInterface", resourceRoot) -- Hides the window
 		triggerClientEvent(plr, "UCDaccounts.login.showLoginInterface", resourceRoot) -- Shows login window
-		exports.UCDdx:new(plr, "You have successfully registered! Account name: "..usr.."", 255, 255, 255)
+		exports.UCDdx:new(plr, "You have successfully registered! Account name: "..usr, 255, 255, 255)
+		exports.UCDdx:new(plr, "This account will also work on the forums - forum.ucdmta.com", 255, 255, 255)
 		exports.UCDlogging:new(plr, "register", "registered account: "..usr, plr.ip)
 		return true
 	end

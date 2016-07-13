@@ -67,7 +67,7 @@ function Accounts.Login(_, theCurrentAccount)
 	
 	triggerClientEvent(Element.getAllByType("player"), "onClientPlayerLogin", source, source.account.name)
 end
-addEventHandler("onPlayerLogin", root, Accounts.Login)
+addEventHandler("onPlayerLogin", root, Accounts.Login, true, "high")
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
