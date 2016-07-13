@@ -1,3 +1,5 @@
 function createGameAccount(account, password)
-	return Account.new(account, password)
+	local a = Account.new(account, password)
+	outputDebugString("createGameAccount > "..tostring(a))
+	return not (not a)
 end
