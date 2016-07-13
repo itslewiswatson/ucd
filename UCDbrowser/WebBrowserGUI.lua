@@ -27,8 +27,6 @@ function WebBrowserGUI:constructor()
 	addEventHandler("onClientBrowserWhitelistChange", root, function(...) self:Browser_WhitelistChange(...) end)
 	addEventHandler("onClientBrowserDocumentReady", browser, function(...) self:Browser_DocumentReady(...) end)
 	
-	self.m_History = {}
-	self.m_ForwardHistory = {}
 	self.m_RequestedURL = ""
 	
 	showCursor(true)
@@ -51,14 +49,6 @@ function WebBrowserGUI:Browser_Navigate(targetURL, isBlocked)
 		Browser.requestDomains({targetURL}, true)
 		return
 	end
-	
-	if self.m_History[#self.m_History] ~= targetURL then
-		self.m_History[#self.m_History + 1] = targetURL
-	end
-	
-	if #self.m_History > 1 then
-		self.m_BackButton:setEnabled(true)
-	end
 end
 
 function WebBrowserGUI:Browser_WhitelistChange(whitelistedURLs)
@@ -73,6 +63,8 @@ end
 function WebBrowserGUI:Browser_DocumentReady()
 	self.m_Window:setText("Web browser: " .. tostring(self.m_Browser:getBrowser():getTitle()))
 	self.m_EditAddress:setText(tostring(self.m_Browser:getBrowser():getURL()))
+	self.m_BackButton:setEnabled(self.m_Browser:getBrowser():canNavigateBack())
+	self.m_ForwardButton:setEnabled(self.m_Browser:getBrowser():canNavigateForward())
 end
 
 -- // GUI Navigation
@@ -84,29 +76,13 @@ end
 
 function WebBrowserGUI:BackButton_Click(button, state)
 	if button == "left" and state == "up" then
-		local url = self.m_History[#self.m_History - 1]
-		self.m_ForwardHistory[#self.m_ForwardHistory + 1] = self.m_History[#self.m_History]
-		self.m_History[#self.m_History] = nil
-		if #self.m_History <= 1 then
-			self.m_BackButton:setEnabled(false)
-		end
-		
-		self.m_ForwardButton:setEnabled(true)		
-		self:loadURL(url)
+		self.m_Browser:getBrowser():navigateBack()
 	end
 end
 
 function WebBrowserGUI:ForwardButton_Click(button, state)
 	if button == "left" and state == "up" then
-		local url = self.m_ForwardHistory[#self.m_ForwardHistory]
-		if url then
-			self.m_ForwardHistory[#self.m_ForwardHistory] = nil
-			if #self.m_ForwardHistory == 0 then
-				self.m_ForwardButton:setEnabled(false)
-			end
-			
-			self:loadURL(url)
-		end
+		self.m_Browser:getBrowser():navigateForward()
 	end
 end
 
