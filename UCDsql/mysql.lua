@@ -4,12 +4,12 @@ local host = "localhost"
 local usr = "root"
 local passwd = "Network.114"
 
-db = Connection("mysql", "dbname="..dbname..";host="..host..";port=3306", usr, passwd)
-forum = Connection("mysql", "dbname=forum;host="..host..";port=3306", usr, passwd)
+db = Connection("mysql", "dbname="..dbname..";host="..host, usr, passwd)
+forum = Connection("mysql", "dbname=forum;host="..host, usr, passwd)
 
 function returnConnection()
 	if (not db) then
-		outputDebugString("Connection to the MySQL database [via localhost:3306] failed! Trying ucdmta.com:3306...")
+		outputDebugString("Connection to the MySQL database [via localhost] failed! Trying ucdmta.com:3306...")
 		db = Connection("mysql", "dbname=mta;host=ucdmta.com;port=3306", "root", "Network.114")
 		if (not db) then
 			outputDebugString("Connection to the MySQL database [via ucdmta.com:3306] failed! Trying noki.zorque.xyz:3306...")
