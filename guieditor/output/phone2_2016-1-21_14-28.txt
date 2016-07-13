@@ -11,7 +11,7 @@ GUIEditor = {
     staticimage = {},
     label = {}
 }
-GUIEditor.staticimage[1] = guiCreateStaticImage(1600, 458, 310, 600, ":UCDphone/iphone2.png", false)
+GUIEditor.staticimage[1] = guiCreateStaticImage(1600, 458, 310, 600, ":UCDphone/iphone3.png", false)
 
 GUIEditor.button[1] = guiCreateButton(130, 535, 50, 50, "", false, GUIEditor.staticimage[1])
 guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
