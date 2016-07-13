@@ -55,7 +55,8 @@ addEventHandler("onClientPlayerLogin", localPlayer,
 )
 
 function refreshGridlist()
-	guiGridListClear(GUIEditor.gridlist[1])
+	GUIEditor.edit[1].text = ""
+	GUIEditor.gridlist[1]:clear()
 	for i, txt in ipairs(defaults) do
 		GUIEditor.label[i].text = txt
 	end
@@ -161,3 +162,37 @@ function loadStats(data)
 end
 addEvent("UCDstats.loadStats", true)
 addEventHandler("UCDstats.loadStats", root, loadStats)
+
+addEventHandler("onClientPlayerChangeNick", root,
+	function (old, new)
+		if (source ~= localPlayer) then
+			for i = 0, guiGridListGetRowCount(GUIEditor.gridlist[1]) - 1 do
+				if (guiGridListGetItemData(GUIEditor.gridlist[1], i, 1) == source) then
+					guiGridListSetItemText(GUIEditor.gridlist[1], i, 1, tostring(new), false, false)
+					return
+				end
+			end
+		end
+	end
+)
+
+addEventHandler("onClientPlayerJoin", root,
+	function ()
+		local row = guiGridListAddRow(GUIEditor.gridlist[1])
+		local r, g, b = source:getNametagColor()
+		guiGridListSetItemText(GUIEditor.gridlist[1], row, 1, tostring(source.name), false, false)
+		guiGridListSetItemColor(GUIEditor.gridlist[1], row, 1, r, g, b)
+		guiGridListSetItemData(GUIEditor.gridlist[1], row, 1, source)
+	end
+)
+
+addEventHandler("onClientPlayerQuit", root,
+	function ()
+		for i = 0, guiGridListGetRowCount(GUIEditor.gridlist[1]) - 1 do
+			if (guiGridListGetItemData(GUIEditor.gridlist[1], i, 1) == source) then
+				guiGridListRemoveRow(GUIEditor.gridlist[1], i)
+				return
+			end
+		end
+	end
+)
