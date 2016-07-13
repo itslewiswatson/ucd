@@ -216,11 +216,11 @@ function spawnVehicle(vehicleID)
 	table.insert(activeVehicles[client], vehicle)
 	
 	-- Debug purposes while resource is still being made
-	if (exports.UCDadmin:isPlayerOwner(client)) then
-		vehicle.position = Vector3(client.position.x, client.position.y, client.position.z + 1)
-		vehicle.rotation = Vector3(0, 0, client.rotation.z)
-		client:warpIntoVehicle(vehicle)
-	end
+	----if (exports.UCDadmin:isPlayerOwner(client)) then
+	--	vehicle.position = Vector3(client.position.x, client.position.y, client.position.z + 1)
+	--	vehicle.rotation = Vector3(0, 0, client.rotation.z)
+	--	client:warpIntoVehicle(vehicle)
+	--end
 	
 	exports.UCDdx:new(client, "You have successfully spawned your "..vehicle:getName(), 0, 255, 0)
 	triggerClientEvent(client, "UCDvehicles.syncIdToVehicle", client, getPlayerSpecificIDToVehicle(client)) -- Maybe change this to only sync to the owner
@@ -322,7 +322,7 @@ function recoverVehicle(vehicleID)
 			end
 		end
 
-		if (exports.UCDadmin:isPlayerOwner(client)) then
+		--if (exports.UCDadmin:isPlayerOwner(client)) then
 			if (client.vehicle) then
 				exports.UCDdx:new(client, "You can't recover a vehicle to yourself while you're already in one", 255, 0, 0)
 				return
@@ -337,13 +337,13 @@ function recoverVehicle(vehicleID)
 			smallest = Vector4(vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z, r + 90)
 			
 			exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered just in front of you!", 0, 255, 0)
-		else
-			-- Loop through to find the smallest distance
-			smallest = getClosestRecoveryLocation(vehicleType, vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z)
-			vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
-			vehicleEle:setRotation(Vector3(0, 0, smallest.w))
-			exports.UCDdx:new(client, "Your "..vehicleEle.name.." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
-		end
+		-- else
+		--	-- Loop through to find the smallest distance
+		--	smallest = getClosestRecoveryLocation(vehicleType, vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z)
+		--	vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
+		--	vehicleEle:setRotation(Vector3(0, 0, smallest.w))
+		--	exports.UCDdx:new(client, "Your "..vehicleEle.name.." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
+		-- end
 	else
 		local last = Vector3(unpack(fromJSON(getVehicleData(vehicleID, "xyz"))))
 		smallest = getClosestRecoveryLocation(vehicleType, last.x, last.y, last.z)

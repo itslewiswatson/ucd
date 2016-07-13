@@ -7,6 +7,8 @@
 --// FILE: \vehicleDirectX.lua [client]
 -------------------------------------------------------------------
 
+showPlayerHudComponent("vehicle_name", false)
+
 local sX, sY = guiGetScreenSize()
 local nX, nY = 1920, 1080
 

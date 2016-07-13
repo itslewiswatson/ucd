@@ -19,6 +19,9 @@ end
 addEventHandler("onClientVehicleDamage", root,
 	function (_, _, loss)
 		if (isElement(source) and source.type == "vehicle") then
+			if (wasEventCancelled()) then
+				return
+			end
 			local r  = source.rotation
 			if (source.blown) then
 				return
