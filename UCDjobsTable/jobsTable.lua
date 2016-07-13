@@ -32,7 +32,9 @@ local jobsTable =
 		},
 		colour = {r = 255, g = 215, b = 0},
 		blipID = 56,
-		desc = "An aviator's job is to transport cargo and passengers both \ndomestically and internationally with various aircraft. \nAn aviator has a repertoire of only the best engineered \naircraft to get his/her job done. The job has a \nsubstantially high risk factor, aviators are compensated for \ntheir risk with lump sums of cash after every flight.\n\nGo to a blip to spawn a plane, or use your own.\nFrom there, wait to be assigned a flight path. \nOnce assigned, pick up your cargo and fly to your \ndestination, which will be marked on your radar and map.",
+		f5 = true,
+		measurement = "km",
+		desc = "An aviator's job is to transport cargo and passengers both \ndomestically and internationally with various aircraft. \nAn aviator has a repertoire of only the best engineered \naircraft to get his/her job done. The job has a \nsubstantially high risk factor, aviators are compensated for \ntheir risk with lump sums of cash after every flight. \n\nGo to a blip to spawn a plane, or use your own. \nFrom there, wait to be assigned a flight path. \nOnce assigned, pick up your cargo and fly to your \ndestination, which will be marked on your radar and map.",
 	},
 	["Trucker"] = 
 	{
@@ -53,6 +55,8 @@ local jobsTable =
 		},
 		colour = {r = 255, g = 215, b = 0},
 		blipID = 56,
+		f5 = true,
+		measurement = "km",
 		desc = "",
 	},
 	["Prostitute"] = 
@@ -111,6 +115,8 @@ local jobsTable =
 		},
 		colour = {r = 0, g = 255, b = 255},
 		blipID = 56,
+		f5 = true,
+		measurement = "HP",
 		desc = "A paramedic's job is to heal the people of San Andreas. \nA paramedic is given both helicopters and\n ambulances to be the first responders to an ordeal. \nTo heal players, a paramedic must be still and within one \nmetre of the patient they want to heal. \n\nA paramedic has a centralized computer to see the status \nof people that require healing around SA. This is accessed \nusing the F5 key when on-duty.",
 	},
 	["Iron Miner"] = 
@@ -126,6 +132,8 @@ local jobsTable =
 		},
 		colour = {r = 255, g = 215, b = 0},
 		blipID = 56,
+		f5 = true,
+		measurement = "units",
 		desc = "",
 	},
 	["Police Officer"] = 
@@ -133,7 +141,8 @@ local jobsTable =
 		team = "Law",
 		markers = 
 		{
-			{x = 248.9846, y = 67.7826, z = 1003.6406, interior = 6, dimension = 50000},
+			{x = 248.9846, y = 67.7826, z = 1003.6406, interior = 6, dimension = 50000}, -- LSPD
+			{x = -1615.7192, y = 685.8612, z = 7.1875, interior = 0, dimension = 0},-- SFPD (temp)
 		},
 		skins = 
 		{
@@ -152,7 +161,8 @@ local jobsTable =
 		team = "Law",
 		markers = 
 		{
-			{x = 1585.4943, y = -1684.302, z = 6.2252, interior = 0, dimension = 0},
+			{x = 1585.4943, y = -1684.302, z = 6.2252, interior = 0, dimension = 0}, -- LSPD
+			{x = -1594.2029, y = 733.9587, z = -4.9063, interior = 0, dimension = 0}, -- SFPD
 		},
 		skins = 
 		{
@@ -168,6 +178,7 @@ local jobsTable =
 		markers = 
 		{
 			{x = 1585.4943, y = -1688.302, z = 6.2252, interior = 0, dimension = 0},
+			{x = -1597.8824, y = 733.7309, z = -4.9063, interior = 0, dimension = 0},
 		},
 		skins = 
 		{
@@ -224,6 +235,18 @@ local jobsRanks =
 
 function getJobRanks(jobName)
 	return jobsRanks[jobName]
+end
+
+-- If certain jobs only have vehicles with a certain colour
+local vehicleColours = 
+{
+	["Traffic Officer"] = {
+		[415] = {r1 = 59, g1 = 78, b1 = 120, r2 = 245, g2 = 245, b2 = 245}, -- Cheetah
+	},
+}
+
+function getVehicleColours(jobName)
+	return vehicleColours[jobName]
 end
 
 local rankRestrictions = 
