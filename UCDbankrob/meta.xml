@@ -1,0 +1,11 @@
+<meta>
+	<min_mta_version server="1.5.2" client="1.5.2"/>
+	<script src="map.slua" type="server"/>
+	<script src="bankrob.slua" type="server"/>
+	<script src="bankrob.lua" type="client"/>
+	<export function="isPlayerInBank" type="server"/>
+	<export function="getBank" type="server"/>
+	<export function="getBank" type="client"/>
+	<file src="alarm.mp3"/>
+	<oop>true</oop>
+</meta>

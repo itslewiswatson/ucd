@@ -1,0 +1,478 @@
+local players = {criminals = {}, law = {}}
+local sideLimit = 12
+local bank = ColShape.Cuboid(271.1458, 88.778, 928.7627, 130, 100, 60)
+local bankZone = ColShape.Rectangle(1322.2545, -1161.7084, 300, 300)
+local markerGrace = {}
+local entry = {
+	[1] = {x = 1467.2638, y = -1010.4, z = 28}, -- LS bank front
+	[2] = {x = 1426.6339, y = -968.1622, z = 38.5}, -- LS bank rear
+}
+local exit = {
+	[1] = {x = 376.8216, y = 148.1797, z = 960.8}, -- Criminal exit
+	[2] = {x = 329.343, y = 171.702, z = 942.8}, -- Police exit
+}
+local spawns = {
+	["Criminals"] = {x = 374.5488, y = 148.1529, z = 959.6128, r = 90, d = 0, i = 3},
+	["Law"] = {x = 309.3566, y = 130.3467, z = 941.3978, r = 0, d = 0, i = 3},
+}
+local hasStarted = false
+
+local barricades = {}
+local barricadeObjects = {
+	{3037, 352.9, 163.84, 959.6128, 0, 0, 90}, -- Crims 1
+	{3037, 362, 140.9082, 959.6193, 0, 0, 90}, -- Crims 2
+	{3037, 319, 163.5, 949, 0, 0, 90}, -- Law
+}
+local controlPoints = {
+	{"roof", 330.765, 136.58, 977.0151},
+	{"main floor", 348.9077, 148.0881, 959.6128},
+	{"server room", 316.5471, 154.1205, 953.7969},
+	{"vault", 368.8951, 169.8937, 937.0009},
+	{"storage room", 347.9017, 161.9953, 948.013},
+	{"basement", 325.9265, 143.0943, 948.0206},
+}
+local cp = {}
+local control = {}
+local lawTimer, crimTimer -- Timer for each respective team
+
+function init()
+	for _, ent in ipairs(entry) do
+		local m = Marker(ent.x, ent.y, ent.z, "arrow", 2, 0, 255, 0, 120)
+		addEventHandler("onMarkerHit", m, onBankMarkerEnter)
+	end
+	for _, ent in ipairs(exit) do
+		local m = Marker(ent.x, ent.y, ent.z, "arrow", 2, 0, 255, 0, 120)
+		m.interior = 3
+		addEventHandler("onMarkerHit", m, onBankMarkerLeave)
+	end
+	createBarricades()
+end
+addEventHandler("onResourceStart", resourceRoot, init)
+
+function getParticipants(t)
+	local participants = {}
+	for _, plr in ipairs(bank:getElementsWithin("player")) do
+		if (exports.UCDaccounts:isPlayerLoggedIn(plr) and plr.interior == 3 and plr.dimension == 0 and not plr.dead) then
+			if (t and t ~= nil) then
+				if (t == plr.team.name) then
+					table.insert(participants, plr)
+				end
+			else
+				table.insert(participants, plr)
+			end
+		end
+	end
+	return participants
+end
+
+function createBarricades()
+	for _, ent in ipairs(barricadeObjects) do
+		local o = Object(ent[1], ent[2], ent[3], ent[4], ent[5], ent[6], ent[7])
+		o.interior = 3
+		table.insert(barricades, o)
+	end
+end
+function destroyBarricades()
+	for _, obj in ipairs(barricades) do
+		obj:destroy()
+		obj = nil
+	end
+	barricades = {}
+end
+
+function createControlPoints()
+	for _, ent in ipairs(controlPoints) do
+		local m = Marker(ent[2], ent[3], ent[4] - 1, "cylinder", 2, 255, 255, 255, 125)
+		m.interior = 3
+		cp[m] = ent[1]
+		addEventHandler("onMarkerHit", m, onControlPointHit)
+	end
+end
+function destroyControlPoints()
+	for m in pairs(cp) do
+		removeEventHandler("onMarkerHit", m, onControlPointHit)
+		m:destroy()
+		m = nil
+	end
+	cp = {}
+	control = {}
+end
+
+function onControlPointHit(ele, matchingDimension)
+	if (ele and ele.type == "player" and matchingDimension) then
+		if (cp[source] and hasStarted) then
+			-- They already control it, ignore
+			if (control[source] == ele.team.name) then
+				return
+			end
+			local r, g, b
+			if (ele.team.name == "Criminals") then
+				r, g, b = 200, 0, 0
+			elseif (ele.team.name == "Law") then
+				r, g, b = 30, 144, 255
+			end
+			if (r and g and b) then
+				control[source] = ele.team.name
+				source:setColor(r, g, b, 125)
+				
+				local msg
+				local name = cp[source]
+				
+				local controlCount = 0
+				for m, t in pairs(control) do
+					if (t == ele.team.name) then
+						controlCount = controlCount + 1
+					end
+				end
+				outputDebugString("cC = "..tostring(controlCount).."; cP = "..tostring(#controlPoints))
+				
+				if (controlCount == #controlPoints) then
+					-- Team now holds all the checkpoints
+					msg = tostring(ele.team.name).." now control all of the checkpoints"
+					if (ele.team.name == "Criminals") then
+						-- Remove law's timer if they have one
+						if (lawTimer and isTimer(lawTimer)) then
+							lawTimer:destroy()
+							lawTimer = nil
+							triggerLatentClientEvent(getParticipants("Law"), "UCDbankrob.removeTimer", resourceRoot)
+						end
+						-- Create the timer for criminals
+						if (not crimTimer or not isTimer(crimTimer)) then
+							crimTimer = Timer(onRobberyFinished, (5 * 60) * 1000, 1, "criminals")
+							triggerLatentClientEvent(getParticipants("Criminals"), "UCDbankrob.onReceivedTimer", resourceRoot, 300)
+						end
+					else
+						if (crimTimer and isTimer(crimTimer)) then
+							crimTimer:destroy()
+							crimTimer = nil
+							triggerLatentClientEvent(getParticipants("Criminals"), "UCDbankrob.removeTimer", resourceRoot)
+						end
+						if (not lawTimer and not isTimer(lawTimer)) then
+							lawTimer = Timer(onRobberyFinished, (5 * 60) * 1000, 1, "law")
+							triggerLatentClientEvent(getParticipants("Law"), "UCDbankrob.onReceivedTimer", resourceRoot, 300)
+						end
+					end
+				else
+					msg = tostring(ele.team.name).." now control the "..tostring(name)
+					if (not lawTimer or not isTimer(lawTimer)) then
+						lawTimer = Timer(onRobberyFinished, (5 * 60) * 1000, 1, "law")
+						triggerLatentClientEvent(getParticipants("Law"), "UCDbankrob.onReceivedTimer", resourceRoot, 300)
+					end
+					if (crimTimer and isTimer(crimTimer)) then
+						crimTimer:destroy()
+						crimTimer = nil
+						triggerLatentClientEvent(getParticipants("Criminals"), "UCDbankrob.removeTimer", resourceRoot)
+					end
+				end
+				
+				for _, plr in ipairs(getParticipants()) do
+					exports.UCDdx:new(plr, msg, r, g, b)
+				end
+			end
+		end
+	end
+end
+
+function removeGrace(plr)
+	markerGrace[plr] = nil
+end
+
+function getBank()
+	return bank
+end
+
+function isPlayerInBank(plr) 
+	if (plr:isWithinColShape(bank) and plr.interior = 3 and plr.dimension == 0) then
+		return true
+	end
+	return false
+end
+
+function onPlayerQuit()
+	removeGrace(source)
+	--for t, ent in pairs(players) do
+	
+	if (hasStarted) then
+	
+	if (source.team.name == "Law") then
+		for i, plr in ipairs(players.law) do
+			if (plr == source) then
+				table.remove(players.law, i)
+				break
+			end
+		end
+	elseif (source.team.name == "Criminals") then
+		for i, plr in ipairs(players.criminals) do
+			if (plr == source) then
+				table.remove(players.criminals, i)
+				break
+			end
+		end
+	end
+		
+	--end
+	triggerLatentClientEvent(getParticipants(), "UCDbankrob.updateCount", resourceRoot, players)
+	
+	if (#players.criminals == 0 and #players.law == 0) then
+		-- There is no robbery
+		if (hasStarted == true) then
+			hasStarted = false
+		end
+		triggerEvent("onRobberyFinished", resourceRoot)
+	elseif (#players.criminals == 0 and #players.law ~= 0) then
+		-- Law wins
+		--for _, plr in ipairs(players.law) do
+		--	triggerEvent("onExitBank", plr)
+		--end
+		triggerEvent("onRobberyFinished", resourceRoot)
+	elseif (#players.law == 0 and #players.criminals ~= 0) then
+		-- Criminals win
+		--for _, plr in ipairs(players.criminals) do
+		--	triggerEvent("onExitBank", plr)
+		--end
+		triggerEvent("onRobberyFinished", resourceRoot)
+	end
+	
+	end
+end
+addEventHandler("onPlayerQuit", root, onPlayerQuit)
+
+function onPlayerWasted(_, killer)
+	-- They are a part of the BR
+	if (source:isWithinColShape(bank) and source.team.name == "Criminals" or source.team.name == "Law") then
+		if (killer) then
+			--outputDebugString(tostring(killer.type))
+			--outputDebugString(tostring(killer:isWithinColShape(bank)))
+			if (killer:isWithinColShape(bank) and killer.type == "player") then
+				killer.money = killer.money + 3000
+				exports.UCDdx:new(killer, "$3,000 bonus for killing a player in the BR", 0, 255, 0)
+			end
+		end
+		
+		for t, ent in pairs(players) do
+			if (t == source.team.name:lower()) then
+				for ind, plr in ipairs(ent) do
+					if (plr == source) then
+						table.remove(players[t], ind)
+					end
+				end
+			end
+		end
+		
+		triggerLatentClientEvent(getParticipants(), "UCDbankrob.updateCount", resourceRoot, players)
+		
+		if (#players.criminals == 0) then
+			onRobberyFinished("law")
+		elseif (#players.law == 0) then
+			onRobberyFinished("criminals")
+		end
+	end
+end
+addEventHandler("onPlayerWasted", root, onPlayerWasted, true, "high")
+
+function onPlayerLogin()
+	-- This doesn't want to fucking work
+	--if (source:isWithinColShape(bank)--[[ and source.dimension == 0 and source.interior == 3]]) then
+	
+	local p = source.position
+	local b = bank.position
+	
+	if (b.x <= p.x and b.x + 130 >= p.x and b.y <= p.y and b.y + 100 >= p.y and b.z <= p.z and b.z + 60 >= p.z and source.dimension == 0 and source.interior == 3) then
+		triggerEvent("onExitBank", source)
+	end
+end
+addEventHandler("onPlayerLogin", root, onPlayerLogin, true, "low-10")
+
+function startRobbery()
+	--local crimCount = #player.criminals
+	--local lawCount = #players.law
+	
+	hasStarted = true
+	destroyBarricades()
+	createControlPoints()
+	lawTimer = Timer(onRobberyFinished, (5 * 60) * 1000, 1, "law")
+	-- Trigger client event
+	
+	local participants = getParticipants()
+	for _, plr in ipairs(participants) do
+		triggerClientEvent(plr, "UCDbankrob.alarm", resourceRoot)
+		if (plr.team.name == "Law") then
+			triggerLatentClientEvent(plr, "UCDbankrob.onReceivedTimer", resourceRoot, 300)
+			exports.UCDdx:new(plr, "Defend the checkpoints for 5 minutes or kill all the criminals to win", 30, 144, 255)
+		elseif (plr.team.name == "Criminals") then
+			exports.UCDdx:new(plr, "Capture and hold all the checkpoints for 5 minutes or kill all the police to win", 200, 0, 0)
+			exports.UCDwanted:addWantedPoints(plr, 60)
+		elseif (plr.team.name == "Civilians") then
+			exports.UCDdx:new(plr, "Support either side by healing them", 255, 255, 255)
+		end
+	end
+	triggerLatentClientEvent(participants, "UCDbankrob.updateCount", resourceRoot, players)
+end
+addCommandHandler("lol", startRobbery)
+
+function onRobberyFinished(whoWon)
+	if (not whoWon) then
+		if (#players.law == 0 and #players.criminals ~= 0) then
+			whoWon = "criminals"
+		elseif (#players.criminals == 0 and #players.law ~= 0) then
+			whoWon = "law"
+		end
+	end
+	
+	hasStarted = false
+	
+	triggerLatentClientEvent(getParticipants(), "UCDbankrob.removeTimer", resourceRoot)
+	triggerLatentClientEvent(getParticipants(), "UCDbankrob.removeCount", resourceRoot)
+		
+	for i, ent in pairs(players) do
+		for _, plr in ipairs(ent) do
+			if (i == "criminals" and whoWon == "criminals") then
+				plr:setData("escapedbr", true)
+			end
+			triggerEvent("onExitBank", plr)
+		end
+	end
+	
+	-- Destroy timers
+	if (lawTimer and isTimer(lawTimer)) then
+		lawTimer:destroy()
+		lawTimer = nil
+	end
+	if (crimTimer and isTimer(crimTimer)) then
+		crimTimer:destroy()
+		crimTimer = nil
+	end
+	
+	createBarricades()
+	destroyControlPoints()
+	players = {criminals = {}, law = {}}
+	control = {}
+end
+addEvent("onRobberyFinished", true)
+addEventHandler("onRobberyFinished", root, onRobberyFinished)
+
+function onEscapeBankZone(ele, matchingDimension)
+	if (ele and ele.type == "player") then
+		if (ele:getData("escapedbr") and ele.team.name == "Criminals") then
+			exports.UCDdx:new(ele, "You have escaped the bank zone and got away with $30,000", 0, 255, 0)
+			ele.money = ele.money + 30000
+			ele:removeData("escapedbr")
+		end
+	end
+end
+addEventHandler("onColShapeLeave", bankZone, onEscapeBankZone)
+
+function onBankMarkerEnter(ele, matchingDimension)
+	if (ele and ele.type == "player" and matchingDimension) then
+		if (markerGrace[ele]) then
+			return false
+		end
+		
+		if (hasStarted == true) then
+			exports.UCDdx:new(ele, "This robbery has already started, wait for the next one", 255, 0, 0)
+			return
+		end
+		
+		if (not exports.UCDchecking:canPlayerDoAction(ele, "BankRob")) then return end
+		
+		if (ele.team.name == "Criminals") then
+			if (#players.criminals < sideLimit) then
+				--if (#players.criminals - #players.law <= 3) then
+					-- Let them enter
+					table.insert(players.criminals, ele)
+					triggerEvent("onEnterBank", ele, "Criminals")
+				--end
+			end
+		elseif (ele.team.name == "Law") then
+			if (#players.law < sideLimit) then
+				--if (#players.law - #players.criminals <= 3) then
+					-- Let them enter
+					table.insert(players.law, ele)
+					triggerEvent("onEnterBank", ele, "Law")
+				--end
+			end
+		elseif (ele.team.name == "Civilians" or ele.team.name == "Admins") then
+			if (ele:getData("Occupation") == "Medic" or ele.team.name == "Admins") then
+				-- Let them enter
+				triggerEvent("onEnterBank", ele)
+			end
+		end
+		markerGrace[ele] = Timer(removeGrace, 500, 1, ele)
+	end
+end
+
+function onBankMarkerLeave(ele, matchingDimension)
+	if (ele and ele.type == "player" and matchingDimension) then
+		if (hasStarted == true) then
+			exports.UCDdx:new(ele, "You cannot leave until the robbery is over", 255, 0, 0)
+			return
+		end
+		
+		if (markerGrace[ele]) then
+			return false
+		end
+		if (ele.team.name == "Criminals") then
+			local i
+			for ind, plr in ipairs(players.criminals) do
+				if (plr == ele) then 
+					i = ind 
+					break
+				end
+			end
+			table.remove(players.criminals, i)
+		elseif (ele.team.name == "Law") then
+			local i
+			for ind, plr in ipairs(players.law) do
+				if (plr == ele) then 
+					i = ind 
+					break
+				end
+			end
+			table.remove(players.law, i)
+		end
+		triggerEvent("onExitBank", ele)
+	end
+end
+
+function onEnterBank(side)
+	local spawn
+	if (spawns[source.team.name]) then
+		spawn = spawns[source.team.name]
+	else
+		local ind = math.random(1, 2)
+		if (ind == 1) then
+			spawn = spawns["Law"]
+		else
+			spawn = spawns["Criminals"]
+		end
+	end
+	source.position = Vector3(spawn.x + math.random(-2, 2), spawn.y + math.random(-2, 2), spawn.z + 1)
+	source.rotation = Vector3(0, 0, spawn.r)
+	source.interior = spawn.i
+	source.dimension = spawn.d
+	
+	triggerLatentClientEvent(getParticipants(), "UCDbankrob.updateCount", resourceRoot, players)
+end
+addEvent("onEnterBank")
+addEventHandler("onEnterBank", root, onEnterBank)
+
+function onExitBank()
+	source.interior = 0
+	source.dimension = 0
+	local p = entry[1]
+	
+	local a = {2, -2}
+	local off = math.random(1, 2)
+	
+	source.position = Vector3(p.x + a[off], p.y, p.z + 0.5)
+	source.rotation = Vector3(0, 0, 180)
+	source.interior = 0
+	
+	markerGrace[source] = Timer(removeGrace, 500, 1, source)
+	
+	--if (won ~= true) then
+		triggerLatentClientEvent(getParticipants(), "UCDbankrob.updateCount", resourceRoot, players)
+	--end
+end
+addEvent("onExitBank")
+addEventHandler("onExitBank", root, onExitBank)
