@@ -37,7 +37,7 @@ function getWantedPoints(plr)
 	if (plr and not plr.account.guest) then
 		local a = plr.account.name
 		if (not wantedPoints[a]) then
-			wantedPoints[a] = 0
+			wantedPoints[a] = exports.UCDaccounts:GAD(plr, "wp") or 0
 		end
 		return wantedPoints[a]
 	end
