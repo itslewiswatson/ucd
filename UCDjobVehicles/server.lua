@@ -76,20 +76,22 @@ end
 addCommandHandler("djv", djv)
 addCommandHandler("dveh", djv)
 
-function createJobVehicle(plr, model, rot, pos)
+function createJobVehicle(plr, model, rot, pos, index)
 	if (not plr or not model or not rot or not pos) then return end
 	if (not isElement(plr) or plr.type ~= "player") then return false end
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "JobVehicle")) then return false end
 	
 	local jobName = plr:getData("Occupation")
-	local playerRank = exports.UCDjobs:getPlayerJobRank(plr, jobName)
+	local playerRank = exports.UCDjobs:getPlayerJobRank(plr, jobName) or 0
 	local r, g, b
-	if (not jobName or not playerRank) then
+	if (not jobName) then
 		return
 	end
 	
 	local r1, g1, b1, r2, g2, b2
 	local ranks = exports.UCDjobsTable:getJobRanks(jobName)
 	local restricted = exports.UCDjobsTable:getRestricedVehicles(jobName)
+	local custColours = exports.UCDjobsTable:getVehicleColours(jobName)
 	
 	if (restricted) then
 		local vehicleRestricted = restricted[model]
@@ -106,8 +108,14 @@ function createJobVehicle(plr, model, rot, pos)
 		end
 	end
 	
-	if (ranks and ranks[playerRank]) then
-		r1, g1, b1, r2, g2, b2 = ranks[playerRank].colour.r1, ranks[playerRank].colour.g1, ranks[playerRank].colour.b1, ranks[playerRank].colour.r2, ranks[playerRank].colour.g2, ranks[playerRank].colour.b2
+	if (not custColours) then
+		if (ranks and ranks[playerRank] and #jobVehicles[index].vt ~= 0) then
+			r1, g1, b1, r2, g2, b2 = ranks[playerRank].colour.r1, ranks[playerRank].colour.g1, ranks[playerRank].colour.b1, ranks[playerRank].colour.r2, ranks[playerRank].colour.g2, ranks[playerRank].colour.b2
+		end
+	else
+		if (custColours[model]) then
+			r1, g1, b1, r2, g2, b2 = custColours[model].r1, custColours[model].g1, custColours[model].b1, custColours[model].r2, custColours[model].g2, custColours[model].b2
+		end
 	end
 	
 	plr.position = Vector3(pos.x, pos.y, pos.z + 2)
@@ -129,8 +137,8 @@ function createJobVehicle(plr, model, rot, pos)
 	PJV[plr]:setData("owner", plr.name)
 end
 
-function createFromMarker(model, rot, coords)
-	createJobVehicle(client, model, rot, coords)
+function createFromMarker(model, rot, coords, index)
+	createJobVehicle(client, model, rot, coords, index)
 end
 addEvent("UCDjobVehicles.createFromMarker", true)
 addEventHandler("UCDjobVehicles.createFromMarker", root, createFromMarker)

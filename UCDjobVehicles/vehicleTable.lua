@@ -9,7 +9,7 @@
 
 jobVehicles = 
 {
-	-- Free vehicles [-- Caddy, BMX & Sanchez]
+	-- Free vehicles [Caddy, BMX & Sanchez]
 	{x = 1183.4351, y = -1332.3489, z = 13.5823, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- All Saints
 	{x = 1183.4351, y = -1314.9749, z = 13.5823, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- All Saints
 	{x = 2000.1630, y = -1447.6506, z = 13.5604, rot = 135, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- Jefferson Hospital
@@ -19,6 +19,13 @@ jobVehicles =
 	{x = 1633.8729, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
 	{x = 1583.5, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
 	{x = 1587.5, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
+	
+	{x = 1541.0339, y = -1653.8572, z = 13.5585, rot = 90, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LSPD
+	{x = 1541.0339, y = -1697.5802, z = 13.5585, rot = 90, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LSPD
+	
+	{x = 1409.2539, y = -1168.1426, z = 23.8247, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LS jail release
+	{x = -1500.6077, y = 934.9801, z = 7.1875, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- SF jail release
+	{x = -1500.6077, y = 905.9801, z = 7.1875, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- SF jail release
 	
 	-- Aviator
 	-- Small planes (Beagle, Dodo, Shamal, Stuntplane)
@@ -87,6 +94,9 @@ jobVehicles =
 	{x = 1587.4016, y = -1710.0549, z = 5.8906, rot = 0, vt = {"Detective"}, colour = {r = 30, g = 144, b = 255}, vehs = {421, 426}},
 	{x = 1601, y = -1683.8301, z = 5.8906, rot = 90, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
 	{x = 1601, y = -1692.1, z = 5.8906, rot = 90, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
-	
-	
+	-- SFPD
+	{x = -1588.0039, y = 748.7182, z = -5.2422, rot = 180, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
+	{x = -1596.1793, y = 748.4637, z = -5.2422, rot = 180, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
+	{x = -1574.6395, y = 742.7321, z = -5.2422, rot = 270, vt = {"Detective"}, colour = {r = 30, g = 144, b = 255}, vehs = {421, 426}},
+	{x = -1574.8336, y = 735.1558, z = -5.2422, rot = 270, vt = {"Detective"}, colour = {r = 30, g = 144, b = 255}, vehs = {421, 426}},
 }

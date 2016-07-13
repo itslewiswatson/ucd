@@ -21,9 +21,9 @@ function init()
 		--init()
 		return
 	end
-	for _, info in ipairs(jobVehicles) do
+	for i, info in ipairs(jobVehicles) do
 		local mkr = Marker(info.x, info.y, info.z - 1, "cylinder", 2, info.colour.r, info.colour.g, info.colour.b, 200)
-		spawnerData[mkr] = {info.vt, info.rot, info.vehs}
+		spawnerData[mkr] = {info.vt, info.rot, info.vehs, i}
 		addEventHandler("onClientMarkerHit", mkr, markerHit)
 		addEventHandler("onClientMarkerLeave", mkr, removeText)
 	end
@@ -81,7 +81,7 @@ function onClickSpawn()
 	if (row and row ~= -1) then
 		local vehicleModel = getVehicleModelFromName(guiGridListGetItemText(GUI.gridlist, row, 1))
 		local rot = _data[2]
-		triggerServerEvent("UCDjobVehicles.createFromMarker", resourceRoot, vehicleModel, rot, {x = _marker.position.x, y = _marker.position.y, z = _marker.position.z}) -- Workaround until vectors can be passed as parameters
+		triggerServerEvent("UCDjobVehicles.createFromMarker", resourceRoot, vehicleModel, rot, {x = _marker.position.x, y = _marker.position.y, z = _marker.position.z}, spawnerData[_marker][4]) -- Workaround until vectors can be passed as parameters
 		toggleGUI()
 	else
 		exports.UCDdx:new("You need to select a vehicle from the list", 255, 0, 0)
