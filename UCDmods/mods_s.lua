@@ -54,7 +54,7 @@ end
 function requestDownload(list)
 	if (not pending[client]) then
 		local temp = {}
-		for k, v in ipairs(list) do
+		for k, v in ipairs(list or {}) do
 			for _, data in ipairs(mods2) do
 				if (data[1] == v) then
 					table.insert(temp, {data[1], data[3], data[5]})
