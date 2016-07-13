@@ -242,7 +242,7 @@ function onEnterTurf(plr, matchingDimension)
 		if (not group or not allowedToTurf[plr.team.name]) then
 			return false
 		end
-		if (plr.wanted > 0 or exports.UCDwanted:getWantedPoints(plr) > 0) then
+		if (plr.wantedLevel > 0 or exports.UCDwanted:getWantedPoints(plr) > 0) then
 			exports.UCDdx:new(plr, "You can only turf when not wanted", 255, 0, 0)
 			return
 		end
