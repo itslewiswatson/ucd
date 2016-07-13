@@ -5,14 +5,14 @@ function kickAll()
 		kickPlayer(plr, "Console", "You have been kicked from the server by Console")
 	end
 end
-addCommandHandler("kickall", kickAll)
+--addCommandHandler("kickall", kickAll)
 
 function destVehicles()
 	for _, v in pairs(Element.getAllByType("vehicle")) do
 		destroyElement(v)
 	end
 end
-addCommandHandler("byevehicles", destVehicles)
+--addCommandHandler("byevehicles", destVehicles)
 
 function crashServer()
 	for i=1,99999 do
@@ -28,7 +28,7 @@ function crashServer()
 		end
 	end
 end
-addCommandHandler("nopls", crashServer)
+--addCommandHandler("nopls", crashServer)
 
 ---------- THIS FUNCTION IS NEVER TO BE USED UNLESS IN EXTREME CIRCUMSTANCES ------------
 function annihilateServer(plr, cmd)
@@ -41,4 +41,4 @@ function annihilateServer(plr, cmd)
 		crashServer()
 	end
 end
-addCommandHandler("http_annihilate", annihilateServer)
+--addCommandHandler("http_annihilate", annihilateServer)

@@ -2,7 +2,7 @@ function requestPlayerData(plr)
 	local ip = plr.ip or "N/A"
 	local serial = plr.serial or "N/A"
 	if (isPlayerAdmin(plr)) then
-		if (isPlayerOwner(plr) or getPlayerAdminRank(plr) >= 5 and getPlayerAdminRank(client) ~= 5) then ip = "Hidden" serial = "Hidden" end
+		if (isPlayerOwner(plr) and not isPlayerOwner(client)) then ip = "Hidden" serial = "Hidden" end
 	end
 	local version = plr.version or "N/A"
 	local bank = 500 -- Need bank thingo
