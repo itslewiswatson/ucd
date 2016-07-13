@@ -10,11 +10,18 @@ forum = Connection("mysql", "dbname=forum;host="..host..";port=3306", usr, passw
 function returnConnection()
 	if (not db) then
 		outputDebugString("Connection to the MySQL database [via ucdmta.com:3306] failed! Trying noki.zorque.xyz:3306...")
-		db = dbConnect("mysql", "dbname=mta;host=noki.zorque.xyz;port=3306", "root", "Network.114")
+		db = Connection("mysql", "dbname=mta;host=noki.zorque.xyz;port=3306", "root", "Network.114")
 		if (not db) then
 			outputDebugString("Connection to the MySQL database [via noki.zorque.xyz:3306] failed! Trying 192.168.0.2:3306...")
+			db = Connection("mysql", "dbname=mta;host=192.168.0.2;port=3306", "root", "Network.114")
+			if (not db) then
+				outputDebugString("Connection to the MySQL database [via 192.168.0.2:3306] failed!")
+			else
+				outputDebugString("Connection to the MySQL database [via 192.168.0.2:3306] successful!")
+			end
+			return
 		else
-			outputDebugString("Connection to the MySQL database [via 192.168.0.2:3306] successful!")
+			outputDebugString("Connection to the MySQL database [via noki.zorque.xyz:3306] successful!")
 		end	
 		return
 	end
