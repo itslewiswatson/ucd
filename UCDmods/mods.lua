@@ -29,15 +29,22 @@ end
 addEvent("UCDmods.onReceivedModList", true)
 addEventHandler("UCDmods.onReceivedModList", root, onReceivedModList)
 
-function onCompleteDownload(mods)
-	outputDebugString("Completed download - "..tostring(#mods).." items")
-	exports.UCDdx:add("ucdmods", "UCDmods - Completed download", 200, 0, 200)
-	Timer(
-		function ()
-			exports.UCDdx:del("ucdmods")
-		end, 5000, 1
-	)
-	for i, data in ipairs(mods) do
+function onCompleteDownload(mods, left)
+	--outputDebugString("Completed download - "..tostring(#mods).." items")
+	exports.UCDdx:add("ucdmods", "UCDmods - Downloading "..tostring(left).." items", 200, 0, 200)
+	if (left <= 0) then
+		exports.UCDdx:add("ucdmods", "UCDmods - Download complete", 200, 0, 200)
+		Timer(
+			function ()
+				exports.UCDdx:del("ucdmods")
+			end, 5000, 1
+		)
+		return
+	else
+		triggerServerEvent("UCDmods.requestDownload", resourceRoot)
+	end
+	local data = mods
+	--for i, data in ipairs(mods) do
 		local path = data[1]
 		local f = File.new(path)
 		f.pos = 0
@@ -45,7 +52,7 @@ function onCompleteDownload(mods)
 		f:flush()
 		f:close()
 		applyMod(path, data[3])
-	end
+	--end
 end
 addEvent("UCDmods.download", true)
 addEventHandler("UCDmods.download", root, onCompleteDownload)

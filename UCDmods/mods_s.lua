@@ -17,6 +17,7 @@ local mods = {
 }
 local mods2  = {}
 local bytes = 0
+local pending = {}
 
 function cacheMods()
 	--for _, ent in pairs(mods) do
@@ -51,17 +52,26 @@ function sendMods(plr)
 end
 
 function requestDownload(list)
-	local temp = {}
-	for k, v in ipairs(list) do
-		for _, data in ipairs(mods2) do
-			if (data[1] == v) then
-				table.insert(temp, {data[1], data[3], data[5]})
+	if (not pending[client]) then
+		local temp = {}
+		for k, v in ipairs(list) do
+			for _, data in ipairs(mods2) do
+				if (data[1] == v) then
+					table.insert(temp, {data[1], data[3], data[5]})
+				end
 			end
 		end
+		outputDebugString("requestDownload -> "..tostring(#temp).." items")
+		pending[client] = temp
+		triggerLatentClientEvent(client, "UCDmods.download", 500000, false, client, temp[1], #temp)
+	else
+		-- exports.UCDdx:add(client, "ucdmods", "UCDmods - Downloading "..tostring(#temp).." items",  200, 144, 0)
+		triggerLatentClientEvent(client, "UCDmods.download", 500000, false, client, pending[client][1], #pending[client])
 	end
-	outputDebugString("requestDownload -> "..tostring(#temp).." items")
-	-- exports.UCDdx:add(client, "ucdmods", "UCDmods - Downloading "..tostring(#temp).." items",  200, 144, 0)
-	triggerLatentClientEvent(client, "UCDmods.download", 150000, false, client, temp)
+	table.remove(pending[client], 1)
+	if (#pending[client] == 0) then
+		pending[client] = nil
+	end
 end
 addEvent("UCDmods.requestDownload", true)
 addEventHandler("UCDmods.requestDownload", root, requestDownload)
@@ -76,3 +86,11 @@ function requestMods()
 end
 addEvent("UCDmods.requestMods", true)
 addEventHandler("UCDmods.requestMods", root, requestMods)
+
+addEventHandler("onPlayerQuit", root,
+	function ()
+		if (pending[client]) then
+			pending[client] = nil
+		end
+	end
+)
