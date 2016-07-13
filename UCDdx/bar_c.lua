@@ -81,7 +81,7 @@ addEventHandler("onClientRender", root,
 			if (bar[i]) then
 				--outputDebugString(i.." | "..bar[i].t)
 				local r, g, b = bar[i].r, bar[i].g, bar[i].b			
-				dxDrawText(tostring(bar[i].t)--[[.." | "..i]], sX - baseX, sY - baseY - (i * 19) + 19, sX - 10, sY - 20, tocolor(r, g, b, 200), 1.2, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText(tostring(bar[i].t)--[[.." | "..i]], sX - baseX, sY - baseY - (i * 19) + 19, sX - 10, sY - 20, tocolor(r, g, b, 200), 1.2, "default-bold", "right", "top", false, false, false, true, false)
 				--dxDrawText(tostring(bar[i].t).." | "..i, sX - baseX, sY - baseY - (i * 19) + 19, sX - 10, sY - 20, tocolor(r, g, b, 200), (scaleX + scaleY) / (1 + (2 / 3)), "default-bold", "right", "top", false, false, false, false, false)
 				--dxDrawText(tostring(bar[i].t).." | "..i, sX - baseX, baseY - (i * 19) + 19, 1356, 748, tocolor(r, g, b, 200), 1.2, "default-bold", "right", "top", false, false, false, false, false)
 			end
