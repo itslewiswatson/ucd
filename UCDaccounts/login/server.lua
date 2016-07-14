@@ -63,6 +63,7 @@ addEventHandler("UCDaccounts.removeLoginText", root, removeLoginText)
 function loginPlayer2(usr, passwd, plr)
 	local plr = client -- REMOVE THIS LINE
 	
+	--[[
 	local result = exports.UCDsql:getForumDatabase():query("SELECT `member_name`, `passwd` FROM `smf_members` WHERE `member_name` = ? LIMIT 1", usr):poll(-1)
 	if (not result or #result == 0) then
 		if (not result) then
@@ -77,6 +78,7 @@ function loginPlayer2(usr, passwd, plr)
 		exports.UCDdx:new(plr, "Incorrect password", 255, 255, 255)
 		return false
 	end
+	--]]
 	
 	-- Maybe have a label that you constantly need to update instead of using UCDdx
 	if (getAccount(usr)) then
@@ -143,6 +145,7 @@ function registerPlayer2(usr, email, passwd, plr)
 			return
 		end
 	end
+	--[[
 	local result = exports.UCDsql:getForumDatabase():query("SELECT `member_name` FROM `smf_members` WHERE `member_name` = ?", usr):poll(-1)
 	if (not result or #result ~= 0) then
 		if (not result) then
@@ -152,6 +155,7 @@ function registerPlayer2(usr, email, passwd, plr)
 		exports.UCDdx:new(plr, "An account with this name already exists", 255, 255, 255)
 		return
 	end
+	--]]
 	if (not getAccount(usr)) then
 		local addedAccount = exports.UCDaccounts:registerAccount(plr, usr, passwd, email)
 		if (not addedAccount) then
@@ -162,7 +166,7 @@ function registerPlayer2(usr, email, passwd, plr)
 		triggerClientEvent(plr, "UCDaccounts.login.hideRegistrationInterface", resourceRoot) -- Hides the window
 		triggerClientEvent(plr, "UCDaccounts.login.showLoginInterface", resourceRoot) -- Shows login window
 		exports.UCDdx:new(plr, "You have successfully registered! Account name: "..usr, 255, 255, 255)
-		exports.UCDdx:new(plr, "This account will also work on the forums - forum.ucdmta.com", 255, 255, 255)
+		--exports.UCDdx:new(plr, "This account will also work on the forums - forum.ucdmta.com", 255, 255, 255)
 		exports.UCDlogging:new(plr, "register", "registered account: "..usr, plr.ip)
 		return true
 	end

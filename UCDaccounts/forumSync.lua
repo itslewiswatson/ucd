@@ -1,3 +1,4 @@
+--[[
 function createGameAccount(account, password)
 	local a = Account.add(account, password)
 	outputDebugString("createGameAccount > "..tostring(a))
@@ -13,3 +14,4 @@ function changeGamePassword(account, password)
 	outputDebugString("Couldn't change password for "..tostring(account))
 	return false
 end
+--]]

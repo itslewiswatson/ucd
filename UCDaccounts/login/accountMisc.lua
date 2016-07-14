@@ -14,7 +14,7 @@ function registerAccount(plr, usr, passwd, email)
 	--local salt = bcrypt_salt(6)
 	--local passwd_ = bcrypt_digest(passwd, salt)
 	
-	local smf_passwd = hash("sha1", usr:lower()..passwd)
+	--local smf_passwd = hash("sha1", usr:lower()..passwd)
 	local blankJSON = toJSON({})
 	-- Password should now only be stored in SMF
 	
@@ -52,10 +52,10 @@ function registerAccount(plr, usr, passwd, email)
 		blankJSON,
 		blankJSON
 	)
-	--db:exec("INSERT INTO `sms_friends` SET `account`=?, `friends`=?", usr, toJSON({}))
+	-- db:exec("INSERT INTO `sms_friends` SET `account`=?, `friends`=?", usr, toJSON({}))
 	db:exec("INSERT INTO `playerStats` SET `account`=?", usr)
 	
-	exports.UCDsql:getForumDatabase():exec("INSERT INTO `smf_members` (`member_name`, `date_registered`, `real_name`, `passwd`, `email_address`) VALUES (?, ?, ?, ?, ?)", usr, getRealTime().timestamp, plr.name, smf_passwd, email)
+	-- exports.UCDsql:getForumDatabase():exec("INSERT INTO `smf_members` (`member_name`, `date_registered`, `real_name`, `passwd`, `email_address`) VALUES (?, ?, ?, ?, ?)", usr, getRealTime().timestamp, plr.name, smf_passwd, email)
 	
 	accountData[usr] = {x = 1519.616, y = -1675.9303, z = 13.5469, rot = 270, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 500, model = 61, walkstyle = 0, wp = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name, ownedWeapons = toJSON({}), weaponString = toJSON({}), sms_friends = toJSON({}), aviator = 0, trucker = 0}
 	return true
@@ -76,7 +76,7 @@ function deleteAccount(accName)
 	db:exec("DELETE FROM `accountData` WHERE `account`=?", accName)
 	--db:exec("DELETE FROM `sms_friends` WHERE `account`=?", accName)
 	db:exec("DELETE FROM `playerStats` WHERE `account`=?", accName)
-	exports.UCDsql:getForumDatabase():exec("DELETE FROM `smf_members` WHERE `member_name` = ?", accName)
+	--exports.UCDsql:getForumDatabase():exec("DELETE FROM `smf_members` WHERE `member_name` = ?", accName)
 	acc:remove()
 
 	return true
