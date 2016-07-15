@@ -61,13 +61,13 @@ function refreshGridlist()
 		GUIEditor.label[i].text = txt
 	end
 	for _, plr in ipairs(Element.getAllByType("player")) do
-		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+		--if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
 			local row = guiGridListAddRow(GUIEditor.gridlist[1])
 			local r, g, b = plr.team:getColor()
 			guiGridListSetItemText(GUIEditor.gridlist[1], row, 1, tostring(plr.name), false, false)
 			guiGridListSetItemData(GUIEditor.gridlist[1], row, 1, plr)
 			guiGridListSetItemColor(GUIEditor.gridlist[1], row, 1, r, g, b)
-		end
+		--end
 	end
 end
 refreshGridlist()

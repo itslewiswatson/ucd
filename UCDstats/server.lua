@@ -1,6 +1,10 @@
 -- Fetch stats
 function getPlayerStats(plr)
 	if (client and plr) then
+		if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+			exports.UCDdx:new(client, "This player is not logged in - you can't view their stats", 255, 0, 0)
+			return
+		end
 		-- Check for antispam
 		local group, rank = exports.UCDgroups:getPlayerGroup(plr) or "N/A", exports.UCDgroups:getPlayerGroupRank(plr) or "N/A"
 		local wanted = exports.UCDwanted:getWantedPoints(plr) or 0
