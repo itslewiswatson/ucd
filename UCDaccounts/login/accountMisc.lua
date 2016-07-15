@@ -19,7 +19,7 @@ function registerAccount(plr, usr, passwd, email)
 	-- Password should now only be stored in SMF
 	
 	--db:exec("INSERT INTO `accounts` (`account`, `pw`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?, ?) ", usr, passwd_, plr.ip, plr.serial, email)
-	db:exec("INSERT INTO `accounts` (`account`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?, ?) ", usr, plr.ip, plr.serial, email)
+	db:exec("INSERT INTO `accounts` (`account`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?) ", usr, plr.ip, plr.serial, email)
 	--[[
 	db:exec("INSERT INTO `accountData` SET `account`=?, `x`=?, `y`=?, `z`=?, `rot`=?, `dim`=?, `interior`=?, `playtime`=?, `team`=?, `money`=?, `model`=?, `walkstyle`=?, `wp`=?, `health`=?, `armour`=?, `occupation`=?, `nametag`=?, `lastUsedName`=?, `weaponString`=?,`ownedWeapons`=?, `sms_friends`=?",
 		usr,
@@ -45,7 +45,7 @@ function registerAccount(plr, usr, passwd, email)
 		toJSON({})
 	)
 	]]
-	db:exec("INSERT INTO `accountData` (`usr`, `lastUsedName`, `ownedWeapons`, `weaponString`, `sms_friends`) VALUES (?, ?, ?, ?, ?)",
+	db:exec("INSERT INTO `accountData` (`account`, `lastUsedName`, `ownedWeapons`, `weaponString`, `sms_friends`) VALUES (?, ?, ?, ?, ?)",
 		usr,
 		plr.name,
 		blankJSON,
