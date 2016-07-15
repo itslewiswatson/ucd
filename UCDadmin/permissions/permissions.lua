@@ -53,6 +53,7 @@ function canAdminDoAction(plr, action)
 end
 
 function getRankPerms(rank)
+	if (not rank) then return end
 	local temp = {}
 	for ind, ent in pairs(permissions) do
 		if (ind <= rank) then
