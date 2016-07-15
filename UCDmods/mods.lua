@@ -61,6 +61,8 @@ function applyMod(name, id)
 	outputDebugString("Applying "..tostring(name).." on id "..tostring(id))
 	if (name:match("txd")) then
 		engineImportTXD(engineLoadTXD(name, true), id)
+	elseif (name:match("col")) then
+		engineReplaceCOL(engineLoadCOL(name), id)
 	else
 		engineReplaceModel(engineLoadDFF(name, id), id)
 	end

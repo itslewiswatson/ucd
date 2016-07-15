@@ -14,6 +14,8 @@ local mods = {
 	
 	{"wheels.txd", 1074, "wheels"},
 	{"wheel_gn1.dff", 1074, "wheels"},
+	
+	{"vegasNbank1ug.col", 7245, "objects"},
 }
 local mods2  = {}
 local bytes = 0
