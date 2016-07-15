@@ -182,7 +182,7 @@ function getBank()
 end
 
 function isPlayerInBank(plr) 
-	if (plr:isWithinColShape(bank) and plr.interior = 3 and plr.dimension == 0) then
+	if (plr:isWithinColShape(bank) and plr.interior == 3 and plr.dimension == 0) then
 		return true
 	end
 	return false
