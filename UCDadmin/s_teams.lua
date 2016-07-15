@@ -23,6 +23,7 @@ serials = {
 	["8A227ED9C2C4A2D465975BB5D52A64A1"] = true, -- Matrix
 	["67E50D4ACE87F78290EEC402CD890544"] = true, -- Valentim
 	["136C9AA8BAAD17020796C7E4643C3454"] = true, -- Paschi
+	["957AA36CDF402DCF62E92656167E8CF3"] = true, -- Beast
 }
 
 addEventHandler("onPlayerConnect", root,
