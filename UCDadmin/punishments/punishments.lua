@@ -62,6 +62,10 @@ function punish(val, duration, type1, who, reason)
 	
 	-- Redirect bans elsewhere
 	if (type1 == "ban") then
+		if (not canAdminDoAction(source, "ban")) then
+			exports.UCDdx:new(source, "Only L3+ admins may issue bans", 255, 0, 0)
+			return
+		end
 		if (val.type == "player") then
 			if (exports.UCDaccounts:isPlayerLoggedIn(val)) then
 				addBan("acc:"..val.account.name, who, reason[1], duration)

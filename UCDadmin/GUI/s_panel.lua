@@ -19,7 +19,7 @@ function fetchResources()
 	for i, res in ipairs(getResources()) do
 		resources[i] = {res.name, res.state}
 	end
-	triggerClientEvent(client, "UCDadmin.updateResources", client, resources or {})
+	--triggerClientEvent(client, "UCDadmin.updateResources", client, resources or {})
 end
-addEvent("UCDadmin.getResources", true)
-addEventHandler("UCDadmin.getResources", root, fetchResources)
+--addEvent("UCDadmin.getResources", true)
+--addEventHandler("UCDadmin.getResources", root, fetchResources)

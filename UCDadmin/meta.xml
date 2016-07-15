@@ -14,6 +14,9 @@
 	<script src="GUI/c_panel.lua" type="client"/>
 	<script src="GUI/c_input_box.lua" type="client"/>
 	
+	<script src="permissions/permissions.lua" type="server"/>
+	<script src="permissions/permissions_c.lua" type="client"/>
+	
 	<script src="restricted/cmds.lua" type="server"/>
 	
 	<script src="punishments/ban.lua" type="server"/>
@@ -38,5 +41,8 @@
 	<export function="addBan" type="server"/>
 	<export function="removeBan" type="server"/>
 	<export function="punish" type="server"/>
+	
+	<export function="canAdminDoAction" type="server"/>
+	<export function="getRankPerms" type="server"/>
 	<oop>true</oop>
 </meta>

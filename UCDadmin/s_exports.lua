@@ -13,7 +13,7 @@ end
 function getPlayerAdminRank(plr)
 	if (not plr) then return end
 	if (plr.type ~= "player") then return false end
-	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
+	
 	if isPlayerOwner(plr) then return 1337 end
 	if (adminTable and adminTable[plr.account.name]) then
 		return adminTable[plr.account.name].rank 
@@ -21,7 +21,6 @@ function getPlayerAdminRank(plr)
 	return false
 end
 
--- make an admin table
 function isPlayerOwner(plr)
 	if (not plr) then return end
 	if plr.account.name == "Noki" then return true else return false end
@@ -31,7 +30,6 @@ function isPlayerDeveloper(plr)
 	if not plr then return end
 	if (plr.type ~= "player") then return false end
 	
-	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	if (not adminTable[plr.account.name] or not adminTable[plr.account.name].dev) then
 		return false
 	end
@@ -42,7 +40,6 @@ function isPlayerAdmin(plr)
 	if not plr then return nil end
 	if (plr.type ~= "player") then return false end
 	
-	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	if (not adminTable[plr.account.name]) then
 		return false
 	end
@@ -53,13 +50,13 @@ function setPlayerAdminRank(plr, rank)
 	if (not plr or not rank) then return end
 	if (plr.type ~= "player" or tonumber(rank) == nil or rank > 5 or rank < 1) then return false end
 	
-	--local id = exports.UCDaccounts:getPlayerAccountID(plr)
 	db:exec("UPDATE `admins` SET `rank`=? WHERE `account`=?", rank, plr.account.name)
 	if (not adminTable[plr.account.name]) then
 		db:query(createAdminTable, {}, "SELECT * FROM `admins`")
 	else
 		adminTable[plr.account.name]["rank"] = rank
 	end
+	sendPermissions(plr) -- Update their permissions
 	return true
 end
 

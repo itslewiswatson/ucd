@@ -67,6 +67,15 @@ function processPunish()
 		return false
 	end
 	
+	if (not _permissions[action]) then
+		if (action == "ban") then
+			exports.UCDdx:new(source, "Only L3+ admins may issue bans", 255, 0, 0)
+		else
+			exports.UCDdx:new(source, "Nice try. I wonder how you're here...", 255, 0, 0)
+		end
+		return
+	end
+	
 	if (tonumber(duration) == -1 and action ~= "ban") then
 		exports.UCDdx:new("Only bans can be permanent (-1 duration)", 255, 0, 0)
 		return

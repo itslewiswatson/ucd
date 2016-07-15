@@ -21,6 +21,8 @@ local reasons = {
 	"#5: Illegal transactions",
 	"#6: Non-English",
 	"#7: Ignoring administrators",
+	"#9: Advertising other servers",
+	"#10: Hate speech",
 	"Bugged",
 }
 local actions = {
@@ -29,223 +31,181 @@ local actions = {
 	"Ban",
 }
 
-local punishmentTimes = {
-	-- From punishments table
-	-- ["#0: Deathmatching"] = {[1] = 300, [2] = 600, [3] = 1200, [4] = 1800, [5] = 2400, [6] = ban (21600 - 6 hrs), -- repeat 6}
+adminPanel.window[1] = GuiWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
+guiWindowSetSizable(adminPanel.window[1], false)
+guiSetVisible(adminPanel.window[1], false)
+exports.UCDutil:centerWindow(adminPanel.window[1])
+adminPanel.window[1].alpha = 1
+
+adminPanel.tabpanel[1] = guiCreateTabPanel(10, 24, 645, 470, false, adminPanel.window[1])
+
+adminPanel.tab[1] = guiCreateTab("Players", adminPanel.tabpanel[1])
+
+adminPanel.gridlist[1] = guiCreateGridList(10, 40, 151, 395, false, adminPanel.tab[1])
+guiGridListAddColumn(adminPanel.gridlist[1], "Player Name", 0.9)
+guiGridListSetSortingEnabled(adminPanel.gridlist[1], false)
+
+adminPanel.edit[1] = GuiEdit(10, 10, 151, 26, "", false, adminPanel.tab[1])
+adminPanel.label[1] = GuiLabel(170, 26, 290, 20, "Name: ", false, adminPanel.tab[1])
+adminPanel.label[2] = GuiLabel(170, 86, 290, 20, "IP: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[2], "right", false)
+adminPanel.label[3] = GuiLabel(170, 66, 290, 20, "Serial: ", false, adminPanel.tab[1])
+adminPanel.label[4] = GuiLabel(171, 86, 289, 20, "Version: ", false, adminPanel.tab[1])
+adminPanel.label[5] = GuiLabel(170, 46, 290, 20, "Account Name: ", false, adminPanel.tab[1])
+adminPanel.label[6] = GuiLabel(171, 375, 289, 21, "Playtime: ", false, adminPanel.tab[1])
+adminPanel.label[7] = GuiLabel(170, 126, 290, 22, "Country: ", false, adminPanel.tab[1])
+adminPanel.label[9] = GuiLabel(170, 210, 290, 20, "Location: ", false, adminPanel.tab[1])
+adminPanel.label[10] = GuiLabel(170, 230, 290, 20, "Dimension: ", false, adminPanel.tab[1])
+adminPanel.label[11] = GuiLabel(170, 230, 290, 20, "Interior: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[11], "right", false)
+adminPanel.label[12] = GuiLabel(170, 106, 290, 20, "Email: ", false, adminPanel.tab[1])
+adminPanel.label[13] = GuiLabel(170, 270, 290, 20, "Health: ", false, adminPanel.tab[1])
+adminPanel.label[14] = GuiLabel(170, 270, 290, 20, "Armour: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[14], "right", false)
+adminPanel.label[15] = GuiLabel(171, 355, 289, 20, "Money: ", false, adminPanel.tab[1])
+adminPanel.label[16] = GuiLabel(170, 355, 290, 20, "Bank: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[16], "right", false)
+adminPanel.label[17] = GuiLabel(170, 396, 291, 20, "Occupation: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[17], "right", false)
+adminPanel.label[18] = GuiLabel(171, 396, 290, 20, "Class: ", false, adminPanel.tab[1])
+adminPanel.label[19] = GuiLabel(171, 335, 289, 20, "Group: ", false, adminPanel.tab[1])
+adminPanel.label[20] = GuiLabel(171, 375, 289, 21, "Team: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[20], "right", false)
+adminPanel.label[21] = GuiLabel(170, 250, 267, 20, "Model: ", false, adminPanel.tab[1])
+adminPanel.label[22] = GuiLabel(171, 250, 290, 20, "Weapon: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[22], "right", false)
+adminPanel.label[23] = GuiLabel(170, 26, 290, 20, "Ping: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[23], "right", false)
+adminPanel.label[24] = GuiLabel(170, 416, 290, 20, "Vehicle: ", false, adminPanel.tab[1])
+adminPanel.label[25] = GuiLabel(170, 416, 290, 20, "Vehicle Health: ", false, adminPanel.tab[1])
+guiLabelSetHorizontalAlign(adminPanel.label[25], "right", false)
+adminPanel.label[26] = GuiLabel(170, 190, 290, 20, "X: N/A; Y: N/A; Z: N/A", false, adminPanel.tab[1])
+adminPanel.label[27] = GuiLabel(170, 168, 49, 22, "Locality", false, adminPanel.tab[1])
+guiSetFont(adminPanel.label[27], "default-bold-small")
+guiLabelSetColor(adminPanel.label[27], 255, 0, 0)
+adminPanel.label[28] = GuiLabel(170, 4, 49, 22, "Player", false, adminPanel.tab[1])
+guiSetFont(adminPanel.label[28], "default-bold-small")
+guiLabelSetColor(adminPanel.label[28], 255, 0, 0)
+adminPanel.label[29] = GuiLabel(170, 313, 49, 22, "Misc", false, adminPanel.tab[1])
+guiSetFont(adminPanel.label[29], "default-bold-small")
+guiLabelSetColor(adminPanel.label[29], 255, 0, 0)
+adminPanel.button[1] = GuiButton(488, 52, 147, 18, "Warp to player", false, adminPanel.tab[1])
+adminPanel.button[2] = GuiButton(488, 10, 147, 36, "Punish", false, adminPanel.tab[1])
+adminPanel.button[3] = GuiButton(488, 144, 72, 18, "Spectate", false, adminPanel.tab[1])
+adminPanel.button[4] = GuiButton(488, 76, 147, 18, "Warp player to", false, adminPanel.tab[1])
+adminPanel.button[5] = GuiButton(488, 100, 72, 18, "Reconnect", false, adminPanel.tab[1])
+adminPanel.button[6] = GuiButton(563, 100, 72, 18, "Kick", false, adminPanel.tab[1])
+adminPanel.button[7] = GuiButton(488, 122, 72, 18, "Freeze", false, adminPanel.tab[1])
+adminPanel.button[8] = GuiButton(563, 122, 72, 18, "Shout", false, adminPanel.tab[1])
+adminPanel.button[9] = GuiButton(563, 144, 72, 18, "Slap", false, adminPanel.tab[1])
+adminPanel.button[10] = GuiButton(488, 167, 72, 18, "Rename", false, adminPanel.tab[1])
+adminPanel.button[11] = GuiButton(488, 318, 147, 20, "View punishments", false, adminPanel.tab[1])
+adminPanel.button[12] = GuiButton(563, 167, 72, 18, "Screenshot", false, adminPanel.tab[1])
+adminPanel.button[13] = GuiButton(563, 195, 72, 18, "Set Model", false, adminPanel.tab[1])
+adminPanel.button[14] = GuiButton(488, 195, 72, 18, "Money", false, adminPanel.tab[1])
+adminPanel.button[15] = GuiButton(488, 220, 72, 18, "Set Health", false, adminPanel.tab[1])
+adminPanel.button[16] = GuiButton(563, 220, 72, 18, "Set Armour", false, adminPanel.tab[1])
+adminPanel.button[17] = GuiButton(488, 244, 72, 18, "Dimension", false, adminPanel.tab[1])
+adminPanel.button[18] = GuiButton(563, 244, 72, 18, "Interior", false, adminPanel.tab[1])
+adminPanel.button[19] = GuiButton(488, 369, 72, 18, "Fix", false, adminPanel.tab[1])
+adminPanel.button[20] = GuiButton(563, 369, 72, 18, "Eject", false, adminPanel.tab[1])
+adminPanel.button[21] = GuiButton(488, 392, 72, 18, "Destroy", false, adminPanel.tab[1])
+adminPanel.button[22] = GuiButton(563, 392, 72, 18, "Disable", false, adminPanel.tab[1])
+adminPanel.button[23] = GuiButton(563, 266, 72, 18, "Set Job", false, adminPanel.tab[1])
+adminPanel.button[24] = GuiButton(488, 341, 72, 18, "Anticheat", false, adminPanel.tab[1])
+adminPanel.button[25] = GuiButton(563, 341, 72, 18, "View Weps", false, adminPanel.tab[1])
+adminPanel.button[26] = GuiButton(488, 290, 72, 18, "Weapons", false, adminPanel.tab[1])
+adminPanel.button[27] = GuiButton(488, 266, 72, 18, "Give Vehicle", false, adminPanel.tab[1])
+adminPanel.button[28] = GuiButton(488, 416, 72, 18, "Blow", false, adminPanel.tab[1])
+adminPanel.button[29] = GuiButton(563, 416, 72, 18, "Freeze", false, adminPanel.tab[1])
+adminPanel.button[30] = GuiButton(563, 290, 72, 18, "Last Logins", false, adminPanel.tab[1])
+
+-- Disable all at first
+for i = 1, #adminPanel.button do
+	adminPanel.button[i].enabled = false
+end
+
+confirm.window[1] = GuiWindow(792, 480, 324, 111, "UCD | Admin - ", false)
+confirm.window[1].sizable = false
+confirm.window[1].visible = false
+confirm.button[1] = GuiButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
+confirm.button[2] = GuiButton(169, 82, 101, 19, "Cancel", false, confirm.window[1])
+confirm.edit[1] = GuiEdit(35, 47, 260, 25, "", false, confirm.window[1])
+confirm.label[1] = GuiLabel(36, 21, 259, 20, "Set the motherfucking label text nigga", false, confirm.window[1])
+guiLabelSetHorizontalAlign(confirm.label[1], "center", false)
+guiLabelSetVerticalAlign(confirm.label[1], "center") 
+ 
+WPT.window[1] = GuiWindow(850, 390, 201, 348, "UCD Admin | Warp Player To", false)
+WPT.window[1].sizable = false
+WPT.window[1].visible = false
+WPT.button[1] = GuiButton(10, 304, 85, 34, "Warp Player To", false, WPT.window[1])
+WPT.label[1] = GuiLabel(10, 24, 179, 21, "Select a player from the grid", false, WPT.window[1])
+guiLabelSetHorizontalAlign(WPT.label[1], "center", false)
+WPT.gridlist[1] = guiCreateGridList(10, 45, 178, 249, false, WPT.window[1])
+guiGridListAddColumn(WPT.gridlist[1], "Player", 0.9)
+WPT.button[2] = GuiButton(103, 304, 85, 34, "Close", false, WPT.window[1])
+
+local weapons = {
+	"Colt 45", "Silenced", "Deagle", "Shotgun", "Sawed-off", "Combat Shotgun",
+	"Uzi", "MP5", "Tec-9", "AK-47", "M4", "Rifle", "Sniper",
+	"Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
 }
+giveWeapon_.window[1] = GuiWindow(244, 682, 317, 160, "UCD | Admin - Give Weapon", false)
+giveWeapon_.window[1].sizable = false
+giveWeapon_.window[1].visible = false
+giveWeapon_.edit[1] = GuiEdit(226, 48, 81, 25, "", false, giveWeapon_.window[1])
+giveWeapon_.combobox[1] = GuiComboBox(10, 48, 197, 100, "", false, giveWeapon_.window[1])
+for _, wep in ipairs(weapons) do
+	guiComboBoxAddItem(giveWeapon_.combobox[1], wep)
+end
+giveWeapon_.label[1] = GuiLabel(10, 24, 197, 19, "Weapon", false, giveWeapon_.window[1])
+guiLabelSetHorizontalAlign(giveWeapon_.label[1], "center", false)
+guiLabelSetVerticalAlign(giveWeapon_.label[1], "center")
+giveWeapon_.label[2] = GuiLabel(226, 24, 81, 19, "Ammo", false, giveWeapon_.window[1])
+guiLabelSetHorizontalAlign(giveWeapon_.label[2], "center", false)
+guiLabelSetVerticalAlign(giveWeapon_.label[2], "center")
+giveWeapon_.button[1] = GuiButton(66, 120, 87, 22, "Confirm", false, giveWeapon_.window[1])
+giveWeapon_.button[2] = GuiButton(168, 120, 87, 22, "Close", false, giveWeapon_.window[1])
+	
+-- Punish window
+punish.window = GuiWindow(535, 156, 272, 358, "UCD | Admin - Punish", false)
+punish.window.visible = false
+punish.window.sizable = false
+punish.window.alpha = 255
+punish.combobox["rules"] = GuiComboBox(9, 73, 253, 240, "Select rule", false, punish.window)
+for _, reason in ipairs(reasons) do
+	guiComboBoxAddItem(punish.combobox["rules"], tostring(reason))
+end
+punish.edit["custom"] = GuiEdit(9, 38, 253, 25, "", false, punish.window)
+punish.button["cancel"] = GuiButton(10, 310, 105, 38, "Cancel", false, punish.window)
+punish.button["punish"] = GuiButton(157, 310, 105, 38, "Punish", false, punish.window)
+punish.checkbox["custom_duration"] = GuiCheckBox(9, 141, 16, 16, "", false, false, punish.window)
+punish.label[1] = GuiLabel(34, 141, 228, 16, "Use custom duration (otherwise it's auto)", false, punish.window)
+punish.edit["min"] = GuiEdit(10, 167, 65, 29, "", false, punish.window)
+punish.edit["hour"] = GuiEdit(99, 167, 65, 29, "", false, punish.window)
+punish.edit["day"] = GuiEdit(188, 167, 65, 29, "", false, punish.window)
+punish.radiobutton[1] = GuiRadioButton(10, 206, 15, 15, "", false, punish.window)
+punish.label[2] = GuiLabel(35, 206, 40, 15, "Mins", false, punish.window)
+punish.radiobutton[2] = GuiRadioButton(99, 206, 15, 15, "", false, punish.window)
+punish.label[3] = GuiLabel(124, 206, 40, 15, "Hours", false, punish.window)
+punish.radiobutton[3] = GuiRadioButton(187, 206, 15, 15, "", false, punish.window)
+punish.label[4] = GuiLabel(212, 206, 40, 15, "Days", false, punish.window)
+punish.combobox["punishtype"] = GuiComboBox(9, 231, 253, 117, "Select punish type", false, punish.window)
+for _, action in ipairs(actions) do
+	guiComboBoxAddItem(punish.combobox["punishtype"], tostring(action))
+end
+punish.edit["reason"] = GuiEdit(9, 106, 253, 25, "", false, punish.window)
+punish.label[5] = guiCreateLabel(9, 21, 253, 16, "Manual syntax: acc:name or serial (bans only)", false, punish.window)
+guiLabelSetHorizontalAlign(punish.label[5], "center", false)
+punish.label[6] = guiCreateLabel(9, 271, 252, 16, "-1 minutes = permanent (bans only)", false, punish.window)
+guiLabelSetHorizontalAlign(punish.label[6], "center", false)
 
---addEventHandler("onClientResourceStart", resourceRoot,
---	function()
-        adminPanel.window[1] = GuiWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
-        guiWindowSetSizable(adminPanel.window[1], false)
-        guiSetVisible(adminPanel.window[1], false)
-		exports.UCDutil:centerWindow(adminPanel.window[1])
-		adminPanel.window[1].alpha = 1
-
-        adminPanel.tabpanel[1] = guiCreateTabPanel(10, 24, 645, 470, false, adminPanel.window[1])
-
-        adminPanel.tab[1] = guiCreateTab("Players", adminPanel.tabpanel[1])
-
-        adminPanel.gridlist[1] = guiCreateGridList(10, 40, 151, 395, false, adminPanel.tab[1])
-        guiGridListAddColumn(adminPanel.gridlist[1], "Player Name", 0.9)
-        guiGridListSetSortingEnabled(adminPanel.gridlist[1], false)
-		
-        adminPanel.edit[1] = GuiEdit(10, 10, 151, 26, "", false, adminPanel.tab[1])
-        adminPanel.label[1] = GuiLabel(170, 26, 290, 20, "Name: ", false, adminPanel.tab[1])
-        adminPanel.label[2] = GuiLabel(170, 86, 290, 20, "IP: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[2], "right", false)
-        adminPanel.label[3] = GuiLabel(170, 66, 290, 20, "Serial: ", false, adminPanel.tab[1])
-        adminPanel.label[4] = GuiLabel(171, 86, 289, 20, "Version: ", false, adminPanel.tab[1])
-        adminPanel.label[5] = GuiLabel(170, 46, 290, 20, "Account Name: ", false, adminPanel.tab[1])
-        adminPanel.label[6] = GuiLabel(171, 375, 289, 21, "Playtime: ", false, adminPanel.tab[1])
-        adminPanel.label[7] = GuiLabel(170, 126, 290, 22, "Country: ", false, adminPanel.tab[1])
-        adminPanel.label[9] = GuiLabel(170, 210, 290, 20, "Location: ", false, adminPanel.tab[1])
-        adminPanel.label[10] = GuiLabel(170, 230, 290, 20, "Dimension: ", false, adminPanel.tab[1])
-        adminPanel.label[11] = GuiLabel(170, 230, 290, 20, "Interior: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[11], "right", false)
-        adminPanel.label[12] = GuiLabel(170, 106, 290, 20, "Email: ", false, adminPanel.tab[1])
-        adminPanel.label[13] = GuiLabel(170, 270, 290, 20, "Health: ", false, adminPanel.tab[1])
-        adminPanel.label[14] = GuiLabel(170, 270, 290, 20, "Armour: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[14], "right", false)
-        adminPanel.label[15] = GuiLabel(171, 355, 289, 20, "Money: ", false, adminPanel.tab[1])
-        adminPanel.label[16] = GuiLabel(170, 355, 290, 20, "Bank: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[16], "right", false)
-        adminPanel.label[17] = GuiLabel(170, 396, 291, 20, "Occupation: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[17], "right", false)
-        adminPanel.label[18] = GuiLabel(171, 396, 290, 20, "Class: ", false, adminPanel.tab[1])
-        adminPanel.label[19] = GuiLabel(171, 335, 289, 20, "Group: ", false, adminPanel.tab[1])
-        adminPanel.label[20] = GuiLabel(171, 375, 289, 21, "Team: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[20], "right", false)
-        adminPanel.label[21] = GuiLabel(170, 250, 267, 20, "Model: ", false, adminPanel.tab[1])
-        adminPanel.label[22] = GuiLabel(171, 250, 290, 20, "Weapon: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[22], "right", false)
-        adminPanel.label[23] = GuiLabel(170, 26, 290, 20, "Ping: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[23], "right", false)
-        adminPanel.label[24] = GuiLabel(170, 416, 290, 20, "Vehicle: ", false, adminPanel.tab[1])
-        adminPanel.label[25] = GuiLabel(170, 416, 290, 20, "Vehicle Health: ", false, adminPanel.tab[1])
-        guiLabelSetHorizontalAlign(adminPanel.label[25], "right", false)
-        adminPanel.label[26] = GuiLabel(170, 190, 290, 20, "X: N/A; Y: N/A; Z: N/A", false, adminPanel.tab[1])
-        adminPanel.label[27] = GuiLabel(170, 168, 49, 22, "Locality", false, adminPanel.tab[1])
-        guiSetFont(adminPanel.label[27], "default-bold-small")
-        guiLabelSetColor(adminPanel.label[27], 255, 0, 0)
-        adminPanel.label[28] = GuiLabel(170, 4, 49, 22, "Player", false, adminPanel.tab[1])
-        guiSetFont(adminPanel.label[28], "default-bold-small")
-        guiLabelSetColor(adminPanel.label[28], 255, 0, 0)
-        adminPanel.label[29] = GuiLabel(170, 313, 49, 22, "Misc", false, adminPanel.tab[1])
-        guiSetFont(adminPanel.label[29], "default-bold-small")
-        guiLabelSetColor(adminPanel.label[29], 255, 0, 0)
-        adminPanel.button[1] = GuiButton(488, 52, 147, 18, "Warp to player", false, adminPanel.tab[1])
-        adminPanel.button[2] = GuiButton(488, 10, 147, 36, "Punish", false, adminPanel.tab[1])
-        adminPanel.button[3] = GuiButton(488, 144, 72, 18, "Spectate", false, adminPanel.tab[1])
-        adminPanel.button[4] = GuiButton(488, 76, 147, 18, "Warp player to", false, adminPanel.tab[1])
-        adminPanel.button[5] = GuiButton(488, 100, 72, 18, "Reconnect", false, adminPanel.tab[1])
-        adminPanel.button[6] = GuiButton(563, 100, 72, 18, "Kick", false, adminPanel.tab[1])
-        adminPanel.button[7] = GuiButton(488, 122, 72, 18, "Freeze", false, adminPanel.tab[1])
-        adminPanel.button[8] = GuiButton(563, 122, 72, 18, "Shout", false, adminPanel.tab[1])
-        adminPanel.button[9] = GuiButton(563, 144, 72, 18, "Slap", false, adminPanel.tab[1])
-        adminPanel.button[10] = GuiButton(488, 167, 72, 18, "Rename", false, adminPanel.tab[1])
-        adminPanel.button[11] = GuiButton(488, 318, 147, 20, "View punishments", false, adminPanel.tab[1])
-        adminPanel.button[12] = GuiButton(563, 167, 72, 18, "Screenshot", false, adminPanel.tab[1])
-        adminPanel.button[13] = GuiButton(563, 195, 72, 18, "Set Model", false, adminPanel.tab[1])
-        adminPanel.button[14] = GuiButton(488, 195, 72, 18, "Money", false, adminPanel.tab[1])
-        adminPanel.button[15] = GuiButton(488, 220, 72, 18, "Set Health", false, adminPanel.tab[1])
-        adminPanel.button[16] = GuiButton(563, 220, 72, 18, "Set Armour", false, adminPanel.tab[1])
-        adminPanel.button[17] = GuiButton(488, 244, 72, 18, "Dimension", false, adminPanel.tab[1])
-        adminPanel.button[18] = GuiButton(563, 244, 72, 18, "Interior", false, adminPanel.tab[1])
-        adminPanel.button[19] = GuiButton(488, 369, 72, 18, "Fix", false, adminPanel.tab[1])
-        adminPanel.button[20] = GuiButton(563, 369, 72, 18, "Eject", false, adminPanel.tab[1])
-        adminPanel.button[21] = GuiButton(488, 392, 72, 18, "Destroy", false, adminPanel.tab[1])
-        adminPanel.button[22] = GuiButton(563, 392, 72, 18, "Disable", false, adminPanel.tab[1])
-        adminPanel.button[23] = GuiButton(563, 266, 72, 18, "Set Job", false, adminPanel.tab[1])
-        adminPanel.button[24] = GuiButton(488, 341, 72, 18, "Anticheat", false, adminPanel.tab[1])
-        adminPanel.button[25] = GuiButton(563, 341, 72, 18, "View Weps", false, adminPanel.tab[1])
-        adminPanel.button[26] = GuiButton(488, 290, 72, 18, "Weapons", false, adminPanel.tab[1])
-        adminPanel.button[27] = GuiButton(488, 266, 72, 18, "Give Vehicle", false, adminPanel.tab[1])
-        adminPanel.button[28] = GuiButton(488, 416, 72, 18, "Blow", false, adminPanel.tab[1])
-        adminPanel.button[29] = GuiButton(563, 416, 72, 18, "Freeze", false, adminPanel.tab[1])
-		adminPanel.button[27] = GuiButton(563, 290, 72, 18, "Last Logins", false, adminPanel.tab[1])
-
-        adminPanel.tab[2] = guiCreateTab("Resources", adminPanel.tabpanel[1])
-
-        adminPanel.gridlist[2] = guiCreateGridList(10, 48, 245, 349, false, adminPanel.tab[2])
-        guiGridListAddColumn(adminPanel.gridlist[2], "Resource", 0.5)
-        guiGridListAddColumn(adminPanel.gridlist[2], "State", 0.4)
-        guiGridListSetItemText(adminPanel.gridlist[2], 0, 1, "-", false, false)
-        guiGridListSetItemText(adminPanel.gridlist[2], 0, 2, "-", false, false)
-        adminPanel.edit[2] = GuiEdit(10, 10, 245, 28, "", false, adminPanel.tab[2])
-        adminPanel.button[30] = GuiButton(10, 407, 245, 29, "Refresh", false, adminPanel.tab[2])
-        adminPanel.edit[3] = GuiEdit(-548, 44, 15, 15, "", false, adminPanel.tab[2])
-        adminPanel.edit[4] = GuiEdit(265, 282, 350, 30, "", false, adminPanel.tab[2])
-        adminPanel.checkbox[1] = guiCreateCheckBox(410, 317, 15, 15, "", false, false, adminPanel.tab[2])
-        adminPanel.label[30] = GuiLabel(435, 317, 105, 20, "Silent", false, adminPanel.tab[2])
-        adminPanel.button[31] = GuiButton(290, 342, 140, 19, "Client", false, adminPanel.tab[2])
-        adminPanel.button[32] = GuiButton(454, 342, 140, 19, "Server", false, adminPanel.tab[2])
-        adminPanel.label[31] = GuiLabel(265, 366, 302, 18, "Last runs", false, adminPanel.tab[2])
-        adminPanel.label[32] = GuiLabel(271, 384, 374, 18, "[UCD]Noki [server]: killPed(getPlayerFromName(\"Epozide\"))", false, adminPanel.tab[2])
-        adminPanel.label[33] = GuiLabel(271, 402, 374, 18, "[UCD]Noki [server]: killPed(getPlayerFromName(\"Epozide\"))", false, adminPanel.tab[2])
-        adminPanel.label[34] = GuiLabel(271, 420, 374, 16, "[UCD]Noki [server]: killPed(getPlayerFromName(\"Epozide\"))", false, adminPanel.tab[2])
-        adminPanel.button[33] = GuiButton(282, 20, 148, 38, "Start", false, adminPanel.tab[2])
-        adminPanel.button[34] = GuiButton(457, 20, 148, 38, "Stop", false, adminPanel.tab[2])
-        adminPanel.button[35] = GuiButton(282, 70, 323, 38, "Restart", false, adminPanel.tab[2])
-        adminPanel.button[36] = GuiButton(457, 118, 148, 38, "Delete", false, adminPanel.tab[2])
-        adminPanel.button[37] = GuiButton(282, 118, 148, 38, "Move", false, adminPanel.tab[2])
-        adminPanel.label[35] = GuiLabel(265, 168, 178, 21, "Resource Information", false, adminPanel.tab[2])
-        guiSetFont(adminPanel.label[35], "default-bold-small")
-        guiLabelSetColor(adminPanel.label[35], 255, 0, 0)
-        adminPanel.label[36] = GuiLabel(280, 189, 345, 20, "Name:", false, adminPanel.tab[2])
-        adminPanel.label[37] = GuiLabel(280, 209, 345, 20, "Author:", false, adminPanel.tab[2])
-        adminPanel.label[38] = GuiLabel(280, 229, 345, 20, "Version:", false, adminPanel.tab[2])
-        adminPanel.label[39] = GuiLabel(280, 249, 345, 23, "Description:", false, adminPanel.tab[2])
-        adminPanel.tab[3] = guiCreateTab("Server Management", adminPanel.tabpanel[1])
-        adminPanel.tab[4] = guiCreateTab("Utilities", adminPanel.tabpanel[1])    
-		
-		
-        confirm.window[1] = GuiWindow(792, 480, 324, 111, "UCD | Admin - ", false)
-        confirm.window[1].sizable = false
-        confirm.window[1].visible = false
-        confirm.button[1] = GuiButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
-        confirm.button[2] = GuiButton(169, 82, 101, 19, "Cancel", false, confirm.window[1])
-        confirm.edit[1] = GuiEdit(35, 47, 260, 25, "", false, confirm.window[1])
-        confirm.label[1] = GuiLabel(36, 21, 259, 20, "Set the motherfucking label text nigga", false, confirm.window[1])
-        guiLabelSetHorizontalAlign(confirm.label[1], "center", false)
-        guiLabelSetVerticalAlign(confirm.label[1], "center") 
-		
-		-- 
-		WPT.window[1] = GuiWindow(850, 390, 201, 348, "UCD Admin | Warp Player To", false)
-		WPT.window[1].sizable = false
-		WPT.window[1].visible = false
-		WPT.button[1] = GuiButton(10, 304, 85, 34, "Warp Player To", false, WPT.window[1])
-		WPT.label[1] = GuiLabel(10, 24, 179, 21, "Select a player from the grid", false, WPT.window[1])
-		guiLabelSetHorizontalAlign(WPT.label[1], "center", false)
-		WPT.gridlist[1] = guiCreateGridList(10, 45, 178, 249, false, WPT.window[1])
-		guiGridListAddColumn(WPT.gridlist[1], "Player", 0.9)
-		WPT.button[2] = GuiButton(103, 304, 85, 34, "Close", false, WPT.window[1])
-		
-		--
-		local weapons = {
-			"Colt 45", "Silenced", "Deagle", "Shotgun", "Sawed-off", "Combat Shotgun",
-			"Uzi", "MP5", "Tec-9", "AK-47", "M4", "Rifle", "Sniper",
-			"Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
-		}
-		giveWeapon_.window[1] = GuiWindow(244, 682, 317, 160, "UCD | Admin - Give Weapon", false)
-		giveWeapon_.window[1].sizable = false
-		giveWeapon_.window[1].visible = false
-		giveWeapon_.edit[1] = GuiEdit(226, 48, 81, 25, "", false, giveWeapon_.window[1])
-		giveWeapon_.combobox[1] = GuiComboBox(10, 48, 197, 100, "", false, giveWeapon_.window[1])
-		for _, wep in ipairs(weapons) do
-			guiComboBoxAddItem(giveWeapon_.combobox[1], wep)
-		end
-		giveWeapon_.label[1] = GuiLabel(10, 24, 197, 19, "Weapon", false, giveWeapon_.window[1])
-		guiLabelSetHorizontalAlign(giveWeapon_.label[1], "center", false)
-		guiLabelSetVerticalAlign(giveWeapon_.label[1], "center")
-		giveWeapon_.label[2] = GuiLabel(226, 24, 81, 19, "Ammo", false, giveWeapon_.window[1])
-		guiLabelSetHorizontalAlign(giveWeapon_.label[2], "center", false)
-		guiLabelSetVerticalAlign(giveWeapon_.label[2], "center")
-		giveWeapon_.button[1] = GuiButton(66, 120, 87, 22, "Confirm", false, giveWeapon_.window[1])
-		giveWeapon_.button[2] = GuiButton(168, 120, 87, 22, "Close", false, giveWeapon_.window[1])
-		
-		-- Punish window
-		
-        punish.window = GuiWindow(535, 156, 272, 358, "UCD | Admin - Punish", false)
-        punish.window.visible = false
-		punish.window.sizable = false
-		punish.window.alpha = 255
-        punish.combobox["rules"] = GuiComboBox(9, 73, 253, 240, "Select rule", false, punish.window)
-		for _, reason in ipairs(reasons) do
-			guiComboBoxAddItem(punish.combobox["rules"], tostring(reason))
-		end
-        punish.edit["custom"] = GuiEdit(9, 38, 253, 25, "", false, punish.window)
-        punish.button["cancel"] = GuiButton(10, 310, 105, 38, "Cancel", false, punish.window)
-        punish.button["punish"] = GuiButton(157, 310, 105, 38, "Punish", false, punish.window)
-        punish.checkbox["custom_duration"] = GuiCheckBox(9, 141, 16, 16, "", false, false, punish.window)
-        punish.label[1] = GuiLabel(34, 141, 228, 16, "Use custom duration (otherwise it's auto)", false, punish.window)
-		punish.edit["min"] = GuiEdit(10, 167, 65, 29, "", false, punish.window)
-        punish.edit["hour"] = GuiEdit(99, 167, 65, 29, "", false, punish.window)
-        punish.edit["day"] = GuiEdit(188, 167, 65, 29, "", false, punish.window)
-		punish.radiobutton[1] = GuiRadioButton(10, 206, 15, 15, "", false, punish.window)
-        punish.label[2] = GuiLabel(35, 206, 40, 15, "Mins", false, punish.window)
-        punish.radiobutton[2] = GuiRadioButton(99, 206, 15, 15, "", false, punish.window)
-        punish.label[3] = GuiLabel(124, 206, 40, 15, "Hours", false, punish.window)
-        punish.radiobutton[3] = GuiRadioButton(187, 206, 15, 15, "", false, punish.window)
-        punish.label[4] = GuiLabel(212, 206, 40, 15, "Days", false, punish.window)
-		punish.combobox["punishtype"] = GuiComboBox(9, 231, 253, 117, "Select punish type", false, punish.window)
-        for _, action in ipairs(actions) do
-			guiComboBoxAddItem(punish.combobox["punishtype"], tostring(action))
-		end
-		punish.edit["reason"] = GuiEdit(9, 106, 253, 25, "", false, punish.window)
-        punish.label[5] = guiCreateLabel(9, 21, 253, 16, "Manual syntax: acc:name or serial (bans only)", false, punish.window)
-        guiLabelSetHorizontalAlign(punish.label[5], "center", false)
-		punish.label[6] = guiCreateLabel(9, 271, 252, 16, "-1 minutes = permanent (bans only)", false, punish.window)
-		guiLabelSetHorizontalAlign(punish.label[6], "center", false)
-
-		windows = {adminPanel.window[1], giveWeapon_.window[1], WPT.window[1], punish.window}
-		for _, gui in ipairs(windows) do
-			if (gui and isElement(gui)) then
-				exports.UCDutil:centerWindow(gui)
-			end
-		end
---    end
---)
+windows = {adminPanel.window[1], giveWeapon_.window[1], WPT.window[1], punish.window}
+for _, gui in ipairs(windows) do
+	if (gui and isElement(gui)) then
+		exports.UCDutil:centerWindow(gui)
+	end
+end
 
 function togglePunishWindow(plr)
 	punish.window.visible = not punish.window.visible
@@ -286,6 +246,7 @@ function giveWeaponHandler()
 end
 addEventHandler("onClientGUIClick", giveWeapon_.button[1], giveWeaponHandler, false)
 addEventHandler("onClientGUIClick", giveWeapon_.button[2], giveWeaponHandler, false)
+
 function showGiveWeapon()
 	if (getSelectedPlayer()) then
 		if (giveWeapon_.window[1].visible) then
@@ -304,34 +265,6 @@ function showGiveWeapon()
 	end
 end
 addEventHandler("onClientGUIClick", adminPanel.button[26], showGiveWeapon, false)
-
-function updateResources(kk)
-	if (kk and type(kk) == "table") then
-		guiGridListClear(adminPanel.gridlist[2])
-		for i, res in ipairs(kk) do
-			local row = guiGridListAddRow(adminPanel.gridlist[2])
-
-			local r, g, b
-			if (res[2] == "running" or res[2] == "starting") then
-				r, g, b = 0, 255, 0
-			else
-				r, g, b = 255, 0 ,0
-			end
-			guiGridListSetItemText(adminPanel.gridlist[2], row, 1, tostring(res[1]), false, false)
-			guiGridListSetItemText(adminPanel.gridlist[2], row, 2, tostring(res[2]), false, false)
-			guiGridListSetItemColor(adminPanel.gridlist[2], row, 1, r, g, b)
-			guiGridListSetItemColor(adminPanel.gridlist[2], row, 2, r, g, b)
-		end
-	end
-end
-addEvent("UCDadmin.updateResources", true)
-addEventHandler("UCDadmin.updateResources", root, updateResources)
-
-function aa()
-	triggerServerEvent("UCDadmin.getResources", localPlayer)
-end
-addEventHandler("onClientResourceStart", resourceRoot, aa)
-addEventHandler("onClientGUIClick", adminPanel.button[30], aa, false)
 
 for _, plr in pairs(Element.getAllByType("player")) do
 	local row = guiGridListAddRow(adminPanel.gridlist[1])
@@ -358,7 +291,7 @@ function searchFromPlayerList()
 			else
 				r, g, b = 255, 255, 255
 			end
-			
+
 			local row = guiGridListAddRow(adminPanel.gridlist[1])
 			guiGridListSetItemText(adminPanel.gridlist[1], row, 1, plr.name, false, false)
 			guiGridListSetItemData(adminPanel.gridlist[1], row, 1, plr)
@@ -371,18 +304,16 @@ addEventHandler("onClientGUIChanged", guiRoot, searchFromPlayerList)
 -- Add a player when they join
 addEventHandler("onClientPlayerJoin", root,
 	function ()
-		--if source.name:lower():find(adminPanel.edit[1]:getText():lower()) then
-            local row = guiGridListAddRow(adminPanel.gridlist[1])
-            guiGridListSetItemText(adminPanel.gridlist[1], row, 1, source.name, false, false)
-            guiGridListSetItemData(adminPanel.gridlist[1], row, 1, source)
-			local r, g, b
-            if source.team then
-				r, g, b = source.team:getColor()
-			else
-				r, g, b = 255, 255, 255
-            end
-			guiGridListSetItemColor(adminPanel.gridlist[1], row, 1, r, g, b)
-		--end
+		local row = guiGridListAddRow(adminPanel.gridlist[1])
+		guiGridListSetItemText(adminPanel.gridlist[1], row, 1, source.name, false, false)
+		guiGridListSetItemData(adminPanel.gridlist[1], row, 1, source)
+		local r, g, b
+		if source.team then
+			r, g, b = source.team:getColor()
+		else
+			r, g, b = 255, 255, 255
+		end
+		guiGridListSetItemColor(adminPanel.gridlist[1], row, 1, r, g, b)
 	end
 )
 
@@ -409,32 +340,30 @@ addEventHandler("onClientPlayerChangeNick", root,
     end
 )
 
-addEventHandler("onClientRender", root,
-	function ()
-		if (adminPanel.window[1].visible) then
-			-- Update team colours
-			for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
-				local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
-				if (plr) then
-					local r, g, b
-					if plr.team then
-						r, g, b = plr.team:getColor()
-					else
-						r, g, b = 255, 255, 255
-					end
-					guiGridListSetItemColor(adminPanel.gridlist[1], i, 1, r, g, b)
-					
-					if (plr.name ~= guiGridListGetItemText(adminPanel.gridlist[1], i, 1)) then
-						guiGridListSetItemText(adminPanel.gridlist[1], i, 1, plr.name, false, false)
-					end
+function updateInformation()
+	if (adminPanel.window[1].visible) then
+		-- Update team colours
+		for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
+			local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
+			if (plr) then
+				local r, g, b
+				if plr.team then
+					r, g, b = plr.team:getColor()
+				else
+					r, g, b = 255, 255, 255
+				end
+				guiGridListSetItemColor(adminPanel.gridlist[1], i, 1, r, g, b)
+
+				if (plr.name ~= guiGridListGetItemText(adminPanel.gridlist[1], i, 1)) then
+					guiGridListSetItemText(adminPanel.gridlist[1], i, 1, plr.name, false, false)
 				end
 			end
-			if (getSelectedPlayer()) then
-				updatePlayerInformation(getSelectedPlayer(), false) -- We don't want it triggering events every second, plus we don't want to repeat code
-			end
+		end
+		if (getSelectedPlayer()) then
+			updatePlayerInformation(getSelectedPlayer(), false) -- We don't want it triggering events every second, plus we don't want to repeat code
 		end
 	end
-)
+end
 
 function updatePlayerInformation(plr, getServerSidedData)
 	-- Fetch the rest server-side
@@ -530,7 +459,6 @@ function playerSelection()
 			adminPanel.label[5]:setText("Account Name: ")
 			adminPanel.label[6]:setText("Playtime: ")
 			adminPanel.label[7]:setText("Country: ")
-			--adminPanel.label[8]:setText("Account ID: ")
 			adminPanel.label[9]:setText("Location: ")
 			adminPanel.label[10]:setText("Dimension: ")
 			adminPanel.label[12]:setText("Email: ")
@@ -565,16 +493,16 @@ function toggleWPT(plr)
 				if (plr ~= player and exports.UCDaccounts:isPlayerLoggedIn(player)) then
 					local r, g, b
 					if (player.team) then
-						r, g, b = player.team:getColor()
+			r, g, b = player.team:getColor()
 					else
-						r, g, b = 255, 255, 255
-					end
-					local row = guiGridListAddRow(WPT.gridlist[1])
-					guiGridListSetItemText(WPT.gridlist[1], row, 1, tostring(player.name), false, false)
-					guiGridListSetItemData(WPT.gridlist[1], row, 1, player)
-					guiGridListSetItemColor(WPT.gridlist[1], row, 1, r, g, b)
-				end
-			end
+			r, g, b = 255, 255, 255
+		end
+		local row = guiGridListAddRow(WPT.gridlist[1])
+		guiGridListSetItemText(WPT.gridlist[1], row, 1, tostring(player.name), false, false)
+		guiGridListSetItemData(WPT.gridlist[1], row, 1, player)
+		guiGridListSetItemColor(WPT.gridlist[1], row, 1, r, g, b)
+	end
+end
 		end
 	end
 end
@@ -600,8 +528,6 @@ addEventHandler("onClientGUIClick", WPT.button[2], handleWPTInput)
 
 function adminAction()
 	if (source ~= adminPanel.gridlist[1] and source.parent == adminPanel.tab[1]) then
-		
-		
 		local plr = getSelectedPlayer()
 		local action = source.text:lower()
 		if not action then return end
@@ -617,7 +543,7 @@ function adminAction()
 		end
 		
 		if (action == "punish") then
-			-- open punish gui
+-- open punish gui
 		elseif (action == "warp to player") then
 			triggerServerEvent("UCDadmin.warpToPlayer", localPlayer, plr)
 		elseif (action == "warp player to") then
@@ -634,7 +560,7 @@ function adminAction()
 				triggerServerEvent("UCDadmin.freeze", localPlayer, plr)
 			end
 		elseif (action == "shout") then
-			
+
 		elseif (action == "spectate") then
 			triggerServerEvent("UCDadmin.spectate", resourceRoot, plr)
 		elseif (action == "slap") then
@@ -642,9 +568,9 @@ function adminAction()
 		elseif (action == "rename") then
 			createInputBox("UCD | Admin - Rename", "Enter the desired name", exports.UCDutil:randomstring(8), "UCDadmin.rename", localPlayer, plr)
 		elseif (action == "screenshot") then
-			
+
 		elseif (action == "money") then
-			
+
 		elseif (action == "set model") then
 			createInputBox("UCD | Admin - Model", "Enter the desired model", 0, "UCDadmin.setModel", localPlayer, plr)
 		elseif (action == "set health") then
@@ -658,17 +584,17 @@ function adminAction()
 		elseif (action == "interior") then
 			createInputBox("UCD | Admin - Interior", "Enter the desired interior", 0, "UCDadmin.setInterior", localPlayer, plr)
 		elseif (action == "last logins") then
-			
+
 		elseif (action == "set job") then
-			
+
 		elseif (action == "weapons") then
-			
+
 		elseif (action == "view punishments") then
-			
+
 		elseif (action == "anticheat") then
-			
+
 		elseif (action == "view weps") then
-			
+
 		elseif (action == "fix") then
 			if (plr.vehicle) then
 				triggerServerEvent("UCDadmin.fixVehicle", localPlayer, plr, plr.vehicle)
@@ -690,9 +616,9 @@ function adminAction()
 			--	exports.UCDdx:new("This player is not in a vehicle", 255, 0, 0)
 			end
 		elseif (action == "disable") then
-			
+
 		elseif (action == "blow") then
-			
+
 		elseif (action == "give vehicle") then
 			if (plr.vehicle) then
 				exports.UCDdx:new("You can't give this player a vehicle as they are already in one", 255, 0, 0)
@@ -704,28 +630,8 @@ function adminAction()
 end
 addEventHandler("onClientGUIClick", guiRoot, adminAction)
 
-function onResourceAction()
-	if (source.parent == adminPanel.tab[2]) then
-		local row = guiGridListGetSelectedItem(adminPanel.gridlist[2])
-		if (not row or row == -1) then
-			return
-		end
-		
-		local res = guiGridListGetItemText(adminPanel.gridlist[2], row, 1)
-		local action = source.text:lower()
-		
-		if (action == "start") then
-			triggerServerEvent("UCDadmin.startResource", localPlayer, res, row)
-		elseif (action == "restart") then
-			triggerServerEvent("UCDadmin.restartResource", localPlayer, res, row)
-		elseif (action == "stop") then
-			triggerServerEvent("UCDadmin.stopResource", localPlayer, res, row)
-		end
-	end
-end
---addEventHandler("onClientGUIClick", guiRoot, onResourceAction)
-
 function toggleGUI()
+	if (not _permissions) then return end
 	adminPanel.window[1].visible = not adminPanel.window[1].visible
 	showCursor(adminPanel.window[1].visible)
 	if (adminPanel.window[1].visible) then
