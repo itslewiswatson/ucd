@@ -4,7 +4,7 @@ function clear(plr)
 end
 
 function gluePlayer(slot, vehicle, x, y, z, rotX, rotY, rotZ)
-	if (wait[client]) then
+	if (wait[client] or exports.UCDlaw:isPlayerArrested(client)) then
 		return
 	end
 	client:attach(vehicle, x, y, z, rotX, rotY, rotZ)
