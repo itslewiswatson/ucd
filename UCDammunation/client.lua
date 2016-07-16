@@ -2,7 +2,7 @@ ammoConfirm = {button = {}, window = {}, edit = {}}
 ammuGUI = {button = {}, window = {}, staticimage = {}, label = {}, scrollpane = {}}
 
 local buttonToID = {
-	[1] = 22, [2] = 24, [3] = 23, [4] = 25, [5] = 26, [6] = 27, [7] = 30, [8] = 31, [9] = 28, [10] = 32, [11] = 29, [12] = 33, [13] = 34, [14] = 38, [30] = 16, [31] = 18, [32] = 39, [33] = 17,
+	[1] = 22, [2] = 24, [3] = 23, [4] = 25, [5] = 27, [6] = 26, [7] = 28, [8] = 29, [9] = 32, [10] = 30, [11] = 31, [12] = 33, [13] = 34, [14] = 38, [30] = 16, [31] = 18, [32] = 39, [33] = 17,
 }
 --local idToButton = {
 --	[22] = 1, [23] = 2, [24] = 3, [25] = 4, [26] = 5, [27] = 6, [30] = 7, [31] = 8, [28] = 9, [32] = 10, [29] = 11, [33] = 12, [34] = 13, [38] = 14,
@@ -279,7 +279,7 @@ function handleClick()
 			exports.UCDutil:createConfirmationWindow("UCDammunation.buyWeapon", buttonToID[btnIndex], true, "UCD | Ammunation - Confirmation", "Are you sure you want to buy a "..wepName.."?")
 		else
 			local a = buttonToID[btnIndex - 14]
-			outputDebugString(tostring(source.text:gsub("\n", " ")))
+			--outputDebugString(tostring(getWeaponNameFromID(buttonToID[btnIndex - 14])))
 			toggleAmmoConfirmation(a)
 		end
 	end
