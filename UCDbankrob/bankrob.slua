@@ -230,7 +230,7 @@ function onPlayerQuit()
 		--for _, plr in ipairs(players.criminals) do
 		--	triggerEvent("onExitBank", plr)
 		--end
-		triggerEvent("onRobberyFinished", resourceRoot)
+		--triggerEvent("onRobberyFinished", resourceRoot)
 	end
 	
 	end
@@ -264,7 +264,7 @@ function onPlayerWasted(_, killer)
 		if (#players.criminals == 0) then
 			onRobberyFinished("law")
 		elseif (#players.law == 0) then
-			onRobberyFinished("criminals")
+			--onRobberyFinished("criminals")
 		end
 	end
 end
@@ -308,7 +308,7 @@ function startRobbery()
 	end
 	triggerLatentClientEvent(participants, "UCDbankrob.updateCount", resourceRoot, players)
 end
-addCommandHandler("lol", startRobbery)
+--addCommandHandler("lol", startRobbery)
 
 function onRobberyFinished(whoWon)
 	if (not whoWon) then
@@ -398,8 +398,47 @@ function onBankMarkerEnter(ele, matchingDimension)
 			end
 		end
 		markerGrace[ele] = Timer(removeGrace, 500, 1, ele)
+		
+		if (#players.law >= 4) then
+			if (not bankTimer or not isTimer(bankTimer)) then
+				bankTimer = Timer(startRobbery, 3 * 60 * 1000) -- 3 minutes notice
+			end
+		else
+			if (bankTimer and isTimer(bankTimer)) then
+				bankTimer:destroy()
+				bankTimer = nil
+			end
+			exports.UCDdx:new(ele, "At least 4 players from the law side are needed to start the robbery", 255, 0, 0)
+		end
 	end
 end
+
+function bankTime(plr)
+	if (plr) then
+		if (hasStarted) then
+			exports.UCDdx:new(plr, "The bank robbery is currently in progress", 0, 255, 0)
+		else
+			if (not bankTimer or not isTimer(bankTimer)) then
+				if (plr.team.name == "Law") then
+					exports.UCDdx:new(plr, "There have been no reported sightings of robbers at the Los Santos bank", 30, 144, 255)
+				else
+					exports.UCDdx:new(plr, "There are no plans to rob the bank yet. Why don't you go rob it?", 0, 255, 0)
+				end
+			else
+				local msg = ""
+				local timeLeft = math.floor(bankTimer:getDetails() / 1000)
+				if (timeLeft > 60) then
+					local mins = math.floor(timeLeft / 60)
+					msg = tostring(mins).." mins and "..tostring(math.floor(timeLeft - (mins * 60))).." seconds left until the LS bank robbery"
+				else
+					msg = timeLeft.." seconds left until the LS bank robbery"
+				end
+				exports.UCDdx:new(plr, tostring(msg), 0, 255, 0)
+			end
+		end
+	end
+end
+addCommandHandler("banktime", bankTime, false, false)
 
 function onBankMarkerLeave(ele, matchingDimension)
 	if (ele and ele.type == "player" and matchingDimension) then
@@ -429,6 +468,17 @@ function onBankMarkerLeave(ele, matchingDimension)
 				end
 			end
 			table.remove(players.law, i)
+		end
+		if (#players.law < 4) then
+			if (bankTimer and isTimer(bankTimer)) then
+				bankTimer:destroy()
+				bankTimer = nil
+			end
+			for _, ent in pairs(players) do
+				for i, plr in ipairs(ent) do
+					exports.UCDdx:new(plr, "At least 4 players from the law side are needed to start the robbery", 255, 0, 0)
+				end
+			end
 		end
 		triggerEvent("onExitBank", ele)
 	end
