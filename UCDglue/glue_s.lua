@@ -23,7 +23,7 @@ addEventHandler("ungluePlayer", root, ungluePlayer)
 
 function onPlayerContactWithVehicle(_, ele)
 	if (ele and ele.type == "vehicle") then
-		if (wait[source]) then
+		if (wait[source] or exports.UCDlaw:isPlayerArrested(client)) then
 			return
 		end
 		outputDebugString("got contact - triggering client")
