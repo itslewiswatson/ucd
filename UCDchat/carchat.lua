@@ -32,7 +32,7 @@ function carChat(plr, _, ...)
 	end
 	
 	for _, player in ipairs(occupants) do
-		outputChatBox("(CC) "..tostring(plr.name).." "..tostring(msg), player, 0, 155, 0)
+		outputChatBox("(CC) #FFFFFF"..tostring(plr.name).." "..tostring(msg), player, 0, 155, 0)
 	end
 	exports.UCDlogging:new(plr, "CC", "(CC) "..tostring(plr.name).." "..tostring(msg), #occupants)
 end
