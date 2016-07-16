@@ -57,7 +57,7 @@ function registerAccount(plr, usr, passwd, email)
 	
 	-- exports.UCDsql:getForumDatabase():exec("INSERT INTO `smf_members` (`member_name`, `date_registered`, `real_name`, `passwd`, `email_address`) VALUES (?, ?, ?, ?, ?)", usr, getRealTime().timestamp, plr.name, smf_passwd, email)
 	
-	accountData[usr] = {x = 1519.616, y = -1675.9303, z = 13.5469, rot = 270, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 500, model = 61, walkstyle = 0, wp = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name, ownedWeapons = toJSON({}), weaponString = toJSON({}), sms_friends = toJSON({}), aviator = 0, trucker = 0}
+	accountData[usr] = {x = 1519.616, y = -1675.9303, z = 13.5469, rot = 270, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 500, model = 0, walkstyle = 0, wp = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name, ownedWeapons = toJSON({}), weaponString = toJSON({}), sms_friends = toJSON({}), aviator = 0, trucker = 0}
 	return true
 end
 
