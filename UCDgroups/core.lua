@@ -226,10 +226,10 @@ function createGroup(name)
 				end
 			end
 		end
-		local playtime = math.floor(exports.UCDaccounts:GAD(client, "playtime") / (60 * 60)) or 0 -- Gets the playtime in hours
-		if (playtime < 5) then
-			exports.UCDdx:new(client, "You need at least 5 hours in-game to be able to create a group", 255, 255, 0)
-		end
+		--local playtime = math.floor(exports.UCDaccounts:GAD(client, "playtime") / (60 * 60)) or 0 -- Gets the playtime in hours
+		--if (playtime < 5) then
+			--exports.UCDdx:new(client, "You need at least 5 hours in-game to be able to create a group", 255, 255, 0)
+		--end
 		
 		local d, t = exports.UCDutil:getTimeStamp()
 		db:exec("INSERT INTO `groups_` SET `groupName` = ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t) -- Perform the inital group creation	
