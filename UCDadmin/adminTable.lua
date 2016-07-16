@@ -17,4 +17,9 @@ function createAdminTable(qh)
 			end
 		end
 	end
+	for _, plr in ipairs(Element.getAllByType("player")) do
+		if (isPlayerAdmin(plr)) then
+			sendPermissions(plr)
+		end
+	end
 end

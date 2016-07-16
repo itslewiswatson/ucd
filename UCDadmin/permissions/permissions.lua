@@ -69,7 +69,7 @@ function getRankPerms(rank)
 end
 
 function sendPermissions(plr)
-	if (not isPlayerAdmin(plr)) then outputDebugString("ddd") return end
+	if (not isPlayerAdmin(plr)) then return end
 	local rank = getPlayerAdminRank(plr)
 	triggerClientEvent(plr, "UCDadmin.onReceivedPermissions", plr, getRankPerms(rank))
 end
