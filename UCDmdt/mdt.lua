@@ -84,8 +84,8 @@ function createGUI()
 end
 createGUI()
 
-function toggleGUI(force)
-	if (force ~= true) then
+function toggleGUI(close)
+	if (close == true) then
 		if (localPlayer.team.name ~= "Law") then
 			MDT.window.visible = false
 			showCursor(false)
@@ -106,7 +106,8 @@ addEvent("onClientPlayerGetJob", true)
 addEventHandler("onClientPlayerGetJob", root, 
 	function () 
 		if (source == localPlayer and source.team.name ~= "Law") then 
-			toggleGUI(true) 
+			toggleGUI(true)
+			return
 		end 
 		if (source == localPlayer and source.team.name == "Law") then
 			if (not refreshTimer2 or not isTimer(refreshTimer2)) then
