@@ -54,6 +54,8 @@ function setWantedPoints(plr, wp)
 		wantedPoints[a] = wp
 		plr:setData("w", wantedPoints[a])
 		triggerEvent("onPlayerWPChange", plr, wantedPoints[a])
+		-- For MDTs
+		triggerClientEvent(Team.getFromName("Law").players, "UCDmdt.onPlayerWPChange", plr)
 		return true
 	end
 end
