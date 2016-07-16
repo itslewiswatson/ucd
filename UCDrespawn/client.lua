@@ -39,7 +39,7 @@ addEventHandler("onClientPlayerWasted", localPlayer,
 		end
 		
 		if not (getElementHealth(localPlayer) > 0) then
-			if (not localPlayer:isWithinColShape(exports.UCDbr:getBank())) then
+			if (not localPlayer:isWithinColShape(exports.UCDbankrob:getBank())) then
 				local hospitalDist = false
 				local nearestHospital = false
 				for i=1, #hospitalTable do
