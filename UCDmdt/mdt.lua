@@ -94,9 +94,11 @@ function toggleGUI(close)
 			return false
 		end
 	end
-	MDT.window.visible = not MDT.window.visible
-	cursor = not cursor
-	showCursor(cursor)
+	if (localPlayer.team.name == "Law") then
+		MDT.window.visible = not MDT.window.visible
+		cursor = not cursor
+		showCursor(cursor)
+	end
 end
 addEventHandler("onClientGUIClick", MDT.button[3], toggleGUI, false)
 addCommandHandler("policecomputer", toggleGUI)
