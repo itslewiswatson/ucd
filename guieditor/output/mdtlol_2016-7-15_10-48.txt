@@ -1,0 +1,18 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(603, 294, 673, 422, "", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 1.00)
+
+        GUIEditor.gridlist[1] = guiCreateGridList(9, 26, 654, 198, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Player", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "WP", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Loc", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Transport", 0.2)    
+    end
+)
