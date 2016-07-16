@@ -110,9 +110,11 @@ function cacheGroupMembers(qh)
 				groupMembers[row.groupName] = {}
 			end
 			table.insert(groupMembers[row.groupName], row.account)
-			local member = Account(row.account).player --exports.UCDaccounts:getPlayerFromID(row.account)
-			if (member) then
-				db:exec("UPDATE `groups_members` SET `lastOnline`=? WHERE `account`=?", getRealTime().yearday, row.account)
+			if (Account(row.account)) then
+				local member = Account(row.account).player --exports.UCDaccounts:getPlayerFromID(row.account)
+				if (member) then
+					db:exec("UPDATE `groups_members` SET `lastOnline`=? WHERE `account`=?", getRealTime().yearday, row.account)
+				end
 			end
  		end
 	end
