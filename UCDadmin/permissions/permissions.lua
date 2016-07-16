@@ -83,8 +83,9 @@ addEventHandler("UCDadmin.getPermissions", root,
 
 addEventHandler("onPlayerLogin", root,
 	function ()
-		if (source.account.name ~= "guest" and adminTable[source.account.name]) then
-			sendPermissions(plr)
+		--if (source.account.name ~= "guest" and adminTable[source.account.name]) then
+		if (isPlayerAdmin(source))
+			sendPermissions(source)
 		end
 	end
 )
