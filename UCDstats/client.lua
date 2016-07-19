@@ -155,7 +155,7 @@ function loadStats(data)
 	GUIEditor.label[5].text = defaults[5]..tostring(data["groupRank"])
 	GUIEditor.label[6].text = defaults[6]..tostring(pt)
 	GUIEditor.label[7].text = defaults[7]..tostring(data["wl"]).." ("..tostring(data["wanted"])..")"
-	GUIEditor.label[8].text = defaults[8].."$"..tostring(exports.UCDutil:tocomma(source:getMoney()))
+	GUIEditor.label[8].text = defaults[8].."$"..tostring(exports.UCDutil:tocomma(data["money"]))
 	GUIEditor.label[9].text = defaults[9]..tostring(source:getData("Country"))
 	GUIEditor.label[10].text = defaults[10]..tostring(source.ping)
 	GUIEditor.label[12].text = defaults[12]..tostring(exports.UCDutil:tocomma(data["kills"]))
