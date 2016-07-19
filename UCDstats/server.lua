@@ -28,12 +28,17 @@ function getPlayerStats(plr)
 		local lifetimeWanted = getPlayerAccountStat(plr, "lifetimeWanted") or 0
 		local killArrests = getPlayerAccountStat(plr, "killArrests") or 0
 		local housesRobbed = getPlayerAccountStat(plr, "housesRobbed") or 0
+		local bestDrift = getPlayerAccountStat(plr, "bestDrift") or 0
+		local totalDrift = getPlayerAccountStat(plr, "totalDrift") or 0
+		local successBR = getPlayerAccountStat(plr, "successBR") or 0
+		local attemptBR = getPlayerAccountStat(plr, "attemptBR") or 0
 		
 		local temp = {
 			group = group, groupRank = rank, wanted = wanted, cash, country, ping, accName = plr.account.name,
 			kills = kills, deaths = deaths, kdr = kdr, totalfired = totalfired, totalguns = totalguns, wl = wl,
 			ap = ap, arrests = arrests,	timesArrested = timesArrested, lifetimeWanted = lifetimeWanted,
-			killArrests = killArrests, housesRobbed = housesRobbed,
+			killArrests = killArrests, housesRobbed = housesRobbed, bestDrift = bestDrift, totalDrift = totalDrift,
+			attemptBR = attemptBR, successBR = successBR,
 		}
 		triggerLatentClientEvent(client, "UCDstats.loadStats", plr, temp or {})
 	end

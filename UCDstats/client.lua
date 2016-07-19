@@ -23,6 +23,11 @@ local defaults = {
 	"Times Arrested: ",
 	"Lifetime Wanted Points: ",
 	"Houses Robbed: ",
+	"Attempted Bank Robbieries: ", -- 25
+	"Successful Bank Robbieries: ", -- 26
+	"▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+	"Total Drift Points: ", -- 28
+	"Best Drift: ", -- 29
 }
 
 local selections = 0
@@ -65,9 +70,9 @@ function refreshGridlist()
 			local row = guiGridListAddRow(GUIEditor.gridlist[1])
 			local r, g, b
 			if (plr.team) then
-				r, g, b = 255, 255, 255
-			else
 				r, g, b = plr.team:getColor()
+			else
+				r, g, b = 255, 255, 255
 			end
 			guiGridListSetItemText(GUIEditor.gridlist[1], row, 1, tostring(plr.name), false, false)
 			guiGridListSetItemData(GUIEditor.gridlist[1], row, 1, plr)
@@ -164,6 +169,10 @@ function loadStats(data)
 	GUIEditor.label[22].text = defaults[22]..tostring(data["timesArrested"])
 	GUIEditor.label[23].text = defaults[23]..tostring(data["lifetimeWanted"])
 	GUIEditor.label[24].text = defaults[24]..tostring(data["housesRobbed"])
+	GUIEditor.label[25].text = defaults[25]..tostring(data["attemptBR"])
+	GUIEditor.label[26].text = defaults[26]..tostring(data["successBR"])
+	GUIEditor.label[28].text = defaults[28]..tostring(data["totalDrift"])
+	GUIEditor.label[29].text = defaults[29]..tostring(data["bestDrift"])
 end
 addEvent("UCDstats.loadStats", true)
 addEventHandler("UCDstats.loadStats", root, loadStats)
