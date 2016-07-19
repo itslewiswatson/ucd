@@ -39,9 +39,12 @@ addEventHandler("onClientPlayerWasted", localPlayer,
 		end
 		
 		if not (getElementHealth(localPlayer) > 0) then
-			if (not localPlayer:isWithinColShape(exports.UCDbankrob:getBank())) then
-				local hospitalDist = false
-				local nearestHospital = false
+			local hospitalDist = false
+			local nearestHospital = false
+			
+			if (exports.UCDbankrob:getBank() and exports.UCDbankrob:getBank().type == "colshape" and localPlayer:isWithinColShape(exports.UCDbankrob:getBank())) then
+				nearestHospital = 1
+			else			
 				for i=1, #hospitalTable do
 					local pX, pY, pZ = getElementPosition(localPlayer)
 					local hX, hY, hZ = hospitalTable[i][2], hospitalTable[i][3], hospitalTable[i][4]
@@ -51,8 +54,6 @@ addEventHandler("onClientPlayerWasted", localPlayer,
 						nearestHospital = i
 					end
 				end
-			else
-				nearestHospital = 1
 			end
 			
 			if (nearestHospital) then
