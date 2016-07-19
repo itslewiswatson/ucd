@@ -1,7 +1,7 @@
 <meta>
 	<min_mta_version server="1.5.2" client="1.5.2"></min_mta_version>
     <script src="anticheat.lua" type="client"/>
-	<script src="playerDamage.lua" type="client"/>
-	<script src="playerDamage.slua" type="server"/>
+    <script src="anti-dm.lua" type="client"/>
+    <script src="crimes.lua" type="server"/>
 	<oop>true</oop>
 </meta>
