@@ -302,6 +302,7 @@ function startRobbery()
 		elseif (plr.team.name == "Criminals") then
 			exports.UCDdx:new(plr, "Capture and hold all the checkpoints for 5 minutes or kill all the police to win", 200, 0, 0)
 			exports.UCDwanted:addWantedPoints(plr, 60)
+			exports.UCDstats:setPlayerAccountStat(plr, "attemptBR", exports.UCDstats:getPlayerAccountStat(plr, "attemptBR") + 1)
 		elseif (plr.team.name == "Civilians") then
 			exports.UCDdx:new(plr, "Support either side by healing them", 255, 255, 255)
 		end
@@ -357,6 +358,7 @@ function onEscapeBankZone(ele, matchingDimension)
 			exports.UCDdx:new(ele, "You have escaped the bank zone and got away with $30,000", 0, 255, 0)
 			ele.money = ele.money + 30000
 			ele:removeData("escapedbr")
+			exports.UCDstats:setPlayerAccountStat(ele, "successBR", exports.UCDstats:getPlayerAccountStat(ele, "successBR") + 1)
 		end
 	end
 end

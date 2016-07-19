@@ -260,7 +260,7 @@ function updateStockMarket()
 		stocks[name]["price"] = math.random(low, high)
 		--appendStockHistory(name)
 	end
-	triggerEvent("onStockMarketUpdate", resourceRoot)
+	--triggerEvent("onStockMarketUpdate", resourceRoot)
 end
 addCommandHandler("fuckstocks", updateStockMarket)
 Timer(updateStockMarket, (25 * 60) * 1000, 1)

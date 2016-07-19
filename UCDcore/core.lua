@@ -30,7 +30,7 @@ setMinuteDuration(6000)
 setFPSLimit(60)
 setServerPassword("")
 setWeather(10)
-setTime(12, 0)
+setTime(0, 0)
 for i = 0, 49 do setGarageOpen(i, true) end
 
 -----------------------------------------------------
