@@ -309,7 +309,7 @@ function startRobbery()
 	end
 	triggerLatentClientEvent(participants, "UCDbankrob.updateCount", resourceRoot, players)
 end
---addCommandHandler("lol", startRobbery)
+addCommandHandler("lol", function (plr) if (exports.UCDadmin:isPlayerAdmin(plr)) then startRobbery() end end)
 
 function onRobberyFinished(whoWon)
 	if (not whoWon) then
