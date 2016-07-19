@@ -86,21 +86,25 @@ function loginPlayer2(usr, passwd, plr)
 			if (getAccount(usr).player) then
 				outputChatBox(plr.name.." is trying to log into your account. They have used a correct password. It is recommended you change your password or contact an admin.", getAccount(usr):getPlayer())
 				exports.UCDdx:new(plr, "This account is currently in use.", 255, 255, 255)
+				triggerClientEvent(plr, "UCDaccounts.login.toggleLogin", plr)
 				return
 			else
 				-- If we have a database error or table error, DO NOT FUCKING LOG THEM IN
 				if (not accountData[usr]) then
 					exports.UCDdx:new(plr, "We have encountered a database issue. Please contact an administrator.", 255, 255, 255)
 					outputDebugString("Player "..plr.name.." could not log in - data is nil")
+					triggerClientEvent(plr, "UCDaccounts.login.toggleLogin", plr)
 					return false
 				end
 				if (exports.UCDadmin:isAccountBanned(usr)) then
 					exports.UCDdx:new(plr, "This account is banned", 255, 255, 255)
+					triggerClientEvent(plr, "UCDaccounts.login.toggleLogin", plr)
 					return
 				end
 				triggerClientEvent(plr, "UCDaccounts.login.saveAccountCredentials", plr, usr, passwd)
 				logIn(plr, getAccount(usr), passwd)
 				exports.UCDlogging:new(plr, "login", "Logged into account: "..usr, plr.ip)
+				exports.UCDdx:new(plr, "Welcome to UCD, "..tostring(plr.name), 255, 255, 255)
 			end
 		else
 			exports.UCDdx:new(plr, "Incorrect password", 255, 255, 255)
@@ -108,33 +112,10 @@ function loginPlayer2(usr, passwd, plr)
 	else
 		exports.UCDdx:new(plr, "There is no account matching this name", 255, 255, 255)
 	end
+	triggerClientEvent(plr, "UCDaccounts.login.toggleLogin", plr)
 end
 addEvent("UCDaccounts.login.logIn", true)
 addEventHandler("UCDaccounts.login.logIn", root, loginPlayer2)
-
---[[
-function result(val, usr, passwd, plr)
-	val = tostring(val)
-	if (val == "true") then
-		loginPlayer2(usr, passwd, plr)
-	elseif (val == "passwd_incorrect") then
-		exports.UCDdx:new(plr, "Incorrect password", 255, 255, 255)
-	elseif (val == "no_username") then
-		exports.UCDdx:new(plr, "There is no account matching this name", 255, 255, 255)
-	else
-		exports.UCDdx:new(plr, "Forum database error", 255, 255, 255)
-	end
-end
-
-function loginPlayer(usr, password)
-	local x = callRemote("http://noki.zorque.xyz/mta_login.php", result, usr, password, client)
-	if not x then
-		loginPlayer2(usr, password, client)
-	end
-end
-addEvent("UCDaccounts.login.logIn", true)
-addEventHandler("UCDaccounts.login.logIn", root, loginPlayer)
---]]
 
 -- Registration here
 function registerPlayer2(usr, email, passwd, plr)
@@ -144,16 +125,6 @@ function registerPlayer2(usr, email, passwd, plr)
 			exports.UCDdx:new(plr, "You cannot register this account name because it is restricted", 255, 255, 255)
 			return
 		end
-	end
-	--[[
-	local result = exports.UCDsql:getForumDatabase():query("SELECT `member_name` FROM `smf_members` WHERE `member_name` = ?", usr):poll(-1)
-	if (not result or #result ~= 0) then
-		if (not result) then
-			exports.UCDdx:new(plr, "Database error - try again later", 255, 255, 255)
-			return
-		end
-		exports.UCDdx:new(plr, "An account with this name already exists", 255, 255, 255)
-		return
 	end
 	--]]
 	if (not getAccount(usr)) then
@@ -174,50 +145,10 @@ end
 addEvent("UCDaccounts.login.register", true)
 addEventHandler("UCDaccounts.login.register", root, registerPlayer2)
 
---[[
-function registerValidate(val, usr, passwd, plr, email)
-	val = tostring(val)
-	if (val == "true" or val == "passwd_incorrect") then
-		exports.UCDdx:new(plr, "An account with this name already exists", 255, 255, 255)
-	elseif (val == "no_username") then
-		registerPlayer2(usr, email, passwd, plr)
-		--outputDebugString("correct, moving to registerValidate2")
-	else
-		exports.UCDdx:new(plr, "Forum database error", 255, 255, 255)
-	end	
-end
-
-function registerPlayer(usr, email, passwd)
-	--outputDebugString("received")
-	local x = callRemote("http://noki.zorque.xyz/mta_login.php", registerValidate, usr, passwd, client, email)
-	if not x then
-		--outputDebugString("err - going to registerPlayer2")
-		registerPlayer2(usr, email, passwd, client)
-	end
-end
-addEvent("UCDaccounts.login.register", true)
-addEventHandler("UCDaccounts.login.register", root, registerPlayer)
---]]
-
 function login_handler()
 	source:setData("isLoggedIn", true)
-	-- source:setData("isPlayerLoggedIn", true)
-	--local UCDhud = Resource.getFromName("UCDhud")
-	--if (UCDhud:getState() == "running" or UCDhud:getState() == "starting") then
-	--	setTimer(
-	--		function (source)
-				--for _, v in ipairs(:getDisabledHUD() or {}) do
-				--	source:setHudComponentVisible(v, false)
-				--end
-	--			source:setHudComponentVisible("radar", true)
-	--			source:setHudComponentVisible("radio", true)
-	--			source:setHudComponentVisible("crosshair", true)
-	--		end, 1000, 1, source
-	--	)
-	--else
 	source:setHudComponentVisible("all", true)
 	source:setHudComponentVisible("vehicle_name", false)
-	--end
 	showChat(source, true)
 	triggerClientEvent(source, "UCDaccounts.login.hideLoginInterface", source)
 	triggerClientEvent(source, "UCDaccounts.login.destroyInterface", source)

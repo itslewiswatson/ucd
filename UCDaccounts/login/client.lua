@@ -11,8 +11,9 @@
 -- C2S is the one used to encrypt client-to-server transfer, so we aren't passing plain text (easily snooped)
 local keys = {xml = [[7C6933A1239C7493F7F8A71A0EDA9553]], C2S = [[place_hash_here]]}
 local sX, sY = guiGetScreenSize()
-login = {edit = {}, button = {}, label = {}, checkbox = {}}
-registration = {button = {}, window = {}, label = {}, edit = {}}
+local login = {edit = {}, button = {}, label = {}, checkbox = {}}
+local registration = {button = {}, window = {}, label = {}, edit = {}}
+
 function centerWindow(center_window)
     local screenW, screenH = guiGetScreenSize()
     local windowW, windowH = guiGetSize(center_window, false)
@@ -32,16 +33,13 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			
 			login.button[1] = guiCreateButton((sX / 2) - (87 / 2) - 100, (sY / 2), 87, 34, "Login", false)
 			login.button[1]:setFont("default-bold-small")
-			login.button[1]:setProperty("NormalTextColour", "FFAAAAAA")
 			login.button[1]:setEnabled(false)
 
 			login.button[2] = guiCreateButton((sX / 2) - (87 / 2), (sY / 2), 87, 34, "Register", false)
 			login.button[2]:setFont("default-bold-small")
-			login.button[2]:setProperty("NormalTextColour", "FFAAAAAA")
 			
 			login.button[3] = guiCreateButton((sX / 2) + 100 - (87 / 2), (sY / 2), 87, 34, "Forgot password", false)
 			login.button[3]:setFont("default-bold-small")
-			login.button[3]:setProperty("NormalTextColour", "FFAAAAAA")
 			
 			login.label[1] = guiCreateLabel((sX / 2) - (87 / 2) + 8, (sY / 2) - 25, 108, 16, "Save credentials", false)
 			
@@ -69,9 +67,9 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			addEventHandler("onClientGUIClick", login.button[2], onClickRegister, false)
 			addEventHandler("onClientGUIChanged", guiRoot, onLoginEditsChanged)
 	-----------------------------------------------------
-			registration.window[1] = guiCreateWindow(667, 651, 617, 455, "UCD | Registration", false)
-			registration.window[1]:setSizable(false)
-			registration.window[1]:setVisible(false)
+			registration.window[1] = GuiWindow(667, 651, 617, 455, "UCD | Registration", false)
+			registration.window[1].sizable = false
+			registration.window[1].visible = false
 			centerWindow(registration.window[1])
 
 			registration.edit[1] = guiCreateEdit(10, 46, 328, 25, "", false, registration.window[1])
@@ -302,7 +300,9 @@ function onClickLogin(button, state)
 					elseif (usr ~= "") and (passwd == "") then
 						exports.UCDdx:new("Please enter your password", 255, 255, 255)
 					elseif (user ~= "") and (passwd ~= "") then
-						triggerServerEvent("UCDaccounts.login.logIn", localPlayer, usr, passwd) -- need to 	t this [do not pass plain text]
+						triggerServerEvent("UCDaccounts.login.logIn", localPlayer, usr, passwd)
+						exports.UCDdx:new("Loading...", 255, 255, 255)
+						toggleLogin()
 					end
 				end
 			end
@@ -396,8 +396,6 @@ function hideLoginInterface()
 	if (registration.window[1]:getVisible() == true) then
 		registration.window[1]:setVisible(false)
 	end
-	--if (isCursorShowing()) then showCursor(false) end
-	--removeEventHandler("onClientRender", root, blackBars)
 	showCursor(false)
 end
 addEvent("UCDaccounts.login.hideLoginInterface", true)
@@ -417,7 +415,7 @@ addEventHandler("UCDaccounts.login.hideRegistrationInterface", root, hideRegistr
 -- We won't need to keep it in memory as the player will only use it once
 function destroyInterface()
 	if (isCursorShowing()) then showCursor(false) end
-	if (isElement(registration.window[1])) then
+	if (registration and registration.window and registration.window[1] and isElement(registration.window[1])) then
 		registration.window[1]:destroy()
 		registration = nil
 	end
@@ -431,6 +429,16 @@ function destroyInterface()
 end
 addEvent("UCDaccounts.login.destroyInterface", true)
 addEventHandler("UCDaccounts.login.destroyInterface", root, destroyInterface)
+
+function toggleLogin()
+	if (login.button) then
+		login.button[1].enabled = not login.button[1].enabled
+		login.button[2].enabled = not login.button[2].enabled
+		login.button[3].enabled = not login.button[3].enabled
+	end
+end
+addEvent("UCDaccounts.login.toggleLogin", true)
+addEventHandler("UCDaccounts.login.toggleLogin", root, toggleLogin)
 
 -- Callback for checking if an account exists
 function updateValidationLabel(value, bad)
