@@ -116,8 +116,16 @@ function showText()
 	local angulo,velocidad = angle()
 	local tempBool = tick - (idleTime or 0) < 750
 	if not tempBool and score ~= 0 then
-		cash = score / 100
-		triggerServerEvent("updatecash", resourceRoot, cash )
+		local cash = 0
+		if (score > mejor) then
+			if (score <= 1000) then
+				cash = cash + 100
+			else
+				cash = cash + 1000
+			end
+		end
+		cash = cash + 25
+		triggerServerEvent("updatecash", resourceRoot, cash)
 		
 		if (score > mejor) then
 			mejor = score
