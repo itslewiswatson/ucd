@@ -27,6 +27,7 @@ serials = {
 	["957AA36CDF402DCF62E92656167E8CF3"] = true, -- Beast
 	["A7597F4CA3836678D276BD0916A43333"] = true, -- Rambo
 	["27938D764ECFFED5A2B4DED372DE2E03"] = true, -- Dennis
+	["2C30C68C0C0BFEB1270EAE3BAFA099F3"] = true, -- Risk
 }
 
 addEventHandler("onPlayerConnect", root,
