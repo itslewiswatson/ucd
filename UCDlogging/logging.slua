@@ -22,8 +22,13 @@ function stdLog(plr, type1, action, type2)
 end
 --]]
 
-function adminLog()
-	
+function adminLog(admin, log_)
+	local t = getRealTime().timestamp
+	db:exec("INSERT INTO `adminlog` (`name`, `log_`, `datum`) VALUES (?, ?, ?)",
+		admin,
+		log_,
+		t
+	)
 end
 
 function new(plr, type1, action, type2)
