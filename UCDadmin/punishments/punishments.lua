@@ -62,27 +62,40 @@ function punish(val, duration, type1, who, reason)
 	
 	-- Redirect bans elsewhere
 	if (type1 == "ban") then
-		if (not canAdminDoAction(source, "ban")) then
-			exports.UCDdx:new(source, "Only L3+ admins may issue bans", 255, 0, 0)
+		if (not canAdminDoAction(client, "ban")) then
+			exports.UCDdx:new(client, "Only L3+ admins may issue bans", 255, 0, 0)
 			return
 		end
 		if (val.type == "player") then
+			local n = val.name
 			if (exports.UCDaccounts:isPlayerLoggedIn(val)) then
+				local msg = 
 				addBan("acc:"..val.account.name, who, reason[1], duration)
+				local msg = tostring(client.name).." has banned "..tostring(n).." for "..tostring(getTimeString(duration)).." ("..tostring(reason[1])..")"
+				exports.UCDlogging:adminLog(who, msg)
 			end
-			addBan(val.serial, who, reason[1], duration)
+			local b = addBan(val.serial, who, reason[1], duration)
+			local msg = tostring(client.name).." has banned "..tostring(n).." for "..tostring(getTimeString(duration)).." ("..tostring(reason[1])..")"
+			if (b) then
+				outputChatBox(msg, root, 255, 140, 0)
+				exports.UCDlogging:adminLog(who, msg)
+			end
 			return
 		end
 		if (val:len() ~= 32 and val:sub(1, 4) ~= "acc:") then
-			exports.UCDdx:new(source, "Invalid syntax", 255, 0, 0)
+			exports.UCDdx:new(client, "Invalid syntax", 255, 0, 0)
 			return
 		end
 		addBan(val, who, reason[1], duration)
+		local msg = tostring(client.name).." has banned "..tostring(val).." for "..tostring(getTimeString(duration)).." ("..tostring(reason[1])..")"
+		outputChatBox(msg, root, 255, 140, 0)
+		exports.UCDlogging:adminLog(who, msg)
+		return
 	end
-		
+	
 	if (type(val) == "string") then
 		if (val:len() == 32) then
-			exports.UCDdx:new(source, "You cannot punish serials", 255, 0, 0)
+			exports.UCDdx:new(client, "You cannot punish serials", 255, 0, 0)
 			return
 		end
 		if (val:sub(1, 4) == "acc:") then
@@ -174,6 +187,8 @@ function punish2(val, duration, type1, who, reason)
 	else
 		log_ = tostring(who).." has "..tostring((offline and "offline ") or "")..tostring(types[type1]).." "..tostring(output).." ("..tostring(reason[1])..")"
 	end
+	
+	exports.UCDlogging:adminLog(who, log_)
 	
 	if (timeString) then
 		log_ = tostring(log_).." ("..tostring(timeString)..")"

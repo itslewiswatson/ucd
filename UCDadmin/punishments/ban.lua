@@ -38,6 +38,7 @@ end
 
 function addBan(val, banisher, reason, duration)
 	if (type(val) ~= "string") then
+		outputDebugString("Fuck")
 		return false
 	end
 	if (val:len() ~= 32 and val:sub(1, 4) ~= "acc:") then

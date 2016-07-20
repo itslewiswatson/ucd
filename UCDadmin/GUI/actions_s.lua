@@ -7,9 +7,13 @@ function givePlayerWeapon_(plr, weapon, amount)
 		if (vowels[weaponName:sub(1, 1):lower()]) then
 			exports.UCDdx:new(client, "You have given "..plr.name.." an "..weaponName.." ("..amount..")", 0, 255, 0)
 			exports.UCDdx:new(plr, client.name.." has given you an "..weaponName.." ("..amount..")", 0, 255, 0)
+			
+			exports.UCDlogging:adminLog(client.account.name, client.name.." has given "..plr.name.. " an "..weaponName.." ("..amount..")")
 		else
 			exports.UCDdx:new(client, "You have given "..plr.name.." a "..weaponName.." ("..amount..")", 0, 255, 0)
 			exports.UCDdx:new(plr, client.name.." has given you a "..weaponName.." ("..amount..")", 0, 255, 0)
+			
+			exports.UCDlogging:adminLog(client.account.name, client.name.." has given "..plr.name.. " a "..weaponName.." ("..amount..")")
 		end
 	end
 end
@@ -44,6 +48,7 @@ function warpToPlayer(plr)
 		local position = plr.matrix.position + plr.matrix.forward * 2
 		client:setPosition(position)
 		exports.UCDdx:new(client, "You have warped to "..plr.name, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has warped to "..plr.name)
 	end
 end
 addEvent("UCDadmin.warpToPlayer", true)
@@ -87,9 +92,11 @@ function warpPlayerTo(plr, warpTo)
 			if (warpTo == client) then
 				exports.UCDdx:new(plr, client.name.." has warped you to them", 0, 255, 0)
 				exports.UCDdx:new(client, "You have warped "..plr.name.." to you", 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has warped "..plr.name.." to themselves")
 			else
 				exports.UCDdx:new(plr, "You have been warped to "..warpTo.name.." by "..client.name, 0, 255, 0)
 				exports.UCDdx:new(client, "You have warped "..plr.name.." to "..warpTo.name, 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has warped "..plr.name.." to "..warpTo.name)
 			end
 		end
 	end
@@ -103,6 +110,7 @@ function reconnectPlayer(plr)
 		exports.UCDdx:new(client, "You have reconnected "..plr.name, 0, 255, 0)
 		plr:redirect("", getServerPort()) -- Redirects to the same server with the same port
 		outputChatBox(plr.name.." has been reconnected by "..client.name, root, 255, 140, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has reconnected "..plr.name)
 	end
 end
 addEvent("UCDadmin.reconnect", true)
@@ -114,11 +122,13 @@ function kickPlayer_(plr, reason)
 		if reason == " " or reason == "" then
 			exports.UCDdx:new(client, "You have kicked "..plr.name, 0, 255, 0)
 			outputChatBox(plr.name.." has been kicked by "..client.name, root, 255, 140, 0)
+			exports.UCDlogging:adminLog(client.account.name, client.name.." has kicked "..plr.name)
 			plr:kick(client)
 			return
 		end
 		exports.UCDdx:new(client, "You have kicked "..plr.name.." for '"..reason.."'", 0, 255, 0)
 		outputChatBox(plr.name.." has been kicked by "..client.name.." ("..reason..")", root, 255, 140, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has kicked "..plr.name.." ("..reason..")")
 		plr:kick(client, reason) -- Set char limit on client [64]
 	end
 end
@@ -133,10 +143,12 @@ function freezePlayer(ele, plr_)
 				toggleAllControls(ele, true)
 				exports.UCDdx:new(ele, "You have been unfrozen by "..client.name, 0, 255, 0)
 				exports.UCDdx:new(client, "You have unfrozen "..ele.name, 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has unfrozen "..ele.name)
 			else
 				ele.frozen = true
 				exports.UCDdx:new(ele, "You have been frozen by "..client.name, 0, 255, 0)
 				exports.UCDdx:new(client, "You have frozen "..ele.name, 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has frozen "..ele.name)
 				toggleAllControls(ele, false, true, false)
 			end
 		elseif (ele.type == "vehicle") then
@@ -146,12 +158,14 @@ function freezePlayer(ele, plr_)
 					exports.UCDdx:new(plr, "The vehicle you are currently in has been unfrozen by "..client.name, 0, 255, 0)
 				end
 				exports.UCDdx:new(client, "You have unfrozen "..plr_.name.."'s "..ele.name, 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has unfrozen "..plr_.name.."'s "..ele.name)
 			else
 				ele.frozen = true
 				for _, plr in pairs(ele.occupants) do
 					exports.UCDdx:new(plr, "The vehicle you are currently in has been frozen by "..client.name, 0, 255, 0)
 				end
 				exports.UCDdx:new(client, "You have frozen "..plr_.name.."'s "..ele.name, 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has frozen "..plr_.name.."'s "..ele.name)
 			end
 		end
 	end
@@ -173,11 +187,13 @@ function spectatePlayer(plr)
 		client.cameraTarget = client
 		spectating[client] = nil
 		exports.UCDdx:new(client, "You are no longer spectating "..plr.name, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has stopped spectating "..plr.name)
 		return
 	end
 	exports.UCDdx:new(client, "You are now spectating "..plr.name, 0, 255, 0)
 	spectating[client] = plr
 	client.cameraTarget = plr
+	exports.UCDlogging:adminLog(client.account.name, client.name.." has started spectating "..plr.name)
 end
 addEvent("UCDadmin.spectate", true)
 addEventHandler("UCDadmin.spectate", root, spectatePlayer)
@@ -187,6 +203,7 @@ function slapPlayer(plr)
 		plr:kill()
 		exports.UCDdx:new(client, "You have slapped "..plr.name, 0, 255, 0)
 		exports.UCDdx:new(plr, "You have been slapped by "..client.name, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has slapped "..plr.name)
 	end
 end
 addEvent("UCDadmin.slap", true)
@@ -195,8 +212,10 @@ addEventHandler("UCDadmin.slap", root, slapPlayer)
 function renamePlayer(plr, newName)
 	if (plr and client and newName and isPlayerAdmin(client)) then
 		exports.UCDdx:new(client, "You have changed "..plr.name.."'s name to "..newName, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has changed "..plr.name.."'s name to "..newName)
 		plr:setName(tostring(newName)) -- Set max edit length on client GUI
 		exports.UCDdx:new(plr, "You name has been changed to "..newName.." by "..client.name, 0, 255, 0)
+		
 	end
 end
 addEvent("UCDadmin.rename", true)
@@ -221,6 +240,7 @@ function setPlayerModel(plr, model)
 			plr:setModel(model_)
 			exports.UCDdx:new(client, "You have set the model of "..plr.name.." to "..model_, 0, 255, 0)
 			exports.UCDdx:new(plr, "Your model has been set to "..model_.." by "..client.name, 0, 255, 0)
+			exports.UCDlogging:adminLog(client.account.name, client.name.." has set the model of "..plr.name.." to "..model_)
 		end
 	end
 end
@@ -235,6 +255,7 @@ function setPlayerHealth(plr, health)
 				plr:setHealth(health_)
 				exports.UCDdx:new(client, "You have set the health of "..plr.name.." to "..health_, 0, 255, 0)
 				exports.UCDdx:new(plr, "Your health has been set to "..health_.." by "..client.name, 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has set the health of "..plr.name.." to "..health_)
 			end
 		end
 	end
@@ -250,6 +271,7 @@ function setPlayerArmour(plr, armour)
 				plr.armor = armour_
 				exports.UCDdx:new(client, "You have set the armour of "..plr.name.." to "..armour_, 0, 255, 0)
 				exports.UCDdx:new(plr, "Your armour has been set to "..armour_.." by "..client.name, 0, 255, 0)
+				exports.UCDlogging:adminLog(client.account.name, client.name.." has set the armour of "..plr.name.." to "..armour_)
 			end
 		end
 	end
@@ -266,6 +288,7 @@ function setPlayerDimension(plr, dimension)
 		plr:setDimension(dimension)
 		exports.UCDdx:new(client, "You have set "..plr.name.."'s dimension to "..dimension, 0, 255, 0)
 		exports.UCDdx:new(plr, "Your dimension has been set to "..dimension.." by "..client.name, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has set the dimension of "..plr.name.." to "..dimension)
 	end
 end
 addEvent("UCDadmin.setDimension", true)
@@ -280,6 +303,7 @@ function setPlayerInterior(plr, interior)
 		plr:setInterior(interior)
 		exports.UCDdx:new(client, "You have set "..plr.name.."'s interior to "..interior, 0, 255, 0)
 		exports.UCDdx:new(plr, "Your interior has been set to "..interior.." by "..plr.name, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has set the interior of "..plr.name.." to "..interior)
 	end
 end
 addEvent("UCDadmin.setInterior", true)
@@ -315,9 +339,11 @@ function giveVehicle(plr, vehicle)
 		if vowels[spawnedVehicle.name:sub(1, 1):lower()] then
 			exports.UCDdx:new(plr, "You have been given an "..spawnedVehicle.name.." by "..client.name, 0, 255, 0)
 			exports.UCDdx:new(client, "You have given "..plr.name.." an "..spawnedVehicle.name, 0, 255, 0)
+			exports.UCDlogging:adminLog(client.account.name, client.name.." has given "..plr.name.." an "..spawnedVehicle.name)
 		else
 			exports.UCDdx:new(plr, "You have been given a "..spawnedVehicle.name.." by "..client.name, 0, 255, 0)
 			exports.UCDdx:new(client, "You have given "..plr.name.." a "..spawnedVehicle.name, 0, 255, 0)
+			exports.UCDlogging:adminLog(client.account.name, client.name.." has given "..plr.name.." a "..spawnedVehicle.name)
 		end
 	end
 end
@@ -340,6 +366,7 @@ function fixVehicle_(plr, vehicle)
 		vehicle.health = 1000
 		exports.UCDdx:new(client, "You have fixed "..plr.name.."'s "..vehicle.name, 0, 255, 0)
 		exports.UCDdx:new(plr, client.name.." has fixed your "..vehicle.name, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has fixed "..plr.name.."'s "..vehicle.name)
 	end
 end
 addEvent("UCDadmin.fixVehicle", true)
@@ -353,6 +380,7 @@ function ejectPlayerFromVehicle(plr, vehicle)
 		plr:removeFromVehicle(vehicle)
 		exports.UCDdx:new(client, "You have ejected "..plr.name.." from their "..vehicle.name, 0, 255, 0)
 		exports.UCDdx:new(plr, "You have been ejected from your "..vehicle.name.." by "..plr.name, 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has ejected "..plr.name.." from their vehicle")
 	end
 end
 addEvent("UCDadmin.ejectPlayer", true)
@@ -366,6 +394,7 @@ function destroyVehicle(plr, vehicle)
 		end
 		exports.UCDdx:new(plr, "Your vehicle has been destroyed by "..client.name, 0, 255, 0)
 		exports.UCDdx:new(client, "You have destroyed "..plr.name.."'s vehicle", 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, client.name.." has destroyed "..plr.name.."'s vehicle")
 	end
 end
 addEvent("UCDadmin.destroyVehicle", true)

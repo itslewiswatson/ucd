@@ -1,0 +1,26 @@
+function requestOpenGUI(player)
+	if (isElement(player)) then
+		client = player
+	end
+	--if (ACLGroup.get("Admin"):doesContainObject("user."..client.account.name)) then
+	if (isPlayerAdmin(client)) then
+		triggerClientEvent(client, "onOpenGUIRequest", resourceRoot)
+	end
+end
+addEvent("onOpenGUIRequest", true)
+addEventHandler("onOpenGUIRequest", resourceRoot, requestOpenGUI)
+addCommandHandler("setjob", requestOpenGUI)
+
+addEvent("UCDadmin.setjob.setJob", true)
+addEventHandler("UCDadmin.setjob.setJob", root, 
+	function (plr, job, skin)
+		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+			exports.UCDjobs:setPlayerJob(plr, job or "", skin)
+			exports.UCDdx:new(client, "You have set "..tostring(plr.name).."'s job to "..tostring((job == "" and "Unoccupied") or job), 0, 255, 0)
+			exports.UCDdx:new(plr, client.name.." has set your job to "..tostring((job == "" and "Unoccupied") or job), 0, 255, 0)
+			exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has set the job of "..plr.name.." to "..tostring((job == "" and "Unoccupied") or job))
+		else
+			exports.UCDdx:new(client, "This player is not logged in, you can't change their job", 0, 255, 0)
+		end
+	end
+)
