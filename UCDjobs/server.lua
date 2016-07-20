@@ -46,7 +46,7 @@ function setPlayerJob(plr, jobName, skinID)
 	if (not plr or not jobName) then return end
 	if (not isElement(plr) or plr.type ~= "player" or type(jobName) ~= "string" or (not jobs[jobName] and jobName ~= "Admin")) then return false end
 	
-	if (not skinID or skinID == nil) then
+	if (not skinID or not tonumber(skinID)) then
 		--outputDebugString("skinID nil")
 		skinID = exports.UCDaccounts:GAD(plr, "model")
 	end
