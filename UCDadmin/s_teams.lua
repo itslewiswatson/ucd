@@ -29,6 +29,7 @@ serials = {
 	["27938D764ECFFED5A2B4DED372DE2E03"] = true, -- Dennis
 	["2C30C68C0C0BFEB1270EAE3BAFA099F3"] = true, -- Risk
 	["2B63894067D21C0A100F90E754B73234"] = true, -- HellStunter
+	["C59A119C6645EEC5260B4F4FC5415D94"] = true, -- Ruller
 }
 
 addEventHandler("onPlayerConnect", root,
