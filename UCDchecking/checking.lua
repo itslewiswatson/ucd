@@ -1,5 +1,3 @@
-
-
 local actions = {
 	["Chat"] = {
 		{"s", "NoMuted"},
@@ -29,7 +27,36 @@ local actions = {
 		{"a", "Builder", "AFK", "RobHouse"},
 		{"s", "NoVehicle", "NoArrest", "NoCustody", "NoJailed", "NoDead"},
 	},
+	["BC"] = {
+		{"a", "Builder", "AFK", "RobHouse"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody", "NoGlue"},
+		{"i", 0}, {"d", 0}
+	},
+	["EnterInterior"] = {
+		{"a", "BC"},
+		{"s", "NoVehicle", "NoJailed", "NoJetpack", "NoDead", "NoGlue"},
+	},
+	["Glue"] = {
+		{"a", "BC", "Builder", "AFK", "RobHouse"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody"}, {"w", 1}
+	},
+	["TakeJob"] = {
+		{"a", "BC", "Builder", "AFK", "RobHouse"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoCustody", "NoDead", "NoGlue"},
+		{"w", 2},
+	},
+	["RepairVehicle"] = {
+		{"a", "BC", "Builder", "RobHouse", "AFK","RepairVehicle"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody", "NoGlue"},
+		{"w", 2},
+	},
 }
+-- a = actions(interrupts)
+-- s = state(vehicle etc)
+-- w = wanted level("w", wl required)
+-- i = interior
+-- d = dimension
+-- ld = last damage(not done yet)
 
 function canPlayerDoAction(plr, action)
 	if (not plr or not action or not actions[action] or not isElement(plr) or plr.type ~= "player" or plr.account.guest) then
@@ -84,6 +111,10 @@ function canPlayerDoAction(plr, action)
 				if (dat2 == "NoCustody" and #exports.UCDlaw:getPlayerArrests(plr) > 0) then
 					exports.UCDdx:new(plr, "Having players in your custody blocks this action", 255, 0, 0)
 					return false
+				end
+				if (dat2 == "NoGlue" and plr.attached) then
+					exports.UCDdx:new(plr, "Being glued blocks this action", 255, 0, 0)
+					return false 
 				end
 			end
 		end

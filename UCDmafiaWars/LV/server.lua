@@ -1,5 +1,6 @@
 addEventHandler("onColShapeHit", LV,
 	function (ele, matchingDimension)
+		if (not ele or not isElement(ele)) then return end
 		if (ele.type == "player" and matchingDimension) then
 			outputDebugString("Entered LV")
 			triggerEvent("onPlayerEnterLV", ele)
@@ -9,6 +10,7 @@ addEventHandler("onColShapeHit", LV,
 
 addEventHandler("onColShapeLeave", LV,
 	function (ele, matchingDimension)
+		if (not ele) then return end
 		if (ele.type == "player" and matchingDimension) then
 			outputDebugString("Left LV")
 			triggerEvent("onPlayerLeaveLV", ele)

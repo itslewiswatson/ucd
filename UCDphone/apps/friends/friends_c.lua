@@ -76,3 +76,13 @@ function Friends.switchView(view)
 		end
 	end
 end
+
+function Friends.onReceivedFriendsList(data)
+	phone.friends.gridlist["friends"]:clear()
+	for _, ent in ipairs(data) do
+		local row = phone.friends.gridlist["friends"]:addRow()
+		guiGridListSetItemText(phone.friends.gridlist["friends"], row, 1, tostring(data[2]).." ("..tostring..data[1]..")")
+	end
+end
+addEvent("UCDphone.friends.onReceivedFriendsList", true)
+addEventHandler("UCDphone.friends.onReceivedFriendsList", root, Friends.onReceivedFriendsList)

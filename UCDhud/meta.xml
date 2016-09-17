@@ -1,5 +1,5 @@
 <meta>
-	<!--<script src="c_hud.lua" type="client" />-->
+	<script src="c_hud.lua" type="client" />
 	<!--<script src="hud.lua" type="shared" />-->
 	<oop>true</oop>
 	

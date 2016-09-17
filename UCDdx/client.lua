@@ -55,8 +55,14 @@ function ContextBar.add(text, r, g, b)
 	outputConsole(text)
 	return true
 end
-addCommandHandler("dx", function () ContextBar.add("The quick brown fox jumps over the lazy dog "..exports.UCDutil:randomstring(2), math.random(0, 255), math.random(0, 255), math.random(0, 255)) end)
---addCommandHandler("getdx", function () outputDebugString(#ContextBar.entries) end)
+--addCommandHandler("dx", function () ContextBar.add("The quick brown fox jumps over the lazy dog "..exports.UCDutil:randomstring(2), math.random(0, 255), math.random(0, 255), math.random(0, 255)) end)
+addCommandHandler("getdx", function () outputDebugString(#ContextBar.entries) end)
+
+addCommandHandler("cleardx",
+	function ()
+		ContextBar.entries = {}
+	end
+)
 
 addEventHandler("onClientRender", root,
 	function ()

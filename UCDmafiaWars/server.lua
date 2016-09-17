@@ -1,5 +1,5 @@
 local turfCoordinates = {
-    [1] = {x = 1377.5, y = 903, z = 9, w = 120, l = 220, h = 20, spawn = {1435, 974, 10.8, 0}},
+    [1] = {x = 1377.5, y = 903, z = 9, w = 120, l = 220, h = 20, spawn = {1435, 974, 10.8, 0}}, --
     [2] = {x = 1577.7, y = 883, z = 9, w = 180, l = 240, h = 20, spawn = {1632, 972, 10.8, 270}},
     [3] = {x = 1873, y = 939, z = 9, w = 160, l = 149, h = 10, spawn = {2022, 1008, 10.8, 270}},
     [4] = {x = 1837, y = 1103, z = 9, w = 195, l = 160, h = 10, spawn = {2012, 1167, 10.8, 270}},
@@ -38,7 +38,7 @@ local turfCoordinates = {
     [37] = {x = 2135, y = 1784, z = 9, w = 270, l = 99, h = 6, spawn = {2220, 1838, 10.8, 90}},
     [38] = {x = 2160, y = 1904, z = 9, w = 170, l = 110, h = 30, spawn = {2323, 1991, 5.35, 180}},
     [39] = {x = 2160, y = 2033, z = 9, w = 170, l = 170, h = 21, spawn = {2275, 2039, 10.8, 270}},
-    [40] = {x = 2097.5, y = 903.5, z = 5, w = 130, l = 65, h = 20, spawn = {2239, 963, 10.8, 10}},
+    [40] = {x = 2097.5, y = 903.5, z = 5, w = 130, l = 65, h = 20, spawn = {2207.1409, 931.7458, 10.8, 270}},
     [41] = {x = 2777, y = 833, z = 10, w = 118, l = 190.5, h = 20, spawn = {2845, 983, 10.8, 94}},
     [42] = {x = 2517, y = 703, z = 5, w = 160.5, l = 60, h = 20, spawn = {2597, 758, 11.2, 359}},
     [43] = {x = 2157.5, y = 643, z = 5, w = 260, l = 120, h = 15, spawn = {2255, 728, 11.2, 265}},
@@ -55,16 +55,20 @@ local colToArea = {}
 local allowedToTurf = {--[[["Law"] = true,]] ["Criminals"] = true, ["Gangsters"] = true}
 local provoking = {}
 local level = {}
+db = exports.UCDsql:getConnection()
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
-		for turfID, v in ipairs(turfCoordinates) do
+		--for turfID, v in ipairs(turfCoordinates) do
+		local result = db:query("SELECT * FROM turfing"):poll(-1)
+		for turfID, v in ipairs(result) do
+			--db:exec("UPDATE turfing SET x = ?, y = ?, z = ?, w = ?, l = ?, h = ? WHERE turfID = ?", v.x, v.y, v.z, v.w, v.l, v.h, turfID)
 			local col = createColCuboid(v.x, v.y, v.z, v.w, v.l, v.h)
 			provoking[col] = {}
 			level[col] = {}
 			
-			level[col]["fuark"] = 100
-			col:setData("turfOwner", "fuark")
+			level[col][v.owner] = 100
+			col:setData("turfOwner", v.owner)
 			
 			idToCol[turfID] = col
 			colToArea[col] = createRadarArea(v.x, v.y, v.w, v.l, 255, 255, 255, 175)
@@ -75,6 +79,48 @@ addEventHandler("onResourceStart", resourceRoot,
 		Timer(corrections, 1000, 0)
 	end
 )
+
+function getGroupTurfs(groupName)
+	local temp = {}
+	for _, col in pairs(idToCol) do
+		if (col:getData("turfOwner") == groupName) then
+			table.insert(temp, col)
+		end
+	end
+	return temp
+end
+
+function getTurfID(col)
+	for k, v in pairs(idToCol) do
+		if (v == col) then
+			return k
+		end
+	end
+	return false
+end
+
+function spawnPlayerInTurf(plr)
+	local groupTurfs = getGroupTurfs(exports.UCDgroups:getPlayerGroup(plr))
+	local temp1, temp2 = {}, {}
+	for _, col in ipairs(groupTurfs) do
+		local id = getTurfID(col)
+		local dist = getDistanceBetweenPoints3D(Vector3(turfCoordinates[id].spawn), plr.position)
+		table.insert(temp1, dist)
+		temp2[dist] = turfCoordinates[id]
+	end
+	table.sort(temp1)
+	local spawn_ = temp2[temp1[1]].spawn
+	if (spawn_) then
+		plr:spawn(spawn_[1] + math.random(-2, 2), spawn_[2] + math.random(-2, 2), spawn_[3], spawn_[4], plr.model, 0, 0)
+		exports.UCDdx:new(plr, "You have spawned in your group's closest turf at "..getZoneName(spawn_[1], spawn_[2], spawn_[3]))
+	else
+		outputDebugString(plr.name.." did not turf spawn correctly")
+		plr:spawn(plr.position)
+	end
+	plr.alpha = 100
+	Timer(function(plr) if (isElement(plr)) then plr.alpha = 255 end end, 10000, 1, plr) 
+	triggerClientEvent(plr, "ghost", resourceRoot, true)
+end
 
 function corrections()
 	for i = 1, #idToCol do
@@ -93,24 +139,45 @@ function corrections()
 end
 
 function turfPayout()
+	if (Player.getCount() < 10) then return end
 	for _, plr in ipairs(Element.getAllByType("player")) do
 		local group = exports.UCDgroups:getPlayerGroup(plr)
 		if (group and isElementInLV(plr) and exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+		
 			local members = exports.UCDgroups:getGroupOnlineMembers(group)
+			local LVMembers = 0
+			for k, v in ipairs(members) do
+				if (isElementInLV(v)) then
+					LVMembers = LVMembers + 1
+				end
+			end
+			
 			local turfs = 0
 			for _, col in ipairs(idToCol) do
 				if (col:getData("turfOwner") == group) then
 					turfs = turfs + 1
 				end
 			end
-			if (turfs >= 1 and #members >= 1) then
-				local payout = math.floor((5000 * turfs) / #members)
+			local idleTime = getPlayerIdleTime(plr)
+			if (not idleTime) then
+				idleTime = 0
+			end
+			if (turfs >= 1 and LVMembers >= 1 and (idleTime / 1000) <= 1200) then
+				local payout = math.floor((2000 * turfs) / LVMembers)
 				exports.UCDdx:new(plr, "You have earned $"..exports.UCDutil:tocomma(payout).." from your turfs in the past 5 minutes", 0, 255, 0)
+				plr.money = plr.money + payout
 			end
 		end
 	end
 end
 Timer(turfPayout, 5 * 60000, 0)
+addCommandHandler("forcepayout",
+	function (plr)
+		if (exports.UCDadmin:isPlayerAdmin(plr)) then
+			turfPayout()
+		end
+	end
+)
 
 function getTurfGroupMembers(col, group)
 	local groupMembers = {}
@@ -150,7 +217,7 @@ function provokeTurf(col, group)
 		for i in pairs(level[col]) do
 			groupsInTurf = groupsInTurf + 1
 		end
-		outputDebugString(groupsInTurf.." groups in the turf")
+		--outputDebugString(groupsInTurf.." groups in the turf")
 		for group_, l in pairs(level[col]) do
 			if (#groupMembers > #getTurfGroupMembers(col, group_) and group ~= group_) then
 				if (level[col][group_] >= 5) then
@@ -158,13 +225,20 @@ function provokeTurf(col, group)
 					--if (groupsInTurf ~= 2) then
 					--	return
 					--end
-					
-					level[col][group] = level[col][group] + 5
-					level[col][group_] = level[col][group_] - 5
-					outputDebugString(group.." +5 provoke ("..level[col][group]..")")
+					local newLevel = level[col][group] + (5 * #groupMembers)
+					local newLevel_ = level[col][group_] - (5 * #groupMembers)
+					if (newLevel >= 100) then
+						newLevel = 100
+					end
+					if (newLevel_ <= 0) then
+						newLevel_ = 0
+					end
+					level[col][group] = newLevel
+					level[col][group_] = newLevel_
+					--outputDebugString(group.." +5 provoke ("..level[col][group]..")")
 					
 					if (level[col][group] > level[col][group_] and col:getData("turfOwner") ~= group) then
-						outputDebugString(group.." have taken a turf")
+						--outputDebugString(group.." have taken a turf")
 						col:setData("turfOwner", group)
 						
 						triggerEvent("onGroupTakeTurf", resourceRoot, group, col)
@@ -218,9 +292,29 @@ function onGroupTakeTurf(group, col)
 	for _, plr in ipairs(members) do
 		if (plr:isWithinColShape(col) and allowedToTurf[plr.team.name] and not plr.inWater and isElementInLV(plr)) then
 			-- Give money
-			plr.money = plr.money + 300 -- Go through money resource
+			local money = 300 -- Default is 300
+			if (Player.getCount() < 10) then -- Instant money only
+				money = 2000 -- Increase it a bit
+			end
+			plr.money = plr.money + money -- Go through money resource
 		end
 	end
+	local turfMembers = getTurfGroupMembers(col, group)
+	for _, plr in ipairs(turfMembers) do
+		if (plr.team.name == "Gangsters") then
+			--exports.UCDdx:new(plr, "You have received ")
+			exports.UCDaccounts:SAD(plr, "crimXP", exports.UCDaccounts:GAD(plr, "crimXP") + 5)
+			exports.UCDwanted:addWantedPoints(plr, 5)
+		end
+	end
+	local turfID
+	for k, v in ipairs(idToCol) do
+		if (v == col) then
+			turfID = k
+			break
+		end
+	end
+	db:exec("UPDATE turfing SET owner = ? WHERE turfID = ?", group, turfID)
 end
 addEvent("onGroupTakeTurf")
 addEventHandler("onGroupTakeTurf", root, onGroupTakeTurf)
@@ -238,14 +332,15 @@ end
 
 function onEnterTurf(plr, matchingDimension)
 	if (plr and plr.type == "player" and plr.dimension == 0 and plr.interior == 0 and matchingDimension) then
+		--outputDebugString("risk is gay x"..tostring(getTurfID(source)))
 		local group = exports.UCDgroups:getPlayerGroup(plr)
 		if (not group or not allowedToTurf[plr.team.name]) then
 			return false
 		end
-		if (plr.wantedLevel > 0 or exports.UCDwanted:getWantedPoints(plr) > 0) then
-			exports.UCDdx:new(plr, "You can only turf when not wanted", 255, 0, 0)
-			return
-		end
+		--if (plr.wantedLevel > 0 or exports.UCDwanted:getWantedPoints(plr) > 0) then
+		--	exports.UCDdx:new(plr, "You can only turf when not wanted", 255, 0, 0)
+		--	return
+		--end
 		exports.UCDdx:new(plr, "You have entered a turf controlled by "..source:getData("turfOwner"), 0, 255, 0)
 		triggerLatentClientEvent(plr, "onClientTurf", plr, getTurfData(source))
 		
@@ -259,7 +354,8 @@ function onEnterTurf(plr, matchingDimension)
 					outputDebugString(group.." is already provoking")
 					return
 				end
-				provoking[source][group] = Timer(provokeTurf, 2000, 0, source, group) -- Set the timer which acts to provoke
+				
+				provoking[source][group] = Timer(provokeTurf, 15000, 0, source, group) -- Set the timer which acts to provoke
 				if (provoking[source][group]) then
 					outputDebugString(group.." is beginning provocation")
 				else

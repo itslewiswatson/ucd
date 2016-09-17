@@ -1,6 +1,6 @@
-local mutes = {} -- mutes[string accName] = {[1] = int duration, [3] = int timeLeft}
+mutes = {} -- mutes[string accName] = {[1] = int duration, [3] = int timeLeft}
 local db = exports.UCDsql:getConnection()
-local TL = {}
+TL = {}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()

@@ -11,18 +11,18 @@ db = exports.UCDsql:getConnection()
 -- Change this variable sometime to not cause confustion with the houseData table
 housingData = {}
 housePickup = {}
-houseBlip = {}
+--houseBlip = {}
 
 function createHouse(houseID, houseTable, syncToClient)
 	if (not houseID) or (not houseTable) then
 		return
 	end
-	if (housePickup[houseID] and houseBlip[houseID]) then
+	if (housePickup[houseID]) then
 		housePickup[houseID]:destroy()
 		housePickup[houseID] = nil
 		
-		houseBlip[houseID]:destroy()
-		houseBlip[houseID] = nil
+		--houseBlip[houseID]:destroy()
+		--houseBlip[houseID] = nil
 	end
 	
 	local hX, hY, hZ = houseTable.x, houseTable.y, houseTable.z
@@ -30,7 +30,7 @@ function createHouse(houseID, houseTable, syncToClient)
 	
 	housePickup[houseID] = createPickup(hX, hY, hZ, 3, modelID, 0)
 	housePickup[houseID]:setData("houseID", houseID)
-	houseBlip[houseID] = createBlipAttachedTo(housePickup[houseID], 31, nil, nil, nil, nil, nil, 0, 500) -- Debug purposes
+	--houseBlip[houseID] = createBlipAttachedTo(housePickup[houseID], 0) -- Debug purposes
 	
 	-- Do a per house update system
 	housingData[houseID] = {}
@@ -141,3 +141,19 @@ function getHouseData(houseID, column)
 	
 	return housingData[houseID][column]
 end
+
+-- Delete house
+function deleteHouse(plr, _, id)
+	if (exports.UCDadmin:isPlayerAdmin(plr) and exports.UCDadmin:getPlayerAdminRank(plr) >= 2) then
+		if (id and tonumber(id) and housingData[tonumber(id)]) then
+			id = tonumber(id)
+			housePickup[id]:destroy()
+			--houseBlip[id]:destroy()
+			housePickup[id] = nil
+			--houseBlip[id] = nil
+			housingData[id] = nil
+			db:exec("DELETE FROM `housing` WHERE `houseID` = ?", id)
+		end
+	end
+end
+addCommandHandler("delhouse", deleteHouse)

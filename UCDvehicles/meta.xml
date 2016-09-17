@@ -14,6 +14,7 @@
 	<script src="vehicleAim.lua" type="client"/>
 	<script src="vehicleDamage.lua" type="client"/>
     <script src="vehicleDirectX.lua" type="client"/>
+    <script src="vehicleCruise.lua" type="client"/>
 	
 	<export function="isVehicleBrokenDown" type="client"/>
 	<export function="isVehicleBrokenDown" type="server"/>

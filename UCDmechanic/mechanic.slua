@@ -1,0 +1,102 @@
+function isMechInRange(mech, vehicle, range)
+	local dist = Vector3(vehicle.position - mech.position):getLength()
+	if (dist > range) then
+		return false
+	end
+	return true
+end
+
+function requestRepair(vehicle, owner)
+	if (not exports.UCDchecking:canPlayerDoAction(client, "RepairVehicle")) then
+		return
+	end
+	if (client.team.name ~= "Citizens" or client:getData("Occupation") ~= "Mechanic") then
+		return
+	end
+	if (math.floor(vehicle.health / 10) == 100) then
+		exports.UCDdx:new(client, "This vehicle does not need to be repaired", 255, 0, 0)
+		return
+	end
+	if (vehicle.interior ~= client.interior or vehicle.dimension ~= client.dimension) then
+		return
+	end
+	if (owner and isElement(owner) and owner.type == "player") then
+		if (owner == client) then
+			triggerEvent("UCDmechanic.repair", resourceRoot, vehicle, client, owner)
+			return
+		end
+		triggerClientEvent(owner, "UCDmechanic.authenticateRepair", owner, vehicle, client)
+		--outputDebugString("sending auth client side to "..owner.name)
+	else
+		triggerEvent("UCDmechanic.repair", resourceRoot, vehicle, client)
+		--outputDebugString("2nd option")
+	end
+end
+addEvent("UCDmechanic.requestRepair", true)
+addEventHandler("UCDmechanic.requestRepair", root, requestRepair)
+
+function onDeclineRequest(mech)
+	outputDebugString("mech - "..tostring(mech.type).." "..tostring(mech.name))
+	exports.UCDdx:new(mech, client.name.." has declined your request to repair their vehicle", 255, 0, 0)
+end
+addEvent("UCDmechanic.onDeclineRequest", true)
+addEventHandler("UCDmechanic.onDeclineRequest", root, onDeclineRequest)
+
+function onStartRepair(vehicle, mech, owner)
+	if (vehicle and mech) then
+		if (mech.team.name ~= "Citizens" or mech:getData("Occupation") ~= "Mechanic") then
+			return
+		end
+		if (not isMechInRange(mech, vehicle, 5)) then
+			exports.UCDdx:new(mech, "This vehicle is too far away to be repaired", 255, 0, 0)
+			return
+		end
+		vehicle.frozen = true
+		mech.frozen = true
+		exports.UCDactions:setAction(mech, "RepairVehicle")
+		exports.UCDdx:new(mech, "Wait 10 seconds while this vehicle gets repaired", 0, 255, 255)
+		mech:setAnimation("MISC", "Plunger_01", -1, true, false, false)
+		Timer(
+			function (mech, vehicle)
+				mech.frozen = false
+				vehicle.frozen = false
+				mech:setAnimation(false)
+			end, 10000, 1, mech, vehicle
+		)
+		Timer(onFinishRepair, 10050, 1, vehicle, mech, owner)
+	end
+end
+addEvent("UCDmechanic.onStartRepair", true)
+addEventHandler("UCDmechanic.onStartRepair", root, onStartRepair)
+
+function onFinishRepair(vehicle, mech, owner)
+	exports.UCDactions:clearAction(mech)
+	--outputDebugString("health = "..tostring(math.floor(vehicle.health / 10)))
+	if (not vehicle or not isElement(vehicle) or not isMechInRange(mech, vehicle, 5)) then
+		exports.UCDdx:new(mech, "Couldn't finish reparing the vehicle", 255, 0, 0)
+		return
+	end
+	if (not client) then client = mech end
+	if (client.team.name ~= "Citizens" or client:getData("Occupation") ~= "Mechanic") then
+		return
+	end
+	local amount = math.random(400, 800)
+	if (owner and isElement(owner) and mech ~= owner) then
+		if (owner.money < amount) then
+			exports.UCDdx:new(owner, "You don't have enough money to have this vehicle repaired ($"..amount..")", 255, 0, 0)
+			return
+		end
+		owner.money = owner.money - amount
+		exports.UCDdx:new(owner, "You have paid $"..tostring(exports.UCDutil:tocomma(amount + 250)).." for "..mech.name.." to repair your "..vehicle.name, 255, 0, 0)
+	end
+	if (mech ~= owner) then
+		mech.money = mech.money + (amount + 250)
+		exports.UCDdx:new(mech, "You have been paid $"..tostring(exports.UCDutil:tocomma(amount + 250)).." for reparing that "..vehicle.name, 255, 0, 0)
+	else
+		mech.money = mech.money - amount
+		exports.UCDdx:new(mech, "You have paid $"..tostring(exports.UCDutil:tocomma(amount + 250)).." for reparing your "..vehicle.name, 255, 0, 0)
+	end
+	exports.UCDvehicles:fix(vehicle)
+end
+addEvent("UCDmechanic.onFinishRepair", true)
+addEventHandler("UCDmechanic.onFinishRepair", root, onFinishRepair)

@@ -248,7 +248,7 @@ end
 
 function applyFilters()
 	local filterCount = 0
-	
+	if (not filters) then return end
 	if (filters["c"] and #filters["c"] > 0) then
 		filterCount = filterCount + 1
 	end
@@ -355,30 +355,32 @@ function createGridList()
 	MDT.gridlist:clear()
 	if (players) then
 		for _, plr in ipairs(players) do
-			local row = guiGridListAddRow(MDT.gridlist)
-			local x, y, z = plr.position.x, plr.position.y, plr.position.z
-			local type2
-			if (plr.vehicle) then
-				local type1 = getVehicleType(plr.vehicle)
-				if (type1 == "Automobile" or type1 == "Monster Truck" or type1 == "Boat") then
-					type2 = "Automobile"
-				elseif (type1 == "Bike" or type1 == "BMX" or type1 == "Quad" or type1 == "") then
-					type2 = "Bike"
-				elseif (type1 == "Plane" or type1 == "Helicopter") then
-					type2 = "Air"
+			if (isElement(plr)) then
+				local row = guiGridListAddRow(MDT.gridlist)
+				local x, y, z = plr.position.x, plr.position.y, plr.position.z
+				local type2
+				if (plr.vehicle) then
+					local type1 = getVehicleType(plr.vehicle)
+					if (type1 == "Automobile" or type1 == "Monster Truck" or type1 == "Boat") then
+						type2 = "Automobile"
+					elseif (type1 == "Bike" or type1 == "BMX" or type1 == "Quad" or type1 == "") then
+						type2 = "Bike"
+					elseif (type1 == "Plane" or type1 == "Helicopter") then
+						type2 = "Air"
+					else
+						type2 = "Automobile"
+					end
 				else
-					type2 = "Automobile"
+					type2 = "On foot"
 				end
-			else
-				type2 = "On foot"
+				
+				guiGridListSetItemText(MDT.gridlist, row, 1, tostring(plr.name), false, false)
+				guiGridListSetItemText(MDT.gridlist, row, 2, tostring(plr:getData("w")), false, false)
+				guiGridListSetItemText(MDT.gridlist, row, 3, tostring(exports.UCDutil:getCityZoneFromXYZ(x, y, z)), false, false)
+				guiGridListSetItemText(MDT.gridlist, row, 4, tostring(type2), false, false)
+				guiGridListSetItemText(MDT.gridlist, row, 5, tostring(math.floor(getDistanceBetweenPoints3D(localPlayer.position, x, y, z))), false, false)
+				guiGridListSetItemData(MDT.gridlist, row, 1, plr)
 			end
-			
-			guiGridListSetItemText(MDT.gridlist, row, 1, tostring(plr.name), false, false)
-			guiGridListSetItemText(MDT.gridlist, row, 2, tostring(plr:getData("w")), false, false)
-			guiGridListSetItemText(MDT.gridlist, row, 3, tostring(exports.UCDutil:getCityZoneFromXYZ(x, y, z)), false, false)
-			guiGridListSetItemText(MDT.gridlist, row, 4, tostring(type2), false, false)
-			guiGridListSetItemText(MDT.gridlist, row, 5, tostring(math.floor(getDistanceBetweenPoints3D(localPlayer.position, x, y, z))), false, false)
-			guiGridListSetItemData(MDT.gridlist, row, 1, plr)
 		end
 	else
 		players = getAllWantedPlayers()
@@ -402,8 +404,12 @@ function refreshBlips()
 	end
 	if (players2) then
 		--if (markAll) then
-			for _, plr in ipairs(players2) do
-				blips[plr] = Blip.createAttachedTo(plr, 20)
+			for ind, plr in ipairs(players2) do
+				if (plr and isElement(plr)) then
+					blips[plr] = Blip.createAttachedTo(plr, 20)
+				else
+					table.remove(players2, ind)
+				end
 			end
 		--end
 	else
@@ -418,10 +424,10 @@ addEventHandler("onClientPlayerQuit", root,
 			blips[source]:destroy()
 			blips[source] = nil
 		end
-		for i = 0, guiGridListGetRowCount(MDT.gridlist) - 1 do
+		for i = 0, guiGridListGetRowCount(MDT.gridlist) do
 			local plr = guiGridListGetItemData(MDT.gridlist, i, 1)
 			if (plr == source) then
-				guiGridListRemoveRow(i)
+				guiGridListRemoveRow(MDT.gridlist, i)
 			end
 		end
 	end

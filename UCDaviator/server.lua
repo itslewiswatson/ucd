@@ -37,11 +37,11 @@ function processFlight(flightData, vehicle)
 			--outputDebugString("Distance: "..distance)
 			
 			if (sml[model]) then
-				base = math.random((distance * 1.15) - 250, (distance * 1.15) + 250)
+				base = math.random((distance * 1.2) - 250, (distance * 1.2) + 250)
 			elseif (lrg[model]) then
-				base = math.random((distance * 2.5) - 250, (distance * 2.5) + 250)
+				base = math.random((distance * 2) - 250, (distance * 2) + 250)
 			elseif (mid[model]) then
-				base = math.random((distance * 1.6) - 250, (distance * 1.75) + 400)
+				base = math.random((distance * 1.6) - 250, (distance * 1.7) + 250)
 			else
 				outputDebugString("Unknown type given")
 				return
@@ -81,8 +81,21 @@ function processFlight(flightData, vehicle)
 		
 		if (client.vehicle) then
 			--client.vehicle.frozen = false
-			triggerClientEvent(client, "UCDaviator.startItinerary", client, client.vehicle, client.vehicleSeat)
+			local health = math.floor(client.vehicle.health / 10)
+			if (health >= 95) then
+				exports.UCDdx:new(client, "ATC: 5% bonus for minimal damage to the "..tostring(vehicle.vehicleType == "Plane" and "plane" or "helicopter").." and its cargo", 255, 215, 0)
+				newAmount = newAmount + (newAmount * 0.5)
+			elseif (health <= 60) then
+				exports.UCDdx:new(client, "ATC: Your "..tostring(vehicle.vehicleType == "Plane" and "plane" or "helicopter").." suffered considerable damage and 10% of your earnings were taxed for repairs", 255, 215, 0)
+				newAmount = newAmount - (newAmount * 0.1)
+			end
+			Timer(
+				function (plr)
+					triggerClientEvent(plr, "UCDaviator.startItinerary", plr, plr.vehicle, plr.vehicleSeat)
+				end, 2000, 1, client
+			)
 		end
+		client.money = client.money + newAmount
 	end
 end
 addEvent("UCDaviator.processFlight", true)

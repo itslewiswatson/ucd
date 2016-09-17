@@ -1,5 +1,6 @@
 local spam = {}
 local police = Team.getFromName("Law")
+local admins = Team.getFromName("Admins")
 
 function crime(attacker, killer, _, loss)
     local criminal
@@ -25,7 +26,7 @@ function crime(attacker, killer, _, loss)
 				end
 			end
 		end
-		if (criminal) then
+		if (criminal and criminal.team ~= admins) then
 			if (eventName == "onPlayerWasted") then
 				exports.UCDwanted:addWantedPoints(criminal, 30)
 			else

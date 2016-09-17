@@ -33,34 +33,32 @@ setWeather(10)
 setTime(0, 0)
 for i = 0, 49 do setGarageOpen(i, true) end
 
------------------------------------------------------
--- ARR (automatic resource restarter)
--- This is used to make sure certain resources remain in a healthy state
------------------------------------------------------
-
-local ARR = { 
-	"UCDreload",
-	"UCDdata",
-	"UCDplaytime",
-}
---[[
-function autoRestart()
-	for i, resource in pairs(ARR) do
-		local restart = restartResource(getResourceFromName(resource))
-		if (restart == true) then
-			outputDebugString("[ARR] Resource '"..resource.."' automatically restarted")
-		else
-			outputDebugString("[ARR] Cannot restart resource: "..resource.." - contact developer")
-			break
-		end
-	end
-end
-
-function autoRestartTimer()
-	restartTimer = setTimer(autoRestart, 2400000, 0) -- restart on every hour of server uptime
-end
-addEventHandler("onResourceStart", resourceRoot, autoRestartTimer)
---]]
+-- Weapons vals
+-- Minigun
+setWeaponProperty("minigun", "pro", "damage", 5)
+setWeaponProperty("minigun", "std", "damage", 5)
+setWeaponProperty("minigun", "poor", "damage", 5)
+setWeaponProperty("minigun", "pro", "flag_move_and_shoot", false)
+setWeaponProperty("minigun", "std", "flag_move_and_shoot", false)
+setWeaponProperty("minigun", "poor", "flag_move_and_shoot", false)
+-- MP5
+setWeaponProperty("mp5", "pro", "accuracy", 1.9)
+setWeaponProperty("mp5", "std", "accuracy", 1.9)
+setWeaponProperty("mp5", "poor", "accuracy", 1.9)
+-- Tec-9
+setWeaponProperty("tec-9", "pro", "flag_type_dual", true)
+setWeaponProperty("tec-9", "std", "flag_type_dual", true)
+setWeaponProperty("tec-9", "poor", "flag_type_dual", true)
+setWeaponProperty("tec-9", "pro", "damage", 15)
+setWeaponProperty("tec-9", "std", "damage", 15)
+setWeaponProperty("tec-9", "poor", "damage", 15)
+-- Uzi
+setWeaponProperty("uzi", "pro", "flag_type_dual", true)
+setWeaponProperty("uzi", "std", "flag_type_dual", true)
+setWeaponProperty("uzi", "poor", "flag_type_dual", true)
+setWeaponProperty("uzi", "pro", "damage", 15)
+setWeaponProperty("uzi", "std", "damage", 15)
+setWeaponProperty("uzi", "poor", "damage", 15)
 
 -----------------------------------------------------
 -- Kill command

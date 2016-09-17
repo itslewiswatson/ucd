@@ -1,13 +1,12 @@
 <meta>
 	<min_mta_version server="1.5.2" client="1.5.2" />
-	<info author="Noki" version="3" name="UCDaccounts" type="script" />
-	
+	<info author="Noki" version="4" name="UCDaccounts" type="script" />
+
 	<script src="accountData.slua" type="server" />
 	<script src="accountHandling.lua" type="server" />
 	<script src="login/accountMisc.lua" type="server" />
 	<script src="exports/s_exports.lua" type="server" />	
 	<script src="exports/c_exports.lua" type="client" />
-	<script src="forumSync.lua" type="server" />
 	<script src="misc.lua" type="server" />
 	
 	<!-- This needs to start after s_exports.lua -->
@@ -15,7 +14,7 @@
 	
 	<!-- Login panel and handling -->
 	<script src="login/server.lua" type="server" />
-	<script src="login/client.lua" type="client" />
+	<script src="login/client.luac" type="client" />
 	
 	<export function="createGameAccount" type="server" http="true"/>
 	<export function="changeGamePassword" type="server" http="true"/>

@@ -36,6 +36,7 @@ function localChat(player, _, ...)
 		if (getElementAlpha(v) == 0) then playerCount = playerCount - 1 end
 		if (playerCount < 0) then playerCount = 0 end
 		outputChatBox("(LOC) ["..playerCount.."] "..player.name.." #FFFFFF"..msg, v, pR, pG, pB, true)
+		triggerClientEvent(v, "listInsert", resourceRoot, "local", player, msg)
 	end
 	
 	triggerClientEvent("onMessageIncome", player, msg)

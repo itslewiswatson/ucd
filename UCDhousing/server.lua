@@ -45,7 +45,7 @@ local intIDs = {
 	[29] = {9, 83.52, 1324.48, 1083.85},
 	[30] = {10, 24.15, 1341.64, 1084.37},
 	[31] = {15, 374.34, 1417.51, 1081.32},
-	[32] = {1, 2525.0420, -1679.1150, 1015.4990},
+	--[32] = {1, 2525.0420, -1679.1150, 1015.4990},
 }
 
 db = exports.UCDsql:getConnection()
@@ -263,7 +263,7 @@ function warpToHouseExterior(plr, _, houseID)
 	-- Check to see if everything is valid
 	if (not houseID) then return end
 	local houseID = tonumber(houseID)
-	if (not exports.UCDadmin:isPlayerDeveloper(plr)) then return false end
+	--if (not exports.UCDadmin:isPlayerDeveloper(plr)) then return false end
 	
 	local hX, hY, hZ = getHouseData(houseID, "x"), getHouseData(houseID, "y"), getHouseData(houseID, "z")
 	

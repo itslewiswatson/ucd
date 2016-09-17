@@ -48,10 +48,6 @@ function getTimeString(seconds)
 	return timeString
 end
 
-function isCustomReason()
-	
-end
-
 function punish(val, duration, type1, who, reason)
 	-- type1: punishment type {admin jail, kick, reconnect, mute, ban}	
 	if (who.type == "player" or who.type == "resource") then
@@ -60,34 +56,90 @@ function punish(val, duration, type1, who, reason)
 		who = "Console"
 	end
 	
+	if (type1 == "unjail" or type1 == "unmute") then
+		if (val and val.type == "player") then
+			if (type1 == "unjail") then
+				if (not exports.UCDjail:isPlayerJailed(val)) then
+					exports.UCDdx:new(client, "This player is not jailed", 255, 0, 0)
+					return
+				end
+				triggerEvent("UCDjail.releasePlayer", val)
+				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unjailed "..tostring(val.name))
+			else
+				if (not val.muted) then
+					exports.UCDdx:new(client, "This player is not muted", 255, 0, 0)
+					return
+				end
+				triggerEvent("UCDadmin.onPlayerUnmuted", val)
+				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unmuted "..tostring(val.name))
+			end
+		else
+			if (val:sub(1, 4) ~= "acc:") then
+				exports.UCDdx:new(client, "Invalid syntax", 255, 0, 0)
+				return
+			end
+			if (type1 == "unjail") then
+				-- There really isn't a way around this
+				db:exec("DELETE FROM `jails` WHERE `account` = ?", val:sub(5))
+				db:query(exports.UCDjail:cacheJails(), {}, "SELECT * FROM `jails`")
+				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unjailed "..tostring(val))
+			else
+				-- Unmute offline
+				db:exec("DELETE FROM `mutes` WHERE `account` = ?", val:sub(5))
+				mutes[val:sub(5)] = nil
+				TL[val:sub(5)] = nil
+				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unmuted "..tostring(val))
+			end
+		end
+		return
+	end
+	
 	-- Redirect bans elsewhere
 	if (type1 == "ban") then
 		if (not canAdminDoAction(client, "ban")) then
 			exports.UCDdx:new(client, "Only L3+ admins may issue bans", 255, 0, 0)
 			return
 		end
+		
 		if (val.type == "player") then
 			local n = val.name
+			local dur
+			if (duration == -1) then
+				dur = "permanently"
+			else
+				dur = duration
+			end
 			if (exports.UCDaccounts:isPlayerLoggedIn(val)) then
 				local msg = 
 				addBan("acc:"..val.account.name, who, reason[1], duration)
 				local msg = tostring(client.name).." has banned "..tostring(n).." for "..tostring(getTimeString(duration)).." ("..tostring(reason[1])..")"
+				if (type(dur) == "string") then
+					msg = tostring(client.name).." has permanently banned "..tostring(n).." ("..tostring(reason[1])..")"
+				end
 				exports.UCDlogging:adminLog(who, msg)
 			end
 			local b = addBan(val.serial, who, reason[1], duration)
-			local msg = tostring(client.name).." has banned "..tostring(n).." for "..tostring(getTimeString(duration)).." ("..tostring(reason[1])..")"
+			local msg = tostring(client.name).." has banned "..tostring(val.name).." for "..tostring(getTimeString(duration)).." ("..tostring(reason[1])..")"
+			if (type(dur) == "string") then
+				msg = tostring(client.name).." has permanently banned "..tostring(val.name).." ("..tostring(reason[1])..")"
+			end
 			if (b) then
 				outputChatBox(msg, root, 255, 140, 0)
 				exports.UCDlogging:adminLog(who, msg)
 			end
 			return
 		end
+		
 		if (val:len() ~= 32 and val:sub(1, 4) ~= "acc:") then
 			exports.UCDdx:new(client, "Invalid syntax", 255, 0, 0)
 			return
 		end
+		
 		addBan(val, who, reason[1], duration)
 		local msg = tostring(client.name).." has banned "..tostring(val).." for "..tostring(getTimeString(duration)).." ("..tostring(reason[1])..")"
+		if (type(dur) == "string") then
+			msg = tostring(client.name).." has permanently banned "..tostring(val).." ("..tostring(reason[1])..")"
+		end
 		outputChatBox(msg, root, 255, 140, 0)
 		exports.UCDlogging:adminLog(who, msg)
 		return
@@ -188,7 +240,15 @@ function punish2(val, duration, type1, who, reason)
 		log_ = tostring(who).." has "..tostring((offline and "offline ") or "")..tostring(types[type1]).." "..tostring(output).." ("..tostring(reason[1])..")"
 	end
 	
-	exports.UCDlogging:adminLog(who, log_)
+	if (plr) then
+		if (infractions ~= nil) then
+			exports.UCDlogging:adminLog(who, tostring(who).." has "..tostring((offline and "offline ") or "")..tostring(types[type1]).." "..tostring(plr.name).." for "..tostring(infractions).." infraction"..tostring((infractions == 1 and "") or "s").." of "..tostring(reason[1]))
+		else
+			exports.UCDlogging:adminLog(who, tostring(who).." has "..tostring((offline and "offline ") or "")..tostring(types[type1]).." "..tostring(plr.name).." ("..tostring(reason[1])..")")
+		end
+	else
+		exports.UCDlogging:adminLog(who, log_)
+	end
 	
 	if (timeString) then
 		log_ = tostring(log_).." ("..tostring(timeString)..")"

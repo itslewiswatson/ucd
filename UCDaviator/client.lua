@@ -102,7 +102,7 @@ function calculateItinerary()
 			if (cargoPlanes[localPlayer.vehicle.model]) then
 				exports.UCDdx:new("ATC: Take this cargo to "..airports[curr.airport], 255, 215, 0)
 			elseif (passgenerPlanes[localPlayer.vehicle.model]) then
-				exports.UCDdx:new("ATC: Take these passgeners to "..airports[curr.airport], 255, 215, 0)
+				exports.UCDdx:new("ATC: Take these passengers to "..airports[curr.airport], 255, 215, 0)
 			end
 		else
 			dest = destinations["Plane"][airports[curr.airport]][curr.dest]
@@ -191,7 +191,7 @@ function onClientMarkerHit(plr, matchingDimension)
 				if (cargoPlanes[localPlayer.vehicle.model]) then
 					exports.UCDdx:new("ATC: Please wait while your aircraft is unloaded", 255, 215, 0)
 				else
-					exports.UCDdx:new("ATC: Please wait while your passgeners disembark the aircraft", 255, 215, 0)
+					exports.UCDdx:new("ATC: Please wait while your passengers disembark the aircraft", 255, 215, 0)
 				end
 			else
 				exports.UCDdx:new("ATC: Please wait while the private passgener disembarks", 255, 215, 0)
@@ -201,7 +201,7 @@ function onClientMarkerHit(plr, matchingDimension)
 				if (cargoPlanes[localPlayer.vehicle.model]) then
 					exports.UCDdx:new("ATC: Please wait while your aircraft is loaded", 255, 215, 0)
 				else
-					exports.UCDdx:new("ATC: Please wait while your passgeners embark the aircraft", 255, 215, 0)
+					exports.UCDdx:new("ATC: Please wait while your passengers embark the aircraft", 255, 215, 0)
 				end
 			else
 				exports.UCDdx:new("ATC: Please wait while the private passgener embarks", 255, 215, 0)

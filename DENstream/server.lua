@@ -5,7 +5,8 @@ local streamSpeaker = {}
 -- When a staff wants to open the stream
 addCommandHandler( "stream",
     function ( thePlayer )
-        if (exports.UCDadmin:isPlayerOwner(thePlayer)) then
+        --if (exports.UCDadmin:isPlayerOwner(thePlayer)) then
+        if (exports.UCDadmin:isPlayerAdmin(thePlayer)) then
             triggerClientEvent( thePlayer, "onClientOpenStreamWindow", thePlayer )
         end
     end

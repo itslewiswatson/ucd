@@ -182,7 +182,7 @@ local countryName =
 	NF = "Norfolk Island",
 	NG = "Nigeria",
 	NI = "Nicaragua",
-	NL = "Netherlands",
+	NL = "The Netherlands",
 	NO = "Norway",
 	NP = "Nepal",
 	NR = "Nauru",
@@ -275,7 +275,7 @@ local function toIPNum(ip)
 	return ipnum
 end
 
-function getCountry(ip)
+function getCountryOld(ip)
 	local num = tostring(toIPNum(ip))
 	local res = sqlite_geo_db:query("SELECT `country` FROM `geoIPCountry` WHERE "..num.." BETWEEN begin_num AND end_num LIMIT 1"):poll(-1)
 	if res[1] then
@@ -284,8 +284,51 @@ function getCountry(ip)
 	return false
 end
 
+function getCountry(ip)
+	--local num = tostring(toIPNum(ip))
+	--local res = sqlite_geo_db:query("SELECT `country` FROM `geoIPCountry` WHERE "..num.." BETWEEN begin_num AND end_num LIMIT 1"):poll(-1)
+	--if res[1] then
+	--	return res[1].country, countryName[res[1].country]
+	--end
+	--return false
+	if (countryCache[ip]) then
+		return countryCache[ip][1], countryCache[ip][2]
+	else
+		return getCountryOld(ip)
+	end
+	return false
+end
+
+countryCache = {}
+
+function requestCache(plr, ip)
+	if (countryCache[ip]) then
+		setPlayerCountry(plr)
+		return
+	end
+	--outputDebugString(tostring("http://freegeoip.net/json/"..tostring(ip))) 
+	fetchRemote("http://freegeoip.net/json/"..tostring(ip), 2, cacheCountry, "", false, ip, plr)
+end
+
+function cacheCountry(response, errorNo, ip, plr)
+	local abbrev, full
+	if (response == "ERROR") then
+		outputDebugString("Errors")
+		abbrev, full = getCountryOld(ip)
+	else
+		--outputDebugString("Not error")
+		local data2 = fromJSON(response)
+		abbrev = data2["country_code"]
+		full = data2["country_name"]
+		ip = data2["ip"]
+	end
+	countryCache[ip] = {abbrev, full}
+	--outputDebugString("Sset countryCache of "..tostring(ip).." to "..tostring(abbrev))
+	setPlayerCountry(plr)
+end
+
 manual = {
-	["Noki"] = "AU",
+	--["Noki"] = "AU",
 	["Noki2"] = "AU",
 	["Dustin"] = "EG",
 }
@@ -317,11 +360,13 @@ function setPlayerCountry(plr)
 end
 
 function setPlayerCountry_()
-	setPlayerCountry(source)
+	requestCache(source, source.ip)
+	--setPlayerCountry(source)
 end
 addEventHandler("onPlayerJoin", root, setPlayerCountry_)
 addEventHandler("onPlayerLogin", root, setPlayerCountry_)
 
 for _, v in ipairs(Element.getAllByType("player")) do
-	setPlayerCountry(v)
+	requestCache(v, v.ip)
+	--setPlayerCountry(v)
 end

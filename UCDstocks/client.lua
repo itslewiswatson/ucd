@@ -405,6 +405,10 @@ function onSellStock()
 		exports.UCDdx:new("You must at sell at least the minimum sellout amount for this stock ("..tostring(_stocks[stockSelling][8])..")", 255, 0, 0)
 		return
 	end
+	triggerServerEvent("UCDstocks.sellStock", resourceRoot, stockSelling, qty, approxPrice)
+	sellGUI.window.visible = false
+	sellGUI.edit.text = "1"
+	stockSelling = nil
 end
 
 function onClickSellStock()

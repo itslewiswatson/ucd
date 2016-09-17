@@ -33,19 +33,32 @@ playerVehicles = {}
 local recLocs = {
 	--[vehicleType] = {x, y, z, rot}
 	["Plane"] = {
-		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
+		{-1653.6453, -641.566, 14.1484, 280},
+		{1983.8809, -2621.5383, 13.5469, 0},
+		{1523.3285, 1775.4574, 10.8203, 180},
 	},
 	["Helicopter"] = {
-		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
+		{-1613.2408, -649.3304, 14.1484, 200}, 
+		{-1494.9352, -558.2144, 14.144, 206}, 
+		{1339.6415, 1614.3076, 10.820, 270},
+		{1280.5967, 1536.5463, 10.8203, 270},
+		{1730.1738, -2546.8081, 13.5469, 0},
 	},
 	["Boat"] = {
-		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
-	},
-	["Bike"] = {
-		{0, 0, 5, 0}, {0, 0, 5, 0}, {0, 0, 5, 0}
+		{2257.1284, 524.9557, 0.5, 180},
+		{170.4941, 186.6853, 0.5, 0},
+		{929.5446, -1927.4025, 0.5, 150},
+		{-2986.4221, 525.1015, 0.5, 0},
 	},
 	["General"] = {
-		{1650.84, -1101.55, 23.9, 270}, 
+		{1745.9404, 2013.3558, 11, 270},
+		{1729.0573, 2012.6602, 11, 90},
+		{1730.1738, -2546.8081, 13.5469, 0},
+		{1804.8962, -2547.7786, 13.5469, 0},
+		{1943.8475, -2545.2771, 13.5469, 0},
+		{-1926.9241, 262.1635, 41.0391, 180},
+		{1704.8297, -1059.6635, 23.9063, 270},
+		{1628.0961, -1095.7555, 23.9063, 270},
 	},
 }
 
@@ -323,6 +336,7 @@ function recoverVehicle(vehicleID)
 		end
 
 		--if (exports.UCDadmin:isPlayerOwner(client)) then
+			--[[
 			if (client.vehicle) then
 				exports.UCDdx:new(client, "You can't recover a vehicle to yourself while you're already in one", 255, 0, 0)
 				return
@@ -337,12 +351,14 @@ function recoverVehicle(vehicleID)
 			smallest = Vector4(vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z, r + 90)
 			
 			exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered just in front of you!", 0, 255, 0)
+			-]]
+			
 		-- else
-		--	-- Loop through to find the smallest distance
-		--	smallest = getClosestRecoveryLocation(vehicleType, vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z)
-		--	vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
-		--	vehicleEle:setRotation(Vector3(0, 0, smallest.w))
-		--	exports.UCDdx:new(client, "Your "..vehicleEle.name.." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
+			-- Loop through to find the smallest distance
+			smallest = getClosestRecoveryLocation(vehicleType, vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z)
+			vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
+			vehicleEle:setRotation(Vector3(0, 0, smallest.w))
+			exports.UCDdx:new(client, "Your "..vehicleEle.name.." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
 		-- end
 	else
 		local last = Vector3(unpack(fromJSON(getVehicleData(vehicleID, "xyz"))))
@@ -368,8 +384,11 @@ function sellVehicle(vehicleID)
 			break
 		end
 	end
-	
 	local price = getVehicleData(vehicleID, "price")
+	if (not price) then
+		exports.UCDdx:new(client, "You can't sell your vehicle - please report this bug and include 'vehicleID = "..tostring(vehicleID).."'", 255, 0, 0)
+	end
+	
 	local rate = root:getData("vehicles.rate")
 	local newPrice = math.floor(price * (rate / 100))
 	exports.UCDdx:new(client, "You have successfully sold your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." for $"..exports.UCDutil:tocomma(newPrice), 0, 255, 0)
@@ -379,7 +398,8 @@ function sellVehicle(vehicleID)
 	-- Remove it from SQL, sync to player
 	--triggerEvent("UCDvehicles.requestVehicleTableSync", client)
 	triggerEvent("UCDvehicles.getIdToVehicleTable", client, true)
-	forceSync(client)
+	--forceSync(client)
+	syncVehicleTable(client)
 end
 addEvent("UCDvehicles.sellVehicle", true)
 addEventHandler("UCDvehicles.sellVehicle", root, sellVehicle)

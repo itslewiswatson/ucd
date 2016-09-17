@@ -176,3 +176,14 @@ function isAccount(name)
 end
 addEvent("UCDaccounts.login.isAccount", true)
 addEventHandler("UCDaccounts.login.isAccount", root, isAccount)
+
+--[[
+addEvent("UCDaccounts.fetchUpdates", true)
+addEventHandler("UCDaccounts.fetchUpdates", root,
+	function ()
+		if (client) then
+			local updates = fetchRemote("")
+		end
+	end
+)
+]]

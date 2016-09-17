@@ -13,6 +13,7 @@ db = exports.UCDsql:getConnection()
 
 function makeHouses(houseInfo)
 	if (not houseInfo) then outputDebugString("no houseInfo") return false end
+	if (not exports.UCDadmin:isPlayerAdmin(client)) then return end
 	
 	local interiorID = houseInfo["interiorID"]
 	local x = houseInfo["x"]
@@ -32,7 +33,7 @@ function makeHouses(houseInfo)
 	houseInfo = {}
 	
 	-- Try creating it right afterwards
-	local qh1 = db:query("SELECT LAST_INSERT_ID() AS `houseID`")
+	local qh1 = db:query("SELECT MAX(`houseID`) AS `houseID` FROM `housing`")
 	local houseID = qh1:poll(-1)[1].houseID
 	outputDebugString(houseID)
 	

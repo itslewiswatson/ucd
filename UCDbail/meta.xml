@@ -1,0 +1,6 @@
+<meta>
+	<script src="bail.lua" type="client" />
+	<script src="bail.slua" type="server" />
+	
+	<file src="flower.jpg"/>
+</meta>

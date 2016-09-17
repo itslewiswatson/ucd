@@ -2,6 +2,5 @@
 	<info name="Custom Drft" author="LagParty,BeaTzZ" version="1.0.1" type="script"/>
 	<script src="drft_server.lua" type="server"/>
 	<script src="drft.lua" type="client" />
-	<config src="recordDrift.xml" type="server"/>
 	<oop>true</oop>
 </meta>

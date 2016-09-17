@@ -58,7 +58,9 @@ function completeHouseRob(tbl)
 		destroyRobObject(client)
 		exports.UCDactions:clearAction(client)
 		
-		exports.UCDstats:setPlayerAccountStat(plr, "housesRobbed", exports.UCDstats:getPlayerAccountStat(plr, "housesRobbed") + 1)
+		exports.UCDwanted:addWantedPoints(client, 5)
+		exports.UCDaccounts:SAD(client, "crimXP", exports.UCDaccounts:GAD(client, "crimXP") + 2)
+		exports.UCDstats:setPlayerAccountStat(client, "housesRobbed", exports.UCDstats:getPlayerAccountStat(client, "housesRobbed") + 1)
 	end
 end
 addEvent("UCDhousing.completeHouseRob", true)

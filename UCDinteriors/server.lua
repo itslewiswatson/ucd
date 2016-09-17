@@ -1,4 +1,7 @@
 function foo(markerNumber, type_, entryOrExit)
+	if (not exports.UCDchecking:canPlayerDoAction(client, "EnterInterior")) then
+		return
+	end
 	if (client and markerNumber and type_) then
 		local goto = interiors[type_][markerNumber]
 		if (entryOrExit == "exit") then

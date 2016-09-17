@@ -13,10 +13,6 @@ local tick
 local idleTime
 local multTime
 local driftTime
-local Yellow = tocolor(0,255,0)
-local Red = tocolor(234,0,3)
-local TempCol = Yellow
-local White = tocolor(255,255,255)
 local mult = 1
 local tablamult = {350,1400,4200,11200}
 local anterior = 0
@@ -26,40 +22,14 @@ local screenWidth, screenHeight = guiGetScreenSize()
 local x1,y1,x2,y2 = screenWidth*0.2,screenHeight*0.1,screenWidth*0.8,screenHeight*0.8
 
 local SF = ColShape.Rectangle(-3000, -952, 2000, 2500)
-createRadarArea(-3000, -952, 2000, 2500, 255, 255, 255, 100)
+--createRadarArea(-3000, -952, 2000, 2500, 255, 255, 255, 100)
 
-
-textcols = {
-{0,255,0, 255},
-{ 255,232,25, 255 },
-{ 0, 150, 255, 255 },
-{0,255,0, 255},
-{ 255,232,25, 255 },
-{ 0, 150, 255, 255 },
-{0,255,0, 255},
-{ 255,232,25, 255 },
-{ 0, 150, 255, 255 },
-{0,255,0, 255},
-{ 255,232,25, 255 },
-{ 0, 150, 255, 255 }
-}
-
-function randomtxtcol( )
-			_tempcols = math.random(#textcols)
-			tempr, tempg, tempb = textcols[_tempcols][1], textcols[_tempcols][2], textcols[_tempcols][3]
-			Yellow = tocolor(tempr, tempg, tempb)
-			TempCol = Yellow
-			
-			
-
-end
-setTimer( randomtxtcol, 600000, 0 )
-addEventHandler("onClientResourceStart", getResourceRootElement(getThisResource()), randomtxtcol )
-
-addEventHandler("onClientResourceStart", thisRoot,
+addEventHandler("onClientResourceStart", resourceRoot,
 	function()
 		addEventHandler("onClientRender", root, showText)
-		triggerServerEvent("driftClienteListo", resourceRoot)
+		if (exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+			triggerServerEvent("driftClienteListo", resourceRoot)
+		end
 	end
 )
 
@@ -112,29 +82,30 @@ function showText()
 	end
 	size = size + modo
 	
+	if (localPlayer.team.name ~= "Criminals") then
+		return
+	end
+	
+	
 	tick = getTickCount()
 	local angulo,velocidad = angle()
 	local tempBool = tick - (idleTime or 0) < 750
 	if not tempBool and score ~= 0 then
+			
 		local cash = 0
-		if (score > mejor) then
-			if (score <= 1000) then
-				cash = cash + 100
-			else
-				cash = cash + 1000
-			end
+		if (not mejor) then
+			mejor = 0
 		end
-		cash = cash + 25
-		triggerServerEvent("updatecash", resourceRoot, cash)
 		
 		if (score > mejor) then
 			mejor = score
 			-- setElementData(player, "Best Drift", mejor)
 			-- Set the player's max drift to this
-			triggerServerEvent("UCDdrift.setPlayerBestDrift", resourceRoot, mejor)
+			triggerLatentServerEvent("UCDdrift.setPlayerBestDrift", resourceRoot, mejor)
 		end
 		triggerEvent("onVehicleDriftEnd", resourceRoot, tick-driftTime - 750)
-		triggerServerEvent("UCDdrift.addPlayerTotalDrift", resourceRoot, score)
+		triggerLatentServerEvent("UCDdrift.addPlayerTotalDrift", resourceRoot, score)
+		triggerLatentServerEvent("UCDdrift.onPlayerFinishDrift", resourceRoot)
 		score = 0
 	end
 	
@@ -155,11 +126,14 @@ function showText()
 		idleTime = tick
 	end
 	
-	local temp2 = string.format("Factor: X%d\n%s",mult,mult~=5 and string.format("Gain X%d with %d",mult+1,tablamult[mult]) or "MAX")
-	dxDrawText(temp2, 20,195,screenWidth,screenHeight, Yellow, 1.2, "sans","left","top", false,true,false)
+	if (isPlayerMapVisible()) then return end
+	
+	--local temp2 = string.format("Factor: X%d\n%s",mult,mult~=5 and string.format("Gain X%d with %d",mult+1,tablamult[mult]) or "MAX")
+	--dxDrawText(temp2, 20,195,screenWidth,screenHeight, Yellow, 1.2, "sans","left","top", false,true,false)
 	
 	if velocidad <= 0.3 and mult ~= 1 then
-		dxDrawText("\n\nToo Slow!", 20,195,screenWidth,screenHeight, Yellow, 1.2, "sans","left","top", false,true,false)
+		--dxDrawText("\n\nToo Slow!", 20,195,screenWidth,screenHeight, Yellow, 1.2, "sans","left","top", false,true,false)
+		exports.UCDdx:add("drift", "Drift: Too slow!", 200, 0, 0)
 	end
 	
 	if tick - (idleTime or 0) < 3000 then
@@ -179,8 +153,11 @@ function showText()
 		elseif score >= 1000 then
 			temp = "DRIFT\n\nGood Drift!"
 		end
-		dxDrawText(temp, x1,y1,x2,y2, TempCol, 2.2, "sans","center","top", false,true,false)
-		dxDrawText(string.format("\n%d",screenScore),  x1,y1-10,x2,y2, TempCol, size+0.15, "pricedown","center","top", false,true,false)
+		--dxDrawText(temp, x1,y1,x2,y2, TempCol, 2.2, "sans","center","top", false,true,false)
+		--dxDrawText(string.format("\n%d",screenScore),  x1,y1-10,x2,y2, TempCol, size+0.15, "pricedown","center","top", false,true,false)
+		exports.UCDdx:add("drift", "Drift: "..tostring(exports.UCDutil:tocomma(screenScore)), 200, 0, 0)
+	else
+		exports.UCDdx:del("drift")
 	end
 end
 

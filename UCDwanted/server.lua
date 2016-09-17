@@ -29,6 +29,9 @@ function addWantedPoints(plr, wp)
 		end
 		setWantedPoints(plr, wantedPoints[a] + wp)
 		exports.UCDstats:setPlayerAccountStat(plr, "lifetimeWanted", exports.UCDstats:getPlayerAccountStat(plr, "lifetimeWanted") + wp)
+		if (math.floor(wp / 2) > 0) then
+			exports.UCDaccounts:SAD(plr, "crimXP", exports.UCDaccounts:GAD(plr, "crimXP") + math.floor(wp / 2))
+		end
 		return true
 	end
 end
@@ -64,13 +67,13 @@ function onPlayerWPChange(wp)
 	-- Stars
 	if (wp > 0 and wp <= 10) then
 		source.wantedLevel = 1
-	elseif (wp > 10 and wp <= 20) then
+	elseif (wp > 10 and wp < 20) then
 		source.wantedLevel = 2
-	elseif (wp > 20 and wp <= 30) then
+	elseif (wp >= 20 and wp < 30) then
 		source.wantedLevel = 3
-	elseif (wp > 30 and wp <= 40) then
+	elseif (wp >= 30 and wp < 40) then
 		source.wantedLevel = 4
-	elseif (wp > 40 and wp <= 50) then
+	elseif (wp >= 40 and wp < 50) then
 		source.wantedLevel = 5
 	elseif (wp > 50) then
 		--if (source.wantedLevel ~= 60) then
@@ -92,6 +95,31 @@ function onPlayerWPChange(wp)
 			exports.UCDjobs:setPlayerJob(source, "Criminal")
 		end
 	end
+	if (wp > 0) then
+		exports.UCDdx:add(source, "wp", "Wanted Points: "..wp, 255, 0, 0)
+	else
+		exports.UCDdx:del(source, "wp")
+	end
 end
 addEvent("onPlayerWPChange")
 addEventHandler("onPlayerWPChange", root, onPlayerWPChange)
+
+addEventHandler("onPlayerChangeNick", root,
+	function ()
+		if (getWantedPoints(source) and getWantedPoints(source) > 0) then
+			source.nametagText = "["..tostring(source.wantedLevel).."] "..tostring(source.name)
+		end
+	end
+)
+
+Timer(
+	function ()
+		for _, plr in ipairs(Element.getAllByType("player")) do
+			if (getWantedPoints(plr) and not exports.UCDlaw:isPlayerArrested(plr)) then
+				if (getWantedPoints(plr) > 0) then
+					setWantedPoints(plr, getWantedPoints(plr) - 1)
+				end
+			end
+		end
+	end, 60 * 1000, 0
+)

@@ -212,8 +212,12 @@ addEventHandler("UCDlaw.onFinishEscorting", root, onFinishEscorting)
 function arrest(plr, cop, killArrest)
 	local wp = exports.UCDwanted:getWantedPoints(plr)
 	local payment = calculatePayment(wp)
-	local duration = wp * plr.wantedLevel
-	duration = duration - math.floor(duration / 4)
+	
+	local duration = wp * 6
+	--duration = duration - math.floor(duration / 4)
+	if (duration == 0) then
+		return
+	end
 	
 	cop.money = cop.money + payment
 	exports.UCDdx:new(cop, "You "..tostring(killArrest and "kill " or "").."arrested "..tostring(plr.name).." for "..tostring(exports.UCDutil:tocomma(duration)).." seconds and earned $"..tostring(exports.UCDutil:tocomma(payment)).." and "..tostring(wp).." AP", 30, 144, 255)

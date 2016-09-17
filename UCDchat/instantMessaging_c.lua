@@ -57,7 +57,7 @@ function instantMessage(_, target, ...)
 		
 		if (recipient.name == localPlayer.name) then exports.UCDdx:new("You cannot send an IM to yourself", 255, 0, 0) return end
 		
-        outputChatBox("[IM to "..recipient.name.."]#FFFFFF "..msg, 255, 174, 0, true)
+        outputChatBox("[IM to "..recipient.name.."] "..msg, 250, 60, 60, true)
 		
 		-- source = player who got the msg, plr = player who sent it, msg = the message sent
 		triggerEvent("onPlayerReceiveIM", recipient, localPlayer, msg)
@@ -82,6 +82,7 @@ addEventHandler("UCDchat.onSendIMFromPhone", root,
 )
 
 function cacheLastSender(plr)
+	Sound.playFrontEnd(1)
 	lastMsg = plr
 end
 addEvent("UCDchat.cacheLastSender", true)

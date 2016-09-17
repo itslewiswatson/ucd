@@ -48,10 +48,11 @@ GUIEditor = {gridlist = {}, window = {}, button = {}, label = {}}
 function updateVehicleGrid(vehicleID)
 	if (not vehicleID) then return end
 	outputDebugString("Updating grid for vehicleID = "..vehicleID)
-	if (not rows[vehicleID]) then
-		rows[vehicleID] = guiGridListAddRow(GUIEditor.gridlist[1]) -- make oop
-	end
-	local row = rows[vehicleID]
+	--if (not rows[vehicleID]) then
+	--	rows[vehicleID] = guiGridListAddRow(GUIEditor.gridlist[1]) -- make oop
+	--end
+	--local row = rows[vehicleID]
+	local row
 	
 	if (idToVehicle[vehicleID]) then
 		local vehicleEle = idToVehicle[vehicleID]
@@ -66,12 +67,17 @@ function updateVehicleGrid(vehicleID)
 	
 	for i = 0, guiGridListGetRowCount(GUIEditor.gridlist[1]) - 1 do
 		if (guiGridListGetItemData(GUIEditor.gridlist[1], i, 1) == vehicleID) then
+			row = i
 			if (idToVehicle[vehicleID]) then
 				guiGridListSetItemColor(GUIEditor.gridlist[1], i, 1, 0, 200, 200)
 			else
 				guiGridListSetItemColor(GUIEditor.gridlist[1], i, 1, 255, 255, 255)
 			end
+			break
 		end
+	end
+	if (not row) then
+		row = guiGridListAddRow(GUIEditor.gridlist[1])
 	end
 	
 	if (health <= 40) then
@@ -122,7 +128,7 @@ addEventHandler("onClientRender", root, updateConstant)
 function populateGridList()
 	guiGridListClear(GUIEditor.gridlist[1])
 	for i, v in pairs(vehicles) do
-		if (v.ownerID == localPlayer:getData("accountID")) then
+		if (v.owner == localPlayer:getData("accountName")) then
 			updateVehicleGrid(i)
 		end
 	end
@@ -246,7 +252,7 @@ function handleInput(button, state)
 				else
 					-- Create blip for vehicle
 					local vehicle = idToVehicle[vehicleID]
-					blip[vehicleID] = createBlipAttachedTo(vehicle, 55)
+					blip[vehicleID] = createBlipAttachedTo(vehicle, 11)
 				end
 			end
 		elseif (source == GUIEditor.button[3]) then

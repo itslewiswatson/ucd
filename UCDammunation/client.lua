@@ -8,6 +8,8 @@ local buttonToID = {
 --	[22] = 1, [23] = 2, [24] = 3, [25] = 4, [26] = 5, [27] = 6, [30] = 7, [31] = 8, [28] = 9, [32] = 10, [29] = 11, [33] = 12, [34] = 13, [38] = 14,
 --}
 
+local robbery = false
+
 function updateGUI(t)
 	local temp = {}
 	for x, y in pairs(t) do
@@ -201,6 +203,7 @@ addEventHandler("onClientResourceStart", resourceRoot, createGUI)
 function toggleGUI(tbl)
 	ammuGUI.window.visible = not ammuGUI.window.visible
 	showCursor(ammuGUI.window.visible)
+	guiSetInputMode(ammuGUI.window.visible and "no_binds_when_editing" or "allow_binds")
 	if (tbl and type(tbl) == "table") then
 		updateGUI(tbl)
 	end
@@ -231,7 +234,11 @@ function onClickAmmoBuy()
 	if (ammo and tonumber(ammo)) then
 		local amount = prices[ammo_weapon_id][2] * ammo
 		if (amount > localPlayer:getMoney()) then
-			exports.UCDdx:new(client, "You cannot afford to purchase this much ammo", 255, 0, 0)
+			exports.UCDdx:new("You cannot afford to purchase this much ammo", 255, 0, 0)
+			return
+		end
+		if (robbery) then
+			exports.UCDdx:new("You can't buy ammo while you're robbing the ammunation!", 255, 0, 0)
 			return
 		end
 		triggerServerEvent("UCDammunation.buyAmmo", localPlayer, ammo_weapon_id, ammo)
@@ -271,7 +278,12 @@ function handleClick()
 				exports.UCDdx:new("You cannot afford to purchase this weapon", 255, 0, 0)
 				return
 			end
-			
+			if (robbery) then
+				exports.UCDdx:new("You can't purchase a weapon while you're robbing the ammunation!", 255, 0, 0)
+				return
+			else
+				
+			end
 			local wepName = getWeaponNameFromID(buttonToID[btnIndex])
 			if (wepName == "Combat Shotgun") then
 				wepName = "SPAS-12"

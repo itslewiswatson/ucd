@@ -4,7 +4,7 @@ window.visible = false
 window.alpha = 1
 local screen_width, screen_height = guiGetScreenSize()
 window:setPosition((screen_width-614)/2, (screen_height-376)/2, false)
-local cursor = false
+local openType = "source"
 
 players_grid = GuiGridList(9, 25, 187, 281, false, window)
 players_grid:addColumn("Player:", 0.9)
@@ -18,24 +18,11 @@ remove_button = GuiButton(213, 316, 187, 46, "Remove player from job", false, wi
 cancel_button = GuiButton(416, 316, 187, 46, "Cancel", false, window)
 
 local jobs = exports.UCDjobsTable:getJobTable()
---[[
-{
-	["Gangster"] = false,
-	["Criminal"] = false,
-	["Aviator"] = {[61] = "Male Aviator", [66] = "Female Aviator"},
-	["Trucker"] = {128, 133, 201, 202, 206},
-	["Prostitute"] = {63, 64, 75, 85, 152, 207, 237, 238, 243, 245, 87, 244, 246,  256, 257},
-	["Mechanic"] = {50, 268, 305},
-	["Paramedic"] = {[275] = "Female Medic", [274] = "Male Medic 1", [276] = "Made Medic 2"},
-	["Iron Miner"] = {27, 153, 260},
-	["Police Officer"] = {[280] = "LSPD Officer", [281] = "SFPD Officer", [282] = "LVPD Officer", [283] = "County Sheriff", [288] = "Desert Sheriff"},
-	["Traffic Officer"] = 284,
-	["Detective"] = {[165] = "Agent K", [166] = "Agent J"}
-}
-]]
 
 for name, skins in pairs(jobs) do -- Insert all jobs into gridlist
-	jobs_grid:setItemText(jobs_grid:addRow(), 1, name, false, false)
+	if (#name > 0) then
+		jobs_grid:setItemText(jobs_grid:addRow(), 1, name, false, false)
+	end
 end
 
 for _, player in ipairs(Element.getAllByType("player")) do -- Insert all players into gridlist
@@ -44,25 +31,32 @@ end
 
 function requestOpenGUI()
 	window.visible = not window.visible
-	showCursor(not cursor)
-	cursor = not cursor
+	showCursor(window.visible)
+	openType = "source"
 end
 addEvent("onOpenGUIRequest", true)
 addEventHandler("onOpenGUIRequest", resourceRoot, requestOpenGUI)
 
-function connect_quit() -- Keep the players gridlist up-to-date
+function connect_quit_change_nick(oldNick, newNick) -- Keep the players gridlist up-to-date
 	if (eventName == "onClientPlayerJoin") then
 		players_grid:setItemText(players_grid:addRow(), 1, source.name, false, false)
-	else
+	elseif (eventName == "onClientPlayerQuit") then
 		for i = 1, players_grid.rowCount do
 			if (players_grid:getItemText(i, 1) == source.name) then
 				players_grid:removeRow(i)
 			end
 		end
+	elseif (eventName == "onClientPlayerChangeNick") then
+		for i = 0, players_grid.rowCount do
+			if (players_grid:getItemText(i, 1) == oldNick) then
+				players_grid:setItemText(i, 1, newNick, false, false)
+			end
+		end
 	end
 end
-addEventHandler("onClientPlayerJoin", root, connect_quit)
-addEventHandler("onClientPlayerQuit", root, connect_quit)
+addEventHandler("onClientPlayerJoin", root, connect_quit_change_nick)
+addEventHandler("onClientPlayerQuit", root, connect_quit_change_nick)
+addEventHandler("onClientPlayerChangeNick", root, connect_quit_change_nick)
 
 addEventHandler("onClientGUIClick", root,
 	function(button, state)
@@ -85,6 +79,9 @@ addEventHandler("onClientGUIClick", root,
 			end
 		elseif (source == cancel_button) then
 			window:setVisible(false)
+			if (openType == "source") then
+				showCursor(false)
+			end
 		elseif (source == set_button or source == remove_button) then
 			local player = Player(players_grid:getItemText(players_grid:getSelectedItem()))
 			if (player) then
@@ -109,3 +106,17 @@ addEventHandler("onClientGUIClick", root,
 		end
 	end
 )
+
+function openGUIPlayer(player)
+	window:setVisible(true)
+	guiBringToFront(window)
+	showCursor(true)
+	openType = "admin panel"
+	for i = 1, players_grid.rowCount do
+		if (players_grid:getItemText(i, 1) == player.name) then
+			players_grid:setSelectedItem(i, 1)
+		end
+	end
+end
+addEvent("UCDadmin.setjob.openGUI", true)
+addEventHandler("UCDadmin.setjob.openGUI", resourceRoot, openGUIPlayer)

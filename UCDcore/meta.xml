@@ -1,4 +1,5 @@
 <meta>
+	<min_mta_version server="1.5.2" client="1.5.2"/>
 	<info author="Noki" version="1" name="core" type="script" />
 	<script src="core.lua" type="server" />
 	<script src="c_core.lua" type="client" />

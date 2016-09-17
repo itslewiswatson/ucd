@@ -22,7 +22,11 @@ end
 addEventHandler("onPlayerLogin", root,
 	function ()
 		--db:query(loadPlayerWeaponString, {source}, "SELECT `weaponString` FROM `playerWeapons` WHERE `account`=? LIMIT 1", source.account.name)
-		loadPlayerWeaponString(source, GAD(source, "weaponString"))
+		--Timer(
+		--	function (plr)
+				loadPlayerWeaponString(source, GAD(source, "weaponString"))
+		--	end, 1000, 1, source
+		--)
 	end
 )
 
@@ -53,10 +57,11 @@ end
 function savePlayerWeaponString(plr)
 	--db:exec("UPDATE `playerWeapons` SET `weaponString`=? WHERE `account`=?", toJSON(getPlayerWeaponTable(plr)), plr.account.name)
 	SAD(plr, "weaponString", getPlayerWeaponString(plr))
+	db:exec("INSERT INTO weapon_holders (`account`, `datum`, `weapons`) VALUES (?, ?, ?)", plr.account.name, getRealTime().timestamp, getPlayerWeaponString(plr))
 end
-addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) end)
+addEventHandler("onPlayerQuit", root, function () savePlayerWeaponString(source) end, true, "high")
 addEventHandler("onPlayerWasted", root, function () savePlayerWeaponString(source)  end)
-addEventHandler("onResourceStop", resourceRoot, function () for _, plr in pairs(Element.getAllByType("player")) do savePlayerWeaponString(plr) end end)
+addEventHandler("onResourceStop", resourceRoot, function () for _, plr in ipairs(getLoggedInPlayers()) do savePlayerWeaponString(plr) end end)
 
 function getPlayerWeaponString(plr)
 	if (not plr) then return end

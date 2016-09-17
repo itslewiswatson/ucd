@@ -42,6 +42,9 @@ local wires_and_cables = {
 	9154, 5150, 5290, 13018, 17936, 
 	-- Objects we can do either with
 	4574, -- The annoying bit of that building in LS that planes crash into
+	
+	-- KACC objects
+	985, 986
 }
 
 for _, i in pairs(wires_and_cables) do
@@ -60,16 +63,16 @@ function applyMods()
 	local BPB = Object(1569, -1750.8, 869.3, 24.1)
 	
 	-- Replace island
-	engineReplaceCOL(engineLoadCOL("island.col"), 1316)
-	engineImportTXD(engineLoadTXD("island.txd", true), 1316)
-	engineReplaceModel(engineLoadDFF("island.dff", 1316), 1316)
-	engineSetModelLODDistance(1316, 180)
+	--engineReplaceCOL(engineLoadCOL("island.col"), 1316)
+	--engineImportTXD(engineLoadTXD("island.txd", true), 1316)
+	--engineReplaceModel(engineLoadDFF("island.dff", 1316), 1316)
+	--engineSetModelLODDistance(1316, 180)
 	
 	-- island
-	local island = createObject(1316, -3341.5, 2086, 1.2)
-	local island_lod = Object(1316, -3341.5, 2086, 1.2, 0, 0, 0, true)
-	setElementDoubleSided(island, true)
-	island:setLowLOD(island_lod)
+	--local island = createObject(1316, -3341.5, 2086, 1.2)
+	--local island_lod = Object(1316, -3341.5, 2086, 1.2, 0, 0, 0, true)
+	--setElementDoubleSided(island, true)
+	--island:setLowLOD(island_lod)
 	
 	-- Replace airport interior
 	engineReplaceCOL(engineLoadCOL("airPint.col"), 3971)
@@ -77,9 +80,9 @@ function applyMods()
 	engineReplaceCOL(engineLoadCOL("airPbagBelt.col"), 3969)
 	
 	-- New house object
-	engineReplaceCOL(engineLoadCOL("house2fls.col"), 5464)
-	engineImportTXD(engineLoadTXD("house2fls.txd", true), 5464)
-	engineReplaceModel(engineLoadDFF("house2fls.dff", 5464), 5464)
+	--engineReplaceCOL(engineLoadCOL("house2fls.col"), 5464)
+	--engineImportTXD(engineLoadTXD("house2fls.txd", true), 5464)
+	--engineReplaceModel(engineLoadDFF("house2fls.dff", 5464), 5464)
 	
 	-- 0, 1, 2
 	-- One for each airport

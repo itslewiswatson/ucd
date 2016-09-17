@@ -130,15 +130,15 @@ addEventHandler("UCDphone.appendMessage", root, IM.appendMessage)
 
 function IM.onReceivedFriendsList(list)
 	phone.im.gridlist["friends"]:clear()
-	for _, info in pairs(list) do
+	for _, info in ipairs(list) do
 		local row = guiGridListAddRow(phone.im.gridlist["friends"])
 		IM.f2a[row] = info
 		guiGridListSetItemText(phone.im.gridlist["friends"], row, 1, tostring(info[1]), false, false)
 		if (info[2]) then
 			guiGridListSetItemColor(phone.im.gridlist["friends"], row, 1, 0, 255, 0)
-			return
+		else
+			guiGridListSetItemColor(phone.im.gridlist["friends"], row, 1, 255, 0, 0)
 		end
-		guiGridListSetItemColor(phone.im.gridlist["friends"], row, 1, 255, 0, 0)
 	end
 end
 addEvent("UCDphone.sendFriends", true)
@@ -194,8 +194,8 @@ addEventHandler("onClientPlayerLogin", root,
 		for i = 0, guiGridListGetRowCount(phone.im.gridlist["friends"]) - 1 do
 			local r, g, b = guiGridListGetItemColor(phone.im.gridlist["friends"], i, 1)
 			local text = guiGridListGetItemText(phone.im.gridlist["friends"], i, 1)
-			text = gettok(text, 2, " ")
-			text = text:gsub("%)", "")
+			text = tostring(gettok(text, 2, " "))
+			text = tostring(text:gsub("%)", ""))
 			if (text == accName and r == 255 and g == 0 and b == 0) then
 				guiGridListSetItemText(phone.im.gridlist["friends"], i, 1, source.name, false, false)
 				guiGridListSetItemColor(phone.im.gridlist["friends"], i, 1, 0, 255, 0)

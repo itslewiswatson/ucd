@@ -184,3 +184,27 @@ function getOnlineTimeString(seconds)
 	end
 	return str
 end
+
+local blips = {}
+
+function refreshBlips(dataName)
+	if (eventName == "onClientElementDataChange" and dataName ~= "group") then return end
+	for _, blip in ipairs(blips) do
+		if (isElement(blip)) then
+			destroyElement(blip)
+		end
+	end
+	for _, plr in ipairs(getElementsByType("player")) do
+		if (plr ~= localPlayer) then
+			local locGroup = getElementData(localPlayer, "group")
+			local plrGroup = getElementData(plr, "group")
+			if (locGroup and locGroup == plrGroup) then
+				table.insert(blips, createBlipAttachedTo(plr, 60))
+			end
+		end
+	end
+end
+addEventHandler("onClientResourceStart", resourceRoot, refreshBlips)
+addEventHandler("onClientPlayerJoin", root, refreshBlips)
+addEventHandler("onClientElementDataChange", root, refreshBlips)
+addEventHandler("onClientPlayerQuit", root, refreshBlips)

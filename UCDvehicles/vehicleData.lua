@@ -9,6 +9,7 @@
 
 vehicles = {}
 
+--[[
 function syncVehicleTable(id, sync)
 	if (not sync) then outputDebugString("Table not sent.") return end
 	
@@ -21,6 +22,28 @@ function syncVehicleTable(id, sync)
 	end
 	
 	updateVehicleGrid(id)
+end
+addEvent("UCDvehicles.syncVehicleTable", true)
+addEventHandler("UCDvehicles.syncVehicleTable", root, syncVehicleTable)
+--]]
+
+function syncVehicleTable(data)
+	if (not data) then outputDebugString("Table not sent.") return end
+
+	GUIEditor.gridlist[1]:clear()
+	
+	for id, sync in pairs(data) do
+		vehicles[id] = sync
+		
+		if (not vehicles[id]) then
+			outputDebugString("Table is empty.")
+		else
+			outputDebugString("Successfully synced vehicle data for vehicleID = "..id)
+		end
+		
+		updateVehicleGrid(id)
+	end
+	--populateGridList()
 end
 addEvent("UCDvehicles.syncVehicleTable", true)
 addEventHandler("UCDvehicles.syncVehicleTable", root, syncVehicleTable)

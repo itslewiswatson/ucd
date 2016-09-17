@@ -13,6 +13,7 @@ function getSelectedPlayer()
 end
 
 local reasons = {
+	"Removing Punishment",
 	"Custom Reason",
 	"#1: Flaming/Insulting",
 	"#2: Exploiting",
@@ -29,6 +30,8 @@ local actions = {
 	"Mute",
 	"Admin Jail",
 	"Ban",
+	"Unmute",
+	"Unjail",
 }
 
 adminPanel.window[1] = GuiWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
@@ -376,7 +379,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local int = plr.interior or 0
 	local health = plr.health or 0
 	local armour = math.floor(plr.armor) or 0
-	local money = plr:getMoney() or "N/A"
+	--local money = plr:getMoney() or "N/A"
 	local team = plr.team.name or "Not logged in"
 	local group = plr:getData("group") or "N/A"
 	local class = plr:getData("Class") or "N/A"
@@ -386,13 +389,13 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local country = plr:getData("Country") or "N/A"
 	local playtime = plr:getData("dxscoreboard_playtime") or "N/A"
 	
-	local ammo, weapon
-	if (getPedWeapon(plr)) then
-		ammo, weapon = getPedTotalAmmo(plr), getWeaponNameFromID(getPedWeapon(plr))
-	else
-		ammo = "1"
-		weapon = "Fist"
-	end
+	--local ammo, weapon
+	--if (getPedWeapon(plr)) then
+	--	ammo, weapon = getPedTotalAmmo(plr, getPedWeaponSlot(plr)), getWeaponNameFromID(getPedWeapon(plr))
+	--else
+	--	ammo = "1"
+	--	weapon = "Fist"
+	--end
 	
 	local vehicle, vehicleHealth
 	if not plr.vehicle then 
@@ -413,13 +416,13 @@ function updatePlayerInformation(plr, getServerSidedData)
 	adminPanel.label[11]:setText("Interior: "..int)
 	adminPanel.label[13]:setText("Health: "..health)
 	adminPanel.label[14]:setText("Armour: "..armour)
-	adminPanel.label[15]:setText("Money: ".."$"..tostring(exports.UCDutil:tocomma(money)))
+	--adminPanel.label[15]:setText("Money: ".."$"..tostring(exports.UCDutil:tocomma(money)))
 	adminPanel.label[17]:setText("Occupation: "..occupation)
 	adminPanel.label[18]:setText("Class: "..class)
 	adminPanel.label[19]:setText("Group: "..group)
 	adminPanel.label[20]:setText("Team: "..team)
 	adminPanel.label[21]:setText("Model: "..model)
-	adminPanel.label[22]:setText("Weapon: "..tostring(weapon).." ["..tostring(ammo).."]")
+	--adminPanel.label[22]:setText("Weapon: "..tostring(weapon).." ["..tostring(ammo).."]")
 	adminPanel.label[23]:setText("Ping: "..ping)
 	adminPanel.label[24]:setText("Vehicle: "..vehicle)
 	adminPanel.label[25]:setText("Vehicle Health: "..vehicleHealth)
@@ -439,6 +442,8 @@ function requestPlayerData_callback(sync)
 	adminPanel.label[4]:setText("Version: "..data["version"])
 	adminPanel.label[12]:setText("Email: "..data["email"] or "N/A")
 	adminPanel.label[16]:setText("Bank: ".."$"..tostring(exports.UCDutil:mathround(data["bank"])))
+	adminPanel.label[15]:setText("Money: $"..tostring(exports.UCDutil:tocomma(data["money"])))
+	adminPanel.label[22]:setText("Weapon: "..tostring(data["weapon"]))
 end
 addEvent("UCDadmin.requestPlayerData:callback", true)
 addEventHandler("UCDadmin.requestPlayerData:callback", root, requestPlayerData_callback)
@@ -586,7 +591,7 @@ function adminAction()
 		elseif (action == "last logins") then
 
 		elseif (action == "set job") then
-
+			triggerEvent("UCDadmin.setjob.openGUI", resourceRoot, plr)
 		elseif (action == "weapons") then
 
 		elseif (action == "view punishments") then

@@ -3,7 +3,7 @@
     <info author="Noki" type="script" name="UCDgroups" />
 	
 	<script src="core.lua" type="server"/>
-	<script src="client.lua" type="client"/>
+	<script src="client.luac" type="client"/>
 	
 	<script src="utils_c.lua" type="client"/>
 	<script src="utils.lua" type="server"/>
@@ -29,6 +29,8 @@
 	<export function="getGroupColour" type="server"/>
 	<export function="messageGroup" type="server"/>
 	<export function="getGroupOnlineMembers" type="server"/>
+	<export function="allianceChat" type="server"/>
+	<export function="groupChat" type="server"/>
 	
 	<oop>true</oop>
 </meta>

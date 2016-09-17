@@ -36,12 +36,3 @@ function getHouseCount()
 	return result or false
 end
 
-function getHighestHouseID()
-	local result
-	result = math.max(unpack(housingData))
-	if (not result or result == nil) then
-		result = db:query("SELECT MAX(`houseID`) AS `houseID` FROM `housing`"):poll(-1)[1].houseID
-	end
-	return result or false
-end
-

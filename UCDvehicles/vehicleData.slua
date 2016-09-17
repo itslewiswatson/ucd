@@ -60,16 +60,30 @@ function getVehicleData(vehicleID, column)
 end
 
 function syncSpecific(plr, vehicleID, data)
-	triggerLatentClientEvent(plr, "UCDvehicles.syncVehicleTable", plr, vehicleID, data)
-	outputDebugString("Got sync request. Sending data for vehicleID = "..vehicleID.." client-side.")
+	--triggerLatentClientEvent(plr, "UCDvehicles.syncVehicleTable", plr, vehicleID, data)
+	--outputDebugString("Got sync request. Sending data for vehicleID = "..vehicleID.." client-side.")
+	--if (plr.name ~= "[UCD]Noki") then
+	--	return
+	--end
+	outputDebugString("Got sync request. Sending vehicle data client-side.")
+	local temp = {}
+	for i, vehicleData in pairs(vehicles) do
+		if (vehicleData.owner == plr.account.name) then
+			temp[i] = vehicleData
+		end
+	end
+	triggerLatentClientEvent(plr, "UCDvehicles.syncVehicleTable", plr, temp)
 end
 function syncVehicleTable(plr)
 	--local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
+	--[[
 	for i, vehicleData in pairs(vehicles) do
 		if (vehicleData.owner == plr.account.name) then
 			syncSpecific(plr, i, vehicleData)
 		end
 	end
+	--]]
+	syncSpecific(plr)
 end
 addEvent("UCDvehicles.requestVehicleTableSync", true)
 addEventHandler("UCDvehicles.requestVehicleTableSync", root, function () syncVehicleTable(source) end)
@@ -82,7 +96,7 @@ function forceSync(plr)
 			temp[i] = vehicleData
 		end
 	end
-	triggerLatentClientEvent(plr, "UCDvehicles.forceSync", plr, temp)
+	--triggerLatentClientEvent(plr, "UCDvehicles.forceSync", plr, temp)
 end
 
 function getPlayerVehicleTable(plr)

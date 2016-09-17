@@ -192,7 +192,7 @@ end
 
 function createGroup(name)
 	local groupName = name
-	if (client and name) then
+	if (client and groupName) then
 		if (getPlayerGroup(client)) then
 			exports.UCDdx:new(client, "You cannot create a group because you are already in one. Leave your current group first.", 255, 0, 0)
 			return false
@@ -202,24 +202,24 @@ function createGroup(name)
 			return
 		end
 		for g, row in pairs(groupTable) do
-			if (g == name) then
+			if (g == groupName) then
 				exports.UCDdx:new("A group with this name already exists", 255, 0, 0)
 				return false
 			end
-			if (g:lower() == name:lower()) then
-				exports.UCDdx:new("A group with this name, but in different case, already exists", 255, 0, 0)
+			if (g:lower() == groupName:lower()) then
+				exports.UCDdx:new("A group with this name, but with different case, already exists", 255, 0, 0)
 				return false
 			end
 		end
 		for type_, row in pairs(forbidden) do
 			for _, chars in pairs(row) do
 				if type_ == "whole" then
-					if (name == chars) then
+					if (groupName == chars) then
 						exports.UCDdx:new(client, "The specified group name is prohibited. If you believe this is a mistake, please notify an administrator.", 255, 0, 0)
 						return false
 					end
 				else
-					if (name:lower():find(chars)) then
+					if (groupName:lower():find(chars)) then
 						exports.UCDdx:new(client, "The specified group name contains forbidden phrases or characters. If you believe this is a mistake, please notify an administrator.", 255, 0, 0)
 						return false
 					end
@@ -630,7 +630,7 @@ function kickMember(accName, reason)
 	if (client and accName and reason) then
 		local group_ = getPlayerGroup(client)
 		local acc = Account(accName)
-		
+		outputDebugString("kickMember > accName = "..tostring(accName))
 		local clientRank = getPlayerGroupRank(client)
 		local plrRank = playerGroupCache[accName][3]
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
@@ -990,6 +990,11 @@ function groupChat(plr, _, ...)
 	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr)) then
 		local msg = table.concat({...}, " ")
 		messageGroup(getPlayerGroup(plr), "("..tostring(getPlayerGroup(plr))..") "..plr.name.." #FFFFFF"..msg, "chat")
+		for _, plr2 in ipairs(Element.getAllByType("player")) do
+			if (getPlayerGroup(plr2) == getPlayerGroup(plr)) then
+				exports.UCDchat:listInsert(plr2, "group", plr, msg)
+			end
+		end
 	end
 end
 addCommandHandler("gc", groupChat, false, false)
@@ -1100,7 +1105,7 @@ function toggleGUI(update)
 		memberCount = "N"
 		groupSlots = "A"
 	else
-		memberCount = #groupMembers[groupName]
+		memberCount = #groupMembers[groupName] or 0
 		groupSlots = 50
 		created = groupTable[groupName].created or "N/A"
 	end
@@ -1344,8 +1349,8 @@ function requestGroupsForPD(demote, account)
 				exports.UCDdx:new(client, "Ranks are currently being edited - you cannot warn, promote, demote or kick right now", 255, 0, 0)
 				return
 			end
-			
-			local rank = playerGroupCache[account][3]
+			outputDebugString(account)
+			local rank = playerGroupCache[tostring(account)][3]
 			if (demote == true) then
 				if (not canPlayerDoActionInGroup(client, "demote")) then
 					exports.UCDdx:new(client, "You are not allowed to demote members", 255, 0, 0)
@@ -2071,3 +2076,29 @@ function handleAllianceInvite(alliance_, state)
 end
 addEvent("UCDgroups.alliance.handleInvite", true)
 addEventHandler("UCDgroups.alliance.handleInvite", root, handleAllianceInvite)
+
+function allianceChat(plr, _, ...)
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then return end
+	local msg = table.concat({...}, " ")
+	if (msg:gsub(" ", "") == "") then
+		exports.UCDdx:new(plr, "Enter a message!", 255, 0, 0)
+	end
+	if (exports.UCDaccounts:isPlayerLoggedIn(plr) and getPlayerGroup(plr)) then
+		local alliance = g_alliance[getPlayerGroup(plr)]
+		if (not alliance) then
+			exports.UCDdx:new(plr, "Your group is not in an alliance", 255, 0, 0)
+			return
+		end
+		for groupName in pairs(allianceMembers[alliance]) do
+			--messageGroup(groupName, "("..tostring(g_alliance[getPlayerGroup(plr)])..") "..plr.name.." #FFFFFF"..msg, "chat")
+			for _, plr2 in ipairs(getGroupOnlineMembers(groupName)) do
+				outputChatBox("("..tostring(alliance)..") "..plr.name.." #FFFFFF"..msg, plr2, 50, 100, 0, true)
+				exports.UCDchat:listInsert(plr2, "alliance", plr, msg)
+			end
+		end
+	end
+end
+addCommandHandler("ac", allianceChat, false, false)
+addCommandHandler("alliancec", allianceChat, false, false)
+addCommandHandler("achat", allianceChat, false, false)
+addCommandHandler("alliancechat", allianceChat, false, false)

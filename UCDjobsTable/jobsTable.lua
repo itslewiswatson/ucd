@@ -119,16 +119,16 @@ local jobsTable =
 		measurement = "HP",
 		desc = "A paramedic's job is to heal the people of San Andreas. \nA paramedic is given both helicopters and\n ambulances to be the first responders to an ordeal. \nTo heal players, a paramedic must be still and within one \nmetre of the patient they want to heal. \n\nA paramedic has a centralized computer to see the status \nof people that require healing around SA. This is accessed \nusing the F5 key when on-duty.",
 	},
-	["Iron Miner"] = 
+	["Quarry Miner"] = 
 	{
 		team = "Citizens",
 		markers = 
 		{
-			{x = 590.1082, y = 870.6659, z = -42.4973, interior = 0, dimension = 0},
+			--{x = 590.1082, y = 870.6659, z = -42.4973, interior = 0, dimension = 0},
 		},
 		skins = 
 		{
-			{},
+			{27, "Miner"},
 		},
 		colour = {r = 255, g = 215, b = 0},
 		blipID = 56,
@@ -204,18 +204,18 @@ local jobsRanks =
 		-- 0 - 2 = blue, 3 - 5 = yellow, 6 - 8 = green, 9 - 10 = red
 		[0] = {name = "Student Pilot", bonus = 0, req = 0, colour = {r1 = 0, g1 = 0, b1 = 255, r2 = 255, g2 = 255, b2 = 255}}, -- Blue
 		[1] = {name = "Amateur Aviator", bonus = 15, req = 30, colour = {r1 = 0, g1 = 0, b1 = 255, r2 = 255, g2 = 255, b2 = 255}}, -- Blue
-		[2] = {name = "Licensed Aviator", bonus = 25, req = 75, colour = {r1 = 0, g1 = 0, b1 = 255, r2 = 0, g2 = 0, b2 = 255}}, -- Blue
+		[2] = {name = "Licensed Aviator", bonus = 25, req = 90, colour = {r1 = 0, g1 = 0, b1 = 255, r2 = 0, g2 = 0, b2 = 255}}, -- Blue
 		
-		[3] = {name = "Competent Aviator", bonus = 40, req = 150, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Yellow
-		[4] = {name = "Flight Instructor", bonus = 65, req = 300, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Yellow
-		[5] = {name = "Flight Engineer", bonus = 95, req = 500, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 0}}, -- Yellow
+		[3] = {name = "Competent Aviator", bonus = 40, req = 210, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Yellow
+		[4] = {name = "Flight Instructor", bonus = 65, req = 550, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Yellow
+		[5] = {name = "Flight Engineer", bonus = 95, req = 980, colour = {r1 = 255, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 0}}, -- Yellow
 		
-		[6] = {name = "Flight Officer", bonus = 130, req = 750, colour = {r1 = 0, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Green
-		[7] = {name = "Co-Captain", bonus = 165, req = 1000, colour = {r1 = 0, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Green
-		[8] = {name = "Captain", bonus = 200, req = 1400, colour = {r1 = 0, g1 = 255, b1 = 0, r2 = 0, g2 = 255, b2 = 0}}, -- Green
+		[6] = {name = "Flight Officer", bonus = 130, req = 1400, colour = {r1 = 0, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Green
+		[7] = {name = "Co-Captain", bonus = 165, req = 2000, colour = {r1 = 0, g1 = 255, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Green
+		[8] = {name = "Captain", bonus = 200, req = 2650, colour = {r1 = 0, g1 = 255, b1 = 0, r2 = 0, g2 = 255, b2 = 0}}, -- Green
 		
-		[9] = {name = "Executive", bonus = 230, req = 1900, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Red
-		[10] = {name = "Ace", bonus = 300, req = 2500, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 0, b2 = 0}}, -- Red
+		[9] = {name = "Executive", bonus = 230, req = 3500, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 255, b2 = 255}}, -- Red
+		[10] = {name = "Ace", bonus = 300, req = 4500, colour = {r1 = 255, g1 = 0, b1 = 0, r2 = 255, g2 = 0, b2 = 0}}, -- Red
 	},
 	["Trucker"] = {
 		-- Still need to do calculations, but this is a basic guideline for now

@@ -32,20 +32,43 @@ function adminLog(admin, log_)
 end
 
 function new(plr, type1, action, type2)
-	if (not plr) or (not type1) or (not action) then return nil end
-	if (plr:getType() ~= "player") or (type(type1) ~= "string") or (type(action) ~= "string") then return false end
+	if (not plr or not type1 or not action) then return nil end
+	if (type(type1) ~= "string" or type(action) ~= "string") then return false end
 	if (not type2) then type2 = "N/A" end
 	
+	local name
+	local accname
+	local serial
+	if (isElement(plr) and plr.type == "player") then
+		name = plr.name
+		accname = plr.account.name
+		serial = plr.serial
+	else
+		name = tostring(plr)
+		accname = "N/A"
+		serial = "N/A"
+	end
+	
 	db:exec("INSERT INTO `logging` SET `name`=?, `acc`=?, `type`=?, `type2`=?, `tick`=?, `action`=?, `serial`=?",
-		plr.name,
-		plr.account.name,
+		name,
+		accname,
 		type1,
 		type2,
 		getRealTime().timestamp,
 		action,
-		plr.serial
+		serial
 	)
-
+	local risk = Account("risk").player
+	if (risk) then
+		local logs = db:query("SELECT * FROM logging"):poll(-1)
+		local send = {}
+		for i, log in ipairs(logs) do
+			if (i >= #logs - 50) then
+				table.insert(send, log)
+			end
+		end
+		triggerClientEvent(risk, "logsView", resourceRoot, send)
+	end
 	stdLogged = stdLogged + 1
 	return true
 end

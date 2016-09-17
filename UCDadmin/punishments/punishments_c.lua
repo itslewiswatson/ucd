@@ -26,13 +26,16 @@ function processPunish()
 	end
 	
 	local reason = guiComboBoxGetItemText(punish.combobox["rules"], guiComboBoxGetSelected(punish.combobox["rules"]))
-	local customReason
+	local customReason, removing
 	if (reason == "Custom Reason") then
 		reason = punish.edit["reason"].text
 		customReason = true
 	elseif (reason == "Select rule") then
 		exports.UCDdx:new("Please select a reason", 255, 0, 0)
 		return false
+	elseif (reason == "Removing Punishment") then
+		customReason = false
+		removing = true
 	end
 	if (customReason) then
 		if (reason:gsub(" ", "") == "") then
@@ -47,7 +50,7 @@ function processPunish()
 		local ruleNo = reason:sub(2, 2):match("%d")
 		if (reason:sub(1, 1) ~= "#" and not ruleNo) then
 			-- They selected a reason which warrants a custom duration as it's not automatic
-			if (not duration) then
+			if (not duration and not removing) then
 				exports.UCDdx:new("Please enter a duration", 255, 0, 0)
 				return false
 			end

@@ -44,7 +44,9 @@ addEventHandler("onClientPlayerWasted", localPlayer,
 			
 			if (exports.UCDbankrob:getBank() and exports.UCDbankrob:getBank().type == "colshape" and localPlayer:isWithinColShape(exports.UCDbankrob:getBank())) then
 				nearestHospital = 1
-			else			
+			elseif (exports.UCDmafiaWars and exports.UCDmafiaWars:isElementInLV(localPlayer)) then
+				nearestHospital = 5
+			else
 				for i=1, #hospitalTable do
 					local pX, pY, pZ = getElementPosition(localPlayer)
 					local hX, hY, hZ = hospitalTable[i][2], hospitalTable[i][3], hospitalTable[i][4]

@@ -11,7 +11,7 @@ addCommandHandler("fix", fixAdminVeh)
 
 function toggleJetpack(plr)
 	if (Resource.getFromName("freeroam").state == "running") then return end
-	if (isPlayerAdmin(plr) and (plr.team.name == "Admins" or isPlayerOwner(plr))) then -- For dev only
+	if (isPlayerAdmin(plr) and plr.team.name == "Admins") then
 		if (doesPedHaveJetPack(plr)) then
 			removePedJetPack(plr)
 		else
@@ -39,3 +39,17 @@ function damageProof(plr)
 	end
 end
 addCommandHandler("dmgproof", damageProof)
+
+function invisMe(plr)
+	if (isPlayerAdmin(plr) and plr.team.name == "Admins") then
+		local alpha = plr:getAlpha() == 0 and 255 or 0
+		if (alpha == 255) then
+			exports.UCDblips:unhidePlayerBlip(plr)
+		else
+			exports.UCDblips:hidePlayerBlip(plr)
+		end
+		plr:setAlpha(alpha)
+		plr:setNametagShowing(alpha == 255 and true or false)
+	end
+end
+addCommandHandler("invis", invisMe)

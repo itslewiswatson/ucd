@@ -122,4 +122,11 @@ interiors =
 	{
 		{entryX = 1555.2417, entryY = -1675.6389, entryZ = 16.2, exitX = 246.762, exitY = 62.3233, exitZ = 1003.65, dimension = 50000, interior = 6}, -- LSPD
 	},
+	["Gym"] =
+	{
+		{entryX = 2229.4814, entryY = -1721.6782, entryZ = 13.5652, exitX = 772.2894, exitY = -4.9093, exitZ = 1000.7288, dimension = 13000, interior = 5, blipID = 54}, -- LS Ganton
+		{entryX = -2269.9346, entryY = -155.9417, entryZ = 35.3203, exitX = 774.2808, exitY = -49.8155, exitZ = 1000.5859+0.1, dimension = 13001, interior = 6, blipID = 54}, -- SF Cobra Marital Arts
+		{entryX = 1968.7064, entryY = 2295.5142, entryZ = 16.4559, exitX = 773.8799, exitY = -78.245, exitZ = 1000.6619, dimension = 13002, interior = 7, blipID = 54}
+		
+	}
 }

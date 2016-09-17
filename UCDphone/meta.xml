@@ -18,7 +18,7 @@
 	<file src="images/friends.png"/>
 	
 	
-	<script src="client.lua" type="client"/>
+	<script src="client.luac" type="client"/>
 	<!--<script src="server.lua" type="server"/>-->
 	
 	<script src="apps/im/im_c.lua" type="client"/>

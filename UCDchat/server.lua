@@ -29,7 +29,7 @@ end
 --]]
 
 local antiSpam = {}
-local antiSpamTime = 1000 -- Time in ms that we don't allow a player to speak after have already spoken
+local antiSpamTime = 2000 -- Time in ms that we don't allow a player to speak after have already spoken
 
 function clearAntiSpam(player)
 	if (antiSpam[player]) then
@@ -49,8 +49,11 @@ addEventHandler("onPlayerChat", root, onPlayerChat)
 
 function onPlayerChat2(player, message, messageType)
 	if (antiSpam[player]) then 
-		exports.UCDdx:new(player, "Your last sent message was less than one second ago!", 255, 0, 0)
+		exports.UCDdx:new(player, "Your last sent message was less than two seconds ago!", 255, 0, 0)
 		return
+	end
+	if (message:find("%x%x%x%x%x%x")) then
+		message = message:gsub("%x%x%x%x%x%x", "")
 	end
 	if (exports.UCDaccounts:isPlayerLoggedIn(player)) then
 		-- if main chat
@@ -67,7 +70,9 @@ function onPlayerChat2(player, message, messageType)
 			setTimer(clearAntiSpam, antiSpamTime, 1, player)
 			
 			exports.UCDlogging:new(player, "Main", message, sourceCity)
-		
+			
+			--triggerClientEvent("listInsert", resourceRoot, "main", player, message)
+			listInsert(root, "main", player, message)
 		-- if team chat
 		elseif (messageType == 2) then
 			local t
@@ -84,7 +89,9 @@ function onPlayerChat2(player, message, messageType)
 			antiSpam[player] = true
 			setTimer(clearAntiSpam, antiSpamTime, 1, player)
 			exports.UCDlogging:new(player, "Teamchat", message, t)
-		
+			
+			--triggerClientEvent(player.team:getPlayers(), "listInsert", resourceRoot, "team", player, message)
+			listInsert(player.team:getPlayers(), "team", player, message)
 		-- if /me chat
 		elseif (messageType == 1) then
 			for _, v in ipairs(Element.getAllByType("player")) do
@@ -93,13 +100,13 @@ function onPlayerChat2(player, message, messageType)
 					if (exports.UCDutil:isPlayerInRangeOfPoint(player, p.x, p.y, p.z, 100)) then
 						if (player.dimension == v.dimension) and (player.interior == v.interior) then
 							outputChatBox("* "..player.name.." "..message, v, 200, 50, 150)
-							antiSpam[player] = true
-							setTimer(clearAntiSpam, antiSpamTime, 1, player)
 						end
 					end
 				end
 			end
 			outputChatBox("* "..player.name.." "..message, player, 200, 50, 150)
+			antiSpam[player] = true
+			setTimer(clearAntiSpam, antiSpamTime, 1, player)
 			
 			exports.UCDlogging:new(player, "/me", message)
 		end
@@ -107,3 +114,43 @@ function onPlayerChat2(player, message, messageType)
 		return false
 	end
 end
+
+function supportChat(plr, _, ...)
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then
+		return false
+	end
+	local msg = string.gsub(table.concat({...}, " "), "%x%x%x%x%x%x", "")
+	if (not msg or string.gsub(msg, " ", "") == "") then
+		exports.UCDdx:new(plr, "Enter a message!", 255, 0, 0)
+		return
+	end
+	outputChatBox("(SUPPORT) "..plr.name.." #ffffff"..msg, root, 0, 155, 0, true)
+	exports.irc:ircSay(exports.irc:ircGetChannelFromName("#ucd.echo"), "13(SUPPORT) "..plr.name.." "..msg)
+	exports.UCDlogging:new(plr, "support", msg)
+	--triggerClientEvent("listInsert", resourceRoot, "support", plr, msg)
+	listInsert(root, "support", plr, msg)
+end
+addCommandHandler("support", supportChat)
+
+local advertSpam = {}
+
+addCommandHandler("advert",
+	function (plr, _, ...)
+		if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then
+			return false
+		end
+		if (advertSpam[plr.account.name] and getTickCount() - advertSpam[plr.account.name] <= (30 * 60000)) then
+			exports.UCDdx:new(plr, "You can advert once per 30 minutes", 255, 0, 0)
+			return false
+		end
+		local msg = string.gsub(table.concat({...}, " "), "%x%x%x%x%x%x", "")
+		if (not msg or string.gsub(msg, " ", "") == "") then
+			exports.UCDdx:new(plr, "Enter a message!", 255, 0, 0)
+			return false
+		end
+		outputChatBox("(ADVERT) "..plr.name.." #ffffff"..msg, root, 255, 255, 0, true)
+		exports.irc:ircSay(exports.irc:ircGetChannelFromName("#ucd.echo"), "8(ADVERT) "..plr.name.." "..msg)
+		exports.UCDlogging:new(plr, "advert", msg)
+		advertSpam[plr.account.name] = getTickCount()
+	end
+)

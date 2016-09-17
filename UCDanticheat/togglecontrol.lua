@@ -26,6 +26,10 @@ function fireCheck(button, state)
 		end
 		-- If they are in not in LV, are a civilian and are not currently using their fists then
 		if (not exports.UCDmafiaWars:isElementInLV(localPlayer) and disallowedTeams[localPlayer.team.name] and localPlayer:getWeapon() ~= 0) then
+			if (localPlayer:getData("Occupation") == "Paramedic" and localPlayer:getWeapon() == 41) then
+				toggleControl("fire", true)
+				return
+			end
 			toggleControl("fire", false)
 			return
 		end
@@ -52,6 +56,11 @@ function aimCheck(button, state)
 		--if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) and localPlayer.weaponSlot ~= 11 and not exceptedWeapons[localPlayer:getWeapon()] and not exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
 		if ((disallowedTeams[localPlayer.team.name] and not exports.UCDmafiaWars:isElementInLV(localPlayer)) or exports.UCDsafeZones:isElementWithinSafeZone(localPlayer)) then
 			--outputDebugString("true")
+			if (localPlayer:getData("Occupation") == "Paramedic" and localPlayer:getWeapon() == 41) then
+				toggleControl("aim_weapon", true)
+				toggleControl("fire", true)
+				return
+			end
 			toggleControl("aim_weapon", false)
 			toggleControl("fire", false)
 		else

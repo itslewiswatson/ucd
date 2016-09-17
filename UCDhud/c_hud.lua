@@ -1,3 +1,56 @@
+local joinTick = getTickCount()
+local ping = getPlayerPing(localPlayer)
+local fps = localPlayer:getData("FPS") or 0
+local uptime = 0
+local sX, sY = guiGetScreenSize()
+
+Timer(
+	function ()
+		ping = getPlayerPing(localPlayer)
+		fps = localPlayer:getData("FPS") or 0
+		uptime = getTickCount() - joinTick
+	end, 1000, 0
+)
+
+addEventHandler("onClientRender", root,
+	function ()
+		if (Resource.getFromName("UCDaccounts") and Resource.getFromName("UCDaccounts").state == "running") then
+			if (not isPlayerMapVisible() and exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+				local timeString
+				local uptime2 = math.floor(uptime) / 1000 -- Seconds
+				if (uptime2) then
+					local days, hours, minutes, seconds
+					days = math.floor(uptime2 / 86400)
+					hours = math.floor((uptime2 - (days * 86400)) / 3600)
+					minutes = math.floor((uptime2 - ((days * 86400) + (hours * 3600))) / 60)
+					seconds = math.floor(uptime2 - ((days * 86400) + (hours * 3600) + (minutes * 60)))
+					if (days < 1) then
+						if (hours < 1) then
+							timeString = minutes.." minutes"
+							if (minutes < 1) then
+								timeString = seconds.." seconds"
+							else
+								timeString = minutes.." minutes"
+							end
+						else
+							timeString = hours.." hours, "..minutes.." minutes"
+						end
+					else
+						timeString = days.." days, "..hours.." hours, "..minutes.." minutes"
+					end
+				end
+			
+				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 - 1, 0 - 1, (sX - 5) - 1, 16 - 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 + 1, 0 - 1, (sX - 5) + 1, 16 - 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 - 1, 0 + 1, (sX - 5) - 1, 16 + 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 + 1, 0 + 1, (sX - 5) + 1, 16 + 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0, 0, (sX - 5), 16, tocolor(255, 255, 255, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+			end
+		end
+	end
+)
+
+--[[
 local sX, sY = 1366, 768
 local sX, sY = guiGetScreenSize()
 local nX, nY = 1366, 768
@@ -176,6 +229,7 @@ function renderWanted()
 	end
 end
 addEventHandler("onClientRender", root, renderWanted)
+]]
 
 --[[
 24 = 100:

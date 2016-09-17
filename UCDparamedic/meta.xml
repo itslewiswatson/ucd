@@ -1,0 +1,6 @@
+<meta>
+	<info author="Risk" type="script" name="Paramedic job"/>
+	<script src="server.lua" type="server"/>
+	<script src="client.lua" type="client"/>
+	<oop>true</oop>
+</meta>

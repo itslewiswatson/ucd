@@ -1,0 +1,6 @@
+<meta>
+	<info author="Risk" name="Gym" type="script"/>
+	<script src="client.lua" type="client"/>
+	<script src="server.lua" type="server"/>
+	<oop>true</oop>
+</meta>

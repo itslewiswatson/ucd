@@ -47,7 +47,7 @@ addEvent("UCDglue.glue", true)
 addEventHandler("UCDglue.glue", root, glue)
 
 function unglue()
-	triggerServerEvent("ungluePlayer", resourceRoot)
+	triggerServerEvent("ungluePlayer", localPlayer)
 	unbindKey("jump", "down", unglue)
 end
 addCommandHandler("unglue", unglue)

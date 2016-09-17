@@ -1,7 +1,7 @@
 -- Numbers are for GUI buttons
 -- If a number is not there, it means it is false
 -- Permissions are inherited from the rank below
-
+-- 
 local permissions = {
 	[1] = {
 		[1] = true, -- warp to player
@@ -17,11 +17,15 @@ local permissions = {
 		[12] = true, -- screenshot
 		[17] = true, -- dimension
 		[18] = true, -- interior
+		[19] = true, -- fix vehicle
 		[21] = true, -- destroy vehicle
 		[25] = true, -- view weapons
 		[29] = true, -- freeze vehicle
 		["mute"] = true,
 		["admin jail"] = true,
+		["jetpack"] = true,
+		["unmute"] = true,
+		["unjail"] = true,
 	},
 	[2] = {
 		[8] = true, -- shout
@@ -34,13 +38,14 @@ local permissions = {
 	},
 	[3] = {
 		["ban"] = true,
-		[27] = true, -- last logins
+		[27] = true, -- give vehicle
+		[30] = true, -- last logins
 	},
 	[4] = {
-		
+		[26] = true, -- give weapon
 	},
 	[5] = {
-		
+		[14] = true, -- set money
 	},
 	[1337] = {
 		

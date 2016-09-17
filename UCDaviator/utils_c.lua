@@ -21,9 +21,35 @@ function isVehicleAccelerating(vehicle)
 	return false
 end
 
+--[[
 function stopVehicle(freeze)
 	if (not localPlayer.vehicle) then return end
 	for _, ctrl in ipairs({"accelerate", "brake_reverse"}) do
+		toggleControl(ctrl, false)
+		setControlState(ctrl, false)
+	end
+	
+	local vehicle = getPedOccupiedVehicle(localPlayer)
+	local x,y,z = getElementVelocity(vehicle)
+	local speed = math.sqrt(x^2 + y^2 + z^2)*100
+	if (speed >= 15) then
+		local div = math.sqrt(x^2 + y^2 + z^2)*100/15
+		setElementVelocity(vehicle, x/div, y/div, z/div)
+	end
+		
+	addEventHandler("onClientRender", root, vehicleBrake)
+	if (isVehicleAccelerating(vehicle)) then
+		setControlState("brake_reverse", true)
+	else
+		setControlState("accelerate", true)
+	end
+	freezeOnStop = freeze
+end
+--]]
+
+function stopVehicle(freeze)
+	if (not isPedInVehicle(localPlayer)) then return end
+	for i,ctrl in ipairs({"accelerate", "brake_reverse"}) do
 		toggleControl(ctrl, false)
 		setControlState(ctrl, false)
 	end

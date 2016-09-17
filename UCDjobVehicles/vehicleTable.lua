@@ -15,6 +15,8 @@ jobVehicles =
 	{x = 2000.1630, y = -1447.6506, z = 13.5604, rot = 135, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- Jefferson Hospital
 	{x = 2462.5354, y = -1670.5311, z = 13.4966 , rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- Grove Street
 	
+	{x = -2681.5947, y = 629.9854, z = 14.4531, rot = 180, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- SF Hospital
+	
 	{x = 1629.8534, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
 	{x = 1633.8729, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
 	{x = 1583.5, y = 1823.1659, z = 10.8203, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LV Hospital
@@ -26,6 +28,10 @@ jobVehicles =
 	{x = 1409.2539, y = -1168.1426, z = 23.8247, rot = 0, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- LS jail release
 	{x = -1500.6077, y = 934.9801, z = 7.1875, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- SF jail release
 	{x = -1500.6077, y = 905.9801, z = 7.1875, rot = 270, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- SF jail release
+	
+	{x = -321.9272, y = 1057.6918, z = 19.7422, rot = 359, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}}, -- Fort Carson Hospital
+	{x = -2196.4719, y = -2304.1282, z = 30.625, rot = 321.9, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}},
+	{x = 1238.2509, y = 335.6484, z = 19.7578, rot = 336.4438, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}},
 	
 	-- Aviator
 	-- Small planes (Beagle, Dodo, Shamal, Stuntplane)
@@ -95,8 +101,33 @@ jobVehicles =
 	{x = 1601, y = -1683.8301, z = 5.8906, rot = 90, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
 	{x = 1601, y = -1692.1, z = 5.8906, rot = 90, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
 	-- SFPD
+	{x = -1628.6117, y = 651.6313, z = 7.1875, rot = 360, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = -1616.4866, y = 651.6313, z = 7.1875, rot = 360, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = -1605.2736, y = 651.6313, z = 7.1875, rot = 360, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = -1593.4419, y = 651.6313, z = 7.1875, rot = 360, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
 	{x = -1588.0039, y = 748.7182, z = -5.2422, rot = 180, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
 	{x = -1596.1793, y = 748.4637, z = -5.2422, rot = 180, vt = {"Traffic Officer"}, colour = {r = 30, g = 144, b = 255}, vehs = {415, 523}},
 	{x = -1574.6395, y = 742.7321, z = -5.2422, rot = 270, vt = {"Detective"}, colour = {r = 30, g = 144, b = 255}, vehs = {421, 426}},
 	{x = -1574.8336, y = 735.1558, z = -5.2422, rot = 270, vt = {"Detective"}, colour = {r = 30, g = 144, b = 255}, vehs = {421, 426}},
+	-- LVPD
+	{x = 2256.0664, y = 2460.9648, z = 10.8203, rot = 180, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 2273.4031, y = 2460.9648, z = 10.8203, rot = 180, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 2273.3943, y = 2443.0896, z = 10.8203, rot = 0, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	{x = 2255.873, y = 2443.0896, z = 10.8203, rot = 0, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
+	-- Paramedic, LS All Saint
+	{x = 1180.4978, y = -1338.8416, z = 13.8005, rot = -90, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	{x = 1180.4978, y = -1308.5029, z = 13.8005, rot = -90, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	-- Paramedic, LS Jefferson
+	{x = 2032.86, y = -1446.4751, z = 17.2407, rot = 90, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	{x = 2002.0824, y = -1414.672, z = 16.9922, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	-- Paramedic, SF
+	{x = -2682.0452, y = 610.0144, z = 14.4531, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	{x = -2634.4585, y = 610.0144, z = 14.4531, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	-- Paramedic, Fort Carson
+	{x = -295.5605, y = 1044.6532, z = 19.5938, rot = 0.97, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	-- Paramedic, LV
+	{x = 1624.7664, y = 1851.087, z = 10.8203, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	{x = 1590.7393, y = 1851.087, z = 10.8203, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
+	-- Paramedic, Montgomery
+	{x = 1257.7942, y = 332.4998, z = 19.5547, rot = 335.4584, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 }

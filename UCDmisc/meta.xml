@@ -1,9 +1,10 @@
 <meta>
 	<script src="c_exports.lua" type="client" />
 	<script src="commands.lua" type="client" />
+	<script src="server.lua" type="server"/>
 	
 	<export function="centerWindow" type="client"/>
 	<export function="isPlayerLoggedIn" type="client"/> <!-- We have one of these server side in accounts. exports.accounts:isPlayedLoggedIn( player ) ) -->
-
+	
 	<oop>true</oop>
 </meta>

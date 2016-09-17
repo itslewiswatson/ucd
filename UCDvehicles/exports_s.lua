@@ -36,10 +36,8 @@ function _getVehicleType(vehicleID)
 	if not vehicle then vehicle = getVehicleData(vehicleID, "model") end
 	local vehicleType = getVehicleType(vehicle)
 	
-	if (vehicleType == "Automobile" or vehicleType == "Monster Truck") then
+	if (vehicleType == "Automobile" or vehicleType == "Monster Truck" or vehicleType == "Bike" or vehicleType == "BMX" or vehicleType == "Quad") then
 		return "General"
-	elseif (vehicleType == "Bike" or vehicleType == "BMX" or vehicleType == "Quad") then
-		return "Bike"
 	elseif (vehicleType == "Helicopter") then
 		return "Helicopter"
 	elseif (vehicleType == "Plane") then

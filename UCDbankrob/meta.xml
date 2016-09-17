@@ -3,6 +3,7 @@
 	<script src="map.slua" type="server"/>
 	<script src="bankrob.slua" type="server"/>
 	<script src="bankrob.lua" type="client"/>
+	<export function="getBankTime" type="server"/>
 	<export function="isPlayerInBank" type="server"/>
 	<export function="getBank" type="server"/>
 	<export function="getBank" type="client"/>

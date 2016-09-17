@@ -49,6 +49,10 @@ function buyAmmo(weaponID, amount)
 			exports.UCDdx:new(client, "You cannot afford to purchase this much ammo", 255, 0, 0)
 			return
 		end
+		if (tonumber(amount) <= 0) then
+			exports.UCDdx:new(client, "You cannot purchase negative ammo amount", 255, 0, 0)
+			return
+		end
 		client:takeMoney(amount * prices[weaponID][2])
 		giveWeapon(client, weaponID, amount)
 		setPedWeaponSlot(client, getSlotFromWeapon(weaponID))

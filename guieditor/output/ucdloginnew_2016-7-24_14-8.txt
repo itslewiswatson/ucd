@@ -1,0 +1,35 @@
+
+GUIEditor = {
+    checkbox = {},
+    button = {},
+    edit = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.button[1] = guiCreateButton(1047, 622, 272, 42, "Login", false)
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+
+
+        GUIEditor.checkbox[1] = guiCreateCheckBox(1061, 595, 15, 17, "", false, false)
+
+
+        GUIEditor.edit[1] = guiCreateEdit(1037, 467, 292, 40, "", false)
+
+
+        GUIEditor.edit[2] = guiCreateEdit(1037, 549, 292, 40, "", false)    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawText("Password", 1047, 513, 1329, 543, tocolor(255, 255, 255, 255), 2.00, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("Account Name", 1047, 433, 1329, 463, tocolor(255, 255, 255, 255), 2.00, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("Login", 537, 433, 725, 463, tocolor(255, 255, 255, 255), 2.00, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("Register", 537, 473, 725, 503, tocolor(255, 255, 255, 255), 2.00, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("About UCD", 537, 513, 725, 543, tocolor(255, 255, 255, 255), 2.00, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("Admins Online", 537, 553, 725, 583, tocolor(255, 255, 255, 255), 2.00, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("Disconnect", 537, 593, 725, 623, tocolor(255, 255, 255, 255), 2.00, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("Union of Clarity and Diversity", 0, 171, 1920, 264, tocolor(255, 255, 255, 255), 5.00, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText("Remember my credentials", 1086, 595, 1329, 612, tocolor(255, 255, 255, 255), 1.00, "default-bold", "left", "center", false, false, false, false, false)
+    end
+)

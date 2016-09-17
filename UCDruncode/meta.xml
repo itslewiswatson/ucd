@@ -1,4 +1,5 @@
 <meta>
+	<min_mta_version server="1.5.2" client="1.5.2"/>
 	<info author="jbeta" name="Scripting console" type="script" version="1.0.1" showInResourceBrowser="true" />
 	<oop>true</oop>
 

@@ -55,7 +55,7 @@ end
 function IM.sendFriends(plr)
 	local temp = {}
 	if (IM.friends[plr.account.name]) then
-		for i, accountName in pairs(IM.friends[plr.account.name]) do
+		for i, accountName in ipairs(IM.friends[plr.account.name]) do
 			local displayName, online
 			if (Account(accountName) and Account(accountName).player) then
 				displayName = tostring(Account(accountName).player.name).." ("..tostring(accountName)..")"
@@ -64,7 +64,8 @@ function IM.sendFriends(plr)
 				displayName = tostring(exports.UCDaccounts:GAD(accountName, "lastUsedName")).." ("..tostring(accountName)..")" or tostring(accountName)
 				--displayName = accountName
 			end
-			temp[i] = {[1] = displayName, [2] = online, [3] = accountName}
+			--temp[i] = {[1] = displayName, [2] = online, [3] = accountName}
+			table.insert(temp, {displayName, online, accountName})
 		end
 	end
 	triggerClientEvent(plr, "UCDphone.sendFriends", plr, temp)

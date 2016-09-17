@@ -36,6 +36,7 @@ markers =
 -- c = the position of the camera
 -- p = vehicle position and where the camera looks at
 
+--[[
 vehicles = 
 {
 	["High End"] = {
@@ -58,6 +59,29 @@ vehicles =
 		472, 473, 493, 595, 484, 430, 453, 452, 446, 454, 460
 	},
 }
+--]]
+vehicles = 
+{
+	["High End"] = {
+		429, 541, 415, 480, 562, 565, 434, 494, 502, 503, 411, 559, 561, 560, 506, 451, 558, 555, 477, 602, 587, 533, 526, 409, 579, 400, 404, 489, 479, 442, 458, 402, 495, 504, 424, 568, 536, 575, 534, 567, 535, 576, 412
+	},
+	["Low End"] = {
+		496, 401, 518, 527, 419, 474, 545, 517, 600, 410, 436, 439, 549, 445, 507, 585, 466, 492, 546, 551, 516, 467, 426, 547, 405, 580, 550, 566, 540, 421, 529, 589, 499, 498, 588, 423, 414, 456, 459, 482, 418, 582, 413, 440, 542, 603, 475
+	},
+	["Bikes"] = {
+		581, 509, 481, 462, 521, 463, 510, 522, 461, 448, 468, 586, 571, 471, 457
+	},
+	["Country"] = {
+		524, 532, 578, 486, 406, 573, 455, 403, 423, 443, 515, 514, 531, 530, 572, 583, 478, 554, 422, 543, 444, 556, 557, 508, 483, 564, 594, 441
+	},
+	["Aircraft"] = {
+		-- All except Hydra, Hunter, AT-400, Seasparrow, Skimmer, Police Maverick
+		592, 511, 512, 593, 553, 476, 519, 513, 548, 417, 487, 488, 563, 469
+	},
+	["Watercraft"] = {
+		472, 473, 493, 595, 484, 430, 453, 452, 446, 454, 460, 539
+	},
+}
 
 blips = 
 {
@@ -72,18 +96,60 @@ blips =
 prices = 
 {
 	-- Aircraft
-	["Andromada"] = 1500000, ["Beagle"] = 220000, ["Cargobob"] = 190000, ["Cropduster"] = 175000, ["Dodo"] = 186000, ["Leviathan"] = 186000, ["Maverick"] = 650000,
-	["Nevada"] = 579000, ["News Chopper"] = 125000, ["Raindance"] = 150000, ["Shamal"] = 1000000, ["Rustler"] = 5000000, ["Sparrow"] = 120000, ["Stuntplane"] = 200000,
+	["Andromada"] = 300000, ["Beagle"] = 120000, ["Cargobob"] = 125700, ["Cropduster"] = 80000, ["Dodo"] = 60000, ["Leviathan"] = 130000, ["Maverick"] = 230000,
+	["Nevada"] = 260000, ["News Chopper"] = 190000, ["Raindance"] = 110000, ["Shamal"] = 290000, ["Rustler"] = 5000000, ["Sparrow"] = 90000, ["Stuntplane"] = 140000,
 	
 	-- Watercraft
-	["Dinghy"] = 25000, ["Jetmax"] = 350000, ["Skimmer"] = 220000, ["Marquis"] = 900000, ["Coastguard"] = 65000, ["Vortex"] = 450000,
-	["Launch"] = 110000, ["Reefer"] = 145000, ["Squalo"] = 500000, ["Tropic"] = 375000, ["Speeder"] = 269000, ["Predator"] = 200000,
+	["Dinghy"] = 25000, ["Jetmax"] = 2400000, ["Skimmer"] = 190000, ["Marquis"] = 200000, ["Coastguard"] = 50000, ["Vortex"] = 330000,
+	["Launch"] = 230000, ["Reefer"] = 110000, ["Squalo"] = 270000, ["Tropic"] = 250000, ["Speeder"] = 170000, ["Predator"] = 390000,
 	
 	-- High End
-	["Infernus"] = 925000, ["Stafford"] = 365000, ["Turismo"] = 690000, ["Cheetah"] = 450000, ["Banshee"] = 300000, ["Comet"] = 300000, ["Super GT"] = 379000, 
-	["Sultan"] = 395000, ["Bullet"] = 782000, ["Hotknife"] = 265000, ["Hotring Racer"] = 500000, ["Hotring Racer 2"] = 525000, ["Hotring Racer 3"] = 600000,	
-	
+	["Infernus"] = 400000, ["Stafford"] = 90000, ["Turismo"] = 350000, ["Cheetah"] = 290000, ["Banshee"] = 2300000, ["Comet"] = 20000, ["Super GT"] = 380000, 
+	["Sultan"] = 125700, ["Bullet"] = 420000, ["Hotknife"] = 90000, ["Hotring Racer"] = 300000, ["Hotring Racer 2"] = 300000, ["Hotring Racer 3"] = 300000,	
+    ["Elegy"] = 110000, ["Flash"] = 90000, ["Jester"] = 91000, ["Stratum"] = 64000, ["Uranus"] = 85000, ["Windsor"] = 72000, ["ZR-350"] = 92000,	
+
 	-- Bikes
-	["NRG-500"] = 650000, ["BF-400"] = 40000, ["Bike"] = 500, ["BMX"] = 500, ["Mountain Bike"] = 750, ["Faggio"] = 5000, ["FCR-900"] = 130000, ["Freeway"] = 120000,
-	["Pizzaboy"] = 5000, ["PCJ-600"] = 150000, ["Sanchez"] = 90000, ["Wayfarer"] = 69000,
+	["NRG-500"] = 500000, ["BF-400"] = 40000, ["Bike"] = 250, ["BMX"] = 500, ["Mountain Bike"] = 750, ["Faggio"] = 5000, ["FCR-900"] = 130000, ["Freeway"] = 125000,
+	["Pizzaboy"] = 7500, ["PCJ-600"] = 120000, ["Sanchez"] = 70000, ["Wayfarer"] = 60000, ["Caddy"] = 15000, ["Kart"] = 15000, ["Quadbike"] = 60000, 
+
+	-- Compact
+	["Alpha"] = 50000, ["Blista Compact"] = 25000, ["Bravura"] = 35000, ["Buccaneer"] = 60000, ["Cadrona"] = 30000, ["Club"] = 20000, ["Esperanto"] = 40000,
+    ["Euros"] = 32000, ["Feltzer"] = 49000, ["Fortune"] = 41000, ["Hermes"] = 31000, ["Hustler"] = 26000, ["Majestic"] = 43000, ["Manana"] = 45000, ["Picador"] = 33000,
+    ["Previon"] = 29000, ["Stallion"] = 36000, ["Tampa"] = 40000, ["Virgo"] = 37000,
+
+	-- Luxury
+	["Admiral"] = 53000, ["Elegant"] = 39000, ["Emperor"] = 56000, ["Glendale"] = 70000, ["Greenwood"] = 45000, ["Intruder"] = 38000, ["Merit"] = 69000, ["Nebula"] = 58000,
+    ["Oceanic"] = 41500, ["Premier"] = 59000, ["Primo"] = 60000, ["Sentinel"] = 61000, ["Stafford"] = 67000, ["Stretch"] = 99000, ["Sunrise"] = 65000, ["Tahoma"] = 35000,
+    ["Vincent"] = 35000, ["Washington"] = 70000, ["Willard"] = 39750,
+
+	-- Civil
+	["Baggage"] = 7500, ["Bus"] = 77000, ["Cabbie"] = 25000, ["Coach"] = 80000, ["Taxi"] = 25000, ["Utility Van"] = 54000,
+
+    -- Heavy Trucks
+    ["Benson"] = 71000, ["Boxville"] = 68000, ["Cement Truck"] = 67000, ["Combine Harvester"] = 12000, ["DFT-30"] = 140000, ["Dozer"] = 180000, ["Dumper"] = 420000,
+    ["Dune"] = 90000, ["Flatbed"] = 110000, ["Linerunner"] = 120000, ["Mr. Whoopee"] = 55000, ["Mule"] = 49000, ["Packer"] = 87000, 
+    ["Roadtrain"] = 120000, ["Tanker"] = 120000, ["Tractor"] = 75000, ["Yankee"] = 72000,
+
+    -- Light Trucks
+    ["Bobcat"] = 61000, ["Burrito"] = 50000, ["Forklift"] = 36000, ["Moonbeam"] = 25000, ["Mower"] = 15000, ["News Van"] = 35000, ["Pony"] = 56000, ["Rumpo"] = 55000,
+    ["Sadler"] = 36000, ["Tug"] = 13000, ["Walton"] = 34000, ["Yosemite"] = 43000, ["Camper"] = 36000, ["Journey"] = 34000,
+
+    -- Lowriders
+    ["Blade"] = 78000, ["Broadway"] = 65000, ["Remington"] = 75000, ["Savanna"] = 77000, ["Slamvan"] = 69000, ["Tornado"] = 58000, ["Voodoo"] = 61000,
+
+    -- Muscle Cars
+    ["Buffalo"] = 91000, ["Clover"] = 87000, ["Phoenix"] = 81000, ["Sabre"] = 79000,
+
+    -- Offroad
+    ["Bandito"] = 44000, ["BF Injection"] = 56000, ["Bloodring Banger"] = 80000, ["Mesa"] = 35000, ["Monster"] = 95000, ["Monster 1"] = 95000, ["Monster 2"] = 95000, ["Monster 3"] = 95000,
+    ["Sandking"] = 78000,
+
+    -- RC Vehicles
+    ["RC Bandit"] = 15000, ["RC Cam"] = 5000, ["RC Tiger"] = 22000,
+
+	-- SUV
+	["Huntley"] = 65000, ["Landstalker"] = 35000, ["Perennial"] = 55000, ["Rancher"] = 56000, ["Regina"] = 54000, ["Romero"] = 44000, ["Solair"] = 39000, 
+	
+	--- jja
+	["Newsvan"] = 30000, ["Berkley's RC Van"] = 30000, ["Hotdog"] = 45000,
 }

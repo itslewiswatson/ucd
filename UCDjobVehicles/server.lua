@@ -61,7 +61,14 @@ function destroyPlayerJobVehicle(plr, force)
 	return false
 end
 addEvent("onPlayerGetJob")
-addEventHandler("onPlayerGetJob", root, function () destroyPlayerJobVehicle(source, true) end)
+addEventHandler("onPlayerGetJob", root,
+	function (jobName, oldJob)
+		if ((jobName == "Criminal" and oldJob == "Gangster") or (jobName == "Gangster" and oldJob == "Criminal")) then
+			return
+		end
+		destroyPlayerJobVehicle(source, true)
+	end
+)
 
 function djv(plr)
 	local q = destroyPlayerJobVehicle(plr)
@@ -125,7 +132,7 @@ function createJobVehicle(plr, model, rot, pos, index)
 		destroyPlayerJobVehicle(plr)
 	end
 	
-	PJV[plr] = Vehicle(model, pos.x, pos.y, pos.z + 2, 0, 0, rot)
+	PJV[plr] = Vehicle(model, pos.x, pos.y, pos.z + 2.5, 0, 0, rot)
 	plr:warpIntoVehicle(PJV[plr])
 	
 	-- If it's not a tug or a baggage

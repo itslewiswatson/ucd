@@ -34,8 +34,8 @@ function close()
 end
 
 function openPanel()
-	if (not localPlayer) then outputDebugString("nigger") return end
-	if (not isPedOnGround(localPlayer)) then exports.UCDdx:new("You must be on the ground for this feature to work", 255, 0, 0) return end
+--	if (not localPlayer) then outputDebugString("nigger") return end
+--	if (not isPedOnGround(localPlayer)) then exports.UCDdx:new("You must be on the ground for this feature to work", 255, 0, 0) return end
 	
 	x, y, z = getElementPosition(localPlayer)
 	

@@ -110,7 +110,7 @@ function isSerialBanned(serial)
 	if (serial:len() == 32) then
 		for _, ent in pairs(bans) do
 			if (ent[1]:len() == 32 and ent[1] == serial) then
-				outputDebugString(ent[1])
+				--outputDebugString(ent[1])
 				return true, ent
 			end
 		end
@@ -121,7 +121,7 @@ end
 function isIPBanned(ip)
 	for _, ent in pairs(bans) do
 		if (ent[1] == ip) then
-			outputDebugString(ent[1])
+			--outputDebugString(ent[1])
 			return true, ent
 		end
 	end

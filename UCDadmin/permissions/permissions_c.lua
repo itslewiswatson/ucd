@@ -7,6 +7,15 @@ function getPermissions()
 end
 addEventHandler("onClientResourceStart", resourceRoot, getPermissions)
 
+function isEventHandlerAdded(eventName, attachedTo, func)
+	for _, _func in ipairs(getEventHandlers(eventName, attachedTo)) do
+		if func == _func then
+			return true
+		end
+	end
+	return false
+end
+
 function onReceivedPermissions(permissions)
 	_permissions = permissions or {}
 	
@@ -23,8 +32,9 @@ function onReceivedPermissions(permissions)
 			end
 		end
 	end
-	
-	addEventHandler("onClientRender", root, updateInformation)
+	if (not isEventHandlerAdded("onClientRender", root, updateInformation)) then
+		addEventHandler("onClientRender", root, updateInformation)
+	end
 end
 addEvent("UCDadmin.onReceivedPermissions", true)
 addEventHandler("UCDadmin.onReceivedPermissions", root, onReceivedPermissions)

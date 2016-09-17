@@ -18,6 +18,7 @@ local locs =
 	{-2425.8401, 1020.8616, 50.3906}, -- SF central
 	{-1786.6021, 1216.3926, 25.125}, -- SF central
 	{-1904.1547, 286.1548, 41.0469}, -- Wangs Car shop SF
+	{-1265.7173, -17.583, 14.1484, 133.6359}, -- SF Airport
 }
 local objs = 
 {
@@ -42,7 +43,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 )
 
 function onMarkerHit(plr, matchingDimension)
-	if (plr == localPlayer and plr.vehicle and matchingDimension and plr.position.z < source.position.z + 1.5 and plr.position.z > source.position.z - 1.5 and plr.vehicle.controller == plr) then
+	if (plr == localPlayer and plr.vehicle and matchingDimension and plr.position.z < source.position.z + 3.5 and plr.position.z > source.position.z - 1.5 and plr.vehicle.controller == plr) then
 		exports.UCDdx:add("pns", "Press Z: Repair Vehicle", 255, 0, 0)
 		bindKey("z", "down", onTryRepair)
 	end

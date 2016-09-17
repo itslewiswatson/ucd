@@ -296,8 +296,12 @@ function getGroupColour(groupName)
 	if (not groupName or not groupTable or not groupTable[groupName]) then
 		return false
 	end
-	if (groupTable[groupName].colour ~= nil) then
-		return unpack(fromJSON(groupTable[groupName].colour))
+	if (groupTable[groupName].colour) then
+		if fromJSON(groupTable[groupName].colour) then
+			return unpack(fromJSON(groupTable[groupName].colour))
+		else
+			return 200, 0, 0
+		end
 	end
 	return 200, 0, 0
 end
@@ -306,8 +310,12 @@ function getGroupChatColour(groupName)
 	if (not groupName or not groupTable or not groupTable[groupName]) then
 		return false
 	end
-	if (groupTable[groupName].chatColour ~= nil) then
-		return unpack(fromJSON(groupTable[groupName].chatColour))
+	if (groupTable[groupName].chatColour) then
+		if fromJSON(groupTable[groupName].chatColour) then
+			return unpack(fromJSON(groupTable[groupName].chatColour))
+		else
+			return 200, 0, 0
+		end
 	end
 	return 200, 0, 0
 end

@@ -131,17 +131,22 @@ addEvent("UCDstocks.getStocks", true)
 addEventHandler("UCDstocks.getStocks", root, sendStocks)
 
 function sellStocks(stockName, amount, clientPrice)
+	if (true == true) then
+		--outputChatBox("Stocks have been temporarily disabled", client, 255, 0, 0)
+		--return
+	end
+	
 	if (client and stockName and amount and clientPrice) then
 		local amount = tonumber(amount)
 		local clientPrice = math.floor(clientPrice)
 		local price = math.floor(stocks[stockName].price * amount)
-		local options = shares[client.account.name][acronym]
+		local options = shares[client.account.name][stockName]
 		
 		if (not stocks[stockName]) then
 			exports.UCDdx:new(client, "This stock no longer exists", 255, 0, 0)
 			return
 		end
-		if (not shares[client.account.name] or not shares[client.account.name][acronym]) then
+		if (not shares[client.account.name] or not shares[client.account.name][stockName]) then
 			exports.UCDdx:new(client, "You do not own any options of this stock", 255, 0, 0)
 			return
 		end
@@ -170,8 +175,15 @@ function sellStocks(stockName, amount, clientPrice)
 		--triggerEvent("UCDphone.getStocks", client)
 	end
 end
+addEvent("UCDstocks.sellStock", true)
+addEventHandler("UCDstocks.sellStock", root, sellStocks)
 
 function buyStock(stockName, amount, clientPrice)
+	if (true == true) then
+		--outputChatBox("Stocks have been temporarily disabled", client, 255, 0, 0)
+		--return
+	end
+	
 	if (client and stockName and amount and clientPrice) then
 		local amount = tonumber(amount)
 		local clientPrice = math.floor(clientPrice)
@@ -251,23 +263,39 @@ function updateStockMarket()
 	for name in pairs(stocks) do
 		local currPrice = stocks[name]["price"]
 		local percent = {}
-		percent[20] = currPrice * 0.3
-		percent[150] = currPrice * 1.5
-		local low = math.random(percent[20], currPrice)
-		local high = math.random(currPrice, percent[150])
+		percent[80] = currPrice * 0.8
+		percent[120] = currPrice * 1.2
+		local low = math.random(percent[80], currPrice)
+		local high = math.random(currPrice, percent[120])
+		
+		-- If stocks fuck up, let's given them a bit of a boost and get them out of that low range
+		if (percent[80] < 1) then
+			percent[80] = 2
+		end
+		if (percent[120] < 1) then
+			percent[120] = 5
+		end
+		local newPrice = math.random(low, high)
+		if (newPrice < 1) then
+			newPrice = 2
+		end
 		
 		stocks[name]["prev"] = currPrice
-		stocks[name]["price"] = math.random(low, high)
-		--appendStockHistory(name)
+		stocks[name]["price"] = newPrice
+		appendStockHistory(name)
 	end
 	--triggerEvent("onStockMarketUpdate", resourceRoot)
+	--outputChatBox("The stock market has updated", root, 255, 255, 255)
+	for _, plr in ipairs(Element.getAllByType("player")) do exports.UCDdx:new(plr, "The stock market has updated - press F7 to view", 255, 255, 255) end
 end
-addCommandHandler("fuckstocks", updateStockMarket)
-Timer(updateStockMarket, (25 * 60) * 1000, 1)
+addCommandHandler("fuckstocks", function (plr) if (exports.UCDadmin:isPlayerAdmin(plr)) then updateStockMarket() end end)
+Timer(updateStockMarket, 900000, 0)
 
 function appendStockHistory(stockName)
 	local price = stocks[stockName]["price"]
+	local price_old = stocks[stockName]["prev"]
 	db:exec("INSERT INTO `stocks__history` (`datum`, `acronym`, `price`) VALUES (UNIX_TIMESTAMP(), ?, ?)", stockName, price)
+	db:exec("UPDATE `stocks__` SET `price` = ?, `prev` = ? WHERE `acronym` = ?", price, price_old, stockName)
 end
 
 function getStockHistory(stockName, limit)

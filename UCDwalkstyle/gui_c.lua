@@ -36,7 +36,7 @@ function openUI()
 	showCursor(true)
 	updateGridListWithStyles()
 end
-addCommandHandler("walk", openUI)
+--addCommandHandler("walk", openUI)
 
 function updateGridListWithStyles()
 	guiGridListClear(gridlist)                        

@@ -1,0 +1,17 @@
+local wantedPeople = {}
+
+function getWantedPeople()
+	for ind, plr in pairs(getElementsByType("player")) do
+		if (exports.UCDjail:isPlayerJailed(plr)) then
+			wantedPeople[plr] = {getPlayerName(plr), wl}
+		end
+	end
+	return wantedPeople[plr]
+end
+
+function requestPeople()
+	getWantedPeople()
+	triggerClientEvent(client, "UCDbail.outputWanted", client, wantedPeople)
+end
+addEvent("UCDbail.requestPeople", true)
+addEventHandler("UCDbail.requestPeople", root, requestPeople)

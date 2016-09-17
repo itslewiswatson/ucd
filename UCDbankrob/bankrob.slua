@@ -16,6 +16,7 @@ local spawns = {
 	["Law"] = {x = 309.3566, y = 130.3467, z = 941.3978, r = 0, d = 0, i = 3},
 }
 local hasStarted = false
+local bankMarker
 
 local barricades = {}
 local barricadeObjects = {
@@ -36,11 +37,14 @@ local control = {}
 local lawTimer, crimTimer -- Timer for each respective team
 
 function init()
-	for _, ent in ipairs(entry) do
+	for i, ent in ipairs(entry) do
 		local m = Marker(ent.x, ent.y, ent.z, "arrow", 2, 0, 255, 0, 120)
 		addEventHandler("onMarkerHit", m, onBankMarkerEnter)
+		if (i == 1) then
+			bankMarker = Blip.createAttachedTo(m, 52, nil, nil, nil, nil, nil, 0, 500)
+		end
 	end
-	for _, ent in ipairs(exit) do
+	for i, ent in ipairs(exit) do
 		local m = Marker(ent.x, ent.y, ent.z, "arrow", 2, 0, 255, 0, 120)
 		m.interior = 3
 		addEventHandler("onMarkerHit", m, onBankMarkerLeave)
@@ -301,7 +305,7 @@ function startRobbery()
 			exports.UCDdx:new(plr, "Defend the checkpoints for 5 minutes or kill all the criminals to win", 30, 144, 255)
 		elseif (plr.team.name == "Criminals") then
 			exports.UCDdx:new(plr, "Capture and hold all the checkpoints for 5 minutes or kill all the police to win", 200, 0, 0)
-			exports.UCDwanted:addWantedPoints(plr, 60)
+			exports.UCDwanted:addWantedPoints(plr, 30)
 			exports.UCDstats:setPlayerAccountStat(plr, "attemptBR", exports.UCDstats:getPlayerAccountStat(plr, "attemptBR") + 1)
 		elseif (plr.team.name == "Civilians") then
 			exports.UCDdx:new(plr, "Support either side by healing them", 255, 255, 255)
@@ -327,8 +331,9 @@ function onRobberyFinished(whoWon)
 		
 	for i, ent in pairs(players) do
 		for _, plr in ipairs(ent) do
-			if (i == "criminals" and whoWon == "criminals") then
+			if (i == "criminals" and whoWon == "criminals" and plr.team.name == "Criminals") then
 				plr:setData("escapedbr", true)
+				exports.UCDdx:new(plr, "Escape the bank zone to get your reward!", 200, 0, 0)
 			end
 			triggerEvent("onExitBank", plr)
 		end
@@ -355,7 +360,8 @@ addEventHandler("onRobberyFinished", root, onRobberyFinished)
 function onEscapeBankZone(ele, matchingDimension)
 	if (ele and ele.type == "player") then
 		if (ele:getData("escapedbr") and ele.team.name == "Criminals") then
-			exports.UCDdx:new(ele, "You have escaped the bank zone and got away with $30,000", 0, 255, 0)
+			exports.UCDdx:new(ele, "You have escaped the bank zone and got away with $30,000 and 20 crim XP", 0, 255, 0)
+			exports.UCDaccounts:SAD(ele, "crimXP", exports.UCDaccounts:GAD(ele, "crimXP") + 20)
 			ele.money = ele.money + 30000
 			ele:removeData("escapedbr")
 			exports.UCDstats:setPlayerAccountStat(ele, "successBR", exports.UCDstats:getPlayerAccountStat(ele, "successBR") + 1)
@@ -410,8 +416,20 @@ function onBankMarkerEnter(ele, matchingDimension)
 				bankTimer:destroy()
 				bankTimer = nil
 			end
-			exports.UCDdx:new(ele, "At least 4 players from the law side are needed to start the robbery", 255, 0, 0)
+			--exports.UCDdx:new(ele, "At least 4 players from the law side are needed to start the robbery", 255, 0, 0)
 		end
+	end
+end
+
+function getBankTime()
+	if (hasStarted) then
+		return "In-progress"
+	elseif (not bankTimer or not isTimer(bankTimer)) then
+		return "No bank robbery planned"
+	elseif (bankTimer and isTimer(bankTimer)) then
+		return bankTimer:getDetails() / 1000
+	else
+		return "Unknown"
 	end
 end
 

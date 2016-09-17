@@ -28,10 +28,15 @@ serials = {
 	["A7597F4CA3836678D276BD0916A43333"] = true, -- Rambo
 	["27938D764ECFFED5A2B4DED372DE2E03"] = true, -- Dennis
 	["2C30C68C0C0BFEB1270EAE3BAFA099F3"] = true, -- Risk
+	["DE21A77C9E4C842C3AD1B7926A5ABBE4"] = true, -- Risk 2
 	["2B63894067D21C0A100F90E754B73234"] = true, -- HellStunter
 	["C59A119C6645EEC5260B4F4FC5415D94"] = true, -- Ruller
+	["B84362665C4DEA0224923686818BC153"] = true, -- PutQ
+	--["9DAED17A924092F99DE4992A206AEE42"] = true, -- Aymen 2
 }
 
+-- open for business as of the 30th July 2016 (29th for most other people)
+--[[
 addEventHandler("onPlayerConnect", root,
 	function (_, _, _, s)
 		if (not serials[s]) then
@@ -39,6 +44,7 @@ addEventHandler("onPlayerConnect", root,
 		end
 	end
 )
+--]]
 
 local adminRanks = {
 	[1] = "L1 Admin",
@@ -56,10 +62,8 @@ end
 
 function gg(client)
 	if (isPlayerAdmin(client)) then
-		-- Only here for debug purposes - will be removed upon release
-		--if (client:getWantedLevel() > 0 and not isPlayerOwner(client)) then exports.UCDdx:new(client, "You cannot go on-duty whilst being wanted", 255, 255, 255) return false end
 		if (client:getWantedLevel() > 0) then
-			
+			exports.UCDlogging:adminLog(client.account.name, client.name.." did /admin with "..tostring(client:getWantedLevel()).." stars")
 		end
 
 		client:setData("Occupation", adminRanks[getPlayerAdminRank(client)])
@@ -69,6 +73,14 @@ function gg(client)
 		client:setNametagColor(false)
 		exports.UCDdx:new(client, "You are now an on-duty administrator", 255, 255, 255)
 	end
-	return false
 end
 addCommandHandler("admin", gg)
+
+addEventHandler("onPlayerChangeNick", root,
+	function (old, new)
+		if (new:lower():find("[ucd]") and not isPlayerAdmin(source)) then
+			outputDebugString(source.name.." using [ucd], cancelling")
+			cancelEvent()
+		end
+	end
+)

@@ -37,6 +37,7 @@ function hidePlayerBlip(plr)
 				return "ayy"
 			else
 				local hide = setElementData(plr, "UCDblips.hidden", true)
+				destroyElement(blip[plr])
 				blip[plr] = nil
 				if (hide == true) then	
 					return true
@@ -63,7 +64,7 @@ function unhidePlayerBlip(plr)
 		return false
 	else 
 		if (getElementData(plr, "UCDblips.hidden") == true) then
-			local hidePlr = setElementData(plr, "UCDblips.hide", false)
+			local hidePlr = setElementData(plr, "UCDblips.hidden", false)
 			if (hidePlr) then
 				return true
 			else

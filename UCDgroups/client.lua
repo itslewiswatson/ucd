@@ -249,7 +249,7 @@ function createGUI()
 	guiWindowSetSizable(mainGUI.window[1], false)
 	exports.UCDutil:centerWindow(mainGUI.window[1])
 	mainGUI.edit[1] = GuiEdit(10, 31, 167, 30, "", false, mainGUI.window[1])
-	guiEditSetMaxLength(mainGUI.edit[1], 20)
+	guiEditSetMaxLength(mainGUI.edit[1], 21)
 	mainGUI.button[1] = GuiButton(10, 76, 130, 36, "Create Group", false, mainGUI.window[1])
 	mainGUI.button[2] = GuiButton(157, 76, 130, 36, "Leave Group", false, mainGUI.window[1])
 	mainGUI.button[3] = GuiButton(307, 76, 130, 36, "Delete Group", false, mainGUI.window[1])
@@ -289,6 +289,7 @@ function createGUI()
 	groupList.gridlist[1] = GuiGridList(12, 26, 276, 276, false, groupList.window[1])
 	guiGridListAddColumn(groupList.gridlist[1], "Group", 0.65)
 	guiGridListAddColumn(groupList.gridlist[1], "Members", 0.25)
+	guiGridListSetSortingEnabled(groupList.gridlist[1], false)
 	groupList.edit[1] = GuiEdit(12, 307, 187, 29, "", false, groupList.window[1])
 
 	-- Banking
@@ -309,6 +310,7 @@ function createGUI()
 	sendInviteGUI.window[1].sizable = false
 	sendInviteGUI.gridlist[1] = GuiGridList(9, 25, 216, 242, false, sendInviteGUI.window[1])
 	guiGridListAddColumn(sendInviteGUI.gridlist[1], "Name", 0.9)
+	guiGridListSetSortingEnabled(sendInviteGUI.gridlist[1], false)
 	sendInviteGUI.button[1] = GuiButton(9, 272, 103, 34, "Send Invite", false, sendInviteGUI.window[1])
 	sendInviteGUI.button[2] = GuiButton(122, 272, 103, 34, "Close", false, sendInviteGUI.window[1])
 	
@@ -362,6 +364,8 @@ function createGUI()
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Reason", 0.3)
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Date", 0.23)
 	guiGridListAddColumn(blacklistGUI.gridlist[2], "Blacklisted by", 0.2)
+	guiGridListSetSortingEnabled(blacklistGUI.gridlist[1], false)
+	guiGridListSetSortingEnabled(blacklistGUI.gridlist[2], false)
 	blacklistGUI.button[3] = GuiButton(10, 174, 130, 28, "Add New", false, blacklistGUI.tab[2])
 	blacklistGUI.button[4] = GuiButton(150, 174, 130, 28, "Delete Selected", false, blacklistGUI.tab[2])
 	blacklistGUI.button[5] = GuiButton(9, 269, 581, 31, "Close", false, blacklistGUI.window[1])
@@ -611,6 +615,7 @@ function createGUI()
 	a_list.gridlist[1] = GuiGridList(12, 26, 276, 276, false, a_list.window[1])
 	guiGridListAddColumn(a_list.gridlist[1], "Alliance", 0.9)
 	a_list.edit[1] = GuiEdit(12, 307, 147, 29, "", false, a_list.window[1])
+	guiGridListSetSortingEnabled(a_list.gridlist[1], false)
 	
 	a_invites.window[1] = GuiWindow(777, 425, 360, 250, "UCD | Alliances - Received Invitations", false)
 	a_invites.window[1].visible = false
@@ -1348,11 +1353,13 @@ function memberListClick()
 		return
 	end
 	
-	local account
-	account = split(tostring(guiGridListGetItemText(memberList.gridlist[1], row, 1)), " ")[2]
-	account = account:gsub("%)", "")
-	account = account:gsub("%(", "")
+	local account = guiGridListGetItemData(memberList.gridlist[1], row, 1)
+	--account = split(tostring(guiGridListGetItemText(memberList.gridlist[1], row, 1)), " ")[2]
+	--account = gettok(tostring(guiGridListGetItemText(memberList.gridlist[1], row, 1)), 2, " (")
+	--account = account:gsub("%)", "")
+	--account = account:gsub("%(", "")
 	
+	--[[
 	for i = 1, #memberList.button do
 		if (memberList.button[i] == source) then
 			if (account:match("%W")) then
@@ -1361,8 +1368,9 @@ function memberListClick()
 			end
 		end
 	end
+	--]]
 	
-	if (account == localPlayer:getData("accountName") and localPlayer.name ~= "Noki") then return end
+	--if (account == localPlayer:getData("accountName") and localPlayer.name ~= "Noki") then return end
 	
 	if (source == memberList.button[1]) then -- promote
 		--exports.UCDutil:createInputBox("UCD | Groups - Promote", "Enter the reason for promotion", "", "UCDgroups.promoteMember", localPlayer, account)
@@ -1481,8 +1489,8 @@ function createGroup()
 		exports.UCDdx:new("You need to specify a group name", 255, 0, 0)
 		return false
 	end
-	if (name:len() < 2 or name:len() > 20) then
-		exports.UCDdx:new("Your group name must be between 2 and 20 characters", 255, 0, 0)
+	if (name:len() < 2 or name:len() > 21) then
+		exports.UCDdx:new("Your group name must be between 2 and 21 characters", 255, 0, 0)
 		return false
 	end
 	triggerServerEvent("UCDgroups.createGroup", localPlayer, name)

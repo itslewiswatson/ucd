@@ -1,0 +1,42 @@
+-- Geometric progression
+-- Formula = a * r ^ (n - 1)
+local a = 50
+local r = 1.8
+
+function getPlayerCriminalRank(plr)
+	local xp = exports.UCDaccounts:GAD(plr, "crimXP")
+	local rank
+	if (xp <= math.geoprog(1)) then
+		return 0
+	end
+	for i = 1, 9999 do
+		local n = math.geoprog(i)
+		local m = math.geoprog(i + 1)
+		if (xp >= n and xp < m) then
+			rank = i
+			break
+		end
+	end
+	if (not rank) then
+		outputDebugString("Could not find a rank")
+		return
+	end
+	return rank
+end
+
+function math.geoprog(n)
+	return math.floor(a * (r ^ (n - 1)))
+end
+
+function fetchData()
+	local bank = exports.UCDbankrob:getBankTime() or "Unknown"
+	local rank = getPlayerCriminalRank(client) or 0
+	local xp = exports.UCDaccounts:GAD(client, "crimXP") or 0
+	local nextXP = math.geoprog(rank + 1) or math.geoprog(1)
+	local bc = exports.UCDbc:bcGetTime()
+	local temp = {rank = rank, nextXP = nextXP, xp = xp, bank = bank, bc = bc}
+	triggerLatentClientEvent(client, "UCDcriminal.updateGUI", client, temp)
+end
+addEvent("UCDcriminal.fetchData", true)
+addEventHandler("UCDcriminal.fetchData", root, fetchData)
+

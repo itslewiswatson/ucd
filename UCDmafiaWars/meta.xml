@@ -8,5 +8,7 @@
 	<script src="LV/client.lua" type="client"/>
 	
 	<export function="isElementInLV" type="shared"/>
+	<export function="getGroupTurfs" type="server"/>
+	<export function="spawnPlayerInTurf" type="server"/>
 	<oop>true</oop>
 </meta>

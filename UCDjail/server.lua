@@ -1,12 +1,37 @@
-local col = exports.UCDsafeZones:getJail()
 local jails = {} -- jails[string accName] = {[1] = int duration, [2] = int isAdminJail, [3] = int timeLeft, [4] = string loc}
 local jailSpawn = {x = 3806.1226, y = -1141.0939, z = 6.5394, r = 180}
 local releaseLocations = {
 	["LS"] = {x = 1422.4785, y = -1177.4348, z = 25.9922, r = 0},
 	["SF"] = {x = -1501.6691, y = 920.1942, z = 7.1875, r = 90},
+	["LV"] = {x = 1607.2126, y = 1852.0887, z = 10.8203},
 }
 local db = exports.UCDsql:getConnection()
 local TL = {}
+local col = exports.UCDsafeZones:getJail()
+addEventHandler("onResourceStart", Resource.getFromName("UCDsafeZones").rootElement,
+	function ()
+		col = exports.UCDsafeZones:getJail()
+		addEventHandler("onColShapeLeave", col, onLeaveJail)
+	end
+)
+
+function onLeaveJail(ele, matchingDimension)
+	if (ele and ele.type == "player" and matchingDimension) then
+		if (isPlayerJailed(ele)) then
+			if (ele.vehicle) then
+				ele:removeFromVehicle(ele.vehicle)
+			end
+			triggerEvent("ungluePlayer", ele)
+			local x, y, z = math.random(jailSpawn.x - 4, jailSpawn.x + 4), math.random(jailSpawn.y - 4, jailSpawn.y + 4), jailSpawn.z + 1
+			ele.interior = 0
+			ele.dimension = 0
+			ele.position = Vector3(x, y, z)
+			ele.rotation = Vector3(0, 0, jailSpawn.r)	
+		end
+	end
+end
+addEventHandler("onColShapeLeave", col, onLeaveJail)
+
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
@@ -147,17 +172,3 @@ function releasePlayer()
 end
 addEvent("UCDjail.releasePlayer", true)
 addEventHandler("UCDjail.releasePlayer", root, releasePlayer)
-
-addEventHandler("onColShapeLeave", col, 
-	function (ele, matchingDimension)
-		if (ele and ele.type == "player" and matchingDimension) then
-			if (isPlayerJailed(ele)) then
-				local x, y, z = math.random(jailSpawn.x - 4, jailSpawn.x + 4), math.random(jailSpawn.y - 4, jailSpawn.y + 4), jailSpawn.z + 1
-				ele.interior = 0
-				ele.dimension = 0
-				ele.position = Vector3(x, y, z)
-				ele.rotation = Vector3(0, 0, jailSpawn.r)	
-			end
-		end
-	end
-)

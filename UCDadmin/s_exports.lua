@@ -89,7 +89,7 @@ function isAdminOnDuty(plr)
 	if (plr.type ~= "player") then return false end
 	
 	-- We also need to check if they are an admin in the database, as people can just join the admin team anyway
-	if (not isPlayerDeveloper(plr) and not isPlayerModerator(plr)) then
+	if (not isPlayerDeveloper(plr) and not isPlayerModerator(plr))	then
 		return false
 	end
 	

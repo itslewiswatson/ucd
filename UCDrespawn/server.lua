@@ -1,10 +1,10 @@
 -------------------------------------------------------------------
---// PROJECT: Project Downtown
---// RESOURCE: respawn
+--// PROJECT: Union of Clarity and Diversity
+--// RESOURCE: UCDrespawn
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 14.12.2014
 --// PURPOSE: To handle server side respawning of players.
---// FILE: \respawn\server.lua [server]
+--// FILE: \UCDrespawn\server.lua [server]
 -------------------------------------------------------------------
 
 addEvent("respawnDeadPlayer", true)
@@ -22,7 +22,13 @@ function respawnPlayer(plr, hX, hY, hZ, rotation, weaponTable)
 	if (isElement(plr)) then
 		fadeCamera(plr, true)
 		setCameraTarget(plr, plr)
-		spawnPlayer(plr, hX + math.random(0.1, 2), hY + math.random(0.1, 2), hZ, rotation, plr.model, 0, 0)
+		
+		local group = exports.UCDgroups:getPlayerGroup(plr)
+		if (exports.UCDmafiaWars:isElementInLV(plr) and group and #exports.UCDmafiaWars:getGroupTurfs(group) >= 1 and plr.team.name == "Gangsters") then
+			exports.UCDmafiaWars:spawnPlayerInTurf(plr)
+		else
+			plr:spawn(hX + math.random(0.1, 2), hY + math.random(0.1, 2), hZ, rotation, plr.model, 0, 0)
+		end
 		
 		if (exports.UCDjail:isPlayerJailed(plr)) then
 			triggerEvent("onPlayerJailed", plr)
