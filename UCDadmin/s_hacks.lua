@@ -10,7 +10,7 @@ end
 addCommandHandler("fix", fixAdminVeh)
 
 function toggleJetpack(plr)
-	if (Resource.getFromName("freeroam").state == "running") then return end
+	if (Resource.getFromName("freeroam") and Resource.getFromName("freeroam").state == "running") then return end
 	if (isPlayerAdmin(plr) and plr.team.name == "Admins") then
 		if (doesPedHaveJetPack(plr)) then
 			removePedJetPack(plr)
