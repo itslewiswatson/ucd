@@ -47,6 +47,6 @@ function Notes.save()
 	local f = File.new("@notes.txt")
 	f:write(phone.notes.memo["notes"].text)
 	f:flush()
-	f:destroy()
+	f:close()
 end
 addEventHandler("onClientResourceStop", resourceRoot, Notes.save)
