@@ -78,7 +78,7 @@ function gg(client)
 		exports.UCDdx:new(client, "You are now an on-duty administrator", 255, 255, 255)
 	end
 end
-addCommandHandler("admin", gg)
+addCommandHandler("admin", gg, false, false)
 
 addEventHandler("onPlayerChangeNick", root,
 	function (old, new)
