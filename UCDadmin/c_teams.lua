@@ -23,7 +23,7 @@ addEventHandler("onClientPlayerLogin", root,
 
 function adminDX(jobName)
 	--if (source == localPlayer) then
-		if (jobName == "Admin" or jobName:match("Admin") == "Admin") then
+		if (jobName and (jobName == "Admin" or jobName:match("Admin") == "Admin")) then
 			exports.UCDdx:add("admin", tostring(localPlayer:getData("Occupation")), 255, 255, 255, 1)
 		else
 			exports.UCDdx:del("admin")
