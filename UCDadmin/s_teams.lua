@@ -55,10 +55,14 @@ local adminRanks = {
 	[1337] = "L1337 Admin",
 }
 
-if (not getTeamFromName("Admins")) then
-	outputDebugString("'Admins' team not found, creating...")
-	Team("Admins", 195, 195, 195)
-end
+addEventHandler("onResourceStart", resourceRoot,
+	function ()
+		if (not getTeamFromName("Admins")) then
+			outputDebugString("'Admins' team not found, creating...")
+			Team("Admins", 195, 195, 195)
+		end
+	end
+)
 
 function gg(client)
 	if (isPlayerAdmin(client)) then
