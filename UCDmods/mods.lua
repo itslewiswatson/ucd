@@ -13,6 +13,7 @@ function onReceivedModList(list)
 			local f = File(":UCDmods/"..data[1])
 			f.pos = 0
 			local fileData = f:read(f.size)
+			f:close()
 			if (hash("md5", fileData):lower() ~= data[3]:lower()) then -- If the hashes do not match (hashes are a mix of lower and upper case for some reason)
 				table.insert(toDownload, data[1])
 				--outputDebugString("[md5] Inserting "..tostring(data[1]))
@@ -20,7 +21,6 @@ function onReceivedModList(list)
 				-- We have the file and it's correct, apply it
 				applyMod(data[1], data[4])
 			end
-			f:close()
 		end
 	end
 	triggerServerEvent("UCDmods.requestDownload", resourceRoot, toDownload)
