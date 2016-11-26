@@ -2,15 +2,17 @@ local shop = {}
 local sX, sY = guiGetScreenSize()
 local prevSkin
 
-shop.window = guiCreateWindow(0, 0, 287, 457, "UCD | Skins", false)
+shop.window = GuiWindow(0, 0, 287, 477, "UCD | Skins", false)
+shop.window.alpha = 1
 shop.window.visible = false
 shop.window.sizable = false
 shop.window:setPosition(sX - 287, (sY / 2) - (457 / 2), false)
-shop.gridlist = guiCreateGridList(10, 27, 267, 374, false, shop.window)
+shop.search = GuiEdit(10, 25, 277, 25, "", false, shop.window)
+shop.gridlist = GuiGridList(10, 57, 267, 374, false, shop.window)
 guiGridListAddColumn(shop.gridlist, "Name", 0.6)
 guiGridListAddColumn(shop.gridlist, "ID", 0.3)
-shop.take = guiCreateButton(10, 408, 129, 39, "Take Skin", false, shop.window)
-shop.close = guiCreateButton(148, 408, 129, 39, "Close", false, shop.window)
+shop.take = GuiButton(10, 438, 129, 39, "Take Skin", false, shop.window)
+shop.close = GuiButton(148, 438, 129, 39, "Close", false, shop.window)
 
 for i = 0, table.maxn(skinTable) do
 	if (skinTable[i]) then
@@ -81,3 +83,18 @@ function takeSkin()
 end
 addEventHandler("onClientGUIClick", shop.take, takeSkin, false)
 addEventHandler("onClientGUIDoubleClick", shop.gridlist, takeSkin, false)
+
+function onSkinSearch()
+	local _text = shop.search.text
+	shop.gridlist:clear()
+	for i = 0, table.maxn(skinTable) do
+		if (skinTable[i]) then
+			if (skinTable[i]:lower():find(_text:lower()) or tostring(i):lower():find(_text:lower())) then
+				local row = guiGridListAddRow(shop.gridlist)
+				guiGridListSetItemText(shop.gridlist, row, 1, tostring(skinTable[i]), false, false)
+				guiGridListSetItemText(shop.gridlist, row, 2, tostring(i), false, false)
+			end
+		end
+	end
+end
+addEventHandler("onClientGUIChanged", shop.search, onSkinSearch)
