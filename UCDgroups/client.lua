@@ -831,10 +831,10 @@ function groupRankHandler()
 				return
 			end
 			local row = guiComboBoxGetSelected(addRankGUI.combobox[1])
-			local prevRank 
-			if (row and row ~= -1 and row ~= nil) then
-				prevRank = guiComboBoxGetItemText(addRankGUI.combobox[1], row)
+			if (not row or row == -1) then
+				return
 			end
+			local prevRank = guiComboBoxGetItemText(addRankGUI.combobox[1], row)
 			outputDebugString("prevRank = "..prevRank)
 			
 			if (not groupRanks_[prevRank] or prevRank == "" or not prevRank) then
