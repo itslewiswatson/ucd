@@ -48,9 +48,10 @@ end
 addCommandHandler("settime", setClientTime)
 
 function movePlayerHead()
-	for k, players in ipairs (getElementsByType("player")) do
+	for _, players in ipairs(Element.getAllByType("player")) do
 		local w, h = guiGetScreenSize()
-		local lookatX, lookatY, lookatZ = getWorldFromScreenPosition(w/2, h/2, 10)
+		local lookatX, lookatY, lookatZ = getWorldFromScreenPosition(w / 2, h / 2, 10)
+		if (type(lookatX) ~= "number" or type(lookatY) ~= "number" or type(lookatZ) ~= "number") then return end
 		setPedLookAt(players, lookatX, lookatY, lookatZ)
 	end
 end
