@@ -1,0 +1,5 @@
+<meta>
+	<info author="nokizorque" type="script" version="1.0"/>
+	<script src="client.lua" type="client"/>
+	<oop>true</oop>
+</meta>
