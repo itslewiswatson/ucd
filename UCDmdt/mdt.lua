@@ -121,7 +121,7 @@ addEventHandler("onClientPlayerGetJob", root,
 
 addEventHandler("onClientResourceStart", resourceRoot, 
 	function ()
-		if (localPlayer.team.name == "Law") then
+		if (localPlayer.team and localPlayer.team.name == "Law") then
 			refreshTimer2 = Timer(createGridList, 5000, 0)
 		end
 	end
