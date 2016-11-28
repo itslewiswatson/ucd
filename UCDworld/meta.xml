@@ -2,7 +2,6 @@
 	<info author="Noki" version="1" name="world" type="script" />
 	<script src="world.lua" type="server" />
 	<script src="c_world.lua" type="client" />
-	
 	<script src="exploitObjects.lua" type="client" />
-	
+	<oop>true</oop>
 </meta>
