@@ -255,6 +255,7 @@ function sellHouseToBank(houseID)
 	
 	client:giveMoney(jewmoney)
 	exports.UCDdx:new(client, "You have sold your house to the bank for $"..tostring(exports.UCDutil:tocomma((jewmoney))).." which is "..tostring(rate).."% of what you bought it for!", 0, 255, 0)
+	createHouse(houseID, getHouseData(houseID, "*"))
 end
 addEvent("UCDhousing.sellHouseToBank", true)
 addEventHandler("UCDhousing.sellHouseToBank", root, sellHouseToBank)
