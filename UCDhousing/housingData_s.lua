@@ -64,18 +64,18 @@ addEventHandler("onResourceStart", resourceRoot,
 )
 
 function createHouses(queryHandle)
-	local result = queryHandle:poll(-1)
-	for i, v in ipairs(result) do		
+	local result = queryHandle:poll(0)
+	for _, v in ipairs(result) do		
 		-- Cache them in the a table for easy access
-		housingData[i] = {}
+		housingData[v.houseID] = {}
 		for column, value in pairs(v) do
 			if (column ~= "houseID") then
-				housingData[i][column] = value
+				housingData[v.houseID][column] = value
 			end
 		end
 		
 		-- Cache first, create later
-		createHouse(i, v)
+		createHouse(v.houseID, v)
 	end
 	outputDebugString("[UCDhousing] Created and cached all houses!")
 end
