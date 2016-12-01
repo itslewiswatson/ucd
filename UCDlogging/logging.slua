@@ -58,17 +58,6 @@ function new(plr, type1, action, type2)
 		action,
 		serial
 	)
-	local risk = Account("risk").player
-	if (risk) then
-		local logs = db:query("SELECT * FROM logging"):poll(-1)
-		local send = {}
-		for i, log in ipairs(logs) do
-			if (i >= #logs - 50) then
-				table.insert(send, log)
-			end
-		end
-		triggerClientEvent(risk, "logsView", resourceRoot, send)
-	end
 	stdLogged = stdLogged + 1
 	return true
 end
