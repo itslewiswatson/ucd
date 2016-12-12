@@ -1,5 +1,5 @@
 <meta>
-	<min_mta_version server="1.5.2" client="1.5.2" />
+	<min_mta_version server="1.5.2" client="1.5.2"/>
 	<info author="Noki" version="4" name="UCDaccounts" type="script" />
 
 	<script src="accountData.slua" type="server" />
@@ -14,7 +14,7 @@
 	
 	<!-- Login panel and handling -->
 	<script src="login/server.lua" type="server" />
-	<script src="login/client.luac" type="client" />
+	<script src="login/client.lua" type="client" />
 	
 	<export function="createGameAccount" type="server" http="true"/>
 	<export function="changeGamePassword" type="server" http="true"/>
