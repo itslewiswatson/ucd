@@ -1,7 +1,9 @@
 <meta>
 	<min_mta_version server="1.5.1"></min_mta_version>
     <info author="Noki" type="" name="" />
+	
 	<file src="iphone3.png"/>
+	<file src="images/background.png"/>
 	<file src="images/im.png"/>
 	<file src="images/browser.png"/>
 	<file src="images/calc.png"/>
@@ -16,9 +18,10 @@
 	<file src="images/money.png"/>
 	<file src="images/housing.png"/>
 	<file src="images/friends.png"/>
+	<file src="images/mail.png"/>
+	<!--><file src="images/anims.png"/><--!>
 	
-	
-	<script src="client.luac" type="client"/>
+	<script src="client.lua" type="client"/>
 	<!--<script src="server.lua" type="server"/>-->
 	
 	<script src="apps/im/im_c.lua" type="client"/>
@@ -29,13 +32,19 @@
 	<script src="apps/notes/notes_c.lua" type="client"/>
 	<script src="apps/clock/clock_c.lua" type="client"/>
 	<script src="apps/music/music_c.lua" type="client"/>
-	<!--<script src="apps/stocks/stocks_s.lua" type="server"/>-->
 	<script src="apps/stocks/stocks_c.lua" type="client"/>
 	<script src="apps/browser/browser_c.lua" type="client"/>
 	<script src="apps/friends/friends_s.lua" type="server"/>
 	<script src="apps/friends/friends_c.lua" type="client"/>
 	<script src="apps/weather/weather_s.lua" type="server"/>
 	<script src="apps/weather/weather_c.lua" type="client"/>
+	<script src="apps/mail/mail_s.lua" type="server"/>
+	<script src="apps/mail/mail_c.lua" type="client"/>
+	<script src="apps/housing/housing_s.lua" type="server"/>
+	<script src="apps/housing/housing_c.lua" type="client"/>
+	<script src="apps/settings/settings_c.lua" type="client"/>
+	<script src="apps/anims/anims_c.lua" type="client"/>
+	<script src="apps/anims/anims_s.lua" type="server"/>
 	
 	<script src="apps/apps.lua" type="client"/>
 	

@@ -1,3 +1,10 @@
+function formatMil(mil)
+	if not mil then mil = 0 end
+	local secs = math.floor(mil / 1000 % 60)
+	local mins = math.floor(mil / 1000 / 60 % 60)
+	return string.format("%02d:%02d", mins, secs)
+end
+
 function getCityZoneFromXYZ(x, y, z)
 	local theZone = getZoneName(x, y, z, true)
 	if (theZone) then

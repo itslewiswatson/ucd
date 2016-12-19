@@ -2,12 +2,14 @@ local GUI = {}
 local _data
 local _marker
 local spawnerData = {}
+local sX, sY = guiGetScreenSize()
 
 GUI.window = guiCreateWindow(819, 448, 259, 256, "UCD | Jobs - Vehicles", false)
 GUI.window.sizeable = false
 GUI.window.visible = false
 GUI.window.alpha = 255
-exports.UCDutil:centerWindow(GUI.window)
+--exports.UCDutil:centerWindow(GUI.window)
+GUI.window:setPosition(sX - 259, (sY / 2) - (256 / 2), false)
 GUI.gridlist = guiCreateGridList(9, 26, 240, 182, false, GUI.window)
 guiGridListSetSortingEnabled(GUI.gridlist, false)
 guiGridListAddColumn(GUI.gridlist, "Vehicle", 0.9)
@@ -26,6 +28,26 @@ function init()
 		spawnerData[mkr] = {info.vt, info.rot, info.vehs, i}
 		addEventHandler("onClientMarkerHit", mkr, markerHit)
 		addEventHandler("onClientMarkerLeave", mkr, removeText)
+		
+		local msg = ""
+		
+		if (#info.vt == 0) then
+			msg = "Free Vehicles"
+		elseif (#info.vt > 1) then
+			-- Teams always go last in the vt
+			msg = tostring(info.vt[#info.vt]).." Vehicles"
+		else
+			msg = info.vt[1].." Vehicles"
+			
+			if (info.a == "s") then
+				msg = "Aviator Vehicles (Small)"
+			elseif (info.a == "h") then
+				msg = "Aviator Vehicles (Helicopters)"
+			elseif (info.a == "l") then
+				msg = "Aviator Vehicles (Large)"
+			end
+		end
+		mkr:setData("displayText", tostring(msg))
 	end
 end
 addEventHandler("onClientResourceStart", resourceRoot, init)

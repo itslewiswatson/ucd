@@ -1,5 +1,6 @@
 IM = {}
 IM.f2a = {}
+IM.open = false
 
 -- Request list on resource start (in case the resource is restarted while the player is online)
 addEventHandler("onClientResourceStart", resourceRoot, 
@@ -57,6 +58,7 @@ IM.create()
 function IM.toggle()
 	for _, gui in pairs(IM.all) do
 		gui.visible = not gui.visible
+		IM.open = gui.visible
 	end
 end
 

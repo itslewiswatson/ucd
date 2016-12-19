@@ -1,4 +1,5 @@
 Notes = {}
+Notes.open = false
 
 function Notes.create()
 	phone.notes = {memo = {}}
@@ -28,6 +29,7 @@ Notes.create()
 function Notes.toggle()
 	for _, gui in pairs(Notes.all) do
 		gui.visible = not gui.visible
+		Notes.open = gui.visible
 	end
 end
 

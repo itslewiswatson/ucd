@@ -13,6 +13,7 @@ Music.trackPlaying = nil
 Music.tracks = {
 	--[1] = {"Girls' Generation - Gee", "http://music.zorque.xyz/gg/gee.mp3"}
 }
+Music.open = false
 
 function Music.create()
 	phone.music = {tab = {}, staticimage = {}, tabpanel = {}, edit = {}, button = {}, label = {}, gridlist = {}, progress = {}}
@@ -69,12 +70,15 @@ Music.create()
 function Music.toggle()
 	for _, gui in pairs(Music.all) do
 		gui.visible = not gui.visible
+		Music.open = gui.visible
 	end
 end
 
 function Music.loadUserTracks()
 	phone.music.gridlist["Music"]:clear()
-	Music.stop()
+	if ((track and isElement(track)) or (stream and isElement(stream))) then
+		Music.stop()
+	end
 	for i = 1, #Music.tracks do
 		local row = guiGridListAddRow(phone.music.gridlist["Music"])
 		guiGridListSetItemText(phone.music.gridlist["Music"], row, 1, tostring(Music.tracks[i][1]), false, false)

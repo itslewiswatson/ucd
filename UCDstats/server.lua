@@ -33,13 +33,23 @@ function getPlayerStats(plr)
 		local successBR = getPlayerAccountStat(plr, "successBR") or 0
 		local attemptBR = getPlayerAccountStat(plr, "attemptBR") or 0
 		local money = plr.money or 0
+		local crimRank = exports.UCDcriminal:getPlayerCriminalRank(plr) or 0
+		local crimXP = exports.UCDaccounts:GAD(plr, "crimXP")
+		
+		local jobRanks = exports.UCDjobsTable:getJobsRanks()
+		local ranksTable = {}
+		for job in pairs(jobRanks) do
+			local rank = exports.UCDjobs:getPlayerJobRank(plr, job)
+			ranksTable[job] = rank
+		end
 		
 		local temp = {
 			group = group, groupRank = rank, wanted = wanted, cash, country, ping, accName = plr.account.name,
 			kills = kills, deaths = deaths, kdr = kdr, totalfired = totalfired, totalguns = totalguns, wl = wl,
 			ap = ap, arrests = arrests,	timesArrested = timesArrested, lifetimeWanted = lifetimeWanted,
 			killArrests = killArrests, housesRobbed = housesRobbed, bestDrift = bestDrift, totalDrift = totalDrift,
-			attemptBR = attemptBR, successBR = successBR, money = money
+			attemptBR = attemptBR, successBR = successBR, money = money, jobRanks = ranksTable, crimXP = crimXP,
+			crimRank = crimRank
 		}
 		triggerLatentClientEvent(client, "UCDstats.loadStats", plr, temp or {})
 	end

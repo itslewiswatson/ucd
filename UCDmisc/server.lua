@@ -17,17 +17,17 @@ function eject(plr, _, plr2)
 			if (occupants) then
 				for _, plr2 in ipairs(plr.vehicle.occupants) do
 					plr2:removeFromVehicle(plr.vehicle)
-					exports.UCDdx:new(plr2, "You got ejected from the vehicle by "..plr.name, 255, 0, 0)
+					exports.UCDdx:new(plr2, "You got ejected from the vehicle by "..tostring(plr.name), 255, 0, 0)
 				end
-				exports.UCDdx:new(plr, "You ejected all players inside your vehicle", 0, 255, 0)
+				exports.UCDdx:new(plr, "You have ejected all players inside your vehicle", 0, 255, 0)
 			end
 		elseif (tostring(plr2)) then
 			local plr2 = getPlayerFromPartialName(plr2)
 			if (isElement(plr2)) then
 				if (plr2.vehicle == plr.vehicle) then
 					plr2:removeFromVehicle(plr.vehicle)
-					exports.UCDdx:new(plr2, "You got ejected from the vehicle by "..plr.name, 255, 0, 0)
-					exports.UCDdx:new(plr, "You ejected "..plr2.name.." from the vehicle", 0, 255, 0)
+					exports.UCDdx:new(plr2, "You got ejected from the vehicle by "..tostring(plr.name), 255, 0, 0)
+					exports.UCDdx:new(plr, "You have ejected "..tostring(plr2.name).." from the vehicle", 0, 255, 0)
 				end
 			end
 		end

@@ -58,7 +58,9 @@ function setWantedPoints(plr, wp)
 		plr:setData("w", wantedPoints[a])
 		triggerEvent("onPlayerWPChange", plr, wantedPoints[a])
 		-- For MDTs
-		triggerClientEvent(Team.getFromName("Law").players, "UCDmdt.onPlayerWPChange", plr)
+		if (Team.getFromName("Law") and Team.getFromName("Law").players and #Team.getFromName("Law").players >= 1) then
+			triggerClientEvent(Team.getFromName("Law").players or {}, "UCDmdt.onPlayerWPChange", plr)
+		end
 		return true
 	end
 end
@@ -100,6 +102,7 @@ function onPlayerWPChange(wp)
 	else
 		exports.UCDdx:del(source, "wp")
 	end
+	triggerClientEvent("UCDmdt.onPlayerWPChange", resourceRoot)
 end
 addEvent("onPlayerWPChange")
 addEventHandler("onPlayerWPChange", root, onPlayerWPChange)

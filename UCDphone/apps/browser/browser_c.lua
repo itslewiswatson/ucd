@@ -1,4 +1,5 @@
 Browser = {}
+Browser.open = false
 
 function Browser.toggle()
 	-- Add check because of old operating systems

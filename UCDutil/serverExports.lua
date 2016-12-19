@@ -1,3 +1,10 @@
+function formatMil(mil)
+	if not mil then mil = 0 end
+	local secs = math.floor(mil / 1000 % 60)
+	local mins = math.floor(mil / 1000 / 60 % 60)
+	return string.format("%02d:%02d", mins, secs)
+end
+
 function getCityZoneFromXYZ(x, y, z)
 	local theZone = getZoneName(x, y, z, true)
 	if (theZone) then
@@ -101,8 +108,8 @@ end
 function secondsToHoursMinutes(seconds)
 	local hours   = math.floor (seconds / (60 * 60))
 	local minutes = math.floor ((seconds / 60) % 60)
-	local hours         = (hours < 10 and 0 .. hours) or hours
-	local minutes       = (minutes < 10 and 0 .. minutes) or minutes
+	local hours   = (hours < 10 and 0 .. hours) or hours
+	local minutes = (minutes < 10 and 0 .. minutes) or minutes
 	return hours..":"..minutes
 end
 

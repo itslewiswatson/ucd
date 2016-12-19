@@ -4,11 +4,14 @@ local info =
 {
 	["House Robbing"] = "To rob a house, enter the house marker and press 'N'. You will then enter the house. Once in, there are two markers that will appear somewhere in the house. Go find them and collect the loot there. Exit the house and make your way to a truck blip. Here you can sell your stolen goods for money.",
 	["Turfing"] = "To capture turfs and participate in gang wars, you must go to Las Venturas. Here you can battle it out with other groups for control over various areas in LV called turfs. Las Venturas is a city not bound by law. The police rarely enter for fear of their own lives, so you're free to do as you please here. Las Venturas is also a KoS zone (kill on sight), meaning you can kill anyone. But be careful, you may also get hunted. It is recommended to use guns in Las Venturas as it's a very dangerous area.",
-	["Briefcase"] = "",
+	["Briefcase"] = "To deliver the briefcase to Woozie within time to get a good reward based on the distance you have travelled. If 10 minutes pass and you haven't delivered it yet, Woozie will -unfotunately- leave you alone for SF.",
 	["Bank Robbery"] = "The bank robbery is the activity that separates the boys from the men. Only the best criminals can possibly rob the bank. To rob the bank you will need lots of guns and a getaway. Travel to the LS bank marked by a $ (dollar sign) on your map to rob the bank. Bring a getaway vehicle and park it out the front of the bank. You will need this for later when you escape. Enter the bank and wait for the robbery to begin. Once in, capture all the checkpoint markers and hold them for 4 minutes. You will need to kill any police that get in your way. Work together on this. After you have successfully held the bank, exit and escape. You have to get far away from the bank to receive your reward.",
 	["Drifting"] = "",
 	["Street Racing"] = "",
 }
+
+-- Update timers for constant updates
+local constantBC = {}
 
 addEventHandler("onClientResourceStart", resourceRoot,
 	function ()
@@ -23,6 +26,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		guiLabelSetColor(F5.label["progress"], 1, 0, 0)
 		guiLabelSetHorizontalAlign(F5.label["progress"], "center", false)
 		guiLabelSetVerticalAlign(F5.label["progress"], "center")
+		guiLabelSetColor(F5.label["progress"], 255, 255, 255)
 		
 		F5.button = GuiButton(330, 287, 82, 25, "Close", false, F5.window)
 		F5.label["level"] = GuiLabel(9, 28, 78, 30, "Level", false, F5.window)
@@ -39,7 +43,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		F5.label["br"] = GuiLabel(10, 10, 384, 23, "Bank Robbery: ", false, F5.tab["events"])
 		guiSetFont(F5.label["br"], "clear-normal")
 		guiLabelSetVerticalAlign(F5.label["br"], "center")
-		F5.label["bc"] = GuiLabel(10, 43, 384, 23, "Briefcase: <feature not completed>", false, F5.tab["events"])
+		F5.label["bc"] = GuiLabel(10, 43, 384, 23, "Briefcase: ", false, F5.tab["events"])
 		guiSetFont(F5.label["bc"], "clear-normal")
 		guiLabelSetVerticalAlign(F5.label["bc"], "center")
 		F5.label["streetrace"] = GuiLabel(10, 76, 384, 23, "Street Race: <feature not completed>", false, F5.tab["events"])
@@ -105,6 +109,11 @@ function toggleGUI(data)
 			
 			if (data.bc) then
 				F5.label["bc"].text = "Briefcase: "..tostring(data.bc)
+				if (constantBC.t and isTimer(constantBC.t)) then
+					constantBC.t:destroy()
+					constantBC.t = nil
+				end
+				constantBC = {t = Timer(constantUpdate, 1000, 0, data.bc, data.bcMsg), r = getTickCount()}
 			end
 		else
 			if (F5.window.visible) then
@@ -120,3 +129,17 @@ addCommandHandler("crimpanel", toggleGUI)
 bindKey("F5", "up", "crimpanel")
 addEvent("UCDcriminal.updateGUI", true)
 addEventHandler("UCDcriminal.updateGUI", root, toggleGUI)
+
+function constantUpdate(timestamp, msg)
+	local curr = getTickCount() - constantBC.r
+	local newTime = timestamp - curr
+	
+	if (newTime <= 0) then
+		F5.label["bc"].text = "Briefcase: Available to take"
+		constantBC.t:destroy()
+		constantBC.t = nil
+		return
+	end
+	
+	F5.label["bc"].text = "Briefcase: "..tostring(exports.UCDutil:formatMil(newTime)).." "..tostring(msg)
+end

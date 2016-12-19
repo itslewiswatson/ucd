@@ -109,7 +109,7 @@ addEventHandler("onClientMouseLeave", guiRoot,
 function drawElements()
 	dxDrawRectangle(0, 0, sX, sY, tocolor(0, 0, 0, 75), false, false, false, false) 
 	if (login.button.visible) then
-		dxDrawText("Remember my credentials", (1086 / nX) * sX, (595 / nY) * sY, (1329 / nX) * sX, (612 / nY) * sY, tocolor(255, 255, 255, 255), 1, "default-bold", "left", "center", false, false, false, false, true)
+		dxDrawText("Remember my credentials", 	(1086 / nX) * sX, (595 / nY) * sY, (1329 / nX) * sX, (612 / nY) * sY, tocolor(255, 255, 255, 255), 1, "default-bold", "left", "center", false, false, false, false, true)
 		dxDrawText("Account Name", 				(1047 / nX) * sX, (433 / nY) * sY, (1329 / nX) * sX, (463 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
 		dxDrawText("Password", 					(1047 / nX) * sX, (513 / nY) * sY, (1329 / nX) * sX, (543 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
 	end
@@ -118,18 +118,7 @@ function drawElements()
 		dxDrawText("Email", (1047 / nX) * sX, 				(413 / nY) * sY, (1329 / nX) * sX, (443 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
 		dxDrawText("Password", (1047 / nX) * sX, 			(493 / nY) * sY, (1329 / nX) * sX, (523 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
 		dxDrawText("Confirm Password", (1047 / nX) * sX, 	(573 / nY) * sY, (1329 / nX) * sX, (603 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
-	
-		--dxDrawText("Account Name", (1047 / nX) * sX, 		(383 / nY) * sY, (1329 / nX) * sX, (413 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
-		--dxDrawText("Email", (1047 / nX) * sX, 			(463 / nY) * sY, (1329 / nX) * sX, (493 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
-		--dxDrawText("Password", (1047 / nX) * sX, 			(543 / nY) * sY, (1329 / nX) * sX, (573 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
-		--dxDrawText("Confirm Password", (1047 / nX) * sX, 	(623 / nY) * sY, (1329 / nX) * sX, (653 / nY) * sY, tocolor(255, 255, 255, 255), 2, "default-bold", "left", "center", false, false, false, false, true)
-	end
-	
-	--dxDrawRectangle((567 / nX) * sX, (433 / nY) * sY, dxGetTextWidth("Login", 2, "default-bold"), (30 / nY) * sY, tocolor(0, 0, 0, 255), false, false, false, false) 
-	--dxDrawRectangle((567 / nX) * sX, (483 / nY) * sY, dxGetTextWidth("Register", 2, "default-bold"), (30 / nY) * sY, tocolor(0, 0, 0, 255), false, false, false, false) 
-	--dxDrawRectangle((567 / nX) * sX, (533 / nY) * sY, dxGetTextWidth("About UCD", 2, "default-bold"), (30 / nY) * sY, tocolor(0, 0, 0, 255), false, false, false, false) 
-	--dxDrawRectangle((567 / nX) * sX, (583 / nY) * sY, dxGetTextWidth("Admins Online", 2, "default-bold"), (30 / nY) * sY, tocolor(0, 0, 0, 255), false, false, false, false) 
-	--dxDrawRectangle((567 / nX) * sX, (633 / nY) * sY, dxGetTextWidth("Disconnect", 2, "default-bold"), (30 / nY) * sY, tocolor(0, 0, 0, 255), false, false, false, false)
+	end	
 	
 	dxDrawText("Login", (567 / nX) * sX, (433 / nY) * sY, (725 / nX) * sX, (463 / nY) * sY, tocolor(255, 255, 255, 255), scale[1], "default-bold", "left", "center", false, false, false, false, true)
 	dxDrawText("Register", (567 / nX) * sX, (483 / nY) * sY, (725 / nX) * sX, (513 / nY) * sY, tocolor(255, 255, 255, 255), scale[2], "default-bold", "left", "center", false, false, false, false, true)
@@ -156,11 +145,15 @@ function onClientClick(button, state, aX, aY)
 		end
 		-- Login button
 		if (aX >= lX and aX <= lW and aY >= lY and aY <= lH) then
-			for k, v in pairs(RPE) do
-				v.visible = false
+			if (RPE) then
+				for k, v in pairs(RPE) do
+					v.visible = false
+				end
 			end
-			for k, v in pairs(LPE) do
-				v.visible = true
+			if (LPE) then
+				for k, v in pairs(LPE) do
+					v.visible = true
+				end
 			end
 		end
 	end
@@ -182,7 +175,6 @@ addEventHandler("onClientResourceStart", resourceRoot,
 		if (not isPlayerLoggedIn(localPlayer)) then
 			triggerServerEvent("UCDaccounts.removeLoginText", resourceRoot)
 			triggerServerEvent("UCDadmin.banCheck", resourceRoot)
-			--triggerServerEvent("UCDaccounts.fetchUpdates", resourceRoot)
 		
 			guiSetInputEnabled(true)
 			
@@ -192,16 +184,17 @@ addEventHandler("onClientResourceStart", resourceRoot,
 				b.alpha = 0 
 			end
 			
-			login.button = GuiButton((1047 / nX) * sX, (622 / nY) * sY, (272 / nX) * sX, (42 / nY) * sY, "Login", false)
-			login.checkbox = GuiCheckBox((1061 / nX) * sX, (595 / nY) * sY, (15 / nX) * sX, (17 / nY) * sY, "", false, false)	
-			login.edit["usr"] = GuiEdit((1037 / nX) * sX, (467 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
-			login.edit["passwd"] = GuiEdit((1037 / nX) * sX, (549 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
-			login.edit["passwd"].masked = true
-			login.memo = GuiMemo((577 / nX) * sX, (719 / nY) * sY, (740 / nX) * sX, (316 / nY) * sY, "", false)
-			login.memo.readOnly = true
-			login.memo.text = "Fetching updates.."
-			fetchRemote("http://ucdmta.com/updates.txt", displayUpdates)
-			login.button.enabled = true
+			login.button 					= GuiButton((1047 / nX) * sX, (622 / nY) * sY, (272 / nX) * sX, (42 / nY) * sY, "Login", false)
+			login.checkbox 					= GuiCheckBox((1061 / nX) * sX, (595 / nY) * sY, (15 / nX) * sX, (17 / nY) * sY, "", false, false)	
+			login.edit["usr"] 				= GuiEdit((1037 / nX) * sX, (467 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
+			login.edit["passwd"] 			= GuiEdit((1037 / nX) * sX, (549 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
+			login.memo 						= GuiMemo((577 / nX) * sX, (719 / nY) * sY, (740 / nX) * sX, (316 / nY) * sY, "", false)
+			login.memo.text 				= "Fetching updates..."
+			login.memo.readOnly 			= true
+			login.edit["passwd"].masked 	= true
+			login.button.enabled 			= true
+			
+			fetchRemote("http://ucdmta.com/updates.php", displayUpdates)
 			
 			LPE = {login.button, login.checkbox, login.edit["usr"], login.edit["passwd"]}
 			for k, v in pairs(LPE) do
@@ -212,13 +205,13 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			--addEventHandler("onClientGUIClick", login.button[2], onClickRegister, false)
 			--addEventHandler("onClientGUIChanged", guiRoot, onLoginEditsChanged)
 			
-			registration.button = GuiButton((1047/ nX) * sX, (657 / nY) * sY, (272 / nX) * sX, (42 / nY) * sY, "Register", false)
-			registration.edit["usr"] =				GuiEdit((1037/ nX) * sX, (367 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
-			registration.edit["email"] =			GuiEdit((1037/ nX) * sX, (447 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
-			registration.edit["passwd"] = 			GuiEdit((1037/ nX) * sX, (527 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
-			registration.edit["passwd_confirm"] = 	GuiEdit((1037/ nX) * sX, (607 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
-			registration.edit["passwd"].masked = true
-			registration.edit["passwd_confirm"].masked = true
+			registration.button 							= GuiButton((1047/ nX) * sX, (657 / nY) * sY, (272 / nX) * sX, (42 / nY) * sY, "Register", false)
+			registration.edit["usr"] 						= GuiEdit((1037/ nX) * sX, (367 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
+			registration.edit["email"] 						= GuiEdit((1037/ nX) * sX, (447 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
+			registration.edit["passwd"] 					= GuiEdit((1037/ nX) * sX, (527 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
+			registration.edit["passwd_confirm"] 			= GuiEdit((1037/ nX) * sX, (607 / nY) * sY, (292 / nX) * sX, (40 / nY) * sY, "", false)
+			registration.edit["passwd"].masked 				= true
+			registration.edit["passwd_confirm"].masked 		= true
 			
 			--[[
 			registration.button = GuiButton((1047/ nX) * sX, (707 / nY) * sY, (272 / nX) * sX, (42 / nY) * sY, "Register", false)
@@ -453,13 +446,17 @@ function onClickRegister(button, state, login)
 			--guiBringToFront(registration.window[1])
 			--guiSetInputEnabled(true)
 			
-			for _, v in pairs(RPE) do
-				v.visible = true
+			if (RPE) then
+				for _, v in pairs(RPE) do
+					v.visible = true
+				end
 			end
 			
 			-- Hide other login elements
-			for _, v in pairs(LPE) do
-				v.visible = false
+			if (LPE) then
+				for _, v in pairs(LPE) do
+					v.visible = false
+				end
 			end
 			
 			if (not isCursorShowing()) then showCursor(true) end
@@ -536,7 +533,7 @@ addEvent("UCDaccounts.login.destroyInterface", true)
 addEventHandler("UCDaccounts.login.destroyInterface", root, destroyInterface)
 
 function toggleLogin()
-	if (login.button and isElement(login.button)) then
+	if (login and login.button and isElement(login.button)) then
 		login.button.enabled = not login.button.enabled
 	end
 end

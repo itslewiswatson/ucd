@@ -59,26 +59,29 @@ db = exports.UCDsql:getConnection()
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
-		--for turfID, v in ipairs(turfCoordinates) do
-		local result = db:query("SELECT * FROM turfing"):poll(-1)
-		for turfID, v in ipairs(result) do
-			--db:exec("UPDATE turfing SET x = ?, y = ?, z = ?, w = ?, l = ?, h = ? WHERE turfID = ?", v.x, v.y, v.z, v.w, v.l, v.h, turfID)
-			local col = createColCuboid(v.x, v.y, v.z, v.w, v.l, v.h)
-			provoking[col] = {}
-			level[col] = {}
-			
-			level[col][v.owner] = 100
-			col:setData("turfOwner", v.owner)
-			
-			idToCol[turfID] = col
-			colToArea[col] = createRadarArea(v.x, v.y, v.w, v.l, 255, 255, 255, 175)
-			col:setData("id", turfID)
-			addEventHandler("onColShapeHit", col, onEnterTurf)
-			addEventHandler("onColShapeLeave", col, onExitTurf)
-		end
-		Timer(corrections, 1000, 0)
+		db:query(cacheTurfs, {}, "SELECT * FROM turfing")
 	end
 )
+
+function cacheTurfs(qh)
+	local result = qh:poll(0)
+	for turfID, v in ipairs(result) do
+		--db:exec("UPDATE turfing SET x = ?, y = ?, z = ?, w = ?, l = ?, h = ? WHERE turfID = ?", v.x, v.y, v.z, v.w, v.l, v.h, turfID)
+		local col = createColCuboid(v.x, v.y, v.z, v.w, v.l, v.h)
+		provoking[col] = {}
+		level[col] = {}
+		
+		level[col][v.owner] = 100
+		col:setData("turfOwner", v.owner)
+		
+		idToCol[turfID] = col
+		colToArea[col] = createRadarArea(v.x, v.y, v.w, v.l, 255, 255, 255, 175)
+		col:setData("id", turfID)
+		addEventHandler("onColShapeHit", col, onEnterTurf)
+		addEventHandler("onColShapeLeave", col, onExitTurf)
+	end
+	Timer(corrections, 5000, 0)
+end
 
 function getGroupTurfs(groupName)
 	local temp = {}

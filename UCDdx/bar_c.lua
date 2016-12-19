@@ -33,11 +33,7 @@ function add(key, text, red, green, blue, ind)
 	return true
 end
 --add("x", "The mitochrondria is the powerhouse of the cell", 255, 255, 255)
-addEventHandler("onClientRender", root,
-	function ()
-		add("ucd", "UCD Alpha", 255, 255, 255, 1)
-	end
-)
+add("ucd", "UCD Alpha", 255, 255, 255)
 
 addEvent("UCDdx.bar:add", true)
 addEventHandler("UCDdx.bar:add", root, add)

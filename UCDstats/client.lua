@@ -25,10 +25,20 @@ local defaults = {
 	"Houses Robbed: ",
 	"Attempted Bank Robbieries: ", -- 25
 	"Successful Bank Robbieries: ", -- 26
+	"Criminal Rank: ", -- 27
 	"▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
-	"Total Drift Points: ", -- 28
-	"Best Drift: ", -- 29
+	"Total Drift Points: ", -- 29
+	"Best Drift: ", -- 30
+	"▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
 }
+--[[
+local nonJobs = {
+	[""] = true,
+	["Criminal"] = true,
+	["Gangster"] = true,
+	["Unoccupied"] = true,
+}
+--]]
 
 local selections = 0
 function resetSelections()
@@ -52,6 +62,16 @@ for i = 1, #defaults do
 	GUIEditor.label[i] = GuiLabel(0, (i * 15) - 15, 262, 15, defaults[i], false, GUIEditor.scrollpane[1])
 end
 exports.UCDutil:centerWindow(GUIEditor.window)
+
+--function addJobRanks()	
+	local jobRankTable = exports.UCDjobsTable:getJobsRanks()
+	local i = #defaults + 1
+	for job in pairs(jobRankTable) do
+		GUIEditor.label[job] = GuiLabel(0, (i * 15) - 15, 262, 15, tostring(job).." Rank: ", false, GUIEditor.scrollpane[1])
+		i = i + 1
+	end
+--end
+--addEventHandler("onClientResourceStart", resourceRoot, addJobRanks)
 
 addEventHandler("onClientPlayerLogin", localPlayer,
 	function ()
@@ -87,7 +107,6 @@ function toggleStatsWindow()
 	if (not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
 		return
 	end
-	
 	GUIEditor.window.visible = not GUIEditor.window.visible
 	if (GUIEditor.window.visible) then
 		showCursor(true)
@@ -95,7 +114,7 @@ function toggleStatsWindow()
 	end
 	showCursor(false)
 end
-addCommandHandler("stats", toggleStatsWindow)
+addCommandHandler("stats", toggleStatsWindow, false, false)
 addEventHandler("onClientGUIClick", GUIEditor.button[2], toggleStatsWindow, false)
 
 function selectPlayer()
@@ -148,7 +167,7 @@ function loadStats(data)
 		pt = tostring(h).."h, "..tostring(m).."m"
 	end
 	
-	GUIEditor.label[1].text = defaults[1]..source.name
+	GUIEditor.label[1].text = defaults[1]..tostring(source.name)
 	GUIEditor.label[2].text = defaults[2]..tostring(data["accName"])
 	GUIEditor.label[3].text = defaults[3]..tostring(source:getData("Occupation"))
 	GUIEditor.label[4].text = defaults[4]..tostring(data["group"])
@@ -171,8 +190,14 @@ function loadStats(data)
 	GUIEditor.label[24].text = defaults[24]..tostring(data["housesRobbed"])
 	GUIEditor.label[25].text = defaults[25]..tostring(data["attemptBR"])
 	GUIEditor.label[26].text = defaults[26]..tostring(data["successBR"])
-	GUIEditor.label[28].text = defaults[28]..tostring(data["totalDrift"])
-	GUIEditor.label[29].text = defaults[29]..tostring(data["bestDrift"])
+	GUIEditor.label[27].text = defaults[27]..tostring(data["crimRank"]).." ("..tostring(exports.UCDutil:tocomma(data["crimXP"])).." XP)"
+	GUIEditor.label[29].text = defaults[29]..tostring(data["totalDrift"])
+	GUIEditor.label[30].text = defaults[30]..tostring(data["bestDrift"])
+	for job, rank in pairs(data["jobRanks"]) do
+		if (GUIEditor.label[job]) then
+			GUIEditor.label[job].text = tostring(tostring(job).." Rank: L"..tostring(rank or 0).." ("..tostring(jobRankTable[job][rank].name)..")")
+		end
+	end
 end
 addEvent("UCDstats.loadStats", true)
 addEventHandler("UCDstats.loadStats", root, loadStats)

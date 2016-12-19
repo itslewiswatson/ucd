@@ -4,6 +4,9 @@ function process()
 		if (not vehicle or math.floor(vehicle.health) == 1000) then
 			return
 		end
+		if (not exports.UCDchecking:canPlayerDoAction(client, "PayNSpray")) then
+			return false
+		end
 		
 		local sPrice, ePrice
 		if (vehicle.health >= 800) then

@@ -62,7 +62,9 @@ for i, info in ipairs(markers) do
 		exports.UCDblips:setCustomBlipStreamRadius(b, 50)
 	else
 		Blip.createAttachedTo(m, blips[info.t], 2, 0, 0, 0, 0, 0, 300)
-	end	
+	end
+	
+	m:setData("displayText", "Vehicle Store ("..tostring(info.t)..")")
 	
 	addEventHandler("onClientMarkerHit", m, onHitShopMarker)
 	addEventHandler("onClientMarkerLeave", m, onLeaveShopMarker)

@@ -1,9 +1,9 @@
-function listInsert(receiver, type, sender, msg)
-	triggerClientEvent(receiver, "listInsert", resourceRoot, type, sender, msg)
+function insert(receiver, type, sender, msg)
+	triggerClientEvent(receiver, "UCDchat.chatbox.insert", sender, type, msg)
 end
 
-addEvent("doChat", true)
-addEventHandler("doChat", resourceRoot,
+addEvent("UCDchat.chatbox.send", true)
+addEventHandler("UCDchat.chatbox.send", root,
 	function (type, msg)
 		if (not exports.UCDchecking:canPlayerDoAction(client, "Chat")) then return end
 		if (type == "main" or type == "team") then

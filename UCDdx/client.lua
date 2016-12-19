@@ -1,5 +1,16 @@
 sX, sY = guiGetScreenSize()
+local enabled = exports.UCDsettings:getSetting("dxmsgs") == "Yes" and true or false
 
+local Shout = { -- hell yeah
+	enabled = true,
+	scale = 2.5,
+	life = 10000,
+	extralife = 150,
+	color = {255, 140, 0},
+	uppercase = false,
+	font = "default-bold",
+	entries = {}
+}
 ContextBar = {
 	height = 23,
 	speed = 20,
@@ -19,6 +30,10 @@ function ContextBar.add(text, r, g, b)
 	--local y = sY - ContextBar.height
 	--y = sY - (#ContextBar.entries * ContextBar.height) - ContextBar.height
 	--y = sY - y
+	if (not enabled) then
+		outputChatBox(tostring(text), r, g, b)
+		return
+	end
 	local y = -23
 	
 	--if text == "" or text == nil then return false end
@@ -57,6 +72,10 @@ function ContextBar.add(text, r, g, b)
 end
 --addCommandHandler("dx", function () ContextBar.add("The quick brown fox jumps over the lazy dog "..exports.UCDutil:randomstring(2), math.random(0, 255), math.random(0, 255), math.random(0, 255)) end)
 addCommandHandler("getdx", function () outputDebugString(#ContextBar.entries) end)
+
+function enable(new)
+	enabled = new == "Yes" and true or false
+end
 
 addCommandHandler("cleardx",
 	function ()
@@ -153,14 +172,45 @@ addEventHandler("onClientRender", root,
 						end
 					end
 				end
-			end 
+			end
 			
 		end
+		
+		for i, v in ipairs(Shout.entries) do
+			if (i ~= 1) then Shout.entries[i][2] = getTickCount() return end -- draw one only, others delayed
+			local scale = Shout.scale
+			local tX, tY = (sX - dxGetTextWidth(v[1], scale, Shout.font)) / 2, sY - dxGetFontHeight(scale, Shout.font)
+			if (tX <= 0) then -- for large ones that would be cut
+				scale = scale - 1.25
+				tX, tY = (sX - dxGetTextWidth(v[1], scale, Shout.font)) / 2, sY - dxGetFontHeight(scale, Shout.font)
+			end
+			local alpha = (((Shout.life + (#v[1] * Shout.extralife)) - (getTickCount() - v[2])) / (Shout.life + (#v[1] * Shout.extralife))) * 255
+			-- idk how did i do all of this math but it works :D
+			dxDrawText(v[1], tX + 1, tY + 1, _, _, tocolor(0, 0, 0, alpha), scale, Shout.font, _, _, _, _, true)
+			dxDrawText(v[1], tX + 1, tY + 1, _, _, tocolor(0, 0, 0, alpha), scale, Shout.font, _, _, _, _, true)
+			dxDrawText(v[1], tX - 1, tY - 1, _, _, tocolor(0, 0, 0, alpha), scale, Shout.font, _, _, _, _, true)
+			dxDrawText(v[1], tX - 1, tY - 1, _, _, tocolor(0, 0, 0, alpha), scale, Shout.font, _, _, _, _, true)
+			dxDrawText(v[1], tX, tY, _, _, tocolor(Shout.color[1], Shout.color[2], Shout.color[3], alpha), scale, Shout.font, _, _, _, _, true)
+			if ((getTickCount() - v[2]) > (Shout.life + (#v[1] * Shout.extralife))) then
+				table.remove(Shout.entries, i)
+			end
+		end
+		
 	end
 )
+
+function shout(text)
+	if (not text or not tostring(text)) then return false, "text missing" end
+	if (not Shout.enabled) then new(text, 255, 0, 0) return false, "dx instead" end
+	if (Shout.uppercase) then text = text:upper() end
+	table.insert(Shout.entries, {text, getTickCount()})
+end
+addEvent("UCDdx.shout", true)
+addEventHandler("UCDdx.shout", resourceRoot, shout)
+-- shout(exports.ucdutil:randomstring(18))
 
 function new(text, r, g, b)
 	ContextBar.add(text, r, g, b)
 end
-addEvent("CSGdx.createNewDxMessage", true)
-addEventHandler("CSGdx.createNewDxMessage", localPlayer, new)
+addEvent("UCDdx.createNewDxMessage", true)
+addEventHandler("UCDdx.createNewDxMessage", localPlayer, new)
