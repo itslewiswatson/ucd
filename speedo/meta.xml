@@ -1,5 +1,0 @@
-<meta>
-    <info author="Will  Dooby" type="script" name="Speedometer like WSS" version="0.1" />
-    <min_mta_version client="1.3.1-9.04993" />
-    <script src="client.lua" type="client" />
-</meta>

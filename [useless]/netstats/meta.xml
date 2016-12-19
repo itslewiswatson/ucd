@@ -1,8 +1,0 @@
-<meta>
-    <info author="Noki" version="1" name="GTInetstats" description="View network/performance statistics of yourself in-game!" />
-	<min_mta_version server="1.4" client="1.4"></min_mta_version>
-	
-    <script src="client.lua" type="client" />
-    <script src="server.lua" />
-	
-</meta>

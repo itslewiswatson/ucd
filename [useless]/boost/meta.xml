@@ -1,5 +1,0 @@
-<meta>
-	<info author="Chris" version="1.0" type="script" name="Speed Booster" description="Move your scroll wheel up and down to increase speed!" />
-	<script src="booster.lua" type="client" />
-	<oop>true</oop>
-</meta>
