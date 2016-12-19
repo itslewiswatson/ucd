@@ -1,3 +1,7 @@
+Tuesday, 20th December 2016
+- Removed some clutter from the resources. (Noki)
+- UCD is now open-source (https://github.com/nokizorque/ucd) and the code base is now under the MIT License. (Noki + Risk)
+
 Saturday, 17th December 2016
 - Various bug fixes in groups panel. (Risk)
 - Optimized chat slightly. (Risk)
