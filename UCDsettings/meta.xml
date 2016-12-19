@@ -1,0 +1,17 @@
+<meta>
+	<info author="Risk" name="Settings" version="1" description="Settings script for UCD"/>
+	
+	<script src="settings.lua" type="client"/>
+	<script src="effects.lua" type="client"/>
+	
+	<export function="getSetting" type="client"/>
+	<export function="getSettingCategory" type="client"/>
+	<export function="getSettingsCategories" type="client"/>
+	<export function="getSettingsData" type="client"/>
+	<export function="getSettingData" type="client"/>
+	<export function="setSetting" type="client"/>
+	<export function="getAllSettings" type="client"/>
+	<export function="isValueAcceptableForSetting" type="client"/>
+	
+	<oop>true</oop>
+</meta>

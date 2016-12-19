@@ -1,3 +1,3 @@
 <meta>	<min_mta_version server="1.5.2" client="1.5.2"/>
-	<info author="Noki" description="Anticheat" type="script" version="1" />
-	<script src="antispam.lua" type="server"/>	<script src="togglecontrol.lua" type="client"/>	<oop>true</oop></meta>
+	<info author="Noki" description="Anticheat" type="script" version="1" />	
+	<script src="antispam.lua" type="server"/>	<script src="vehcontrol_s.lua" type="server"/>	<script src="vehcontrol_c.lua" type="client"/>	<script src="togglecontrol.lua" type="client"/>		<export function="toggleVehicle" type="server"/>	<export function="isVehicleDisabled" type="server"/>		<oop>true</oop></meta>

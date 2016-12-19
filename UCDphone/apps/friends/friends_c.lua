@@ -1,4 +1,5 @@
 Friends = {}
+Friends.open = false
 
 function Friends.create()
 	phone.friends = {button = {}, gridlist = {}}
@@ -32,6 +33,8 @@ end
 Friends.create()
 
 function Friends.toggle()
+	Friends.open = not Friends.open
+	-- o = opened
 	local o = 0
 	for _, gui in pairs(Friends.all) do
 		if (gui.visible) then
@@ -49,6 +52,7 @@ function Friends.GUI(state)
 	for _, gui in pairs(Friends.all) do
 		gui.visible = state
 	end
+	Friends.open = state
 end
 
 function Friends.switchView(view)
@@ -56,16 +60,7 @@ function Friends.switchView(view)
 		outputDebugString("v")
 		return
 	end
-	
-	-- Check if any friends gui element is open
-	--local o = 0
-	--for _, gui in pairs(Friends.all) do
-	--	if (gui.visible) then
-	--		o = o + 1
-	--	end
-	--end
-	--if (o == 0) then return end
-	
+	Friends.open = true	
 	for v, t in pairs(Friends.views) do
 		for _, gui in pairs(t) do
 			if (v == view) then
@@ -84,5 +79,5 @@ function Friends.onReceivedFriendsList(data)
 		guiGridListSetItemText(phone.friends.gridlist["friends"], row, 1, tostring(data[2]).." ("..tostring..data[1]..")")
 	end
 end
-addEvent("UCDphone.friends.onReceivedFriendsList", true)
-addEventHandler("UCDphone.friends.onReceivedFriendsList", root, Friends.onReceivedFriendsList)
+addEvent("CSGphone.friends.onReceivedFriendsList", true)
+addEventHandler("CSGphone.friends.onReceivedFriendsList", root, Friends.onReceivedFriendsList)

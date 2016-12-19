@@ -1,4 +1,5 @@
 Money = {}
+Money.open = false
 
 function Money.create()
 	phone.money = {button = {}, edit = {}, gridlist = {}}
@@ -22,6 +23,7 @@ Money.create()
 function Money.toggle()
 	for _, gui in pairs(Money.all) do
 		gui.visible = not gui.visible
+		Money.open = gui.visible
 	end
 end
 

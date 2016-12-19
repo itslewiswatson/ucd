@@ -2,13 +2,10 @@ function requestOpenGUI(player)
 	if (isElement(player)) then
 		client = player
 	end
-	--if (ACLGroup.get("Admin"):doesContainObject("user."..client.account.name)) then
-	if (isPlayerAdmin(client)) then
-		triggerClientEvent(client, "onOpenGUIRequest", resourceRoot)
+	if (canAdminDoAction(player, 23)) then
+		triggerLatentClientEvent(client, "UCDadmin.setjob.openGUI", resourceRoot)
 	end
 end
-addEvent("onOpenGUIRequest", true)
-addEventHandler("onOpenGUIRequest", resourceRoot, requestOpenGUI)
 addCommandHandler("setjob", requestOpenGUI)
 
 addEvent("UCDadmin.setjob.setJob", true)

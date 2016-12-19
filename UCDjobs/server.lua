@@ -67,6 +67,7 @@ function setPlayerJob(plr, jobName, skinID)
 	if (skinID and skinID ~= plr.model) then
 		-- Model
 		plr:setModel(skinID)
+		if (jobName == "Unoccupied") then return end
 		exports.UCDaccounts:SAD(plr, "jobModel", skinID)
 	else
 		--local _s = exports.UCDaccounts:GAD(plr, "model")
@@ -81,6 +82,7 @@ function setPlayerJob(plr, jobName, skinID)
 	local oldJob = plr:getData("Occupation")
 	-- Element data
 	plr:setData("Occupation", jobName)
+	plr:setData("job", jobName)
 	
 	-- Server event
 	triggerEvent("onPlayerGetJob", plr, jobName, oldJob)

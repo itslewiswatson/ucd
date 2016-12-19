@@ -232,7 +232,7 @@ function createGroup(name)
 		--end
 		
 		local d, t = exports.UCDutil:getTimeStamp()
-		db:exec("INSERT INTO `groups_` SET `groupName` = ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t) -- Perform the inital group creation	
+		db:exec("INSERT INTO `groups_` SET `groupName` = ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?, `gmotd` = ?, `gmotd_setter` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t, "", "") -- Perform the inital group creation	
 		db:exec("INSERT INTO `groups_members` (`account`, `groupName`, `rank`, `lastOnline`, `joined`, `timeOnline`, `warningLevel`) VALUES (?, ?, ?, ?, ?, ?, ?)", client.account.name, groupName, "Founder", getRealTime().yearday, d, getPlayerOnlineTime(client), 0) -- Make the client's membership official and grant founder status
 		setDefaultRanks(groupName)
 		
@@ -992,7 +992,7 @@ function groupChat(plr, _, ...)
 		messageGroup(getPlayerGroup(plr), "("..tostring(getPlayerGroup(plr))..") "..plr.name.." #FFFFFF"..msg, "chat")
 		for _, plr2 in ipairs(Element.getAllByType("player")) do
 			if (getPlayerGroup(plr2) == getPlayerGroup(plr)) then
-				exports.UCDchat:listInsert(plr2, "group", plr, msg)
+				exports.UCDchat:insert(plr2, "group", plr, msg)
 			end
 		end
 	end
@@ -1048,7 +1048,7 @@ function handleLogin2(qh, plr, account)
 	playerGroupCache[account][5] = getRealTime().yearday
 	local group_ = playerGroupCache[account][1]
 	local r, g, b = getGroupChatColour(group_)
-	local gmotd = groupTable[group_].gmotd
+	local gmotd = (groupTable[group_] and groupTable[group_].gmotd) or ""
 	
 	outputDebugString("handleLogin2: groupName = "..tostring(group_))
 	plr:setData("group", group_)
@@ -2093,7 +2093,7 @@ function allianceChat(plr, _, ...)
 			--messageGroup(groupName, "("..tostring(g_alliance[getPlayerGroup(plr)])..") "..plr.name.." #FFFFFF"..msg, "chat")
 			for _, plr2 in ipairs(getGroupOnlineMembers(groupName)) do
 				outputChatBox("("..tostring(alliance)..") "..plr.name.." #FFFFFF"..msg, plr2, 50, 100, 0, true)
-				exports.UCDchat:listInsert(plr2, "alliance", plr, msg)
+				exports.UCDchat:insert(plr2, "alliance", plr, msg)
 			end
 		end
 	end

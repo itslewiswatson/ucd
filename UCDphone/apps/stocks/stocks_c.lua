@@ -1,4 +1,5 @@
 Stocks = {}
+Stocks.open = false
 
 function Stocks.create()
 	phone.stocks = {gridlist = {}, button = {},	label = {}}
@@ -35,6 +36,7 @@ Stocks.create()
 function Stocks.toggle()
 	for _, gui in pairs(Stocks.all) do
 		gui.visible = not gui.visible
+		Stocks.open = gui.visible
 	end
 end
 
@@ -43,10 +45,10 @@ function Stocks.populate(all, own)
 	phone.stocks.gridlist["all"]:clear()
 	
 	for i, info in pairs(all) do		
-		local curr = exports.UCDutil:mathround(info[2], 2)
-		local prev = exports.UCDutil:mathround(info[3], 2)
+		local curr = exports.CSGutil:mathround(info[2], 2)
+		local prev = exports.CSGutil:mathround(info[3], 2)
 		local diff = curr - prev
-		local per = exports.UCDutil:mathround((diff / prev) * 100, 2) -- delta over original muliplied by 100%
+		local per = exports.CSGutil:mathround((diff / prev) * 100, 2) -- delta over original muliplied by 100%
 		local sign
 		if (diff <= 0) then
 			sign = ""
@@ -77,31 +79,31 @@ function Stocks.populate(all, own)
 	for k, v in pairs(own) do
 		local row = guiGridListAddRow(phone.stocks.gridlist["own"])
 		guiGridListSetItemText(phone.stocks.gridlist["own"], row, 1, tostring(k), false, false)
-		guiGridListSetItemText(phone.stocks.gridlist["own"], row, 2, tostring(exports.UCDutil:tocomma(v[1])), false, false)
+		guiGridListSetItemText(phone.stocks.gridlist["own"], row, 2, tostring(exports.CSGutil:tocomma(v[1])), false, false)
 			
 		guiGridListSetItemColor(phone.stocks.gridlist["own"], row, 1, 0, 200, 200)
 		guiGridListSetItemColor(phone.stocks.gridlist["own"], row, 2, 0, 200, 200)
 	end
 end
-addEvent("UCDphone.populateStocks", true)
-addEventHandler("UCDphone.populateStocks", root, Stocks.populate)
+addEvent("CSGphone.populateStocks", true)
+addEventHandler("CSGphone.populateStocks", root, Stocks.populate)
 
 --[[
 addEvent("onClientPlayerLogin", true)
 addEventHandler("onClientPlayerLogin", localPlayer, 
 	function ()
-		triggerServerEvent("UCDphone.getStocks", localPlayer)
+		triggerServerEvent("CSGphone.getStocks", localPlayer)
 	end
 )
 --]]
 
 function Stocks.onOpen(i)
 	if (i == 12) then
-		triggerServerEvent("UCDstocks.getStocks", localPlayer, true)
+		triggerServerEvent("CSGstocks.getStocks", localPlayer, true)
 	end
 end
-addEvent("UCDphone.onOpenApp")
-addEventHandler("UCDphone.onOpenApp", root, Stocks.onOpen)
+addEvent("CSGphone.onOpenApp")
+addEventHandler("CSGphone.onOpenApp", root, Stocks.onOpen)
 
 function Stocks.market()
 	executeCommandHandler("stocks")

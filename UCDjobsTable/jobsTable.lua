@@ -13,6 +13,10 @@ local jobsTable =
 	{
 		team = "Citizens",
 	},
+	["Unoccupied"] = 
+	{
+		team = "Unoccupied",
+	},
 	
 	-- Proper jobs
 	["Aviator"] = 
@@ -142,7 +146,7 @@ local jobsTable =
 		markers = 
 		{
 			{x = 248.9846, y = 67.7826, z = 1003.6406, interior = 6, dimension = 50000}, -- LSPD
-			{x = -1615.7192, y = 685.8612, z = 7.1875, interior = 0, dimension = 0},-- SFPD (temp)
+			{x = -1615.7192, y = 685.8612, z = 7.1875, interior = 0, dimension = 0}, -- SFPD (temp)
 		},
 		skins = 
 		{
@@ -154,7 +158,7 @@ local jobsTable =
 		},
 		colour = {r = 30, g = 144, b = 255},
 		blipID = 56,
-		desc = "da popo fuark",
+		desc = "A police officer's job is to keep the law. Stop the crime at all costs. Police officers must keep citizens safe and comfortable. Police officers' job must not damage any citizen -no matter how big the damage is-. Easy in, easy out.",
 	},
 	["Traffic Officer"] = 
 	{
@@ -170,7 +174,7 @@ local jobsTable =
 		},
 		colour = {r = 30, g = 144, b = 255},
 		blipID = nil,
-		desc = "traffic gonna get fuked lol",
+		desc = "A traffic officer's job is to make sure there are no traffic rules being broken. Hunt traffic rule breakers. Take them out -eliminate- if needed.",
 	},
 	["Detective"] = 
 	{
@@ -187,7 +191,7 @@ local jobsTable =
 		},
 		colour = {r = 30, g = 144, b = 255},
 		blipID = nil,
-		desc = "detectivate some niggas lmao",
+		desc = "A detective's job is to investigate cases. Detect the criminal, you must be focused and clever. With the help of forensic medicine, your job is to know the criminal with evidences.",
 	},
 }
 
@@ -235,6 +239,10 @@ local jobsRanks =
 
 function getJobRanks(jobName)
 	return jobsRanks[jobName]
+end
+
+function getJobsRanks()
+	return jobsRanks
 end
 
 -- If certain jobs only have vehicles with a certain colour

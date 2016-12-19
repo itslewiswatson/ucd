@@ -4,5 +4,7 @@
 	<script src="client.lua" type="client"/>
 	<export function="bcDrop" type="server"/>
 	<export function="bcGetTime" type="server"/>
+	<export function="bcGetTimeRaw" type="server"/>
+	<export function="bcGetTimeMsg" type="server"/>
 	<oop>true</oop>
 </meta>

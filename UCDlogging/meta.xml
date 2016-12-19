@@ -1,3 +1,3 @@
 <meta>	<min_mta_version server="1.5" client="1.5"/>
 	<info author="Noki" description="Logging system" type="script" version="1" />	
-	<script src="logging.slua" type="server"/>	<export function="new" type="server" />	<export function="adminLog" type="server" />	<script src="client.lua" type="client"/>		<oop>true</oop></meta>
+	<script src="logging.slua" type="server"/>	<export function="new" type="server" />	<export function="adminLog" type="server" />		<oop>true</oop></meta>

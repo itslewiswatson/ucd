@@ -34,176 +34,286 @@ local actions = {
 	"Unjail",
 }
 
-adminPanel.window[1] = GuiWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
-guiWindowSetSizable(adminPanel.window[1], false)
-guiSetVisible(adminPanel.window[1], false)
-exports.UCDutil:centerWindow(adminPanel.window[1])
-adminPanel.window[1].alpha = 1
+adminPanel.window = GuiWindow(697, 262, 665, 504, "UCD | Administrative & Management Panel", false)
+guiWindowSetSizable(adminPanel.window, false)
+guiSetVisible(adminPanel.window, false)
+exports.UCDutil:centerWindow(adminPanel.window)
+adminPanel.window.alpha = 1
 
-adminPanel.tabpanel[1] = guiCreateTabPanel(10, 24, 645, 470, false, adminPanel.window[1])
+adminPanel.tabpanel = guiCreateTabPanel(10, 24, 645, 470, false, adminPanel.window)
 
-adminPanel.tab[1] = guiCreateTab("Players", adminPanel.tabpanel[1])
+adminPanel.tab["players"] = guiCreateTab("Players", adminPanel.tabpanel)
 
-adminPanel.gridlist[1] = guiCreateGridList(10, 40, 151, 395, false, adminPanel.tab[1])
-guiGridListAddColumn(adminPanel.gridlist[1], "Player Name", 0.9)
-guiGridListSetSortingEnabled(adminPanel.gridlist[1], false)
+	adminPanel.gridlist[1] = guiCreateGridList(10, 40, 151, 395, false, adminPanel.tab["players"])
+	guiGridListAddColumn(adminPanel.gridlist[1], "Player Name", 0.9)
+	guiGridListSetSortingEnabled(adminPanel.gridlist[1], false)
 
-adminPanel.edit[1] = GuiEdit(10, 10, 151, 26, "", false, adminPanel.tab[1])
-adminPanel.label[1] = GuiLabel(170, 26, 290, 20, "Name: ", false, adminPanel.tab[1])
-adminPanel.label[2] = GuiLabel(170, 86, 290, 20, "IP: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[2], "right", false)
-adminPanel.label[3] = GuiLabel(170, 66, 290, 20, "Serial: ", false, adminPanel.tab[1])
-adminPanel.label[4] = GuiLabel(171, 86, 289, 20, "Version: ", false, adminPanel.tab[1])
-adminPanel.label[5] = GuiLabel(170, 46, 290, 20, "Account Name: ", false, adminPanel.tab[1])
-adminPanel.label[6] = GuiLabel(171, 375, 289, 21, "Playtime: ", false, adminPanel.tab[1])
-adminPanel.label[7] = GuiLabel(170, 126, 290, 22, "Country: ", false, adminPanel.tab[1])
-adminPanel.label[9] = GuiLabel(170, 210, 290, 20, "Location: ", false, adminPanel.tab[1])
-adminPanel.label[10] = GuiLabel(170, 230, 290, 20, "Dimension: ", false, adminPanel.tab[1])
-adminPanel.label[11] = GuiLabel(170, 230, 290, 20, "Interior: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[11], "right", false)
-adminPanel.label[12] = GuiLabel(170, 106, 290, 20, "Email: ", false, adminPanel.tab[1])
-adminPanel.label[13] = GuiLabel(170, 270, 290, 20, "Health: ", false, adminPanel.tab[1])
-adminPanel.label[14] = GuiLabel(170, 270, 290, 20, "Armour: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[14], "right", false)
-adminPanel.label[15] = GuiLabel(171, 355, 289, 20, "Money: ", false, adminPanel.tab[1])
-adminPanel.label[16] = GuiLabel(170, 355, 290, 20, "Bank: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[16], "right", false)
-adminPanel.label[17] = GuiLabel(170, 396, 291, 20, "Occupation: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[17], "right", false)
-adminPanel.label[18] = GuiLabel(171, 396, 290, 20, "Class: ", false, adminPanel.tab[1])
-adminPanel.label[19] = GuiLabel(171, 335, 289, 20, "Group: ", false, adminPanel.tab[1])
-adminPanel.label[20] = GuiLabel(171, 375, 289, 21, "Team: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[20], "right", false)
-adminPanel.label[21] = GuiLabel(170, 250, 267, 20, "Model: ", false, adminPanel.tab[1])
-adminPanel.label[22] = GuiLabel(171, 250, 290, 20, "Weapon: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[22], "right", false)
-adminPanel.label[23] = GuiLabel(170, 26, 290, 20, "Ping: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[23], "right", false)
-adminPanel.label[24] = GuiLabel(170, 416, 290, 20, "Vehicle: ", false, adminPanel.tab[1])
-adminPanel.label[25] = GuiLabel(170, 416, 290, 20, "Vehicle Health: ", false, adminPanel.tab[1])
-guiLabelSetHorizontalAlign(adminPanel.label[25], "right", false)
-adminPanel.label[26] = GuiLabel(170, 190, 290, 20, "X: N/A; Y: N/A; Z: N/A", false, adminPanel.tab[1])
-adminPanel.label[27] = GuiLabel(170, 168, 49, 22, "Locality", false, adminPanel.tab[1])
-guiSetFont(adminPanel.label[27], "default-bold-small")
-guiLabelSetColor(adminPanel.label[27], 255, 0, 0)
-adminPanel.label[28] = GuiLabel(170, 4, 49, 22, "Player", false, adminPanel.tab[1])
-guiSetFont(adminPanel.label[28], "default-bold-small")
-guiLabelSetColor(adminPanel.label[28], 255, 0, 0)
-adminPanel.label[29] = GuiLabel(170, 313, 49, 22, "Misc", false, adminPanel.tab[1])
-guiSetFont(adminPanel.label[29], "default-bold-small")
-guiLabelSetColor(adminPanel.label[29], 255, 0, 0)
-adminPanel.button[1] = GuiButton(488, 52, 147, 18, "Warp to player", false, adminPanel.tab[1])
-adminPanel.button[2] = GuiButton(488, 10, 147, 36, "Punish", false, adminPanel.tab[1])
-adminPanel.button[3] = GuiButton(488, 144, 72, 18, "Spectate", false, adminPanel.tab[1])
-adminPanel.button[4] = GuiButton(488, 76, 147, 18, "Warp player to", false, adminPanel.tab[1])
-adminPanel.button[5] = GuiButton(488, 100, 72, 18, "Reconnect", false, adminPanel.tab[1])
-adminPanel.button[6] = GuiButton(563, 100, 72, 18, "Kick", false, adminPanel.tab[1])
-adminPanel.button[7] = GuiButton(488, 122, 72, 18, "Freeze", false, adminPanel.tab[1])
-adminPanel.button[8] = GuiButton(563, 122, 72, 18, "Shout", false, adminPanel.tab[1])
-adminPanel.button[9] = GuiButton(563, 144, 72, 18, "Slap", false, adminPanel.tab[1])
-adminPanel.button[10] = GuiButton(488, 167, 72, 18, "Rename", false, adminPanel.tab[1])
-adminPanel.button[11] = GuiButton(488, 318, 147, 20, "View punishments", false, adminPanel.tab[1])
-adminPanel.button[12] = GuiButton(563, 167, 72, 18, "Screenshot", false, adminPanel.tab[1])
-adminPanel.button[13] = GuiButton(563, 195, 72, 18, "Set Model", false, adminPanel.tab[1])
-adminPanel.button[14] = GuiButton(488, 195, 72, 18, "Money", false, adminPanel.tab[1])
-adminPanel.button[15] = GuiButton(488, 220, 72, 18, "Set Health", false, adminPanel.tab[1])
-adminPanel.button[16] = GuiButton(563, 220, 72, 18, "Set Armour", false, adminPanel.tab[1])
-adminPanel.button[17] = GuiButton(488, 244, 72, 18, "Dimension", false, adminPanel.tab[1])
-adminPanel.button[18] = GuiButton(563, 244, 72, 18, "Interior", false, adminPanel.tab[1])
-adminPanel.button[19] = GuiButton(488, 369, 72, 18, "Fix", false, adminPanel.tab[1])
-adminPanel.button[20] = GuiButton(563, 369, 72, 18, "Eject", false, adminPanel.tab[1])
-adminPanel.button[21] = GuiButton(488, 392, 72, 18, "Destroy", false, adminPanel.tab[1])
-adminPanel.button[22] = GuiButton(563, 392, 72, 18, "Disable", false, adminPanel.tab[1])
-adminPanel.button[23] = GuiButton(563, 266, 72, 18, "Set Job", false, adminPanel.tab[1])
-adminPanel.button[24] = GuiButton(488, 341, 72, 18, "Anticheat", false, adminPanel.tab[1])
-adminPanel.button[25] = GuiButton(563, 341, 72, 18, "View Weps", false, adminPanel.tab[1])
-adminPanel.button[26] = GuiButton(488, 290, 72, 18, "Weapons", false, adminPanel.tab[1])
-adminPanel.button[27] = GuiButton(488, 266, 72, 18, "Give Vehicle", false, adminPanel.tab[1])
-adminPanel.button[28] = GuiButton(488, 416, 72, 18, "Blow", false, adminPanel.tab[1])
-adminPanel.button[29] = GuiButton(563, 416, 72, 18, "Freeze", false, adminPanel.tab[1])
-adminPanel.button[30] = GuiButton(563, 290, 72, 18, "Last Logins", false, adminPanel.tab[1])
+	adminPanel.edit[1] = GuiEdit(10, 10, 151, 26, "", false, adminPanel.tab["players"])
+	adminPanel.label[1] = GuiLabel(170, 26, 290, 20, "Name: ", false, adminPanel.tab["players"])
+	adminPanel.label[2] = GuiLabel(170, 86, 290, 20, "IP: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[2], "right", false)
+	adminPanel.label[3] = GuiLabel(170, 66, 290, 20, "Serial: ", false, adminPanel.tab["players"])
+	adminPanel.label[4] = GuiLabel(171, 86, 289, 20, "Version: ", false, adminPanel.tab["players"])
+	adminPanel.label[5] = GuiLabel(170, 46, 290, 20, "Account Name: ", false, adminPanel.tab["players"])
+	adminPanel.label[6] = GuiLabel(171, 375, 289, 21, "Play time: ", false, adminPanel.tab["players"])
+	adminPanel.label[7] = GuiLabel(170, 126, 290, 22, "Country: ", false, adminPanel.tab["players"])
+	adminPanel.label[9] = GuiLabel(170, 210, 290, 20, "Location: ", false, adminPanel.tab["players"])
+	adminPanel.label[10] = GuiLabel(170, 230, 290, 20, "Dimension: ", false, adminPanel.tab["players"])
+	adminPanel.label[11] = GuiLabel(170, 230, 290, 20, "Interior: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[11], "right", false)
+	adminPanel.label[12] = GuiLabel(170, 106, 290, 20, "Email: ", false, adminPanel.tab["players"])
+	adminPanel.label[13] = GuiLabel(170, 270, 290, 20, "Health: ", false, adminPanel.tab["players"])
+	adminPanel.label[14] = GuiLabel(170, 270, 290, 20, "Armour: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[14], "right", false)
+	adminPanel.label[15] = GuiLabel(171, 355, 289, 20, "Money: ", false, adminPanel.tab["players"])
+	adminPanel.label[16] = GuiLabel(170, 355, 290, 20, "Bank: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[16], "right", false)
+	adminPanel.label[17] = GuiLabel(170, 396, 291, 20, "Occupation: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[17], "right", false)
+	adminPanel.label[18] = GuiLabel(171, 396, 290, 20, "Class: ", false, adminPanel.tab["players"])
+	adminPanel.label[19] = GuiLabel(171, 335, 289, 20, "Group: ", false, adminPanel.tab["players"])
+	adminPanel.label[20] = GuiLabel(171, 375, 289, 21, "Team: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[20], "right", false)
+	adminPanel.label[21] = GuiLabel(170, 250, 267, 20, "Model: ", false, adminPanel.tab["players"])
+	adminPanel.label[22] = GuiLabel(171, 250, 290, 20, "Weapon: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[22], "right", false)
+	adminPanel.label[23] = GuiLabel(170, 26, 290, 20, "Ping: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[23], "right", false)
+	adminPanel.label[24] = GuiLabel(170, 416, 290, 20, "Vehicle: ", false, adminPanel.tab["players"])
+	adminPanel.label[25] = GuiLabel(170, 416, 290, 20, "Vehicle Health: ", false, adminPanel.tab["players"])
+	guiLabelSetHorizontalAlign(adminPanel.label[25], "right", false)
+	adminPanel.label[26] = GuiLabel(170, 190, 290, 20, "X: N/A; Y: N/A; Z: N/A", false, adminPanel.tab["players"])
+	adminPanel.label[27] = GuiLabel(170, 168, 49, 22, "Locality", false, adminPanel.tab["players"])
+	guiSetFont(adminPanel.label[27], "default-bold-small")
+	guiLabelSetColor(adminPanel.label[27], 255, 0, 0)
+	adminPanel.label[28] = GuiLabel(170, 4, 49, 22, "Player", false, adminPanel.tab["players"])
+	guiSetFont(adminPanel.label[28], "default-bold-small")
+	guiLabelSetColor(adminPanel.label[28], 255, 0, 0)
+	adminPanel.label[29] = GuiLabel(170, 313, 49, 22, "Misc", false, adminPanel.tab["players"])
+	guiSetFont(adminPanel.label[29], "default-bold-small")
+	guiLabelSetColor(adminPanel.label[29], 255, 0, 0)
+	adminPanel.button[1] = GuiButton(488, 52, 147, 18, "Warp to player", false, adminPanel.tab["players"])
+	adminPanel.button[2] = GuiButton(488, 10, 147, 36, "Punish", false, adminPanel.tab["players"])
+	adminPanel.button[3] = GuiButton(488, 144, 72, 18, "Spectate", false, adminPanel.tab["players"])
+	adminPanel.button[4] = GuiButton(488, 76, 147, 18, "Warp player to", false, adminPanel.tab["players"])
+	adminPanel.button[5] = GuiButton(488, 100, 72, 18, "Reconnect", false, adminPanel.tab["players"])
+	adminPanel.button[6] = GuiButton(563, 100, 72, 18, "Kick", false, adminPanel.tab["players"])
+	adminPanel.button[7] = GuiButton(488, 122, 72, 18, "Freeze", false, adminPanel.tab["players"])
+	adminPanel.button[8] = GuiButton(563, 122, 72, 18, "Shout", false, adminPanel.tab["players"])
+	adminPanel.button[9] = GuiButton(563, 144, 72, 18, "Slap", false, adminPanel.tab["players"])
+	adminPanel.button[10] = GuiButton(488, 167, 72, 18, "Rename", false, adminPanel.tab["players"])
+	adminPanel.button[11] = GuiButton(488, 318, 147, 20, "View Punishments", false, adminPanel.tab["players"])
+	adminPanel.button[12] = GuiButton(563, 167, 72, 18, "Screenshot", false, adminPanel.tab["players"])
+	adminPanel.button[13] = GuiButton(563, 195, 72, 18, "Set Model", false, adminPanel.tab["players"])
+	adminPanel.button[14] = GuiButton(488, 195, 72, 18, "Set Money", false, adminPanel.tab["players"])
+	adminPanel.button[15] = GuiButton(488, 220, 72, 18, "Set Health", false, adminPanel.tab["players"])
+	adminPanel.button[16] = GuiButton(563, 220, 72, 18, "Set Armour", false, adminPanel.tab["players"])
+	adminPanel.button[17] = GuiButton(488, 244, 72, 18, "Dimension", false, adminPanel.tab["players"])
+	adminPanel.button[18] = GuiButton(563, 244, 72, 18, "Interior", false, adminPanel.tab["players"])
+	adminPanel.button[19] = GuiButton(488, 369, 72, 18, "Fix", false, adminPanel.tab["players"])
+	adminPanel.button[20] = GuiButton(563, 369, 72, 18, "Eject", false, adminPanel.tab["players"])
+	adminPanel.button[21] = GuiButton(488, 392, 72, 18, "Destroy", false, adminPanel.tab["players"])
+	adminPanel.button[22] = GuiButton(563, 392, 72, 18, "Disable", false, adminPanel.tab["players"])
+	adminPanel.button[23] = GuiButton(563, 266, 72, 18, "Set Job", false, adminPanel.tab["players"])
+	adminPanel.button[24] = GuiButton(488, 341, 72, 18, "Anticheat", false, adminPanel.tab["players"])
+	adminPanel.button[25] = GuiButton(563, 341, 72, 18, "View Weps", false, adminPanel.tab["players"])
+	adminPanel.button[26] = GuiButton(488, 290, 72, 18, "Give Wep", false, adminPanel.tab["players"])
+	adminPanel.button[27] = GuiButton(488, 266, 72, 18, "Give Vehicle", false, adminPanel.tab["players"])
+	adminPanel.button[28] = GuiButton(488, 416, 72, 18, "Blow", false, adminPanel.tab["players"])
+	adminPanel.button[29] = GuiButton(563, 416, 72, 18, "Freeze", false, adminPanel.tab["players"])
+	adminPanel.button[30] = GuiButton(563, 290, 72, 18, "Last Logins", false, adminPanel.tab["players"])
 
--- Disable all at first
-for i = 1, #adminPanel.button do
-	adminPanel.button[i].enabled = false
-end
+	-- Disable all at first
+	for i = 1, #adminPanel.button do
+		adminPanel.button[i].enabled = false
+	end
 
-confirm.window[1] = GuiWindow(792, 480, 324, 111, "UCD | Admin - ", false)
-confirm.window[1].sizable = false
-confirm.window[1].visible = false
-confirm.button[1] = GuiButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
-confirm.button[2] = GuiButton(169, 82, 101, 19, "Cancel", false, confirm.window[1])
-confirm.edit[1] = GuiEdit(35, 47, 260, 25, "", false, confirm.window[1])
-confirm.label[1] = GuiLabel(36, 21, 259, 20, "Set the motherfucking label text nigga", false, confirm.window[1])
-guiLabelSetHorizontalAlign(confirm.label[1], "center", false)
-guiLabelSetVerticalAlign(confirm.label[1], "center") 
- 
-WPT.window[1] = GuiWindow(850, 390, 201, 348, "UCD Admin | Warp Player To", false)
-WPT.window[1].sizable = false
-WPT.window[1].visible = false
-WPT.button[1] = GuiButton(10, 304, 85, 34, "Warp Player To", false, WPT.window[1])
-WPT.label[1] = GuiLabel(10, 24, 179, 21, "Select a player from the grid", false, WPT.window[1])
-guiLabelSetHorizontalAlign(WPT.label[1], "center", false)
-WPT.gridlist[1] = guiCreateGridList(10, 45, 178, 249, false, WPT.window[1])
-guiGridListAddColumn(WPT.gridlist[1], "Player", 0.9)
-WPT.button[2] = GuiButton(103, 304, 85, 34, "Close", false, WPT.window[1])
+	confirm.window[1] = GuiWindow(792, 480, 324, 111, "UCD | Admin - ", false)
+	confirm.window[1].sizable = false
+	confirm.window[1].visible = false
+	confirm.button[1] = GuiButton(58, 82, 101, 19, "Confirm", false, confirm.window[1])
+	confirm.button[2] = GuiButton(169, 82, 101, 19, "Cancel", false, confirm.window[1])
+	confirm.edit[1] = GuiEdit(35, 47, 260, 25, "", false, confirm.window[1])
+	confirm.label[1] = GuiLabel(36, 21, 259, 20, "Set the motherfucking label text nigga", false, confirm.window[1])
+	guiLabelSetHorizontalAlign(confirm.label[1], "center", false)
+	guiLabelSetVerticalAlign(confirm.label[1], "center") 
+	 
+	WPT.window[1] = GuiWindow(850, 390, 201, 348, "UCD Admin | Warp Player To", false)
+	WPT.window[1].sizable = false
+	WPT.window[1].visible = false
+	WPT.button[1] = GuiButton(10, 304, 85, 34, "Warp Player To", false, WPT.window[1])
+	WPT.label[1] = GuiLabel(10, 24, 179, 21, "Select a player from the grid", false, WPT.window[1])
+	guiLabelSetHorizontalAlign(WPT.label[1], "center", false)
+	WPT.gridlist[1] = guiCreateGridList(10, 45, 178, 249, false, WPT.window[1])
+	guiGridListAddColumn(WPT.gridlist[1], "Player", 0.9)
+	WPT.button[2] = GuiButton(103, 304, 85, 34, "Close", false, WPT.window[1])
 
-local weapons = {
-	"Colt 45", "Silenced", "Deagle", "Shotgun", "Sawed-off", "Combat Shotgun",
-	"Uzi", "MP5", "Tec-9", "AK-47", "M4", "Rifle", "Sniper",
-	"Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
-}
-giveWeapon_.window[1] = GuiWindow(244, 682, 317, 160, "UCD | Admin - Give Weapon", false)
-giveWeapon_.window[1].sizable = false
-giveWeapon_.window[1].visible = false
-giveWeapon_.edit[1] = GuiEdit(226, 48, 81, 25, "", false, giveWeapon_.window[1])
-giveWeapon_.combobox[1] = GuiComboBox(10, 48, 197, 100, "", false, giveWeapon_.window[1])
-for _, wep in ipairs(weapons) do
-	guiComboBoxAddItem(giveWeapon_.combobox[1], wep)
-end
-giveWeapon_.label[1] = GuiLabel(10, 24, 197, 19, "Weapon", false, giveWeapon_.window[1])
-guiLabelSetHorizontalAlign(giveWeapon_.label[1], "center", false)
-guiLabelSetVerticalAlign(giveWeapon_.label[1], "center")
-giveWeapon_.label[2] = GuiLabel(226, 24, 81, 19, "Ammo", false, giveWeapon_.window[1])
-guiLabelSetHorizontalAlign(giveWeapon_.label[2], "center", false)
-guiLabelSetVerticalAlign(giveWeapon_.label[2], "center")
-giveWeapon_.button[1] = GuiButton(66, 120, 87, 22, "Confirm", false, giveWeapon_.window[1])
-giveWeapon_.button[2] = GuiButton(168, 120, 87, 22, "Close", false, giveWeapon_.window[1])
+	local weapons = {
+		"Colt 45", "Silenced", "Deagle", "Shotgun", "Sawed-off", "Combat Shotgun",
+		"Uzi", "MP5", "Tec-9", "AK-47", "M4", "Rifle", "Sniper",
+		"Minigun", "Grenade", "Satchel", "Teargas", "Parachute"
+	}
+	giveWeapon_.window[1] = GuiWindow(244, 682, 317, 160, "UCD | Admin - Give Weapon", false)
+	giveWeapon_.window[1].sizable = false
+	giveWeapon_.window[1].visible = false
+	giveWeapon_.edit[1] = GuiEdit(226, 48, 81, 25, "", false, giveWeapon_.window[1])
+	giveWeapon_.combobox[1] = GuiComboBox(10, 48, 197, 100, "", false, giveWeapon_.window[1])
+	for _, wep in ipairs(weapons) do
+		guiComboBoxAddItem(giveWeapon_.combobox[1], wep)
+	end
+	giveWeapon_.label[1] = GuiLabel(10, 24, 197, 19, "Weapon", false, giveWeapon_.window[1])
+	guiLabelSetHorizontalAlign(giveWeapon_.label[1], "center", false)
+	guiLabelSetVerticalAlign(giveWeapon_.label[1], "center")
+	giveWeapon_.label[2] = GuiLabel(226, 24, 81, 19, "Ammo", false, giveWeapon_.window[1])
+	guiLabelSetHorizontalAlign(giveWeapon_.label[2], "center", false)
+	guiLabelSetVerticalAlign(giveWeapon_.label[2], "center")
+	giveWeapon_.button[1] = GuiButton(66, 120, 87, 22, "Confirm", false, giveWeapon_.window[1])
+	giveWeapon_.button[2] = GuiButton(168, 120, 87, 22, "Close", false, giveWeapon_.window[1])
+		
+	-- Punish window
+	punish.window = GuiWindow(535, 156, 272, 358, "UCD | Admin - Punish", false)
+	punish.window.visible = false
+	punish.window.sizable = false
+	punish.window.alpha = 255
+	punish.combobox["rules"] = GuiComboBox(9, 73, 253, 240, "Select rule", false, punish.window)
+	for _, reason in ipairs(reasons) do
+		guiComboBoxAddItem(punish.combobox["rules"], tostring(reason))
+	end
+	punish.edit["custom"] = GuiEdit(9, 38, 253, 25, "", false, punish.window)
+	punish.button["cancel"] = GuiButton(10, 310, 105, 38, "Cancel", false, punish.window)
+	punish.button["punish"] = GuiButton(157, 310, 105, 38, "Punish", false, punish.window)
+	punish.checkbox["custom_duration"] = GuiCheckBox(9, 141, 16, 16, "", false, false, punish.window)
+	punish.label[1] = GuiLabel(34, 141, 228, 16, "Use custom duration (otherwise it's auto)", false, punish.window)
+	punish.edit["min"] = GuiEdit(10, 167, 65, 29, "", false, punish.window)
+	punish.edit["hour"] = GuiEdit(99, 167, 65, 29, "", false, punish.window)
+	punish.edit["day"] = GuiEdit(188, 167, 65, 29, "", false, punish.window)
+	punish.radiobutton[1] = GuiRadioButton(10, 206, 15, 15, "", false, punish.window)
+	punish.label[2] = GuiLabel(35, 206, 40, 15, "Mins", false, punish.window)
+	punish.radiobutton[2] = GuiRadioButton(99, 206, 15, 15, "", false, punish.window)
+	punish.label[3] = GuiLabel(124, 206, 40, 15, "Hours", false, punish.window)
+	punish.radiobutton[3] = GuiRadioButton(187, 206, 15, 15, "", false, punish.window)
+	punish.label[4] = GuiLabel(212, 206, 40, 15, "Days", false, punish.window)
+	punish.combobox["punishtype"] = GuiComboBox(9, 231, 253, 117, "Select punish type", false, punish.window)
+	for _, action in ipairs(actions) do
+		guiComboBoxAddItem(punish.combobox["punishtype"], tostring(action))
+	end
+	punish.edit["reason"] = GuiEdit(9, 106, 253, 25, "", false, punish.window)
+	punish.label[5] = GuiLabel(9, 21, 253, 16, "Manual syntax: acc:name or serial (bans only)", false, punish.window)
+	guiLabelSetHorizontalAlign(punish.label[5], "center", false)
+	punish.label[6] = GuiLabel(9, 271, 252, 16, "-1 minutes = permanent (bans only)", false, punish.window)
+	guiLabelSetHorizontalAlign(punish.label[6], "center", false)
+
+	setJob = {}
+	setJob.window 							= GuiWindow(362, 112, 614, 376, "UCD | Set Job", false)
+	setJob.window.sizable = false
+	setJob.window.visible = false
+	setJob.window.alpha = 1
+	setJob.playersGrid 						= GuiGridList(9, 25, 187, 281, false, setJob.window)
+	setJob.playersGrid:addColumn("Player:", 0.9)
+	setJob.jobsGrid 						= GuiGridList(213, 25, 187, 281, false, setJob.window)
+	setJob.jobsGrid:addColumn("Job:", 0.9)
+	setJob.skinsGrid 						= GuiGridList(416, 25, 187, 281, false, setJob.window)
+	setJob.skinsGrid:addColumn("Skin:", 0.5)
+	setJob.skinsGrid:addColumn("Skin ID:", 0.4)
+	setJob.setButton 						= GuiButton(9, 316, 187, 46, "Set player job", false, setJob.window)
+	setJob.removeButton 					= GuiButton(213, 316, 187, 46, "Remove player from job", false, setJob.window)
+	setJob.cancelButton 					= GuiButton(416, 316, 187, 46, "Cancel", false, setJob.window)
+
+	viewPunish = {}
+	viewPunish.window 						= GuiWindow(0, 0, 825, 515, "UCD | Admin - View Punishments", false)
+	viewPunish.window.sizable 				= false
+	viewPunish.window.visible 				= false
+	viewPunish.tabPanel 					= GuiTabPanel(0, 20, 825, 455, false, viewPunish.window)
+	viewPunish.serialPunishTab 				= GuiTab("Serial punishments", viewPunish.tabPanel)
+	viewPunish.accountPunishTab 			= GuiTab("Account punishments", viewPunish.tabPanel)
+	viewPunish.serialPunishGrid 			= GuiGridList(10, 10, 790, 410, false, viewPunish.serialPunishTab)
+	viewPunish.accountPunishGrid 			= GuiGridList(10, 10, 790, 410, false, viewPunish.accountPunishTab)
+	viewPunish.closeButton 					= GuiButton(0, 480, 825, 20, "Close", false, viewPunish.window)
+	viewPunish.serialPunishGrid:addColumn("Account", 0.125)
+	viewPunish.serialPunishGrid:addColumn("Log", 0.747)
+	viewPunish.accountPunishGrid:addColumn("Serial", 0.25)
+	viewPunish.accountPunishGrid:addColumn("Log", 0.7)
+
+	-- fuark this identation but i have to do the same
 	
--- Punish window
-punish.window = GuiWindow(535, 156, 272, 358, "UCD | Admin - Punish", false)
-punish.window.visible = false
-punish.window.sizable = false
-punish.window.alpha = 255
-punish.combobox["rules"] = GuiComboBox(9, 73, 253, 240, "Select rule", false, punish.window)
-for _, reason in ipairs(reasons) do
-	guiComboBoxAddItem(punish.combobox["rules"], tostring(reason))
-end
-punish.edit["custom"] = GuiEdit(9, 38, 253, 25, "", false, punish.window)
-punish.button["cancel"] = GuiButton(10, 310, 105, 38, "Cancel", false, punish.window)
-punish.button["punish"] = GuiButton(157, 310, 105, 38, "Punish", false, punish.window)
-punish.checkbox["custom_duration"] = GuiCheckBox(9, 141, 16, 16, "", false, false, punish.window)
-punish.label[1] = GuiLabel(34, 141, 228, 16, "Use custom duration (otherwise it's auto)", false, punish.window)
-punish.edit["min"] = GuiEdit(10, 167, 65, 29, "", false, punish.window)
-punish.edit["hour"] = GuiEdit(99, 167, 65, 29, "", false, punish.window)
-punish.edit["day"] = GuiEdit(188, 167, 65, 29, "", false, punish.window)
-punish.radiobutton[1] = GuiRadioButton(10, 206, 15, 15, "", false, punish.window)
-punish.label[2] = GuiLabel(35, 206, 40, 15, "Mins", false, punish.window)
-punish.radiobutton[2] = GuiRadioButton(99, 206, 15, 15, "", false, punish.window)
-punish.label[3] = GuiLabel(124, 206, 40, 15, "Hours", false, punish.window)
-punish.radiobutton[3] = GuiRadioButton(187, 206, 15, 15, "", false, punish.window)
-punish.label[4] = GuiLabel(212, 206, 40, 15, "Days", false, punish.window)
-punish.combobox["punishtype"] = GuiComboBox(9, 231, 253, 117, "Select punish type", false, punish.window)
-for _, action in ipairs(actions) do
-	guiComboBoxAddItem(punish.combobox["punishtype"], tostring(action))
-end
-punish.edit["reason"] = GuiEdit(9, 106, 253, 25, "", false, punish.window)
-punish.label[5] = guiCreateLabel(9, 21, 253, 16, "Manual syntax: acc:name or serial (bans only)", false, punish.window)
-guiLabelSetHorizontalAlign(punish.label[5], "center", false)
-punish.label[6] = guiCreateLabel(9, 271, 252, 16, "-1 minutes = permanent (bans only)", false, punish.window)
-guiLabelSetHorizontalAlign(punish.label[6], "center", false)
+	viewLogins = {}
+	viewLogins.window 						= GuiWindow(0, 0, 825, 515, "UCD | Admin - View Last Logins", false)
+	viewLogins.window.sizable 				= false
+	viewLogins.window.visible 				= false
+	viewLogins.tabPanel 					= GuiTabPanel(0, 20, 825, 455, false, viewLogins.window)
+	viewLogins.serialLoginsTab 				= GuiTab("Serial punishments", viewLogins.tabPanel)
+	viewLogins.accountLoginsTab 			= GuiTab("Account punishments", viewLogins.tabPanel)
+	viewLogins.serialLoginsGrid 			= GuiGridList(10, 10, 790, 410, false, viewLogins.serialLoginsTab)
+	viewLogins.accountLoginsGrid 			= GuiGridList(10, 10, 790, 410, false, viewLogins.accountLoginsTab)
+	viewLogins.closeButton         			= GuiButton(0, 480, 825, 20, "Close", false, viewLogins.window) -- REMEMBERED IT HAHAHA
+	viewLogins.serialLoginsGrid:addColumn("Account", 0.125)
+	viewLogins.serialLoginsGrid:addColumn("Log", 0.747)
+	viewLogins.accountLoginsGrid:addColumn("Serial", 0.25)
+	viewLogins.accountLoginsGrid:addColumn("Log", 0.7)
+	
+adminPanel.tab["bans"] = guiCreateTab("Bans", adminPanel.tabpanel)
+	adminPanel.gridlist["banList"] 			= GuiGridList(348, 11, 287, 425, false, adminPanel.tab["bans"])
+	
+	adminPanel.label["banInfo"] 			= GuiLabel(10, 11, 328, 77, "Search, manage and remove bans here.\n\nNote: when searching for bans, prefix the ban value.\nAccounts are acc:name.\nSerials are always 32 characters in length.", false, adminPanel.tab["bans"])
+	
+	adminPanel.edit["searchValue"] 			= GuiEdit(10, 126, 246, 29, "", false, adminPanel.tab["bans"])
+	adminPanel.edit["searchBanisher"] 		= GuiEdit(10, 195, 246, 29, "", false, adminPanel.tab["bans"])
+	
+	adminPanel.label["valueLabel"] 			= GuiLabel(10, 106, 246, 20, "Value:", false, adminPanel.tab["bans"])
+	adminPanel.label["banisherLabel"] 		= GuiLabel(10, 175, 246, 20, "Banisher:", false, adminPanel.tab["bans"])
+	
+	adminPanel.button["searchLabel"] 		= GuiButton(56, 234, 152, 36, "Search", false, adminPanel.tab["bans"])
+	adminPanel.label["withSelected"] 		= GuiLabel(10, 289, 246, 16, "With selected:", false, adminPanel.tab["bans"])
+	adminPanel.button["editBan"] 			= GuiButton(10, 400, 152, 36, "Edit Ban", false, adminPanel.tab["bans"])
+	adminPanel.button["unban"] 				= GuiButton(172, 400, 152, 36, "Unban", false, adminPanel.tab["bans"])
+	adminPanel.label["and/or"] 				= GuiLabel(10, 155, 246, 20, "and/or", false, adminPanel.tab["bans"])
+	
+	adminPanel.label["bannedValue"] 		= GuiLabel(31, 311, 293, 15, "Value: ", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedOn"] 			= GuiLabel(31, 326, 293, 15, "When: ", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedDuration"] 		= GuiLabel(31, 341, 293, 15, "Duration: ", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedReason"] 		= GuiLabel(31, 356, 293, 15, "Reason:", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedBanisher"] 		= GuiLabel(31, 371, 293, 15, "Banisher:", false, adminPanel.tab["bans"])
 
-windows = {adminPanel.window[1], giveWeapon_.window[1], WPT.window[1], punish.window}
+adminPanel.tab["adminLog"] = guiCreateTab("Admin Log", adminPanel.tabpanel)
+
+function viewPunish.autoSize()
+	for _, gui in pairs(viewPunish) do
+		if (isElement(gui) and gui.type == "gui-gridlist") then -- isElement coz functions arent elements
+			for i = 1, gui.columnCount do
+				gui:autoSizeColumn(i)
+				gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
+				-- yeah auto size function doesn't work well, idk why doesn't it show last letter
+				-- i wonder why dont they make guiGridListGetColumnWidth in OOP
+			end
+		end
+	end
+end
+
+function viewLogins.autoSize() -- use this to auto size columns after adding rows
+	for _, gui in pairs(viewLogins) do
+		if (isElement(gui) and gui.type == "gui-gridlist") then -- isElement coz functions arent elements
+			for i = 1, gui.columnCount do
+				gui:autoSizeColumn(i)
+				gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
+				-- yeah auto size function doesn't work well, idk why doesn't it show last letter
+				-- i wonder why dont they have guiGridListGetColumnWidth OOPed
+				-- yeah copied cuz lazy and no time
+			end
+		end
+	end
+end
+
+function viewPunish.close()
+	viewPunish.window.visible = false
+end
+addEventHandler("onClientGUIClick", viewPunish.closeButton, viewPunish.close, false)
+
+function viewLogins.close()
+	viewLogins.window.visible = false
+end
+addEventHandler("onClientGUIClick", viewLogins.closeButton, viewLogins.close, false)
+
+windows = {adminPanel.window, giveWeapon_.window[1], WPT.window[1], punish.window, setJob.window, viewPunish.window, viewLogins.window}
 for _, gui in ipairs(windows) do
 	if (gui and isElement(gui)) then
 		exports.UCDutil:centerWindow(gui)
@@ -344,7 +454,7 @@ addEventHandler("onClientPlayerChangeNick", root,
 )
 
 function updateInformation()
-	if (adminPanel.window[1].visible) then
+	if (adminPanel.window.visible) then
 		-- Update team colours
 		for i = 0, guiGridListGetRowCount(adminPanel.gridlist[1]) - 1 do
 			local plr = guiGridListGetItemData(adminPanel.gridlist[1], i, 1)
@@ -385,7 +495,7 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local class = plr:getData("Class") or "N/A"
 	local occupation = plr:getData("Occupation") or "N/A"
 	local ping = plr.ping
-	local suburb, city = getZoneName(loc.x, loc.y, loc.z), getZoneName(loc.x, loc.y, loc.z, true)
+	local suburb, city = getZoneName(loc), getZoneName(loc, true)
 	local country = plr:getData("Country") or "N/A"
 	local playtime = plr:getData("dxscoreboard_playtime") or "N/A"
 	
@@ -400,33 +510,30 @@ function updatePlayerInformation(plr, getServerSidedData)
 	local vehicle, vehicleHealth
 	if not plr.vehicle then 
 		vehicle = "Not in a vehicle" 
-		vehicleHealth = "N/A" 
+		vehicleHealth = "N/A"
 	else 
 		vehicle = plr.vehicle.name
 		vehicleHealth = tostring(exports.UCDutil:mathround(plr.vehicle.health / 10).."%")
 	end
 	
-	adminPanel.label[1]:setText("Name: "..name)
-	adminPanel.label[5]:setText("Account Name: "..accountName)
-	adminPanel.label[6]:setText("Playtime: "..playtime)
-	adminPanel.label[7]:setText("Country: "..country)
-	--adminPanel.label[8]:setText("Account ID: "..accountID)
-	adminPanel.label[9]:setText("Location: "..suburb..", "..city)
-	adminPanel.label[10]:setText("Dimension: "..dim)
-	adminPanel.label[11]:setText("Interior: "..int)
-	adminPanel.label[13]:setText("Health: "..health)
-	adminPanel.label[14]:setText("Armour: "..armour)
-	--adminPanel.label[15]:setText("Money: ".."$"..tostring(exports.UCDutil:tocomma(money)))
-	adminPanel.label[17]:setText("Occupation: "..occupation)
-	adminPanel.label[18]:setText("Class: "..class)
-	adminPanel.label[19]:setText("Group: "..group)
-	adminPanel.label[20]:setText("Team: "..team)
-	adminPanel.label[21]:setText("Model: "..model)
-	--adminPanel.label[22]:setText("Weapon: "..tostring(weapon).." ["..tostring(ammo).."]")
-	adminPanel.label[23]:setText("Ping: "..ping)
-	adminPanel.label[24]:setText("Vehicle: "..vehicle)
-	adminPanel.label[25]:setText("Vehicle Health: "..vehicleHealth)
-	adminPanel.label[26]:setText("X: "..exports.UCDutil:mathround(loc.x, 3).."; Y: "..exports.UCDutil:mathround(loc.y, 3).."; Z: "..exports.UCDutil:mathround(loc.z, 3))
+	adminPanel.label[1]:setText("Name: "..tostring(name))
+	adminPanel.label[5]:setText("Account Name: "..tostring(accountName))
+	adminPanel.label[6]:setText("Play Time: "..tostring(playtime))
+	adminPanel.label[7]:setText("Country: "..tostring(country))
+	adminPanel.label[9]:setText("Location: "..tostring(suburb)..", "..tostring(city))
+	adminPanel.label[10]:setText("Dimension: "..tostring(dim))
+	adminPanel.label[11]:setText("Interior: "..tostring(int))
+	adminPanel.label[13]:setText("Health: "..tostring(health))
+	adminPanel.label[14]:setText("Armour: "..tostring(armour))
+	adminPanel.label[17]:setText("Occupation: "..tostring(occupation))
+	adminPanel.label[18]:setText("Class: "..tostring(class))
+	adminPanel.label[19]:setText("Group: "..tostring(group))
+	adminPanel.label[20]:setText("Team: "..tostring(team))
+	adminPanel.label[21]:setText("Model: "..tostring(model))
+	adminPanel.label[23]:setText("Ping: "..tostring(ping))
+	adminPanel.label[24]:setText("Vehicle: "..tostring(vehicle))
+	adminPanel.label[25]:setText("Vehicle Health: "..tostring(vehicleHealth))
+	adminPanel.label[26]:setText("X: "..tostring(exports.UCDutil:mathround(loc.x, 3)).."; Y: "..tostring(exports.UCDutil:mathround(loc.y, 3)).."; Z: "..tostring(exports.UCDutil:mathround(loc.z, 3)))
 	
 	if (getServerSidedData) then
 		-- This has a callback function where the data is updated
@@ -437,12 +544,21 @@ end
 function requestPlayerData_callback(sync)
 	--outputDebugString("Client callback")
 	local data = sync
+<<<<<<< HEAD
 	adminPanel.label[2]:setText("IP: "..data["ip"])
 	adminPanel.label[3]:setText("Serial: "..data["serial"])
 	adminPanel.label[4]:setText("Version: "..data["version"])
 	adminPanel.label[12]:setText("Email: "..data["email"] or "N/A")
 	adminPanel.label[16]:setText("Bank: ".."$"..tostring(exports.UCDutil:tocomma(data["bank"])))
 	adminPanel.label[15]:setText("Money: $"..tostring(exports.UCDutil:tocomma(data["money"])))
+=======
+	adminPanel.label[2]:setText("IP: "..tostring(data["ip"] or "N/A"))
+	adminPanel.label[3]:setText("Serial: "..tostring(data["serial"] or "N/A"))
+	adminPanel.label[4]:setText("Version: "..tostring(data["version"] or "N/A"))
+	adminPanel.label[12]:setText("Email: "..tostring(data["email"] or "N/A"))
+	adminPanel.label[16]:setText("Bank: ".."$"..tostring(exports.UCDutil:tocomma(data["bank"]) or "0"))
+	adminPanel.label[15]:setText("Money: $"..tostring(exports.UCDutil:tocomma(data["money"]) or "0"))
+>>>>>>> bitbucket/master
 	adminPanel.label[22]:setText("Weapon: "..tostring(data["weapon"]))
 end
 addEvent("UCDadmin.requestPlayerData:callback", true)
@@ -462,7 +578,7 @@ function playerSelection()
 			adminPanel.label[3]:setText("Serial: ")
 			adminPanel.label[4]:setText("Version: ")
 			adminPanel.label[5]:setText("Account Name: ")
-			adminPanel.label[6]:setText("Playtime: ")
+			adminPanel.label[6]:setText("Play Time: ")
 			adminPanel.label[7]:setText("Country: ")
 			adminPanel.label[9]:setText("Location: ")
 			adminPanel.label[10]:setText("Dimension: ")
@@ -496,18 +612,19 @@ function toggleWPT(plr)
 			guiBringToFront(WPT.window[1])
 			for _, player in ipairs(Element.getAllByType("player")) do
 				if (plr ~= player and exports.UCDaccounts:isPlayerLoggedIn(player)) then
-					local r, g, b
+					
+					local r, g, b = 255, 255, 255
+					
 					if (player.team) then
-			r, g, b = player.team:getColor()
-					else
-			r, g, b = 255, 255, 255
-		end
-		local row = guiGridListAddRow(WPT.gridlist[1])
-		guiGridListSetItemText(WPT.gridlist[1], row, 1, tostring(player.name), false, false)
-		guiGridListSetItemData(WPT.gridlist[1], row, 1, player)
-		guiGridListSetItemColor(WPT.gridlist[1], row, 1, r, g, b)
-	end
-end
+						r, g, b = player.team:getColor()
+					end
+					
+					local row = guiGridListAddRow(WPT.gridlist[1])
+					guiGridListSetItemText(WPT.gridlist[1], row, 1, tostring(player.name), false, false)
+					guiGridListSetItemData(WPT.gridlist[1], row, 1, player)
+					guiGridListSetItemColor(WPT.gridlist[1], row, 1, r, g, b)
+				end
+			end
 		end
 	end
 end
@@ -532,7 +649,7 @@ addEventHandler("onClientGUIClick", WPT.button[1], handleWPTInput)
 addEventHandler("onClientGUIClick", WPT.button[2], handleWPTInput)
 
 function adminAction()
-	if (source ~= adminPanel.gridlist[1] and source.parent == adminPanel.tab[1]) then
+	if (source ~= adminPanel.gridlist[1] and source.parent == adminPanel.tab["players"]) then
 		local plr = getSelectedPlayer()
 		local action = source.text:lower()
 		if not action then return end
@@ -548,7 +665,7 @@ function adminAction()
 		end
 		
 		if (action == "punish") then
--- open punish gui
+			-- open punish gui
 		elseif (action == "warp to player") then
 			triggerServerEvent("UCDadmin.warpToPlayer", localPlayer, plr)
 		elseif (action == "warp player to") then
@@ -565,7 +682,7 @@ function adminAction()
 				triggerServerEvent("UCDadmin.freeze", localPlayer, plr)
 			end
 		elseif (action == "shout") then
-
+			createInputBox("UCD | Admin - Shout", "Enter the desired text", "", "UCDadmin.shout", localPlayer, plr)
 		elseif (action == "spectate") then
 			triggerServerEvent("UCDadmin.spectate", resourceRoot, plr)
 		elseif (action == "slap") then
@@ -573,9 +690,9 @@ function adminAction()
 		elseif (action == "rename") then
 			createInputBox("UCD | Admin - Rename", "Enter the desired name", exports.UCDutil:randomstring(8), "UCDadmin.rename", localPlayer, plr)
 		elseif (action == "screenshot") then
-
-		elseif (action == "money") then
-
+			-- read actions_s.lua pls
+		elseif (action == "set money") then
+			createInputBox("UCD | Admin - Set Money", "Enter the desired amount of money", "", "UCDadmin.setMoney", localPlayer, plr)
 		elseif (action == "set model") then
 			createInputBox("UCD | Admin - Model", "Enter the desired model", 0, "UCDadmin.setModel", localPlayer, plr)
 		elseif (action == "set health") then
@@ -591,15 +708,42 @@ function adminAction()
 		elseif (action == "last logins") then
 
 		elseif (action == "set job") then
-			triggerEvent("UCDadmin.setjob.openGUI", resourceRoot, plr)
-		elseif (action == "weapons") then
+			openGUI(plr)
+		-- elseif (action == "give wep") then handled #328
 
 		elseif (action == "view punishments") then
-
+			triggerServerEvent("UCDadmin.viewPunishments.call", localPlayer, plr)
+			viewPunish.window.visible = true
+			guiBringToFront(viewPunish.window)
+			viewPunish.serialPunishGrid:clear()
+			viewPunish.accountPunishGrid:clear()
+			local serialRow = viewPunish.serialPunishGrid:addRow()
+			local accountRow = viewPunish.accountPunishGrid:addRow()
+			viewPunish.serialPunishGrid:setItemText(serialRow, 1, "CLEAR", true, false)
+			viewPunish.serialPunishGrid:setItemText(serialRow, 2, "CLEAR", true, false)
+			viewPunish.accountPunishGrid:setItemText(accountRow, 1, "CLEAR", true, false)
+			viewPunish.accountPunishGrid:setItemText(accountRow, 2, "CLEAR", true, false)
 		elseif (action == "anticheat") then
 
 		elseif (action == "view weps") then
-
+			outputChatBox("VIEWING "..tostring(plr.name).."'s WEAPONS", 255, 255, 0)
+			outputChatBox("FORMAT: SLOT - ID - NAME - AMMO", 255, 140, 0)
+			for i = 0, 13 do
+				local wep = getPedWeapon(plr, i)
+				if (wep and wep > 0) then
+					local ammo = getPedTotalAmmo(plr, i)
+					if (ammo and ammo > 0) then
+						local str = string.format("%s - %s - %s - %s",
+						tostring(i),
+						tostring(wep),
+						tostring(getWeaponNameFromID(wep)),
+						tostring(getPedTotalAmmo(plr, i))
+						) -- just like tables(table = {row1, row2, ...\n})
+						outputChatBox(str, 255, 0, 255)
+					end
+				end
+			end
+			outputChatBox("DONE - P.S. If the player has no weapons no lines would be outputted", 255, 255, 0)
 		elseif (action == "fix") then
 			if (plr.vehicle) then
 				triggerServerEvent("UCDadmin.fixVehicle", localPlayer, plr, plr.vehicle)
@@ -621,7 +765,9 @@ function adminAction()
 			--	exports.UCDdx:new("This player is not in a vehicle", 255, 0, 0)
 			end
 		elseif (action == "disable") then
-
+			if (plr.vehicle) then
+				triggerServerEvent("UCDadmin.disableVehicle", resourceRoot, plr, plr.vehicle)
+			end
 		elseif (action == "blow") then
 
 		elseif (action == "give vehicle") then
@@ -637,9 +783,9 @@ addEventHandler("onClientGUIClick", guiRoot, adminAction)
 
 function toggleGUI()
 	if (not _permissions) then return end
-	adminPanel.window[1].visible = not adminPanel.window[1].visible
-	showCursor(adminPanel.window[1].visible)
-	if (adminPanel.window[1].visible) then
+	adminPanel.window.visible = not adminPanel.window.visible
+	showCursor(adminPanel.window.visible)
+	if (adminPanel.window.visible) then
 		guiSetInputMode("no_binds_when_editing")
 	else
 		guiSetInputMode("allow_binds")
@@ -653,5 +799,5 @@ function toggleGUI()
 		closeInputBox()
 	end
 end
-addCommandHandler("adminpanel", toggleGUI)
+addCommandHandler("adminpanel", toggleGUI, false, false)
 bindKey("p", "down", "adminpanel")

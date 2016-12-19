@@ -1,4 +1,4 @@
-local F5 = {label = {}}
+F5 = {label = {}}
 local jobs = exports.UCDjobsTable:getJobTable()
 local sX, sY = guiGetScreenSize()
 
@@ -31,7 +31,6 @@ guiProgressBarSetProgress(F5.progressbar, 100)
 F5.label["prog"] = GuiLabel(9, 83, 282, 23, "130/240", false, F5.window)
 guiLabelSetHorizontalAlign(F5.label["prog"], "center", true)
 guiLabelSetVerticalAlign(F5.label["prog"], "center")
-guiLabelSetColor(F5.label["prog"], 0, 0, 0)
 
 function togglePanel(data)
 	if (not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then return end
@@ -67,6 +66,7 @@ function togglePanel(data)
 	else
 		if (F5.window.visible) then
 			F5.window.visible = false
+			if (employment.window.visible) then return end
 			showCursor(false)
 		else
 			local jobName = localPlayer:getData("Occupation") or ""

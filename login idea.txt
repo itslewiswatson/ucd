@@ -1,7 +1,0 @@
-login panel, have two methods of logging in
-
-1. account name 
-2. last used name
-
-misc ideas
-- when someone is mentioned in chat, have a sound that plays to that specific person who got mentioned

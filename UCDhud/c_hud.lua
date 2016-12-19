@@ -39,12 +39,12 @@ addEventHandler("onClientRender", root,
 						timeString = days.." days, "..hours.." hours, "..minutes.." minutes"
 					end
 				end
-			
-				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 - 1, 0 - 1, (sX - 5) - 1, 16 - 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
-				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 + 1, 0 - 1, (sX - 5) + 1, 16 - 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
-				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 - 1, 0 + 1, (sX - 5) - 1, 16 + 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
-				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0 + 1, 0 + 1, (sX - 5) + 1, 16 + 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
-				dxDrawText("Uptime: "..timeString.." || FPS: "..fps.." || Ping: "..ping, 0, 0, (sX - 5), 16, tocolor(255, 255, 255, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+
+				dxDrawText("Uptime: "..timeString.." ─ FPS: "..fps.." ─ Ping: "..ping, 0 - 1, 0 - 1, (sX - 5) - 1, 16 - 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." ─ FPS: "..fps.." ─ Ping: "..ping, 0 + 1, 0 - 1, (sX - 5) + 1, 16 - 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." ─ FPS: "..fps.." ─ Ping: "..ping, 0 - 1, 0 + 1, (sX - 5) - 1, 16 + 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." ─ FPS: "..fps.." ─ Ping: "..ping, 0 + 1, 0 + 1, (sX - 5) + 1, 16 + 1, tocolor(0, 0, 0, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
+				dxDrawText("Uptime: "..timeString.." ─ FPS: "..fps.." ─ Ping: "..ping, 0, 0, (sX - 5), 16, tocolor(255, 255, 255, 255), 1, "default-bold", "right", "top", false, false, false, false, false)
 			end
 		end
 	end

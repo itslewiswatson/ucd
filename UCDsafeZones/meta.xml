@@ -1,2 +1,2 @@
 <meta>	<min_mta_version server="1.5.1" client="1.5.1"/>
-	<script src="server.lua" type="server"/>	<script src="client.lua" type="client"/>		<export function="isElementWithinSafeZone" type="client"/>	<export function="isElementWithinSafeZone" type="server"/>	<export function="getJail" type="server"/>		<oop>true</oop></meta>
+	<script src="server.lua" type="server"/>	<script src="client.lua" type="client"/>		<export function="isElementWithinSafeZone" type="client"/>	<export function="enable" type="client"/>	<export function="isElementWithinSafeZone" type="server"/>	<export function="getJail" type="server"/>		<oop>true</oop></meta>

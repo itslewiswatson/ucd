@@ -25,10 +25,10 @@ function getGameVersion()
 	return tostring(ver[1].version)
 end
 
-setGameType("UCD "..getGameVersion())
+setGameType("Vanos "..getGameVersion())
 setMinuteDuration(6000)
 setFPSLimit(60)
-setServerPassword("")
+setServerPassword("onelove")
 setWeather(10)
 setTime(0, 0)
 for i = 0, 49 do setGarageOpen(i, true) end

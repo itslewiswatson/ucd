@@ -1,4 +1,5 @@
 Clock = {}
+Clock.open = false
 Clock.data = 
 {
 	weekdays =
@@ -36,6 +37,7 @@ Clock.create()
 function Clock.toggle()
 	for _, gui in pairs(Clock.all) do
 		gui.visible = not gui.visible
+		Clock.open = gui.visible
 	end
 	if (phone.clock.label["hms"].visible) then
 		Clock.update()

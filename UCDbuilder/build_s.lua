@@ -28,7 +28,7 @@ function testObject(plr)
 	local isZone, zoneID = isPlayerInZone(plr, "*")
 	if (isZone) then
 		if (idToZone[zoneID]) then
-			local o = Object(5464, plr.matrix.position + plr.matrix.forward * 3)
+			local o = Object(1684, plr.matrix.position + plr.matrix.forward * 3)
 			o:setParent(idToZone[zoneID])
 		else
 			outputDebugString("wtf")

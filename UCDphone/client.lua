@@ -89,7 +89,8 @@ addEventHandler("onClientGUIClick", phone.button["home"],
 			-- Loop through all the apps in allapps (/apps/apps.lua)
 			for i, v in pairs(allapps) do
 				-- If it's visible
-				if (v.all and v.all[1].visible) then
+				--if (v.all and v.all[1].visible) then
+				if (v.all and v.open) then
 					-- Close it and open the main window
 					toggleApp(i)
 				end
@@ -120,6 +121,8 @@ local apps =
 	
 	[13] = {"Housing", "housing.png", {2, 0}},
 	[14] = {"Friends", "friends.png", {2, 1}},
+	[15] = {"Mail", "mail.png", {2, 2}},
+	[16] = {"Anims", "", {2, 3}},
 }
 
 -- Home screen
@@ -171,7 +174,7 @@ function togglePhone()
 		end
 	end
 end
-bindKey("b", "up", togglePhone)
+bindKey("b", "down", togglePhone)
 
 function openPhone()	
 	local now = getTickCount()

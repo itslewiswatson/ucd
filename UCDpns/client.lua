@@ -38,6 +38,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 			Blip.createAttachedTo(m, 63, nil, nil, nil, nil, nil, 0, 350)
 			addEventHandler("onClientMarkerHit", m, onMarkerHit)
 			addEventHandler("onClientMarkerLeave", m, onMarkerLeave)
+			m:setData("displayText", "Pay N Spray")
 		end
 	end
 )

@@ -259,28 +259,42 @@ end
 addEvent("onStockMarketUpdate")
 addEventHandler("onStockMarketUpdate", root, onStockMarketUpdate)
 
+function calculatePrice(name)
+	if (not name) then
+		return false
+	end
+	if (not stocks or not stocks[name]) then
+		return false
+	end
+	if (not stocks[name]["price"]) then
+		return false
+	end
+	
+	local currPrice = stocks[name]["price"]
+	local percent = {}
+	
+	percent[90] = currPrice * 0.9
+	percent[110] = currPrice * 1.1
+	
+	local low = math.random(percent[90], currPrice)
+	local high = math.random(currPrice, percent[110])
+	
+	local newPrice = math.random(low, high)
+	
+	return newPrice
+end
+
 function updateStockMarket()
 	for name in pairs(stocks) do
-		local currPrice = stocks[name]["price"]
-		local percent = {}
-		percent[80] = currPrice * 0.8
-		percent[120] = currPrice * 1.2
-		local low = math.random(percent[80], currPrice)
-		local high = math.random(currPrice, percent[120])
+		if (not stocks or not stocks[name]) then
+			return false
+		end
+	
+		local newPrice
+		repeat newPrice = calculatePrice(name)
+		until newPrice >= 50
 		
-		-- If stocks fuck up, let's given them a bit of a boost and get them out of that low range
-		if (percent[80] < 1) then
-			percent[80] = 2
-		end
-		if (percent[120] < 1) then
-			percent[120] = 5
-		end
-		local newPrice = math.random(low, high)
-		if (newPrice < 1) then
-			newPrice = 2
-		end
-		
-		stocks[name]["prev"] = currPrice
+		stocks[name]["prev"] = stocks[name]["price"]
 		stocks[name]["price"] = newPrice
 		appendStockHistory(name)
 	end
@@ -289,7 +303,7 @@ function updateStockMarket()
 	for _, plr in ipairs(Element.getAllByType("player")) do exports.UCDdx:new(plr, "The stock market has updated - press F7 to view", 255, 255, 255) end
 end
 addCommandHandler("fuckstocks", function (plr) if (exports.UCDadmin:isPlayerAdmin(plr)) then updateStockMarket() end end)
-Timer(updateStockMarket, 900000, 0)
+--Timer(updateStockMarket, 900000, 0)
 
 function appendStockHistory(stockName)
 	local price = stocks[stockName]["price"]
@@ -311,3 +325,21 @@ function getHistory(stockName)
 end
 addEvent("UCDstocks.getHistory", true)
 addEventHandler("UCDstocks.getHistory", root, getHistory)
+
+function refundAll(plr)
+	if (exports.UCDadmin:isPlayerAdmin(plr)) then
+		local result = db:query("SELECT acronym, amount, account FROM stocks__holders"):poll(-1)
+		for k, v in ipairs(result) do
+			local price = v.amount * stocks[v.acronym]["price"]
+			if (Account(v.account)) then
+				if (Account(v.account).player) then
+					Account(v.account).player.money = Account(v.account).player.money + price
+				else
+					exports.UCDaccounts:SAD(v.account, "money", exports.UCDaccounts:GAD(v.account, "money") + price)
+				end
+				outputDebugString("Refunding "..tostring(v.account).." $"..tostring(exports.UCDutil:tocomma(price)).." ("..tostring(v.amount)..") worth of "..tostring(v.acronym))
+			end
+		end
+	end
+end
+addCommandHandler("refunderino", refundAll)

@@ -50,6 +50,24 @@ local actions = {
 		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody", "NoGlue"},
 		{"w", 2},
 	},
+	["EndShift"] = {
+		{"a", "BC", "Builder", "AFK", "RobHouse"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody", "NoGlue"},
+		{"w", 1},
+	},
+	["QuitJob"] = {
+		{"a", "BC", "Builder", "AFK", "RobHouse"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody", "NoGlue"},
+		{"w", 1},
+	},
+	["DoAnim"] = {
+		{"a", "BC", "Builder", "AFK", "HouseRob"},
+		{"s", "NoVehicle", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody", "NotInWater", "NotFlying"},
+	},
+	["PayNSpray"] = {
+		{"a", "BC", "Builder", "AFK", "HouseRob"},
+		{"s", "NoArrest", "NoJailed", "NoJetpack", "NoDead", "NoCustody", "NotInWater"},
+	},
 }
 -- a = actions(interrupts)
 -- s = state(vehicle etc)

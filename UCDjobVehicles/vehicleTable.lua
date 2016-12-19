@@ -33,35 +33,39 @@ jobVehicles =
 	{x = -2196.4719, y = -2304.1282, z = 30.625, rot = 321.9, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}},
 	{x = 1238.2509, y = 335.6484, z = 19.7578, rot = 336.4438, vt = {}, colour = {r = 255, g = 255, b = 255}, vehs = {457, 481, 468}},
 	
-	-- Aviator
+	-- Aviator 
+	-- 		We have an 'a' value
+	-- 		a = l -> large
+	-- 		a = s -> smalll
+	-- 		a = h -> heli
 	-- Small planes (Beagle, Dodo, Shamal, Stuntplane)
-	{x = 1364.3641, y = 1756.73, z = 10.8203, rot = 270, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Las Venturas
-	{x = 1364.3641, y = 1714.88, z = 10.8203, rot = 270, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Las Venturas
-	{x = 1677.8402, y = 1627.1708, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Las Venturas
-	{x = 1609.5867, y = 1627.1708, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Las Venturas
-	{x = 414.5836, y = 2503.1677, z = 16.4844, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Verdant Meadows
-	{x = 382.5719, y = 2539.615, z = 16.5391, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Verdant Meadows
-	{x = -1246.6765, y = -97.359, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
-	{x = -1207.1486, y = -145.5417, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
-	{x = -1272.3878, y = -618.8027, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
-	{x = -1334.7905, y = -619.1797, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
-	{x = -1397.5046, y = -619.4011, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
-	{x = -1459.6853, y = -620.0172, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- San Fierro
-	{x = 1986.1161, y = -2315.9116, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Los Santos
-	{x = 1986.1161, y = -2382.366, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}}, -- Los Santos
+	{x = 1364.3641, y = 1756.73, z = 10.8203, rot = 270, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Las Venturas
+	{x = 1364.3641, y = 1714.88, z = 10.8203, rot = 270, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Las Venturas
+	{x = 1677.8402, y = 1627.1708, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Las Venturas
+	{x = 1609.5867, y = 1627.1708, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Las Venturas
+	{x = 414.5836, y = 2503.1677, z = 16.4844, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Verdant Meadows
+	{x = 382.5719, y = 2539.615, z = 16.5391, rot = 180, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Verdant Meadows
+	{x = -1246.6765, y = -97.359, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- San Fierro
+	{x = -1207.1486, y = -145.5417, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- San Fierro
+	{x = -1272.3878, y = -618.8027, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- San Fierro
+	{x = -1334.7905, y = -619.1797, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- San Fierro
+	{x = -1397.5046, y = -619.4011, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- San Fierro
+	{x = -1459.6853, y = -620.0172, z = 14.1484, rot = 0, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- San Fierro
+	{x = 1986.1161, y = -2315.9116, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Los Santos
+	{x = 1986.1161, y = -2382.366, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255,  g = 215, b = 0}, vehs = {511, 593, 513, 519}, a = "s"}, -- Los Santos
 	-- Heliopters (Maverick, Leviathan, Sparrow, Raindance, Cargobob)
-	{x = 1378.4188, y = 1770.0908, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}}, -- Las Venturas
-	{x = 1399.5907, y = 1770.0908, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}}, -- Las Venturas 
-	{x = -1250.0161, y = -33.7229, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}}, -- San Fierro
-	{x = 1765.7296, y = -2286.4512, z = 26.796, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}}, -- Los Santos
-	{x = 2010.6317, y = -2447.6052, z = 13.5469, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}}, -- Los Santos
+	{x = 1378.4188, y = 1770.0908, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}, a = "h"}, -- Las Venturas
+	{x = 1399.5907, y = 1770.0908, z = 10.8203, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}, a = "h"}, -- Las Venturas 
+	{x = -1250.0161, y = -33.7229, z = 14.1484, rot = 135, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}, a = "h"}, -- San Fierro
+	{x = 1765.7296, y = -2286.4512, z = 26.796, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}, a = "h"}, -- Los Santos
+	{x = 2010.6317, y = -2447.6052, z = 13.5469, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {487, 417, 469, 563, 548}, a = "h"}, -- Los Santos
 	-- Large planes (Nevada, Andromada, AT-400, Shamal)
-	{x = 1477.429, y = 1739.6221, z = 10.8125, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- Las Venturas
-	{x = 1477.429, y = 1245.4187, z = 10.8125, rot = 0, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- Las Venturas
-	{x = 1564.7855, y = 1283.6118, z = 10.8125, rot = 45, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- Las Venturas
-	{x = -1323.0562, y = -208.1613, z = 14.1484, rot = 315, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- San Fierro
-	{x = -1657.6765, y = -164.9684, z = 14.1484, rot = 315, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- San Fierro
-	{x = 2113.0366, y = -2467.2312, z = 13.5469, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}}, -- Los Santos
+	{x = 1477.429, y = 1739.6221, z = 10.8125, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}, a = "l"}, -- Las Venturas 
+	{x = 1477.429, y = 1245.4187, z = 10.8125, rot = 0, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}, a = "l"}, -- Las Venturas
+	{x = 1564.7855, y = 1283.6118, z = 10.8125, rot = 45, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}, a = "l"}, -- Las Venturas
+	{x = -1323.0562, y = -208.1613, z = 14.1484, rot = 315, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}, a = "l"}, -- San Fierro
+	{x = -1657.6765, y = -164.9684, z = 14.1484, rot = 315, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}, a = "l"}, -- San Fierro
+	{x = 2113.0366, y = -2467.2312, z = 13.5469, rot = 180, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {553, 577, 592, 519}, a = "l"}, -- Los Santos
 	-- Complimentary vehicles (Tug, Baggage)
 	{x = 1443.3219, y = -2290.1899, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
 	{x = 1443.3219, y = -2284.1802, z = 13.5469, rot = 90, vt = {"Aviator"}, colour = {r = 255, g = 215, b = 0}, vehs = {485, 583}}, -- Outside LS interior entry
@@ -114,18 +118,18 @@ jobVehicles =
 	{x = 2273.4031, y = 2460.9648, z = 10.8203, rot = 180, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
 	{x = 2273.3943, y = 2443.0896, z = 10.8203, rot = 0, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
 	{x = 2255.873, y = 2443.0896, z = 10.8203, rot = 0, vt = {"Police Officer", "Law"}, colour = {r = 30, g = 144, b = 255}, vehs = {596, 597, 598, 599}},
-	-- Paramedic, LS All Saint
+	-- Paramedic, LS All Saints
 	{x = 1180.4978, y = -1338.8416, z = 13.8005, rot = -90, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 	{x = 1180.4978, y = -1308.5029, z = 13.8005, rot = -90, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 	-- Paramedic, LS Jefferson
 	{x = 2032.86, y = -1446.4751, z = 17.2407, rot = 90, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 	{x = 2002.0824, y = -1414.672, z = 16.9922, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
-	-- Paramedic, SF
+	-- Paramedic, San Fierro
 	{x = -2682.0452, y = 610.0144, z = 14.4531, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 	{x = -2634.4585, y = 610.0144, z = 14.4531, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 	-- Paramedic, Fort Carson
 	{x = -295.5605, y = 1044.6532, z = 19.5938, rot = 0.97, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
-	-- Paramedic, LV
+	-- Paramedic, Las Venturas
 	{x = 1624.7664, y = 1851.087, z = 10.8203, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 	{x = 1590.7393, y = 1851.087, z = 10.8203, rot = 180, vt = {"Paramedic"}, colour = {r = 0, g = 255, b = 255}, vehs = {416}},
 	-- Paramedic, Montgomery
