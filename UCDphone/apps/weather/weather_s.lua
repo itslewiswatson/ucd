@@ -16,14 +16,14 @@ function Weather.cycle()
 	Weather.prev = Weather.curr
 	Weather.curr = Weather.valid[i]
 	
-	triggerLatentClientEvent(Element.getAllByType("player"), "UCDphone.weather.onCycleChange", resourceRoot, Weather.curr)
+	triggerLatentClientEvent(Element.getAllByType("player"), "CSGphone.weather.onCycleChange", resourceRoot, Weather.curr)
 	
 	Timer(Weather.cycle, math.random(Weather.time - Weather.offset, Weather.time + Weather.offset), 1)
 end
 Timer(Weather.cycle, Weather.time, 1)
 
 function Weather.getCurrentCycle()
-	triggerLatentClientEvent(client, "UCDphone.weather.onCycleChange", resourceRoot, Weather.curr or 10)
+	triggerLatentClientEvent(client, "CSGphone.weather.onCycleChange", resourceRoot, Weather.curr or 10)
 end
-addEvent("UCDphone.weather.getCurrentCycle", true)
-addEventHandler("UCDphone.weather.getCurrentCycle", root, Weather.getCurrentCycle)
+addEvent("CSGphone.weather.getCurrentCycle", true)
+addEventHandler("CSGphone.weather.getCurrentCycle", root, Weather.getCurrentCycle)

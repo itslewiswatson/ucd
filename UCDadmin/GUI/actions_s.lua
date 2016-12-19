@@ -174,7 +174,9 @@ addEvent("UCDadmin.freeze", true)
 addEventHandler("UCDadmin.freeze", root, freezePlayer)
 
 function shoutToPlayer(plr, text)
-	-- Have to make this post GUI
+	if (not plr or not isElement(plr) or not text or not tostring(text)) then return end
+	exports.UCDdx:shout(plr, text) -- POST GUI'ED
+	exports.UCDlogging:adminLog(client.account.name, client.name.." has shouted '"..text.."' at "..plr.name)
 end
 addEvent("UCDadmin.shout", true)
 addEventHandler("UCDadmin.shout", root, shoutToPlayer)
@@ -223,12 +225,16 @@ addEventHandler("UCDadmin.rename", root, renamePlayer)
 
 function takeScreenshotOfPlayer(plr)
 	-- This one will take a while
+	-- If this'd be spammed we'd get rekt...
 end
 addEvent("UCDadmin.takeScreenshot", true)
 addEventHandler("UCDadmin.takeScreenshot", root, takeScreenshotOfPlayer)
 
 function setPlayerMoney_(plr, newAmount)
-	
+	if (not newAmount or not tonumber(newAmount) or tonumber(newAmount) == plr.money) then return end
+	-- if (plr == client) then return end for further use
+	plr.money = newAmount
+	exports.UCDlogging:adminLog(client.account.name, client.name.." has set "..plr.name.."'s money from $"..exports.UCDutil:tocomma(plr.money).." to $"..exports.UCDutil:tocomma(newAmount))
 end
 addEvent("UCDadmin.setMoney", true)
 addEventHandler("UCDadmin.setMoney", root, setPlayerMoney_)
@@ -314,7 +320,12 @@ function giveVehicle(plr, vehicle)
 		local spawnedVehicle
 		
 		-- We're dealing with a vehicle ID
-		if tostring(vehicle):match("%d") and tonumber(vehicle) ~= false and tonumber(vehicle) ~= nil then
+		if (vehicle:gsub(" ", "") == "" or not Vehicle.getNameFromModel(vehicle)) then
+			exports.UCDdx:new(client, "You must specify a valid vehicle name or ID", 255, 0, 0)
+			return false
+		end
+		
+		if (tostring(vehicle):match("%d") and tonumber(vehicle) ~= false and tonumber(vehicle) ~= nil) then
 			if (not Vehicle.getNameFromModel(vehicle) or Vehicle.getNameFromModel(vehicle) == "" or Vehicle.getNameFromModel(vehicle) == " ") then
 				exports.UCDdx:new(client, "You must specify a valid vehicle name or ID", 255, 0, 0)
 				return
@@ -356,17 +367,22 @@ function fixVehicle_(plr, vehicle)
 			return
 		end
 		if (vehicle:getData("vehicleID") and type(vehicle:getData("vehicleID")) == number) then
-			if (getPlayerAdminRank(client) < 4) then
-				exports.UCDdx:new(client, "You are not allowed to fix player vehicles until L4", 255, 0, 0)
-				return
+			--if (getPlayerAdminRank(client) < 4) then
+			--	exports.UCDdx:new(client, "You are not allowed to fix player vehicles until L4", 255, 0, 0)
+			--	return
+			--end
+			local vehicleID = vehicle:getData("vehicleID")
+			if (exports.UCDvehicles:getVehicleData(vehicleID, "owner") == client.account.name and not canAdminDoAction(client, 14)) then
+				exports.UCDdx:new(client, "You are not allowed to repair your own purchased vehicles", 255, 0, 0)
+				return false
 			end
-			exports.UCDvehicles:setVehicleData(vehicle:getData("vehicleID"), "health", 1000)
+			exports.UCDvehicles:setVehicleData(vehicleID, "health", 1000)
 		end
 		exports.UCDvehicles:fix(vehicle)
 		vehicle.health = 1000
-		exports.UCDdx:new(client, "You have fixed "..plr.name.."'s "..vehicle.name, 0, 255, 0)
-		exports.UCDdx:new(plr, client.name.." has fixed your "..vehicle.name, 0, 255, 0)
-		exports.UCDlogging:adminLog(client.account.name, client.name.." has fixed "..plr.name.."'s "..vehicle.name)
+		exports.UCDdx:new(client, "You have fixed "..tostring(plr.name).."'s "..tostring(vehicle.name), 0, 255, 0)
+		exports.UCDdx:new(plr, client.name.." has fixed your "..tostring(vehicle.name), 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has fixed "..tostring(plr.name).."'s "..tostring(vehicle.name))
 	end
 end
 addEvent("UCDadmin.fixVehicle", true)
@@ -378,9 +394,9 @@ function ejectPlayerFromVehicle(plr, vehicle)
 			return
 		end
 		plr:removeFromVehicle(vehicle)
-		exports.UCDdx:new(client, "You have ejected "..plr.name.." from their "..vehicle.name, 0, 255, 0)
-		exports.UCDdx:new(plr, "You have been ejected from your "..vehicle.name.." by "..plr.name, 0, 255, 0)
-		exports.UCDlogging:adminLog(client.account.name, client.name.." has ejected "..plr.name.." from their vehicle")
+		exports.UCDdx:new(client, "You have ejected "..tostring(plr.name).." from their "..tostring(vehicle.name), 0, 255, 0)
+		exports.UCDdx:new(plr, "You have been ejected from your "..tostring(vehicle.name).." by "..tostring(client.name), 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has ejected "..tostring(plr.name).." from their "..tostring(vehicle.name))
 	end
 end
 addEvent("UCDadmin.ejectPlayer", true)
@@ -389,19 +405,26 @@ addEventHandler("UCDadmin.ejectPlayer", root, ejectPlayerFromVehicle)
 function destroyVehicle(plr, vehicle)
 	if (plr and client and isPlayerAdmin(client)) then
 		-- The vehicle may have been a player vehicle and hence already destroyed client-side
-		if vehicle then
+		exports.UCDdx:new(plr, "Your "..tostring(vehicle.name).." has been destroyed by "..tostring(client.name), 0, 255, 0)
+		exports.UCDdx:new(client, "You have destroyed "..tostring(plr.name).."'s "..tostring(vehicle.name), 0, 255, 0)
+		exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has destroyed "..tostring(plr.name).."'s "..tostring(vehicle.name))
+		if (vehicle) then
 			vehicle:destroy()
 		end
-		exports.UCDdx:new(plr, "Your vehicle has been destroyed by "..client.name, 0, 255, 0)
-		exports.UCDdx:new(client, "You have destroyed "..plr.name.."'s vehicle", 0, 255, 0)
-		exports.UCDlogging:adminLog(client.account.name, client.name.." has destroyed "..plr.name.."'s vehicle")
 	end
 end
 addEvent("UCDadmin.destroyVehicle", true)
 addEventHandler("UCDadmin.destroyVehicle", root, destroyVehicle)
 
 function disableVehicle(plr, vehicle)
-	
+	if (plr and client and vehicle and isPlayerAdmin(client)) then
+		if (vehicle and isElement(vehicle) and vehicle.type == "vehicle") then
+			vehicle.health = 250 -- Events are automatically triggered in UCDvehicles/vehicleDamage_s.lua and UCDvehicles/vehicleDamage.lua
+			exports.UCDdx:new(plr, "Your "..tostring(vehicle.name).." has been disabled by "..tostring(client.name), 0, 255, 0)
+			exports.UCDdx:new(client, "You have disabled "..tostring(plr.name).."'s "..tostring(vehicle.name), 0, 255, 0)
+			exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has disabled "..tostring(plr.name).."'s "..tostring(vehicle.name))
+		end
+	end
 end
 addEvent("UCDadmin.disableVehicle", true)
 addEventHandler("UCDadmin.disableVehicle", root, disableVehicle)
@@ -411,3 +434,25 @@ function blowVehicle_(plr, vehicle)
 end
 addEvent("UCDadmin.blowVehicle", true)
 addEventHandler("UCDadmin.blowVehicle", root, blowVehicle_)
+
+function viewPunishments(plr)
+	if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return end
+	local temp
+	for _, v in ipairs(punishments) do
+		if (plr.account.name == v[1] or plr.serial == v[4]) then
+			if (not temp) then temp = {} end
+			if (v[1] == plr.account.name) then
+				if (not temp.accPunishments) then temp.accPunishments = {} end
+				table.insert(temp.accPunishments, {v[4], v[7]})
+			end
+			if (v[4] == plr.serial) then
+				if (not temp.serialPunishments) then temp.serialPunishments = {} end
+				table.insert(temp.serialPunishments, {v[1], v[7]})
+			end
+		end
+	end
+	if (not temp) then return end -- To save bandwidth -for you, sir Noki-, if not no calling back
+	triggerClientEvent(client, "UCDadmin.viewPunishments.callback", client, temp)
+end
+addEvent("UCDadmin.viewPunishments.call", true)
+addEventHandler("UCDadmin.viewPunishments.call", root, viewPunishments) -- calls back to insertPunishments in punishments/punishments_c.lua, if you are wonderin'

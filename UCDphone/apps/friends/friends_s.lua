@@ -10,7 +10,7 @@ function requestFriendsList()
 	for acc, perms in pairs(friends[source.account.name]) do
 		local onlineLast = 2 --getLastOnline(account)
 		local online = false
-		local display = exports.UCDaccounts:GAD(acc, "lastUsedName") or acc
+		local display = exports.CSGaccounts:GAD(acc, "lastUsedName") or acc
 		if (Account(acc) and Account(acc).player) then
 			online = true
 			onlineLast = "Today"
@@ -20,8 +20,8 @@ function requestFriendsList()
 	end
 	triggerLatentClientEvent(source, "SAURfriends.displayFriends", resourceRoot, temp)
 end
-addEvent("UCDphone.friends.requestFriendsList", true)
-addEventHandler("UCDphone.friends.requestFriendsList", root, requestFriendsList)
+addEvent("CSGphone.friends.requestFriendsList", true)
+addEventHandler("CSGphone.friends.requestFriendsList", root, requestFriendsList)
 
 function requestRequests()
 	local account = source.account.name
@@ -34,11 +34,11 @@ function requestRequests()
 		if (Account(acc) and Account(acc).player) then
 			display = Account(acc).player.name
 		else
-			display = exports.UCDaccounts:GAD(acc, "lastUsedName") or acc
+			display = exports.CSGaccounts:GAD(acc, "lastUsedName") or acc
 		end
 		table.insert(reqs, {acc, display})
 	end
-	triggerLatentClientEvent(source, "UCDphone.friends.onReceivedFriendsList", source, reqs)
+	triggerLatentClientEvent(source, "CSGphone.friends.onReceivedFriendsList", source, reqs)
 end
 addEvent("SAURfriends.requestRequests", true)
 addEventHandler("SAURfriends.requestRequests", root, requestRequests)

@@ -36,7 +36,7 @@ function bcTake(plr)
 		blip:attach(bc)
 		exports.bone_attach:attachElementToBone(bc, plr, 11, 0, 0.06, 0.3, 0, 180, 0)
 		triggerClientEvent(plr, "bcDoBlip", resourceRoot, true)
-		exports.UCDdx:new(plr, "Deliver the briefcase to Woozie within 10 minutes!", 0, 255, 0)
+		exports.UCDdx:new(plr, "Deliver the briefcase to Woozie within 10 minutes", 0, 255, 0)
 		for _, plr2 in ipairs(Element.getAllByType("player")) do
 			if (plr2 ~= plr) then
 				exports.UCDdx:new(plr2, plr.name.." has picked up the briefcase", 0, 255, 0)
@@ -55,7 +55,7 @@ function bcStart()
 	startPos = bc:getPosition()
 	blip = Blip.createAttachedTo(bc, 17, nil, nil, nil, nil, nil, 0, 650)
 	for _, plr in ipairs(Element.getAllByType("player")) do
-		exports.UCDdx:new(plr, "A briefcase needs to be delivered, look for diner blip in the map!", 0, 255, 0)
+		exports.UCDdx:new(plr, "A briefcase needs to be delivered, look for diner blip on the map", 0, 255, 0)
 	end
 	addEventHandler("onPickupHit", bc, bcTake)
 end
@@ -134,7 +134,7 @@ addEventHandler("bcEnd", resourceRoot,
 			end
 		end
 		local reward = math.floor(getDistanceBetweenPoints3D(x, y, z, startPos) * 50)
-		if (reward > 40000) then reward = 40000 end
+		if (reward > 30000) then reward = 30000 end
 		client.money = client.money + reward
 		exports.UCDdx:new(client, "You have been rewarded $"..exports.UCDutil:tocomma(reward).." and 15 criminal XP!", 0, 255, 0)
 		exports.UCDwanted:addWantedPoints(bcTaker, 30)
@@ -184,6 +184,26 @@ function bcGetTime()
 	return msg
 end
 
+function bcGetTimeRaw()
+	if (isTimer(startTimer)) then
+		return startTimer:getDetails()
+	elseif (isTimer(stopTimer)) then
+		return stopTimer:getDetails()
+	end
+	return false
+end
+
+function bcGetTimeMsg()
+	local msg
+	if (isTimer(startTimer)) then
+		msg = "left for Woozie to arrive in LV"
+	elseif (isTimer(stopTimer)) then	
+		msg = "left for Woozie to leave for SF"
+	else
+		msg = "Waiting for Woozie's savior"
+	end
+	return msg
+end
 
 addCommandHandler("bctime",
 	function (plr)
@@ -199,7 +219,7 @@ addCommandHandler("bctime",
 		if (not r or not g or not b) then
 			r, g, b = 255, 255, 255
 		end
-		outputChatBox(bcGetTime(), plr, r, g, b)
+		exports.UCDdx:new(plr, tostring(bcGetTime()), r, g, b)
 		antiSpam[plr] = true
 		Timer(function (plr) if (isElement(plr)) then antiSpam[plr] = nil end end, 5000, 1, plr)
 	end

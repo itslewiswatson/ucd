@@ -1,10 +1,11 @@
 Mark = {}
 Mark.blips = {}
+Mark.open = false
 
 function Mark.create()
 	phone.mark = {button = {}, edit = {}, gridlist = {}}
 	
-	phone.mark.edit["search_players"] = GuiEdit(18, 95, 274, 32, "", false, phone.image["phone_window"])
+	phone.mark.edit["search_players"] = GuiEdit(18, 97, 274, 28, "", false, phone.image["phone_window"])
 	phone.mark.gridlist["players"] = GuiGridList(20, 135, 271, 333, false, phone.image["phone_window"])
 	guiGridListAddColumn(phone.mark.gridlist["players"], "Players", 0.9)
 	phone.mark.button["toggle_mark"] = GuiButton(39, 476, 232, 37, "Toggle marking of specified player", false, phone.image["phone_window"])
@@ -21,6 +22,7 @@ Mark.create()
 function Mark.toggle()
 	for _, gui in ipairs(Mark.all) do
 		gui.visible = not gui.visible
+		Mark.open = gui.visible
 	end
 end
 
@@ -36,18 +38,18 @@ end
 
 function Mark.toggleBlip(ele)
 	if (#Mark.blips >= 5) then
-		exports.UCDdx:new("You can only have a maximum of 5 players blipped at a given time", 255, 0, 0)
+		exports.CSGdx:new("You can only have a maximum of 5 players blipped at a given time", 255, 0, 0)
 		return
 	end
 	local blipID = 58
 	if (Mark.blips[ele]) then
-		exports.UCDdx:new("Marking removed on "..ele.name, 0, 255, 0)
+		exports.CSGdx:new("Marking removed on "..ele.name, 0, 255, 0)
 		Mark.blips[ele]:destroy()
 		Mark.blips[ele] = nil
 		removeEventHandler("onClientPlayerQuit", ele, Mark.onQuit)
 		return
 	end
-	exports.UCDdx:new(ele.name.." is now marked", 0, 255, 0)
+	exports.CSGdx:new(ele.name.." is now marked", 0, 255, 0)
 	Mark.blips[ele] = Blip.createAttachedTo(ele, blipID)
 	addEventHandler("onClientPlayerQuit", ele, Mark.onQuit)
 end

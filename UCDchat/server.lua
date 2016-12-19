@@ -29,7 +29,9 @@ end
 --]]
 
 local antiSpam = {}
+local advertSpam = {}
 local antiSpamTime = 2000 -- Time in ms that we don't allow a player to speak after have already spoken
+local includeCities = false
 
 function clearAntiSpam(player)
 	if (antiSpam[player]) then
@@ -57,25 +59,29 @@ function onPlayerChat2(player, message, messageType)
 	end
 	if (exports.UCDaccounts:isPlayerLoggedIn(player)) then
 		-- if main chat
-		
+			
 		local nR, nG, nB = player:getNametagColor()
 		local coord = player:getPosition()
 		
 		if (messageType == 0) then
+			-- local t what is this?
+			local msg = tostring(player.name).."#FFFFFF "..tostring(message)
 			
-			local sourceCity = exports.UCDutil:getPlayerCityZone(player)
-			
-			outputChatBox(--[["("..sourceCity..") "..--]]player.name.."#FFFFFF "..message, root, nR, nG, nB, true)
+			if (includeCities) then
+				msg = "("..tostring(exports.UCDutil:getPlayerCityZone(player))..") "..msg
+			end
+
+			outputChatBox(msg, root, nR, nG, nB, true)
 			antiSpam[player] = true
 			setTimer(clearAntiSpam, antiSpamTime, 1, player)
 			
 			exports.UCDlogging:new(player, "Main", message, sourceCity)
 			
-			--triggerClientEvent("listInsert", resourceRoot, "main", player, message)
-			listInsert(root, "main", player, message)
+			--triggerClientEvent("insert", resourceRoot, "main", player, message)
+			insert(root, "main", player, message)
 		-- if team chat
 		elseif (messageType == 2) then
-			local t
+			-- local t again? omg
 			
 			if (message:sub(1, 1) == "/") then
 				executeCommandHandler(message:sub(2, #message), player)
@@ -90,8 +96,8 @@ function onPlayerChat2(player, message, messageType)
 			setTimer(clearAntiSpam, antiSpamTime, 1, player)
 			exports.UCDlogging:new(player, "Teamchat", message, t)
 			
-			--triggerClientEvent(player.team:getPlayers(), "listInsert", resourceRoot, "team", player, message)
-			listInsert(player.team:getPlayers(), "team", player, message)
+			-- triggerClientEvent(player.team.players, "insert", resourceRoot, "team", player, message)
+			insert(player.team.players, "team", player, message)
 		-- if /me chat
 		elseif (messageType == 1) then
 			for _, v in ipairs(Element.getAllByType("player")) do
@@ -125,32 +131,29 @@ function supportChat(plr, _, ...)
 		return
 	end
 	outputChatBox("(SUPPORT) "..plr.name.." #ffffff"..msg, root, 0, 155, 0, true)
-	exports.irc:ircSay(exports.irc:ircGetChannelFromName("#ucd.echo"), "13(SUPPORT) "..plr.name.." "..msg)
+	-- exports.irc:ircSay(exports.irc:ircGetChannelFromName("#ucd.echo"), "13(SUPPORT) "..plr.name.." "..msg)
 	exports.UCDlogging:new(plr, "support", msg)
-	--triggerClientEvent("listInsert", resourceRoot, "support", plr, msg)
-	listInsert(root, "support", plr, msg)
+	-- triggerClientEvent("insert", resourceRoot, "support", plr, msg)
+	insert(root, "support", plr, msg)
 end
 addCommandHandler("support", supportChat)
 
-local advertSpam = {}
-
-addCommandHandler("advert",
-	function (plr, _, ...)
-		if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then
-			return false
-		end
-		if (advertSpam[plr.account.name] and getTickCount() - advertSpam[plr.account.name] <= (30 * 60000)) then
-			exports.UCDdx:new(plr, "You can advert once per 30 minutes", 255, 0, 0)
-			return false
-		end
-		local msg = string.gsub(table.concat({...}, " "), "%x%x%x%x%x%x", "")
-		if (not msg or string.gsub(msg, " ", "") == "") then
-			exports.UCDdx:new(plr, "Enter a message!", 255, 0, 0)
-			return false
-		end
-		outputChatBox("(ADVERT) "..plr.name.." #ffffff"..msg, root, 255, 255, 0, true)
-		exports.irc:ircSay(exports.irc:ircGetChannelFromName("#ucd.echo"), "8(ADVERT) "..plr.name.." "..msg)
-		exports.UCDlogging:new(plr, "advert", msg)
-		advertSpam[plr.account.name] = getTickCount()
+function advertChat(plr, _, ...)
+	if (not exports.UCDchecking:canPlayerDoAction(plr, "Chat")) then
+		return false
 	end
-)
+	if (advertSpam[plr.account.name] and getTickCount() - advertSpam[plr.account.name] <= (30 * 60000)) then
+		exports.UCDdx:new(plr, "You can advert once per 30 minutes", 255, 0, 0)
+		return false
+	end
+	local msg = table.concat({...}, " "):gsub(" ", ""):gsub("%x%x%x%x%x%x", "")
+	if (not msg or #msg == 0) then
+		exports.UCDdx:new(plr, "Please, enter a message", 255, 0, 0)
+		return false
+	end
+	outputChatBox("(AD) "..plr.name.." #ffffff"..msg, root, 255, 255, 0, true)
+	-- exports.irc:ircSay(exports.irc:ircGetChannelFromName("#ucd.echo"), "8(ADVERT) "..plr.name.." "..msg)
+	exports.UCDlogging:new(plr, "advert", msg)
+	advertSpam[plr.account.name] = getTickCount()
+end
+addCommandHandler("ad", advertChat)

@@ -41,6 +41,7 @@ Weather.r2t = {}
 Weather.r2w = {}
 Weather.freezeTimer = nil
 Weather.weatherID = nil -- For manusally set IDs (automatic weather system)
+Weather.open = false
 
 function Weather.create()
 	phone.weather = {button = {}, gridlist = {}, label = {}, edit = {}}
@@ -111,6 +112,7 @@ Weather.create()
 function Weather.toggle()
 	for _, gui in pairs(Weather.all) do
 		gui.visible = not gui.visible
+		Weather.open = gui.visible
 	end
 end
 
@@ -143,7 +145,7 @@ function Weather.onClickSetTime()
 		m = 0
 	end
 	if (not tonumber(h) or not tonumber(m)) then
-		exports.UCDdx:new("Please enter numbers into both boxes", 255, 0, 0)
+		exports.CSGdx:new("Please enter numbers into both boxes", 255, 0, 0)
 		return
 	end
 	local t = Weather.setTime(h, m)
@@ -195,12 +197,12 @@ function Weather.onClickSetWeather()
 	id = id:gsub("%a", ""):gsub(" ", "")
 	id = tonumber(id)
 	if (not id or id < -1 or id > 175) then
-		exports.UCDdx:new("Please enter a weather ID from 0 to 175", 255, 0, 0)
+		exports.CSGdx:new("Please enter a weather ID from 0 to 175", 255, 0, 0)
 		return false
 	end
 	if (id == -1) then
 		Weather.weatherID = nil
-		triggerServerEvent("UCDphone.weather.getCurrentCycle", resourceRoot)
+		triggerServerEvent("CSGphone.weather.getCurrentCycle", resourceRoot)
 		return
 	end
 	Weather.weatherID = id
@@ -210,12 +212,12 @@ addEventHandler("onClientGUIClick", phone.weather.button["setweather"], Weather.
 
 function Weather.command(_, id)
 	if (not tonumber(id)) then
-		exports.UCDdx:new("Syntax: /weather <id> (0 - 175)")
+		exports.CSGdx:new("Syntax: /weather <id> (0 - 175)")
 		return false
 	end
 	id = tonumber(id)
 	if (id < 0 or id > 175) then
-		exports.UCDdx:new("Syntax: /weather <id> (0 - 175)")
+		exports.CSGdx:new("Syntax: /weather <id> (0 - 175)")
 		return false
 	end
 	Weather.setWeather(id)
@@ -231,8 +233,8 @@ function Weather.onCycleChange(id)
 		setWeatherBlended(id)
 	end
 end
-addEvent("UCDphone.weather.onCycleChange", true)
-addEventHandler("UCDphone.weather.onCycleChange", root, Weather.onCycleChange)
+addEvent("CSGphone.weather.onCycleChange", true)
+addEventHandler("CSGphone.weather.onCycleChange", root, Weather.onCycleChange)
 
 function Weather.onClickWeather()
 	local row = guiGridListGetSelectedItem(phone.weather.gridlist["presetweather"])

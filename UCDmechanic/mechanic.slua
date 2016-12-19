@@ -22,13 +22,13 @@ function requestRepair(vehicle, owner)
 	end
 	if (owner and isElement(owner) and owner.type == "player") then
 		if (owner == client) then
-			triggerEvent("UCDmechanic.repair", resourceRoot, vehicle, client, owner)
+			triggerEvent("UCDmechanic.onStartRepair", resourceRoot, vehicle, client, owner)
 			return
 		end
 		triggerClientEvent(owner, "UCDmechanic.authenticateRepair", owner, vehicle, client)
 		--outputDebugString("sending auth client side to "..owner.name)
 	else
-		triggerEvent("UCDmechanic.repair", resourceRoot, vehicle, client)
+		triggerEvent("UCDmechanic.onStartRepair", resourceRoot, vehicle, client)
 		--outputDebugString("2nd option")
 	end
 end
@@ -76,7 +76,9 @@ function onFinishRepair(vehicle, mech, owner)
 		exports.UCDdx:new(mech, "Couldn't finish reparing the vehicle", 255, 0, 0)
 		return
 	end
-	if (not client) then client = mech end
+	if (not client) then
+		client = mech
+	end
 	if (client.team.name ~= "Citizens" or client:getData("Occupation") ~= "Mechanic") then
 		return
 	end

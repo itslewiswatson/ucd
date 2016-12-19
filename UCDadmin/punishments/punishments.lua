@@ -1,6 +1,6 @@
 local types = {["mute"] = "muted", ["admin jail"] = "jailed"}
 local infr = 300 -- Infraction base number, no of infractions * base = time (0 = base)
-local punishments = {}
+punishments = {}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()

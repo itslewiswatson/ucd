@@ -5,6 +5,7 @@ authorizedToBuild = {}
 
 zoneCoords = {
 	[1] = {-3340.2417, 2054.9397, 0, 50, 30, 20}
+	
 }
 
 addEventHandler("onResourceStart", resourceRoot,
@@ -14,17 +15,19 @@ addEventHandler("onResourceStart", resourceRoot,
 )
 
 function cacheZones(qh)
-	local result = qh:poll(-1)
+	local result = qh:poll(0)
 	
-	for i, coord in ipairs(zoneCoords) do
-		local z = ColShape.Cuboid(coord[1], coord[2], coord[3], coord[4], coord[5], coord[6])
-		local data = result[i]
+	for i, data in ipairs(result) do
+		local xyz = Vector3(fromJSON(data.xyz))
+		local lwh = Vector3(fromJSON(data.lwh))
 		
-		z:setData("zoneID", i)
+		local z = ColShape.Cuboid(xyz, lwh)
+		
+		z:setData("zoneID", data.zoneID)
 		idToZone[i] = z
 		addEventHandler("onColShapeHit", z, onEnterZone)
 		addEventHandler("onColShapeLeave", z, onExitZone)
-		zones[i] = {account = data.account, name = data.name}
+		zones[data.zoneID] = {account = data.account, name = data.name}
 		
 		authorizedToBuild[i] = {}
 		authorizedToBuild[i] = fromJSON(data.authorized)

@@ -1,12 +1,56 @@
-local LS = createColTube(1181, -1324, 10, 30, 10) -- All Saints Hospital
+--[[
+local LS = createColRectangle(1155.9263, -1353.4421, 60, 60) -- All Saints Hospital
 local LS2 = createColRectangle(1996.9545, -1451.0143, 106, 80) -- Jefferson Hospital
 local SF = createColRectangle(-2745, 576, 135, 100) -- SF Hospital
 local LV = createColPolygon(1559, 1801, 1559, 1801, 1558, 1910, 1674, 1910, 1681, 1806) -- LV Hospital
 local jail = createColRectangle(3587, -1215, 260, 150)
 local LVMech = createColRectangle(1937.5712, 2140.3237, 45, 40)
 local LVRecovery = createColRectangle(1718.4382, 1993.0917, 38, 50)
+--]]
 
-local sZone = {LS, JF, SF1, LV, LS2, jail, LVMech, LVRecovery}
+local zones = {
+	{createColRectangle, 3587, -1215, 260, 150}, -- #1 is always jail
+	
+	{createColRectangle, 1155.9263, -1353.4421, 60, 60},
+	{createColRectangle, 1996.9545, -1451.0143, 106, 80},
+	{createColRectangle, -2745, 576, 135, 100},
+	{createColRectangle, 1559, 1801, 115, 109},
+	{createColRectangle, 1937.5712, 2140.3237, 45, 40},
+	{createColRectangle, 1718.4382, 1993.0917, 38, 50},
+}
+
+local sZone = {}
+local jail, radarAreas
+
+for i, data in ipairs(zones) do
+	local zone = data[1](data[2], data[3], data[4], data[5])
+	table.insert(sZone, zone)
+	
+	if (i == 1) then
+		jail = zone
+	end
+end
+
+function enable(new)
+	if (new == "Yes") then
+		if (radarAreas) then return end
+		radarAreas = {}
+		for i, data in ipairs(zones) do
+			radarAreas[i] = createRadarArea(data[2], data[3], data[4], data[5], 0, 200, 0, 85)
+		end
+	else
+		if (not radarAreas) then return end
+		for i, v in ipairs(radarAreas) do
+			v:destroy()
+		end
+		radarAreas = nil
+	end
+end
+enable(exports.UCDsettings:getSetting("saferadarareas"))
+
+--local sZone = {LS, JF, SF1, LV, LS2, jail, LVMech, LVRecovery}
+
+-- addCommandHandler("safe", function() outputDebugString(tostring(LS.radius)) end)
 
 function isElementWithinSafeZone(element)
 	if not isElement(element) then return false end

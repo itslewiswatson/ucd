@@ -2,7 +2,7 @@ local data = {}
 local disappearTime = 10000
 
 function foo()
-	if (not exports.UCDaccounts or not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+	if (not Resource.getFromName("UCDaccounts") or not exports.UCDaccounts or not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
 		return false
 	end
 	
@@ -16,7 +16,7 @@ end
 addEventHandler("onClientPreRender", root, foo)
 
 function hasPlayerMoneyChanged()
-	if (not exports.UCDaccounts or not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
+	if (not Resource.getFromName("UCDaccounts") or not exports.UCDaccounts or not exports.UCDaccounts:isPlayerLoggedIn(localPlayer)) then
 		return false
 	end
 	

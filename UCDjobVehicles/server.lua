@@ -1,4 +1,4 @@
-spawnerData = {} -- Table of spawner data
+-- spawnerData = {} -- Table of spawner data (because binds are easier)
 PJV = {} -- Table of player spawned vehicles
 
 -- Handled client-side for now (because binds are easier)

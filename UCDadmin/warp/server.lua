@@ -1,7 +1,8 @@
--- Warp points by HellStunter
-function serverShowGUI(thePlayer)
+-- Warp panel by HellStunter
+function toggleWPGUI(thePlayer)
+	if (not exports.UCDaccounts:isPlayerLoggedIn(thePlayer)) then return end
    if (isPlayerAdmin(thePlayer) and thePlayer.team.name == "Admins") then
-        triggerClientEvent(thePlayer, "showGUI", thePlayer)
+        triggerClientEvent(thePlayer, "UCDadmin.onToggleWPGUI", resourceRoot)
    end
 end
-addCommandHandler("wp", serverShowGUI)
+addCommandHandler("wp", toggleWPGUI)

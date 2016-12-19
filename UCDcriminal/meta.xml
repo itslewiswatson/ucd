@@ -1,3 +1,3 @@
 <meta>	<min_mta_version server="1.4" client="1.4"/>
 	<info author="Noki" description="Criminal job" type="script" version="Alpha" />
-	<script src="server.lua" type="server"/>	<script src="client.lua" type="client"/>		<script src="f5.slua" type="server"/>	<script src="f5.lua" type="client"/>	<oop>true</oop></meta>
+	<script src="server.lua" type="server"/>	<script src="client.lua" type="client"/>		<script src="f5.slua" type="server"/>	<script src="f5.lua" type="client"/>		<export function="getPlayerCriminalRank" type="server"/>	<oop>true</oop></meta>
