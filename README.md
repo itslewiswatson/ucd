@@ -100,6 +100,9 @@ Risk (Amr Gamal)
 Carl (Carl Rizk)
 
 ## Links
-http://ucdmta.com
-<br>
-http://community.ucdmta.com
+| Description | Link |
+| ------------- | ------------- |
+| Home Page  | http://ucdmta.com  |
+| Forum  | http://community.ucdmta.com  |
+| Discord  | https://discord.gg/HAEwucW  |
+| Trello  | https://trello.com/b/9SGcbZVY/ucd  |
