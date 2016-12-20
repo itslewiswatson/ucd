@@ -20,8 +20,6 @@
 	<script src="setjob/setjob.slua" type="server"/>
 	<script src="setjob/setjob.lua" type="client"/>
 	
-	<script src="restricted/cmds.lua" type="server"/>
-	
 	<script src="punishments/ban.lua" type="server"/>
 	<script src="punishments/ban_c.lua" type="client"/>
 	<script src="punishments/punishments.lua" type="server"/>
