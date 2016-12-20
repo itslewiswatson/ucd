@@ -88,7 +88,7 @@ Please open a pull request for any changes. Check the [`issues`](/nokizorque/ucd
 - Maintain current code consistency
 - Use OOP syntax where possible
 - Tabs for indendation
-- Use pascalCase
+- Use camelCase
 - Use global variables sparingly
 - Make reasonable comments
 
