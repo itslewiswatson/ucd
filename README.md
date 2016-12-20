@@ -1,4 +1,4 @@
-on of Clarity and Diversity
+# Union of Clarity and Diversity
 UCD is a lightweight flexible RPG game mode developed for MTA:SA. The code seen in this repository's [`master`](/nokizorque/ucd/tree/master) branch runs on the UCD server.
 
 ## Introduction
@@ -33,73 +33,73 @@ If you would like to run this server yourself, you are more than free to do so. 
 
 1. Clone the repository
 	- `git clone https://github.com/nokizorque/ucd.git`
-	2. Make it a carpet (rename it to anything, though it must be surrounded by brackets)
-		- `mv ucd [ucd]`
-		3. Change into the UCDsql resource
-			- `cd [ucd]/UCDsql`
-			4. Copy the example credentials file and fill it with your MySQL credentials.
-				- `cp credentials.json.example credentials.json`
-					- `nano credentials.json` (or any text editor of your liking)
-					5. Go back to the resource carpet
-						- `cd ..`
-						6. Copy the example mtaserver.conf to `mods/deathmatch` and edit it with your server name, password (if any) and other details.
-							- `cp mtaserver.conf ../.. && cd ../..`
-								- `nano mtaserver.conf`
-								7. Go back into the main MTA directory and start the server.
-									- `cd ../..`
-										- `./mta-server` or `./mta-server64`
-											
-											### Windows
-											*This assumes the MTA Server is already installed.*
+2. Make it a carpet (rename it to anything, though it must be surrounded by brackets)
+	- `mv ucd [ucd]`
+3. Change into the UCDsql resource
+	- `cd [ucd]/UCDsql`
+4. Copy the example credentials file and fill it with your MySQL credentials.
+	- `cp credentials.json.example credentials.json`
+	- `nano credentials.json` (or any text editor of your liking)
+5. Go back to the resource carpet
+	- `cd ..`
+6. Copy the example mtaserver.conf to `mods/deathmatch` and edit it with your server name, password (if any) and other details.
+	- `cp mtaserver.conf ../.. && cd ../..`
+	- `nano mtaserver.conf`
+7. Go back into the main MTA directory and start the server.
+	- `cd ../..`
+	- `./mta-server` or `./mta-server64`
+	
+### Windows
+*This assumes the MTA Server is already installed.*
 
-											1. Clone or download the repository
-												- `git clone https://github.com/nokizorque/ucd.git`
-													- From the repository's main page:
-															- ![](https://noki.zorque.xyz/i/7b02a.png)
-																	- Download as a ZIP or clone, and place into your server directory (`C:\Program Files (x86)\MTA San Andreas 1.5.3\server\mods\deathmatch\resources`)
-																	2. Rename the folder to be a carpet (signified by the surrounding square brackets)
-																		 -
-																		 	 ```
-																			 	 +--resources
-																				 	 	+-- [admin]
-																							 	+-- [editor]
-																									 	+-- [gamemodes]
-																											 	..
-																													    +-- [ucd]
-																													    	 	|   +-- UCDadmin
-																																 	|	+-- UCDactions
-																																		 ```
-																																		 	 - You may also rename it to anything else, as long as its surrounded by square brackets.
+1. Clone or download the repository
+	- `git clone https://github.com/nokizorque/ucd.git`
+	- From the repository's main page:
+		- ![](https://noki.zorque.xyz/i/7b02a.png)
+		- Download as a ZIP or clone, and place into your server directory (`C:\Program Files (x86)\MTA San Andreas 1.5.3\server\mods\deathmatch\resources`)
+2. Rename the folder to be a carpet (signified by the surrounding square brackets)
+	 -
+	 ```
+	 +--resources
+	 	+-- [admin]
+	 	+-- [editor]
+	 	+-- [gamemodes]
+	 	..
+	    +-- [ucd]
+	 	|   +-- UCDadmin
+	 	|	+-- UCDactions
+	 ```
+	 - You may also rename it to anything else, as long as its surrounded by square brackets.
 
-																																			 3. Navigate to `UCDsql` and copy `credentials.json.example` to `credentials.json` and edit the contents with your MySQL database credentials.
-																																			 4. Copy `mtaserver.conf` from the main carpet (mentioned in step 2) to `server/mods/deathmatch` and edit it to your liking.
-																																			 5. Start `MTA Server.exe`.
+3. Navigate to `UCDsql` and copy `credentials.json.example` to `credentials.json` and edit the contents with your MySQL database credentials.
+4. Copy `mtaserver.conf` from the main carpet (mentioned in step 2) to `server/mods/deathmatch` and edit it to your liking.
+5. Start `MTA Server.exe`.
 
-																																			 ## Issues & Bugs
-																																			 Issues are to be reported on the [`issues`](/nokizorque/ucd/issues) tab. They are then open for anyone to fix, but will most likely be handled by any collaborator or maintainer.
-																																			 A pull request must be opened for the issue, even if you are a collaborator with write-access. This is so the change may be reviewed.
+## Issues & Bugs
+Issues are to be reported on the [`issues`](/nokizorque/ucd/issues) tab. They are then open for anyone to fix, but will most likely be handled by any collaborator or maintainer.
+A pull request must be opened for the issue, even if you are a collaborator with write-access. This is so the change may be reviewed.
 
-																																			 ## Development
-																																			 UCD was not designed to be open-source, or plug-and-play. It was meant for development by a few people. However, that has changed and the code base will need to be made suitable for open-source contributions.
+## Development
+UCD was not designed to be open-source, or plug-and-play. It was meant for development by a few people. However, that has changed and the code base will need to be made suitable for open-source contributions.
 
-																																			 Please open a pull request for any changes. Check the [`issues`](/nokizorque/ucd/issues) board for any potential problems to fix. Otherwise, check the Trello board for functionality additions.
+Please open a pull request for any changes. Check the [`issues`](/nokizorque/ucd/issues) board for any potential problems to fix. Otherwise, check the Trello board for functionality additions.
 
-																																			 ### Guidelines
-																																			 - Maintain current code consistency
-																																			 - Use OOP syntax where possible
-																																			 - Tabs for indendation
-																																			 - Use pascalCase
-																																			 - Use global variables sparingly
-																																			 - Make reasonable comments
+### Guidelines
+- Maintain current code consistency
+- Use OOP syntax where possible
+- Tabs for indendation
+- Use pascalCase
+- Use global variables sparingly
+- Make reasonable comments
 
-																																			 ## Contributors
-																																			 nokizorque (Lewis Watson)
-																																			 <br>
-																																			 Risk (Amr Gamal)
-																																			 <br>
-																																			 Carl (Carl Rizk)
+## Contributors
+nokizorque (Lewis Watson)
+<br>
+Risk (Amr Gamal)
+<br>
+Carl (Carl Rizk)
 
-																																			 ## Links
-																																			 http://ucdmta.com
-																																			 <br>
-																																			 http://community.ucdmta.com
+## Links
+http://ucdmta.com
+<br>
+http://community.ucdmta.com
