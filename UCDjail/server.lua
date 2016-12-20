@@ -30,7 +30,9 @@ function onLeaveJail(ele, matchingDimension)
 		end
 	end
 end
-addEventHandler("onColShapeLeave", col, onLeaveJail)
+if (isElement(col)) then
+	addEventHandler("onColShapeLeave", col, onLeaveJail)
+end
 
 
 addEventHandler("onResourceStart", resourceRoot,
