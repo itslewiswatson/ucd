@@ -544,21 +544,19 @@ end
 function requestPlayerData_callback(sync)
 	--outputDebugString("Client callback")
 	local data = sync
-<<<<<<< HEAD
+
 	adminPanel.label[2]:setText("IP: "..data["ip"])
 	adminPanel.label[3]:setText("Serial: "..data["serial"])
 	adminPanel.label[4]:setText("Version: "..data["version"])
 	adminPanel.label[12]:setText("Email: "..data["email"] or "N/A")
 	adminPanel.label[16]:setText("Bank: ".."$"..tostring(exports.UCDutil:tocomma(data["bank"])))
 	adminPanel.label[15]:setText("Money: $"..tostring(exports.UCDutil:tocomma(data["money"])))
-=======
 	adminPanel.label[2]:setText("IP: "..tostring(data["ip"] or "N/A"))
 	adminPanel.label[3]:setText("Serial: "..tostring(data["serial"] or "N/A"))
 	adminPanel.label[4]:setText("Version: "..tostring(data["version"] or "N/A"))
 	adminPanel.label[12]:setText("Email: "..tostring(data["email"] or "N/A"))
 	adminPanel.label[16]:setText("Bank: ".."$"..tostring(exports.UCDutil:tocomma(data["bank"]) or "0"))
 	adminPanel.label[15]:setText("Money: $"..tostring(exports.UCDutil:tocomma(data["money"]) or "0"))
->>>>>>> bitbucket/master
 	adminPanel.label[22]:setText("Weapon: "..tostring(data["weapon"]))
 end
 addEvent("UCDadmin.requestPlayerData:callback", true)

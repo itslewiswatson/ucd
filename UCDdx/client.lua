@@ -1,5 +1,5 @@
 sX, sY = guiGetScreenSize()
-local enabled = exports.UCDsettings:getSetting("dxmsgs") == "Yes" and true or false
+local enabled = true
 
 local Shout = { -- hell yeah
 	enabled = true,
@@ -25,6 +25,11 @@ ContextBar = {
 function math.lerp( from, to, t )
     return from + ( to - from ) * t
 end
+
+function enable(new)
+	enabled = new == "Yes" and true or false
+end
+enable(exports.UCDsettings:getSetting("dxmsgs"))
 
 function ContextBar.add(text, r, g, b)
 	--local y = sY - ContextBar.height
@@ -72,10 +77,6 @@ function ContextBar.add(text, r, g, b)
 end
 --addCommandHandler("dx", function () ContextBar.add("The quick brown fox jumps over the lazy dog "..exports.UCDutil:randomstring(2), math.random(0, 255), math.random(0, 255), math.random(0, 255)) end)
 addCommandHandler("getdx", function () outputDebugString(#ContextBar.entries) end)
-
-function enable(new)
-	enabled = new == "Yes" and true or false
-end
 
 addCommandHandler("cleardx",
 	function ()
@@ -180,8 +181,8 @@ addEventHandler("onClientRender", root,
 			if (i ~= 1) then Shout.entries[i][2] = getTickCount() return end -- draw one only, others delayed
 			local scale = Shout.scale
 			local tX, tY = (sX - dxGetTextWidth(v[1], scale, Shout.font)) / 2, sY - dxGetFontHeight(scale, Shout.font)
-			if (tX <= 0) then -- for large ones that would be cut
-				scale = scale - 1.25
+			while (tX <= 0) do
+				scale = scale - 0.01
 				tX, tY = (sX - dxGetTextWidth(v[1], scale, Shout.font)) / 2, sY - dxGetFontHeight(scale, Shout.font)
 			end
 			local alpha = (((Shout.life + (#v[1] * Shout.extralife)) - (getTickCount() - v[2])) / (Shout.life + (#v[1] * Shout.extralife))) * 255
