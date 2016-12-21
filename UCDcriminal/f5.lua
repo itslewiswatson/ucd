@@ -11,7 +11,7 @@ local info =
 }
 
 -- Update timers for constant updates
-local constantBC = {}
+local bcUpdate, bcTime, bcMsg
 
 addEventHandler("onClientResourceStart", resourceRoot,
 	function ()
@@ -109,11 +109,13 @@ function toggleGUI(data)
 			
 			if (data.bc) then
 				F5.label["bc"].text = "Briefcase: "..tostring(data.bc)
-				if (constantBC.t and isTimer(constantBC.t)) then
-					constantBC.t:destroy()
-					constantBC.t = nil
+				if (bcUpdate and isTimer(bcUpdate)) then
+					bcUpdate:destroy()
+					bcUpdate = nil
 				end
-				constantBC = {t = Timer(constantUpdate, 1000, 0, data.bc, data.bcMsg), r = getTickCount()}
+				bcTime = data.bc
+				bcMsg = data.bcMsg
+				bcUpdate = Timer(bcDecrementTime, 1000, 0)
 			end
 		else
 			if (F5.window.visible) then
@@ -125,21 +127,18 @@ function toggleGUI(data)
 		end
 	end
 end
-addCommandHandler("crimpanel", toggleGUI)
+addCommandHandler("crimpanel", toggleGUI, false, false)
 bindKey("F5", "up", "crimpanel")
 addEvent("UCDcriminal.updateGUI", true)
 addEventHandler("UCDcriminal.updateGUI", root, toggleGUI)
 
-function constantUpdate(timestamp, msg)
-	local curr = getTickCount() - constantBC.r
-	local newTime = timestamp - curr
-	
-	if (newTime <= 0) then
+function bcDecrementTime()
+	bcTime = bcTime - 1
+	if (bcTime <= 0) then
 		F5.label["bc"].text = "Briefcase: Available to take"
-		constantBC.t:destroy()
-		constantBC.t = nil
+		bcUpdate:destroy()
+		bcUpdate = nil
 		return
 	end
-	
-	F5.label["bc"].text = "Briefcase: "..tostring(exports.UCDutil:formatMil(newTime)).." "..tostring(msg)
+	F5.label["bc"].text = "Briefcase: "..tostring(exports.UCDutil:formatMil(bcTime)).." "..tostring(bcMsg)
 end
