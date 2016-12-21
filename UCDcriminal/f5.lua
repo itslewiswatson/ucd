@@ -133,7 +133,7 @@ addEvent("UCDcriminal.updateGUI", true)
 addEventHandler("UCDcriminal.updateGUI", root, toggleGUI)
 
 function bcDecrementTime()
-	bcTime = bcTime - 1
+	bcTime = bcTime - 1000 -- The timer is in ms, and formatMil requires ms
 	if (bcTime <= 0) then
 		F5.label["bc"].text = "Briefcase: Available to take"
 		bcUpdate:destroy()
