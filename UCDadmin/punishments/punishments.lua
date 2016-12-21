@@ -271,9 +271,10 @@ function getPunishmentLog(val, serial)
 			end
 			if (serial and v[4] == serial) then
 				if (not punishlog.serial) then punishlog.serial = {} end
-				tble.insert(punishlog.serial, v)
+				table.insert(punishlog.serial, v)
 			end
 		end
+		if (not punishlog.acc and not punishlog.serial) then return end -- for empty punishlogs
 		return punishlog
 	end
 	return punishments
