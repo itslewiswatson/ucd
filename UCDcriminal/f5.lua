@@ -108,7 +108,7 @@ function toggleGUI(data)
 			end
 			
 			if (data.bc) then
-				F5.label["bc"].text = "Briefcase: "..tostring(data.bc)
+				F5.label["bc"].text = "Briefcase: "..tostring(exports.UCDutil:formatMil(data.bc)).." "..tostring(bcMsg)
 				if (bcUpdate and isTimer(bcUpdate)) then
 					bcUpdate:destroy()
 					bcUpdate = nil
