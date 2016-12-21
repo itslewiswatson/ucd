@@ -47,5 +47,8 @@
 	
 	<export function="canAdminDoAction" type="server"/>
 	<export function="getRankPerms" type="server"/>
+	
+	<export function="getPunishmentLog" type="server"/>
+	
 	<oop>true</oop>
 </meta>

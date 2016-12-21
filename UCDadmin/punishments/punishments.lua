@@ -260,3 +260,21 @@ function punish2(val, duration, type1, who, reason)
 	db:exec("INSERT INTO `punishments` (`val`, `datum`, `duration`, `who`, `reason`, `log`, `serial`) VALUES (?, ?, ?, ?, ?, ?, ?)", val, timestamp, duration, who, reason[1], tostring(datetime..log_), serial)
 	return true, pureLog, plr
 end
+
+function getPunishmentLog(val, serial)
+	if (val or serial) then
+		local punishlog = {}
+		for i, v in ipairs(punishments) do
+			if (val and v[1] == val) then
+				if (not punishlog.acc) then punishlog.acc = {} end
+				table.insert(punishlog.acc, v)
+			end
+			if (serial and v[4] == serial) then
+				if (not punishlog.serial) then punishlog.serial = {} end
+				tble.insert(punishlog.serial, v)
+			end
+		end
+		return punishlog
+	end
+	return punishments
+end
