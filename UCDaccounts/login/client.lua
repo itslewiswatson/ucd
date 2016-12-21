@@ -226,7 +226,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
 				v.visible = false
 			end
 			
-			addEventHandler("onClientGUIClick", registration.button, onClickRegisterConfirm)
+			addEventHandler("onClientGUIClick", registration.button, onClickRegisterConfirm, false)
 			--addEventHandler("onClientGUIChanged", registration.window[1], onRegistrationEditsChanged)
 			
 			if (File.exists("@credentials.xml")) then
