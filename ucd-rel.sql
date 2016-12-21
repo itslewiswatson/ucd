@@ -621,13 +621,13 @@ CREATE TABLE IF NOT EXISTS `jails` (
 CREATE TABLE IF NOT EXISTS `logging` (
 `logID` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `acc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `account` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tick` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `action` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `serial` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=122244 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
