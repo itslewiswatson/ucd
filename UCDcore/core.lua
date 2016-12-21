@@ -13,9 +13,9 @@ db = exports.UCDsql:getConnection()
 -- This snippet doesn't like to work in UCDsql for some reason.
 local charset = db:exec("SET NAMES `utf8mb4`")
 if (not charset) then
-	outputDebugString("["..getThisResource():getName().."] Failed to encode database with utf8m4")
+	outputDebugString("["..tostring(getThisResource().name).."] Failed to encode database with utf8m4")
 else
-	outputDebugString("["..getThisResource():getName().."] Successfully encoded database with utf8m4")
+	outputDebugString("["..tostring(getThisResource().name).."] Successfully encoded database with utf8m4")
 end
 
 
@@ -25,10 +25,9 @@ function getGameVersion()
 	return tostring(ver[1].version)
 end
 
-setGameType("Vanos "..getGameVersion())
+setGameType("UCD "..getGameVersion())
 setMinuteDuration(6000)
 setFPSLimit(60)
-setServerPassword("onelove")
 setWeather(10)
 setTime(0, 0)
 for i = 0, 49 do setGarageOpen(i, true) end
