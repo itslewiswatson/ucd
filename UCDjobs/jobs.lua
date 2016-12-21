@@ -14,7 +14,7 @@ function onClientResourceStart()
 	GUI.window.sizable = false
 	GUI.window.alpha = 255
 	guiSetPosition(GUI.window, 0, (sY - 377) / 2, false)
-	GUI.label = guiCreateLabel(8, 30, 319, 198, "", false, GUI.window)
+	GUI.label = GuiLabel(8, 30, 319, 198, "", false, GUI.window)
 	
 	--[[
 	GUI.gridlist = GuiGridList(11, 238, 316, 120, false, GUI.window)
