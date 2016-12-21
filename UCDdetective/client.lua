@@ -4,6 +4,10 @@ local destinations = {
 	{x = 1968.6837, y = -1482.7329, z = 10.8281, rot = 90, objs = {{1996.3604, -1478.6409, 11.644}, {1955.5939, -1474.5669, 13.5469}, {1972.6407, -1473.288, 13.5564}, {1960.7535, -1494.8043, 3.3559}, {1968.764, -1507.5338, 3.5346}}},
 	{x = 1886.2681, y = -1964.8997, z = 13.5469, rot = 90, objs = {{1866.1803, -1967.1952, 13.5469}, {1869.8966, -1966.8141, 18.6563}, {1886.8195, -1987.1522, 13.5469}, {1913.4451, -1954.0959, 13.5547}, {1904.9744, -1939.4832, 13.5469}}},
 	{x = 536.8918, y = -1697.5397, z = 16.119, rot = 90, objs = {{511.1562, -1691.8781, 17.5124}, {495.9906, -1705.627, 12.0492}, {508.1011, -1721.1276, 12.042}, {574.5625, -1714.1274, 13.6436}}},
+	{x = 2092.9346, y = -2078.7183, z = 13.5469, rot = 0, objs = {{2074.1213, -2087.4373, 16.0759}, {2066.7107, -2091.6924, 16.0759}, {2110.3245, -2075.9402, 13.5544}, {2079.5369, -2067.3767, 17.3572}, {2092.6938, -2068.2839, 13.5469}}},
+	{x = 1923.927, y = -2124.6472, z = 13.5831, rot = 180, objs = {{1930.1951, -2135.2424, 18.2977}, {1931.7651, -2133.5964, 21.6484}, {1940.7877, -2113.5818, 13.6953}, {1949.7363, -2156.1614, 13.5446}, {1893.9097, -2097.0034, 13.4879}}},
+	{x = 1243.4502, y = -1693.4862, z = 16.1982, rot = 0, objs = {{1248.2947, -1696.2659, 13.5469}, {1272.6802, -1696.3218, 13.5469}, {1218.886, -1692.7627, 19.7344}, {1267.0063, -1692.1909, 19.7344}, {1275.3414, -1665.8503, 19.7344}}},
+	{x = 901.3124, y = -1254.1012, z = 15.049, rot = 270, objs = {{915.552, -1235.2096, 17.210}, {858.9877, -1231.2815, 14.7642}, {913.4534, -1275.4198, 14.6317}, {903.0704, -1298.6674, 13.6311}, {887.84, -1194.896, 16.9766}}},
 }
 local curr
 local prev
@@ -56,7 +60,7 @@ function newCase()
 	until curr ~= prev
 	
 	local dest = destinations[curr]
-	exports.UCDdx:new("There has been a homicide in "..getZoneName(dest.x, dest.y, dest.z)..". Go there to investigate.", 30, 144, 255)
+	exports.UCDdx:new("There has been a homicide in "..tostring(getZoneName(dest.x, dest.y, dest.z))..". Go there to investigate.", 30, 144, 255)
 	
 	ped = Ped(skins[math.random(1, #skins)], dest.x, dest.y, dest.z)
 	blip = Blip.createAttachedTo(ped, 23)
@@ -91,10 +95,11 @@ function onEvidenceHit(plr, matchingDimension)
 		exports.UCDdx:add("detective", "Clues: "..tostring(hitCount).."/"..tostring(objCount), 30, 144, 255)
 		Sound.playFrontEnd(12)
 		
+		triggerServerEvent("UCDdetective.onEvidenceHit", resourceRoot)
+		
 		if (#id2obj == 0 and hitCount == objCount) then
 			ped:destroy()
 			blip:destroy()
-			exports.UCDdx:new("You have gathered enough evidence to solve the case and determine the killer", 30, 144, 255)
 			triggerServerEvent("UCDdetective.onEvidenceCollected", resourceRoot)
 			Timer(function () exports.UCDdx:del("detective") end, 2000, 1)
 		end
