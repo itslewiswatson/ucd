@@ -59,6 +59,9 @@ function renderMarkerText()
 		local distance = getDistanceBetweenPoints3D(x, y, z, localPlayer.position)
 		local cX, cY, cZ = getCameraMatrix()
 		if (distance <= viewDistance) then
+			if (not Camera.target or (Camera.target.type ~= "vehicle" and Camera.target.type ~= "player")) then
+				return
+			end
 			if (isLineOfSightClear(cX, cY, cZ, x, y, z + 1, _, _, _, _, _, _, _, localPlayer)) then
 				local sX, sY = getScreenFromWorldPosition(x, y, z + 1, 0.06)
 				if (sX and sY) then
