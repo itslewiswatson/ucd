@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `groups_` (
 CREATE TABLE IF NOT EXISTS `groups_alliances_` (
   `alliance` varchar(22) COLLATE utf8mb4_unicode_ci NOT NULL,
   `info` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `colour` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `colour` varchar(21) COLLATE utf8mb4_unicode_ci NOT NULL,
   `balance` int(11) NOT NULL,
   `created` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
