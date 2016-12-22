@@ -435,11 +435,12 @@ end
 addEvent("UCDadmin.blowVehicle", true)
 addEventHandler("UCDadmin.blowVehicle", root, blowVehicle_)
 
-function viewPunishments(plr)
+function viewPunishments(plr, serial)
 	if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return end
 	local punishments = getPunishmentLog(plr, _, false)
-	if (not punishments) then return end -- To save bandwidth -for you, sir Noki-, if not no calling back
-	triggerClientEvent(client, "UCDadmin.viewPunishments.callback", client, punishments)
+	if (not punishments) then return end -- to save bandwidth
+	triggerClientEvent(source, "UCDadmin.punishments.onReceivePunishments", source, punishments)
+	-- used source because of editPunishment(punishments/punishments.lua)
 end
-addEvent("UCDadmin.viewPunishments.call", true)
-addEventHandler("UCDadmin.viewPunishments.call", root, viewPunishments) -- calls back to insertPunishments in punishments/punishments_c.lua, if you are wonderin'
+addEvent("UCDadmin.punishments.onViewPunishments", true)
+addEventHandler("UCDadmin.punishments.onViewPunishments", root, viewPunishments) -- calls back to insertPunishments in punishments/punishments_c.lua, if you are wonderin'

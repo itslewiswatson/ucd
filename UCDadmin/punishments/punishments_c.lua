@@ -97,6 +97,43 @@ end
 customTimeShit() -- Do this once to disable them
 addEventHandler("onClientGUIClick", punish.checkbox["custom_duration"], customTimeShit, false)
 
+function viewPunish.autoSize()
+	for _, gui in pairs(viewPunish.grid) do
+		for i = 1, gui.columnCount do
+			gui:autoSizeColumn(i)
+			gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
+			-- yeah auto size function doesn't work well, idk why doesn't it show last letter
+			-- i wonder why dont they make guiGridListGetColumnWidth in OOP
+		end
+	end
+end
+
+function viewPunish.edit()
+	if (not _permissions["manage punish"]) then
+		exports.UCDdx:new("Only L3+ admins may manage punishments", 255, 0, 0)
+		return
+	end
+	local i = viewPunish.tabpanel.selectedTab == viewPunish.tab[1] and 1 or 2
+	local row = viewPunish.grid[i]:getSelectedItem()
+	if (not row or row == -1) then return end
+	local key, log = viewPunish.grid[i]:getItemText(row, 1), viewPunish.grid[i]:getItemText(row, 2)
+	triggerServerEvent("UCDadmin.punishments.onEditPunishment", localPlayer, key, log)
+	viewPunish.editButton.enabled = false
+	Timer(guiSetEnabled, 2500, 1, viewPunish.editButton, true)
+	local sX, sY = guiGetScreenSize()
+	local cX, cY = getCursorPosition()
+	local x, y = cX * sX, cY * sY
+	setCursorPosition(x + 0.1, y) -- because of MTA
+end
+addEventHandler("onClientGUIClick", viewPunish.editButton, viewPunish.edit, false)
+
+function viewPunish.close()
+	viewPunish.window.visible = false
+end
+addEvent("UCDadmin.punishments.closeGUI", true)
+addEventHandler("UCDadmin.punishments.closeGUI", localPlayer, viewPunish.close)
+addEventHandler("onClientGUIClick", viewPunish.closeButton, viewPunish.close, false)
+
 function viewPunish.insertPunishments(data)
 	for _, gui in ipairs(viewPunish.grid) do gui:clear() end
 	if (data.serial) then
@@ -104,16 +141,28 @@ function viewPunish.insertPunishments(data)
 			local row = viewPunish.grid[1]:addRow()
 			viewPunish.grid[1]:setItemText(row, 1, v[1], false, false)
 			viewPunish.grid[1]:setItemText(row, 2, v[2], false, false)
+			local r, g, b = 0, 255, 0
+			if (v[3] == 0) then
+				r, g, b = 255, 0, 0
+			end
+			viewPunish.grid[1]:setItemColor(row, 1, r, g, b)
+			viewPunish.grid[1]:setItemColor(row, 2, r, g, b)
 		end
 	end
-	if (data.acc) then
-		for _, v in ipairs(data.acc) do
+	if (data.account) then
+		for _, v in ipairs(data.account) do
 			local row = viewPunish.grid[2]:addRow()
 			viewPunish.grid[2]:setItemText(row, 1, v[1], false, false)
 			viewPunish.grid[2]:setItemText(row, 2, v[2], false, false)
+			local r, g, b = 0, 255, 0
+			if (v[3] == 0) then
+				r, g, b = 255, 0, 0
+			end
+			viewPunish.grid[2]:setItemColor(row, 1, r, g, b)
+			viewPunish.grid[2]:setItemColor(row, 2, r, g, b)
 		end
 	end
 	viewPunish.autoSize()
 end
-addEvent("UCDadmin.viewPunishments.callback", true)
-addEventHandler("UCDadmin.viewPunishments.callback", localPlayer, viewPunish.insertPunishments)
+addEvent("UCDadmin.punishments.onReceivePunishments", true)
+addEventHandler("UCDadmin.punishments.onReceivePunishments", localPlayer, viewPunish.insertPunishments)

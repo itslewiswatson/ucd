@@ -206,79 +206,64 @@ adminPanel.tab["players"] = guiCreateTab("Players", adminPanel.tabpanel)
 	-- Set job window
 	
 	setJob = {}
-	setJob.window 							= GuiWindow(362, 112, 614, 376, "UCD | Set Job", false)
+	setJob.window = GuiWindow(362, 112, 614, 376, "UCD | Set Job", false)
 	setJob.window.sizable = false
 	setJob.window.visible = false
 	setJob.window.alpha = 1
-	setJob.playersGrid 						= GuiGridList(9, 25, 187, 281, false, setJob.window)
+	setJob.playersGrid = GuiGridList(9, 25, 187, 281, false, setJob.window)
 	setJob.playersGrid:addColumn("Player:", 0.9)
-	setJob.jobsGrid 						= GuiGridList(213, 25, 187, 281, false, setJob.window)
+	setJob.jobsGrid = GuiGridList(213, 25, 187, 281, false, setJob.window)
 	setJob.jobsGrid:addColumn("Job:", 0.9)
-	setJob.skinsGrid 						= GuiGridList(416, 25, 187, 281, false, setJob.window)
+	setJob.skinsGrid = GuiGridList(416, 25, 187, 281, false, setJob.window)
 	setJob.skinsGrid:addColumn("Skin:", 0.5)
 	setJob.skinsGrid:addColumn("Skin ID:", 0.4)
-	setJob.setButton 						= GuiButton(9, 316, 187, 46, "Set player job", false, setJob.window)
-	setJob.removeButton 					= GuiButton(213, 316, 187, 46, "Remove player from job", false, setJob.window)
-	setJob.cancelButton 					= GuiButton(416, 316, 187, 46, "Cancel", false, setJob.window)
+	setJob.setButton = GuiButton(9, 316, 187, 46, "Set player job", false, setJob.window)
+	setJob.removeButton = GuiButton(213, 316, 187, 46, "Remove player from job", false, setJob.window)
+	setJob.cancelButton = GuiButton(416, 316, 187, 46, "Cancel", false, setJob.window)
 
 	-- fuark this identation but i have to do the same
 	-- View punishments window
 	
 	viewPunish = {tab = {}, grid = {}}
-	viewPunish.window 						= GuiWindow(0, 0, 825, 515, "UCD | Admin - View Punishments", false)
-	viewPunish.window.sizable 				= false
-	viewPunish.window.visible 				= false
-	viewPunish.tabpanel 					= GuiTabPanel(0, 20, 825, 455, false, viewPunish.window)
-	viewPunish.tab[1]		 				= GuiTab("Serial punishments", viewPunish.tabpanel)
-	viewPunish.tab[2]			 			= GuiTab("Account punishments", viewPunish.tabpanel)
-	viewPunish.grid[1]			 			= GuiGridList(10, 10, 790, 410, false, viewPunish.tab[1])
-	viewPunish.grid[2]			 			= GuiGridList(10, 10, 790, 410, false, viewPunish.tab[2])
-	viewPunish.closeButton 					= GuiButton(0, 480, 825, 20, "Close", false, viewPunish.window)
+	viewPunish.window = GuiWindow(0, 0, 825, 536, "UCD | Admin - View Punishments", false)
+	viewPunish.window.sizable = false
+	viewPunish.window.visible = false
+	viewPunish.tabpanel = GuiTabPanel(0, 20, 825, 455, false, viewPunish.window)
+	viewPunish.tab[1] = GuiTab("Serial punishments", viewPunish.tabpanel)
+	viewPunish.tab[2] = GuiTab("Account punishments", viewPunish.tabpanel)
+	viewPunish.grid[1] = GuiGridList(10, 10, 790, 410, false, viewPunish.tab[1])
+	viewPunish.grid[2] = GuiGridList(10, 10, 790, 410, false, viewPunish.tab[2])
+	viewPunish.editButton = GuiButton(0, 480, 825, 20, "Enable/disable punishment", false, viewPunish.window)
+	viewPunish.closeButton = GuiButton(0, 505, 825, 20, "Close", false, viewPunish.window)
 	viewPunish.grid[1]:addColumn("Account", 0.125)
 	viewPunish.grid[1]:addColumn("Log", 0.855)
 	viewPunish.grid[2]:addColumn("Serial", 0.25)
 	viewPunish.grid[2]:addColumn("Log", 0.7)
 	
 adminPanel.tab["bans"] = guiCreateTab("Bans", adminPanel.tabpanel)
-	adminPanel.gridlist["banList"] 			= GuiGridList(348, 11, 287, 425, false, adminPanel.tab["bans"])
+	adminPanel.gridlist["banList"] = GuiGridList(348, 11, 287, 425, false, adminPanel.tab["bans"])
 	
-	adminPanel.label["banInfo"] 			= GuiLabel(10, 11, 328, 77, "Search, manage and remove bans here.\n\nNote: when searching for bans, prefix the ban value.\nAccounts are acc:name.\nSerials are always 32 characters in length.", false, adminPanel.tab["bans"])
+	adminPanel.label["banInfo"] = GuiLabel(10, 11, 328, 77, "Search, manage and remove bans here.\n\nNote: when searching for bans, prefix the ban value.\nAccounts are acc:name.\nSerials are always 32 characters in length.", false, adminPanel.tab["bans"])
 	
-	adminPanel.edit["searchValue"] 			= GuiEdit(10, 126, 246, 29, "", false, adminPanel.tab["bans"])
-	adminPanel.edit["searchBanisher"] 		= GuiEdit(10, 195, 246, 29, "", false, adminPanel.tab["bans"])
+	adminPanel.edit["searchValue"] = GuiEdit(10, 126, 246, 29, "", false, adminPanel.tab["bans"])
+	adminPanel.edit["searchBanisher"] = GuiEdit(10, 195, 246, 29, "", false, adminPanel.tab["bans"])
 	
-	adminPanel.label["valueLabel"] 			= GuiLabel(10, 106, 246, 20, "Value:", false, adminPanel.tab["bans"])
-	adminPanel.label["banisherLabel"] 		= GuiLabel(10, 175, 246, 20, "Banisher:", false, adminPanel.tab["bans"])
+	adminPanel.label["valueLabel"] = GuiLabel(10, 106, 246, 20, "Value:", false, adminPanel.tab["bans"])
+	adminPanel.label["banisherLabel"] = GuiLabel(10, 175, 246, 20, "Banisher:", false, adminPanel.tab["bans"])
 	
-	adminPanel.button["searchLabel"] 		= GuiButton(56, 234, 152, 36, "Search", false, adminPanel.tab["bans"])
-	adminPanel.label["withSelected"] 		= GuiLabel(10, 289, 246, 16, "With selected:", false, adminPanel.tab["bans"])
-	adminPanel.button["editBan"] 			= GuiButton(10, 400, 152, 36, "Edit Ban", false, adminPanel.tab["bans"])
-	adminPanel.button["unban"] 				= GuiButton(172, 400, 152, 36, "Unban", false, adminPanel.tab["bans"])
-	adminPanel.label["and/or"] 				= GuiLabel(10, 155, 246, 20, "and/or", false, adminPanel.tab["bans"])
+	adminPanel.button["searchLabel"] = GuiButton(56, 234, 152, 36, "Search", false, adminPanel.tab["bans"])
+	adminPanel.label["withSelected"] = GuiLabel(10, 289, 246, 16, "With selected:", false, adminPanel.tab["bans"])
+	adminPanel.button["editBan"] = GuiButton(10, 400, 152, 36, "Edit Ban", false, adminPanel.tab["bans"])
+	adminPanel.button["unban"] = GuiButton(172, 400, 152, 36, "Unban", false, adminPanel.tab["bans"])
+	adminPanel.label["and/or"] = GuiLabel(10, 155, 246, 20, "and/or", false, adminPanel.tab["bans"])
 	
-	adminPanel.label["bannedValue"] 		= GuiLabel(31, 311, 293, 15, "Value: ", false, adminPanel.tab["bans"])
-	adminPanel.label["bannedOn"] 			= GuiLabel(31, 326, 293, 15, "When: ", false, adminPanel.tab["bans"])
-	adminPanel.label["bannedDuration"] 		= GuiLabel(31, 341, 293, 15, "Duration: ", false, adminPanel.tab["bans"])
-	adminPanel.label["bannedReason"] 		= GuiLabel(31, 356, 293, 15, "Reason:", false, adminPanel.tab["bans"])
-	adminPanel.label["bannedBanisher"] 		= GuiLabel(31, 371, 293, 15, "Banisher:", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedValue"] = GuiLabel(31, 311, 293, 15, "Value: ", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedOn"] = GuiLabel(31, 326, 293, 15, "When: ", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedDuration"] = GuiLabel(31, 341, 293, 15, "Duration: ", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedReason"] = GuiLabel(31, 356, 293, 15, "Reason:", false, adminPanel.tab["bans"])
+	adminPanel.label["bannedBanisher"] = GuiLabel(31, 371, 293, 15, "Banisher:", false, adminPanel.tab["bans"])
 
 adminPanel.tab["adminLog"] = guiCreateTab("Admin Log", adminPanel.tabpanel)
-
-function viewPunish.autoSize()
-	for _, gui in pairs(viewPunish.grid) do
-		for i = 1, gui.columnCount do
-			gui:autoSizeColumn(i)
-			gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
-			-- yeah auto size function doesn't work well, idk why doesn't it show last letter
-			-- i wonder why dont they make guiGridListGetColumnWidth in OOP
-		end
-	end
-end
-
-function viewPunish.close()
-	viewPunish.window.visible = false
-end
-addEventHandler("onClientGUIClick", viewPunish.closeButton, viewPunish.close, false)
 
 windows = {adminPanel.window, giveWeapon_.window[1], WPT.window[1], punish.window, setJob.window, viewPunish.window}
 for _, gui in ipairs(windows) do
@@ -677,7 +662,7 @@ function adminAction()
 		-- elseif (action == "give wep") then handled #328
 
 		elseif (action == "view punishments") then
-			triggerServerEvent("UCDadmin.viewPunishments.call", localPlayer, plr)
+			triggerServerEvent("UCDadmin.punishments.onViewPunishments", localPlayer, plr)
 			viewPunish.window.visible = true
 			guiBringToFront(viewPunish.window)
 		elseif (action == "anticheat") then

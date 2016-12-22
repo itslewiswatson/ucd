@@ -13,6 +13,7 @@ function cachePunishments(qh)
 	for _, data in ipairs(result) do
 		table.insert(punishments, {data.val, data.datum, data.duration, data.serial, data.who, data.reason, data.log, tonumber(data.active)})
 	end
+	print("Punishments cached successfully!")
 end
 
 addEventHandler("onPlayerLogin", root,
@@ -272,22 +273,47 @@ function getPunishmentLog(val, serial, whole)
 		for i, v in ipairs(punishments) do
 			if (serial and v[4] == serial) then
 				if (not punishlog.serial) then punishlog.serial = {} end
-				local v2
-				if (not whole) then
-					v2 = v
-					v = {v[1], v[7]}
+				if (whole) then
+					table.insert(punishlog.serial, v)
+				else
+					table.insert(punishlog.serial, {v[1], v[7], v[8]})
 				end
-				table.insert(punishlog.serial, v)
-				v = v2 -- just a reminder to reset for account to do the same
 			end
 			if (val and v[1] == val) then
-				if (not punishlog.acc) then punishlog.acc = {} end
-				if (not whole) then v = {v[4], v[7]} end
-				table.insert(punishlog.acc, v)
+				if (not punishlog.account) then punishlog.account = {} end
+				if (whole) then
+					table.insert(punishlog.account, v)
+				else
+					table.insert(punishlog.account, {v[4], v[7], v[8]})
+				end
 			end
 		end
-		if (not punishlog.acc and not punishlog.serial) then return false, "empty" end -- for empty punishlogs
+		if (not punishlog.account and not punishlog.serial) then return false, "empty" end -- for empty punishlogs
 		return punishlog
 	end
 	return punishments
 end
+
+function editPunishment(key, log)
+	local q, plr = key:len() == 32 and 4 or 1
+	if (q == 4) then
+		plr = exports.UCDutil:getPlayerFromSerial(key)
+	elseif (q == 1) then
+		plr = Account(key).player
+	end
+	if (not isElement(plr)) then
+		exports.UCDdx:new(client, "Player has disconnected, aborting..", 255, 0, 0)
+		triggerClientEvent(client, "UCDadmin.punishments.closeGUI", client)
+		return
+	end
+	for i, v in ipairs(punishments) do
+		if (v[q] == key and v[7] == log) then
+			punishments[i][8] = punishments[i][8] == 1 and 0 or 1
+			db:exec("UPDATE `punishments` SET `active` = ? WHERE `log` = ?", tostring(punishments[i][8]), log)
+			triggerEvent("UCDadmin.punishments.onViewPunishments", client, plr)
+			break
+		end
+	end
+end
+addEvent("UCDadmin.punishments.onEditPunishment", true)
+addEventHandler("UCDadmin.punishments.onEditPunishment", root, editPunishment)

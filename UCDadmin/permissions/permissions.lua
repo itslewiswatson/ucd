@@ -37,6 +37,7 @@ local permissions = {
 		[23] = true, -- set job
 	},
 	[3] = {
+		["manage punish"] = true,
 		["ban"] = true,
 		[27] = true, -- give vehicle
 		[30] = true, -- last logins
