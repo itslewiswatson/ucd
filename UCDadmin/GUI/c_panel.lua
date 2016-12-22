@@ -221,6 +221,7 @@ adminPanel.tab["players"] = guiCreateTab("Players", adminPanel.tabpanel)
 	setJob.removeButton 					= GuiButton(213, 316, 187, 46, "Remove player from job", false, setJob.window)
 	setJob.cancelButton 					= GuiButton(416, 316, 187, 46, "Cancel", false, setJob.window)
 
+	-- fuark this identation but i have to do the same
 	-- View punishments window
 	
 	viewPunish = {tab = {}, grid = {}}
@@ -237,24 +238,6 @@ adminPanel.tab["players"] = guiCreateTab("Players", adminPanel.tabpanel)
 	viewPunish.grid[1]:addColumn("Log", 0.855)
 	viewPunish.grid[2]:addColumn("Serial", 0.25)
 	viewPunish.grid[2]:addColumn("Log", 0.7)
-
-	-- fuark this identation but i have to do the same
-	-- View logins window
-	
-	viewLogins = {tab = {}, grid = {}}
-	viewLogins.window 						= GuiWindow(0, 0, 825, 515, "UCD | Admin - View Punishments", false)
-	viewLogins.window.sizable 				= false
-	viewLogins.window.visible 				= false
-	viewLogins.tabpanel 					= GuiTabPanel(0, 20, 825, 455, false, viewLogins.window)
-	viewLogins.tab[1]		 				= GuiTab("Serial logins", viewLogins.tabpanel)
-	viewLogins.tab[2]			 			= GuiTab("Account logins", viewLogins.tabpanel)
-	viewLogins.grid[1]			 			= GuiGridList(10, 10, 790, 410, false, viewLogins.tab[1])
-	viewLogins.grid[2]			 			= GuiGridList(10, 10, 790, 410, false, viewLogins.tab[2])
-	viewLogins.closeButton 					= GuiButton(0, 480, 825, 20, "Close", false, viewLogins.window)
-	viewLogins.grid[1]:addColumn("Account", 0.125)
-	viewLogins.grid[1]:addColumn("Log", 0.855)
-	viewLogins.grid[2]:addColumn("Serial", 0.25)
-	viewLogins.grid[2]:addColumn("Log", 0.7)
 	
 adminPanel.tab["bans"] = guiCreateTab("Bans", adminPanel.tabpanel)
 	adminPanel.gridlist["banList"] 			= GuiGridList(348, 11, 287, 425, false, adminPanel.tab["bans"])
@@ -292,32 +275,12 @@ function viewPunish.autoSize()
 	end
 end
 
--- removed, you may use it later
--- function viewLogins.autoSize() -- use this to auto size columns after adding rows
-	-- for _, gui in pairs(viewLogins) do
-		-- if (isElement(gui) and gui.type == "gui-gridlist") then -- isElement coz functions arent elements
-			-- for i = 1, gui.columnCount do
-				-- gui:autoSizeColumn(i)
-				-- gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
-				-- yeah auto size function doesn't work well, idk why doesn't it show last letter
-				-- i wonder why dont they have guiGridListGetColumnWidth OOPed
-				-- yeah copied cuz lazy and no time
-			-- end
-		-- end
-	-- end
--- end
-
 function viewPunish.close()
 	viewPunish.window.visible = false
 end
 addEventHandler("onClientGUIClick", viewPunish.closeButton, viewPunish.close, false)
 
-function viewLogins.close()
-	viewLogins.window.visible = false
-end
-addEventHandler("onClientGUIClick", viewLogins.closeButton, viewLogins.close, false)
-
-windows = {adminPanel.window, giveWeapon_.window[1], WPT.window[1], punish.window, setJob.window, viewPunish.window, viewLogins.window}
+windows = {adminPanel.window, giveWeapon_.window[1], WPT.window[1], punish.window, setJob.window, viewPunish.window}
 for _, gui in ipairs(windows) do
 	if (gui and isElement(gui)) then
 		exports.UCDutil:centerWindow(gui)
