@@ -1,6 +1,6 @@
 local types = {["mute"] = "muted", ["admin jail"] = "jailed"}
 local infr = 300 -- Infraction base number, no of infractions * base = time (0 = base)
-punishments = {}
+local punishments = {}
 
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
@@ -261,20 +261,32 @@ function punish2(val, duration, type1, who, reason)
 	return true, pureLog, plr
 end
 
-function getPunishmentLog(val, serial)
+function getPunishmentLog(val, serial, whole)
 	if (val or serial) then
 		local punishlog = {}
+		if (val and isElement(val) and val.type == "player") then
+			if (not exports.UCDaccounts:isPlayerLoggedIn(val)) then return false, "not logged in" end
+			serial = val.serial
+			val = val.account.name
+		end
 		for i, v in ipairs(punishments) do
-			if (val and v[1] == val) then
-				if (not punishlog.acc) then punishlog.acc = {} end
-				table.insert(punishlog.acc, v)
-			end
 			if (serial and v[4] == serial) then
 				if (not punishlog.serial) then punishlog.serial = {} end
+				local v2
+				if (not whole) then
+					v2 = v
+					v = {v[1], v[7]}
+				end
 				table.insert(punishlog.serial, v)
+				v = v2 -- just a reminder to reset for account to do the same
+			end
+			if (val and v[1] == val) then
+				if (not punishlog.acc) then punishlog.acc = {} end
+				if (not whole) then v = {v[4], v[7]} end
+				table.insert(punishlog.acc, v)
 			end
 		end
-		if (not punishlog.acc and not punishlog.serial) then return end -- for empty punishlogs
+		if (not punishlog.acc and not punishlog.serial) then return false, "empty" end -- for empty punishlogs
 		return punishlog
 	end
 	return punishments

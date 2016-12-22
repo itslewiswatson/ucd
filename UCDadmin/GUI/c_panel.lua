@@ -203,6 +203,8 @@ adminPanel.tab["players"] = guiCreateTab("Players", adminPanel.tabpanel)
 	punish.label[6] = GuiLabel(9, 271, 252, 16, "-1 minutes = permanent (bans only)", false, punish.window)
 	guiLabelSetHorizontalAlign(punish.label[6], "center", false)
 
+	-- Set job window
+	
 	setJob = {}
 	setJob.window 							= GuiWindow(362, 112, 614, 376, "UCD | Set Job", false)
 	setJob.window.sizable = false
@@ -219,37 +221,40 @@ adminPanel.tab["players"] = guiCreateTab("Players", adminPanel.tabpanel)
 	setJob.removeButton 					= GuiButton(213, 316, 187, 46, "Remove player from job", false, setJob.window)
 	setJob.cancelButton 					= GuiButton(416, 316, 187, 46, "Cancel", false, setJob.window)
 
-	viewPunish = {}
+	-- View punishments window
+	
+	viewPunish = {tab = {}, grid = {}}
 	viewPunish.window 						= GuiWindow(0, 0, 825, 515, "UCD | Admin - View Punishments", false)
 	viewPunish.window.sizable 				= false
 	viewPunish.window.visible 				= false
-	viewPunish.tabPanel 					= GuiTabPanel(0, 20, 825, 455, false, viewPunish.window)
-	viewPunish.serialPunishTab 				= GuiTab("Serial punishments", viewPunish.tabPanel)
-	viewPunish.accountPunishTab 			= GuiTab("Account punishments", viewPunish.tabPanel)
-	viewPunish.serialPunishGrid 			= GuiGridList(10, 10, 790, 410, false, viewPunish.serialPunishTab)
-	viewPunish.accountPunishGrid 			= GuiGridList(10, 10, 790, 410, false, viewPunish.accountPunishTab)
+	viewPunish.tabpanel 					= GuiTabPanel(0, 20, 825, 455, false, viewPunish.window)
+	viewPunish.tab[1]		 				= GuiTab("Serial punishments", viewPunish.tabpanel)
+	viewPunish.tab[2]			 			= GuiTab("Account punishments", viewPunish.tabpanel)
+	viewPunish.grid[1]			 			= GuiGridList(10, 10, 790, 410, false, viewPunish.tab[1])
+	viewPunish.grid[2]			 			= GuiGridList(10, 10, 790, 410, false, viewPunish.tab[2])
 	viewPunish.closeButton 					= GuiButton(0, 480, 825, 20, "Close", false, viewPunish.window)
-	viewPunish.serialPunishGrid:addColumn("Account", 0.125)
-	viewPunish.serialPunishGrid:addColumn("Log", 0.747)
-	viewPunish.accountPunishGrid:addColumn("Serial", 0.25)
-	viewPunish.accountPunishGrid:addColumn("Log", 0.7)
+	viewPunish.grid[1]:addColumn("Account", 0.125)
+	viewPunish.grid[1]:addColumn("Log", 0.855)
+	viewPunish.grid[2]:addColumn("Serial", 0.25)
+	viewPunish.grid[2]:addColumn("Log", 0.7)
 
 	-- fuark this identation but i have to do the same
+	-- View logins window
 	
-	viewLogins = {}
-	viewLogins.window 						= GuiWindow(0, 0, 825, 515, "UCD | Admin - View Last Logins", false)
+	viewLogins = {tab = {}, grid = {}}
+	viewLogins.window 						= GuiWindow(0, 0, 825, 515, "UCD | Admin - View Punishments", false)
 	viewLogins.window.sizable 				= false
 	viewLogins.window.visible 				= false
-	viewLogins.tabPanel 					= GuiTabPanel(0, 20, 825, 455, false, viewLogins.window)
-	viewLogins.serialLoginsTab 				= GuiTab("Serial punishments", viewLogins.tabPanel)
-	viewLogins.accountLoginsTab 			= GuiTab("Account punishments", viewLogins.tabPanel)
-	viewLogins.serialLoginsGrid 			= GuiGridList(10, 10, 790, 410, false, viewLogins.serialLoginsTab)
-	viewLogins.accountLoginsGrid 			= GuiGridList(10, 10, 790, 410, false, viewLogins.accountLoginsTab)
-	viewLogins.closeButton         			= GuiButton(0, 480, 825, 20, "Close", false, viewLogins.window) -- REMEMBERED IT HAHAHA
-	viewLogins.serialLoginsGrid:addColumn("Account", 0.125)
-	viewLogins.serialLoginsGrid:addColumn("Log", 0.747)
-	viewLogins.accountLoginsGrid:addColumn("Serial", 0.25)
-	viewLogins.accountLoginsGrid:addColumn("Log", 0.7)
+	viewLogins.tabpanel 					= GuiTabPanel(0, 20, 825, 455, false, viewLogins.window)
+	viewLogins.tab[1]		 				= GuiTab("Serial logins", viewLogins.tabpanel)
+	viewLogins.tab[2]			 			= GuiTab("Account logins", viewLogins.tabpanel)
+	viewLogins.grid[1]			 			= GuiGridList(10, 10, 790, 410, false, viewLogins.tab[1])
+	viewLogins.grid[2]			 			= GuiGridList(10, 10, 790, 410, false, viewLogins.tab[2])
+	viewLogins.closeButton 					= GuiButton(0, 480, 825, 20, "Close", false, viewLogins.window)
+	viewLogins.grid[1]:addColumn("Account", 0.125)
+	viewLogins.grid[1]:addColumn("Log", 0.855)
+	viewLogins.grid[2]:addColumn("Serial", 0.25)
+	viewLogins.grid[2]:addColumn("Log", 0.7)
 	
 adminPanel.tab["bans"] = guiCreateTab("Bans", adminPanel.tabpanel)
 	adminPanel.gridlist["banList"] 			= GuiGridList(348, 11, 287, 425, false, adminPanel.tab["bans"])
@@ -277,31 +282,30 @@ adminPanel.tab["bans"] = guiCreateTab("Bans", adminPanel.tabpanel)
 adminPanel.tab["adminLog"] = guiCreateTab("Admin Log", adminPanel.tabpanel)
 
 function viewPunish.autoSize()
-	for _, gui in pairs(viewPunish) do
-		if (isElement(gui) and gui.type == "gui-gridlist") then -- isElement coz functions arent elements
-			for i = 1, gui.columnCount do
-				gui:autoSizeColumn(i)
-				gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
-				-- yeah auto size function doesn't work well, idk why doesn't it show last letter
-				-- i wonder why dont they make guiGridListGetColumnWidth in OOP
-			end
+	for _, gui in pairs(viewPunish.grid) do
+		for i = 1, gui.columnCount do
+			gui:autoSizeColumn(i)
+			gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
+			-- yeah auto size function doesn't work well, idk why doesn't it show last letter
+			-- i wonder why dont they make guiGridListGetColumnWidth in OOP
 		end
 	end
 end
 
-function viewLogins.autoSize() -- use this to auto size columns after adding rows
-	for _, gui in pairs(viewLogins) do
-		if (isElement(gui) and gui.type == "gui-gridlist") then -- isElement coz functions arent elements
-			for i = 1, gui.columnCount do
-				gui:autoSizeColumn(i)
-				gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
+-- removed, you may use it later
+-- function viewLogins.autoSize() -- use this to auto size columns after adding rows
+	-- for _, gui in pairs(viewLogins) do
+		-- if (isElement(gui) and gui.type == "gui-gridlist") then -- isElement coz functions arent elements
+			-- for i = 1, gui.columnCount do
+				-- gui:autoSizeColumn(i)
+				-- gui:setColumnWidth(i, guiGridListGetColumnWidth(gui, i, true) + 0.006, true)
 				-- yeah auto size function doesn't work well, idk why doesn't it show last letter
 				-- i wonder why dont they have guiGridListGetColumnWidth OOPed
 				-- yeah copied cuz lazy and no time
-			end
-		end
-	end
-end
+			-- end
+		-- end
+	-- end
+-- end
 
 function viewPunish.close()
 	viewPunish.window.visible = false
@@ -713,14 +717,6 @@ function adminAction()
 			triggerServerEvent("UCDadmin.viewPunishments.call", localPlayer, plr)
 			viewPunish.window.visible = true
 			guiBringToFront(viewPunish.window)
-			viewPunish.serialPunishGrid:clear()
-			viewPunish.accountPunishGrid:clear()
-			local serialRow = viewPunish.serialPunishGrid:addRow()
-			local accountRow = viewPunish.accountPunishGrid:addRow()
-			viewPunish.serialPunishGrid:setItemText(serialRow, 1, "CLEAR", true, false)
-			viewPunish.serialPunishGrid:setItemText(serialRow, 2, "CLEAR", true, false)
-			viewPunish.accountPunishGrid:setItemText(accountRow, 1, "CLEAR", true, false)
-			viewPunish.accountPunishGrid:setItemText(accountRow, 2, "CLEAR", true, false)
 		elseif (action == "anticheat") then
 
 		elseif (action == "view weps") then

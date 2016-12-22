@@ -98,23 +98,22 @@ customTimeShit() -- Do this once to disable them
 addEventHandler("onClientGUIClick", punish.checkbox["custom_duration"], customTimeShit, false)
 
 function viewPunish.insertPunishments(data)
-	viewPunish.accountPunishGrid:clear()
-	viewPunish.serialPunishGrid:clear()
-	if (data.accPunishments) then
-		for _, v in ipairs(data.accPunishments) do
-			local row = viewPunish.accountPunishGrid:addRow()
-			viewPunish.accountPunishGrid:setItemText(row, 1, v[1], false, false)
-			viewPunish.accountPunishGrid:setItemText(row, 2, v[2], false, false)
+	for _, gui in ipairs(viewPunish.grid) do gui:clear() end
+	if (data.serial) then
+		for _, v in ipairs(data.serial) do
+			local row = viewPunish.grid[1]:addRow()
+			viewPunish.grid[1]:setItemText(row, 1, v[1], false, false)
+			viewPunish.grid[1]:setItemText(row, 2, v[2], false, false)
 		end
 	end
-	if (data.serialPunishments) then
-		for _, v in ipairs(data.serialPunishments) do
-			local row = viewPunish.serialPunishGrid:addRow()
-			viewPunish.serialPunishGrid:setItemText(row, 1, v[1], false, false)
-			viewPunish.serialPunishGrid:setItemText(row, 2, v[2], false, false)
+	if (data.acc) then
+		for _, v in ipairs(data.acc) do
+			local row = viewPunish.grid[2]:addRow()
+			viewPunish.grid[2]:setItemText(row, 1, v[1], false, false)
+			viewPunish.grid[2]:setItemText(row, 2, v[2], false, false)
 		end
 	end
 	viewPunish.autoSize()
 end
 addEvent("UCDadmin.viewPunishments.callback", true)
-addEventHandler("UCDadmin.viewPunishments.callback", resourceRoot, viewPunish.insertPunishments)
+addEventHandler("UCDadmin.viewPunishments.callback", localPlayer, viewPunish.insertPunishments)

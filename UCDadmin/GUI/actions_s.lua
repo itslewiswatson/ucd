@@ -437,22 +437,9 @@ addEventHandler("UCDadmin.blowVehicle", root, blowVehicle_)
 
 function viewPunishments(plr)
 	if (not exports.UCDaccounts:isPlayerLoggedIn(plr)) then return end
-	local temp
-	for _, v in ipairs(punishments) do
-		if (plr.account.name == v[1] or plr.serial == v[4]) then
-			if (not temp) then temp = {} end
-			if (v[1] == plr.account.name) then
-				if (not temp.accPunishments) then temp.accPunishments = {} end
-				table.insert(temp.accPunishments, {v[4], v[7]})
-			end
-			if (v[4] == plr.serial) then
-				if (not temp.serialPunishments) then temp.serialPunishments = {} end
-				table.insert(temp.serialPunishments, {v[1], v[7]})
-			end
-		end
-	end
-	if (not temp) then return end -- To save bandwidth -for you, sir Noki-, if not no calling back
-	triggerClientEvent(client, "UCDadmin.viewPunishments.callback", client, temp)
+	local punishments = getPunishmentLog(plr, _, false)
+	if (not punishments) then return end -- To save bandwidth -for you, sir Noki-, if not no calling back
+	triggerClientEvent(client, "UCDadmin.viewPunishments.callback", client, punishments)
 end
 addEvent("UCDadmin.viewPunishments.call", true)
 addEventHandler("UCDadmin.viewPunishments.call", root, viewPunishments) -- calls back to insertPunishments in punishments/punishments_c.lua, if you are wonderin'
