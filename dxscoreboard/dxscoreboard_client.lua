@@ -730,7 +730,7 @@ function doDrawScoreboard(rtPass, onlyAnim, sX, sY)
 									dxDrawImage (topX+theX, y, itemWidth, itemHeight, content.src, content.rot, content.rotOffX, content.rotOffY, content.color, drawOverGUI)
 								end
 							elseif column.name == "dxscoreboard_loc" and content ~= "N/A" then
-								--outputDebugString(content)
+								-- outputDebugString(content)
 								if (gettok(content, 2, " ")) then
 									local flag = gettok(content, 1, " ")
 									local country = gettok(content, 2, " ")
@@ -738,7 +738,7 @@ function doDrawScoreboard(rtPass, onlyAnim, sX, sY)
 									dxDrawText(country, topX+theX+s(1) + 20, 	y+s(1), topX+x+s(1+column.width), 	y+s(11)+dxGetFontHeight(fontscale(contentFont, scoreboardScale), contentFont), 	tocolor(0, 0, 0, a or 255), fontscale(contentFont, s(1)), contentFont, "left", "top", true, false, drawOverGUI)
 									dxDrawText(country, topX+theX + 20, 		y, 		topX+x+s(column.width), 	y+dxGetFontHeight(fontscale(contentFont, scoreboardScale), contentFont), 			tocolor(r or 255, g or 255, b or 255, a or 255), fontscale(contentFont, s(1)), contentFont, "left", "top", true, false, drawOverGUI)
 								else
-									outputDebugString("fuck")
+									-- outputDebugString("fuck")
 								end
 							else
 								dxDrawText(content, topX+theX+s(1), 	y+s(1), topX+x+s(1+column.width), 	y+s(11)+dxGetFontHeight(fontscale(contentFont, scoreboardScale), contentFont), 	tocolor(0, 0, 0, a or 255), fontscale(contentFont, s(1)), contentFont, "left", "top", true, false, drawOverGUI)
