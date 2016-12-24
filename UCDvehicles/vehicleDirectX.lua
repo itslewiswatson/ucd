@@ -65,7 +65,7 @@ Timer(
 	function ()
 		if (localPlayer.vehicle) then
 			local veh = localPlayer.vehicle
-			vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh))
+			vehSpeedKMH = math.floor(exports.UCDutil:getElementSpeed(veh, unit))
 		end
 	end, 100, 0
 )
@@ -192,12 +192,14 @@ function renderVehicleHUD()
 	
 	dxDrawCircle(sX - 65, sY - 75, 105, 105, tocolor(sR, sG, sB, 255), 0, secretKMH * diff, 3)
 	
-	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 - 1, sY - 77.5 - 1, sX - 12.5 - 1, sY - 63.5 - 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
-	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 - 1, sY - 77.5 + 1, sX - 12.5 - 1, sY - 63.5 + 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
-	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 + 1, sY - 77.5 - 1, sX - 12.5 + 1, sY - 63.5 - 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
-	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5 + 1, sY - 77.5 + 1, sX - 12.5 + 1, sY - 63.5 + 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	local text = tostring(vehSpeedKMH).." "..tostring(unit):upper().."\n"..tostring(vehHealth).."%"
 	
-	dxDrawText(tostring(vehSpeedKMH).." KPH\n"..tostring(vehHealth).."%", sX - 117.5, sY - 77.5, sX - 12.5, sY - 63.5, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(text, sX - 117.5 - 1, sY - 77.5 - 1, sX - 12.5 - 1, sY - 63.5 - 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(text, sX - 117.5 - 1, sY - 77.5 + 1, sX - 12.5 - 1, sY - 63.5 + 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(text, sX - 117.5 + 1, sY - 77.5 - 1, sX - 12.5 + 1, sY - 63.5 - 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	dxDrawText(text, sX - 117.5 + 1, sY - 77.5 + 1, sX - 12.5 + 1, sY - 63.5 + 1, tocolor(0, 0, 0, 255), 1, "default", "center", "center", false, false, false, false, false)
+	
+	dxDrawText(text, sX - 117.5, sY - 77.5, sX - 12.5, sY - 63.5, tocolor(255, 255, 255, 255), 1, "default", "center", "center", false, false, false, false, false)
 
 	dxDrawCircle(sX - 65, sY - 75, 90, 90, tocolor(hR, hG, hB, 255), 0, vehHealth * 3.6, 3)
 	

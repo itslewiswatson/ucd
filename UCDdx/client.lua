@@ -1,5 +1,4 @@
 sX, sY = guiGetScreenSize()
-local enabled = true
 
 local Shout = { -- hell yeah
 	enabled = true,
@@ -25,11 +24,6 @@ ContextBar = {
 function math.lerp( from, to, t )
     return from + ( to - from ) * t
 end
-
-function enable(new)
-	enabled = new == "Yes" and true or false
-end
-enable(exports.UCDsettings:getSetting("dxmsgs"))
 
 function ContextBar.add(text, r, g, b)
 	--local y = sY - ContextBar.height

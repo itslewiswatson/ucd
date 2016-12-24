@@ -16,6 +16,8 @@
     <script src="vehicleDirectX.lua" type="client"/>
     <script src="vehicleCruise.lua" type="client"/>
 	
+	<script src="setting.lua" type="client"/>
+	
 	<export function="isVehicleBrokenDown" type="client"/>
 	<export function="isVehicleBrokenDown" type="server"/>
 	

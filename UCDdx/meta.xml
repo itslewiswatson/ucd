@@ -4,6 +4,7 @@
 	<script src="money.lua" type="client"/>
 	<script src="bar_c.lua" type="client"/>
 	<script src="bar_s.lua" type="server"/>
+	<script src="setting.lua" type="client"/>
 
 	<export function="new" type="client"/>
 	<export function="new" type="server"/>
@@ -14,7 +15,6 @@
 	<export function="del" type="client"/>
 	<export function="del" type="server"/>
 	<export function="isText" type="client"/>
-	<export function="enable" type="client"/>
 
 	<oop>true</oop>
 </meta>

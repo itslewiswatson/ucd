@@ -43,17 +43,23 @@ local settings = {
 			default = "Yes",
 			values = {"Yes", "No"}
 		},
-		["indicatetexts"] = {
-			name = "Enable Indicate Texts",
-			desc = "If you set this to 'No', 3D indicate texts above markers will not appear.\nDefault: Yes",
-			default = "Yes",
-			values = {"Yes", "No"}
-		},
+		-- ["indicatetexts"] = {
+			-- name = "Enable Indicate Texts",
+			-- desc = "If you set this to 'No', 3D indicate texts above markers will not appear.\nDefault: Yes",
+			-- default = "Yes",
+			-- values = {"Yes", "No"}
+		-- },
 		["saferadarareas"] = {
 			name = "Enable Safe Radar Areas",
 			desc = "If you set this to 'No', radar areas which belong to safe zones (in green color) will not appear.\nDefault: Yes",
 			default = "Yes",
 			values = {"Yes", "No"}
+		},
+		["speedunit"] = {
+			name = "Set Speed Unit",
+			desc = "Choose the unit that you want to appear in the vehicle HUD.\nDefault: kph",
+			default = "kph",
+			values = {"kph", "mph"}
 		},
 	},
 }

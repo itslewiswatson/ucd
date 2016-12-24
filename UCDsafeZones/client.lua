@@ -8,7 +8,7 @@ local LVMech = createColRectangle(1937.5712, 2140.3237, 45, 40)
 local LVRecovery = createColRectangle(1718.4382, 1993.0917, 38, 50)
 --]]
 
-local zones = {
+zones = {
 	{createColRectangle, 3587, -1215, 260, 150}, -- #1 is always jail
 	
 	{createColRectangle, 1155.9263, -1353.4421, 60, 60},
@@ -20,7 +20,7 @@ local zones = {
 }
 
 local sZone = {}
-local jail, radarAreas
+local jail
 
 for i, data in ipairs(zones) do
 	local zone = data[1](data[2], data[3], data[4], data[5])
@@ -30,23 +30,6 @@ for i, data in ipairs(zones) do
 		jail = zone
 	end
 end
-
-function enable(new)
-	if (new == "Yes") then
-		if (radarAreas) then return end
-		radarAreas = {}
-		for i, data in ipairs(zones) do
-			radarAreas[i] = createRadarArea(data[2], data[3], data[4], data[5], 0, 200, 0, 85)
-		end
-	else
-		if (not radarAreas) then return end
-		for i, v in ipairs(radarAreas) do
-			v:destroy()
-		end
-		radarAreas = nil
-	end
-end
-enable(exports.UCDsettings:getSetting("saferadarareas"))
 
 --local sZone = {LS, JF, SF1, LV, LS2, jail, LVMech, LVRecovery}
 

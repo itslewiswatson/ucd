@@ -28,7 +28,7 @@ function cacheVehicles(qh)
 		end
 	end
 	
-	outputDebugString("Finished caching vehicles.")
+	outputDebugString("Vehicles successfully cached!")
 end
 
 function setVehicleData(vehicleID, column, data)
