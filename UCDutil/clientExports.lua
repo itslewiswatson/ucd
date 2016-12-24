@@ -125,7 +125,7 @@ function getElementSpeed(element, unit)
 	if (unit == nil) then unit = 0 end
 	if (isElement(element)) then
 		local x,y,z = getElementVelocity(element)
-		if (unit == "mph" or unit == 1 or unit == '1') then
+		if (unit == "mph" or unit == 1 or unit == "1") then
 			return (x^2 + y^2 + z^2) ^ 0.5 * 100
 		else
 			return (x^2 + y^2 + z^2) ^ 0.5 * 1.8 * 100
