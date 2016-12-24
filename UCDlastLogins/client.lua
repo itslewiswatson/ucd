@@ -15,7 +15,7 @@ gui.serial.font = "clear-normal"
 gui.ip = GuiLabel(11, 288, 511, 18, "IP:", false, gui.window)
 gui.ip.font = "clear-normal"
 
-gui.close = GuiButton(404, 252 + 18, 117, 36, "Close", false, gui.window)
+gui.close = GuiButton(404, 252, 117, 36 + 18, "Close", false, gui.window)
 
 function destroyGridList()
 	if (gui.gridlist and isElement(gui.gridlist)) then
@@ -24,11 +24,16 @@ function destroyGridList()
 	end
 end
 
+function forceClose()
+	gui.window.visible = false
+	showCursor(false)
+	destroyGridList()
+end
+addEventHandler("onClientGUIClick", gui.close, forceClose, false)
+
 function onToggleGUI()
 	if (gui.window.visible) then
-		gui.window.visible = false
-		showCursor(false)
-		destroyGridList()
+		forceClose()
 	else
 		triggerServerEvent("UCDlastLogins.onRequestSelfLogins", resourceRoot)
 	end

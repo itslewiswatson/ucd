@@ -1,4 +1,4 @@
-local limit = 10
+local limit = 12
 local lastLogins = {}
 local db = exports.UCDsql:getConnection()
 
