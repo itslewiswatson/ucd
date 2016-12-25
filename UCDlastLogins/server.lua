@@ -29,16 +29,19 @@ function getLastLogins(account)
 	return lastLogins[account]
 end
 
-function sendToGUI(plr, receiver)
+function sendPlayerLastLogins(receiver, plr)
 	local logins = getLastLogins(plr.account.name)
 	triggerLatentClientEvent(receiver, "UCDlastLogins.onPopulateClient", resourceRoot, plr.account.name, plr.serial, plr.ip, logins)
 end
 
-function getSelfLastLogins()
+function onRequestLogins(plr)
 	if (not exports.UCDaccounts:isPlayerLoggedIn(client)) then
 		return
 	end
-	sendToGUI(client, client)
+	if (not plr) then
+		plr = client
+	end
+	sendPlayerLastLogins(client, plr)
 end
-addEvent("UCDlastLogins.onRequestSelfLogins", true)
-addEventHandler("UCDlastLogins.onRequestSelfLogins", root, getSelfLastLogins)
+addEvent("UCDlastLogins.onRequestLogins", true)
+addEventHandler("UCDlastLogins.onRequestLogins", root, onRequestLogins)

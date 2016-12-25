@@ -35,7 +35,7 @@ function onToggleGUI()
 	if (gui.window.visible) then
 		forceClose()
 	else
-		triggerServerEvent("UCDlastLogins.onRequestSelfLogins", resourceRoot)
+		triggerServerEvent("UCDlastLogins.onRequestLogins", resourceRoot)
 	end
 end
 addCommandHandler("lastlogins", onToggleGUI, false, false)
@@ -72,6 +72,7 @@ function onPopulateClient(account, serial, ip, data)
 			end
 		end
 	end
+	guiBringToFront(gui.window)
 	gui.window.visible = true
 	showCursor(true)
 end
