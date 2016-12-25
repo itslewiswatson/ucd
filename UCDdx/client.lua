@@ -21,39 +21,13 @@ ContextBar = {
 	entries = {}
 }
 
-function math.lerp( from, to, t )
-    return from + ( to - from ) * t
-end
-
 function ContextBar.add(text, r, g, b)
-	--local y = sY - ContextBar.height
-	--y = sY - (#ContextBar.entries * ContextBar.height) - ContextBar.height
-	--y = sY - y
 	if (not enabled) then
 		outputChatBox(tostring(text), r, g, b)
 		return
 	end
 	local y = -23
 	
-	--if text == "" or text == nil then return false end
-	--[[
-	if #ContextBar.entries > 0 then
-		--for k,v in pairs(ContextBar.entries) do
-		--	if v.text == text then return false end
-		--end
-		if #ContextBar.entries > 2 then
-			ContextBar.life = 4000
-		elseif #ContextBar.entries > 3 then
-			ContextBar.life = 3500
-		elseif #ContextBar.entries > 4 then
-			ContextBar.life = 2000
-		else
-			ContextBar.life = 7000
-		end
-		--y = ContextBar.entries[#ContextBar.entries].y - ContextBar.height
-	end
-	]]
-
 	ContextBar.entries[#ContextBar.entries + 1] = 
 	{
 		text = tostring(text),
@@ -63,10 +37,9 @@ function ContextBar.add(text, r, g, b)
 		g = g,
 		b = b,
 		landed = false,
-		--finished = false,
 		inAnim = false,
 	}
-	outputConsole(text)
+	outputConsole(tostring(text))
 	return true
 end
 --addCommandHandler("dx", function () ContextBar.add("The quick brown fox jumps over the lazy dog "..exports.UCDutil:randomstring(2), math.random(0, 255), math.random(0, 255), math.random(0, 255)) end)
@@ -80,36 +53,17 @@ addCommandHandler("cleardx",
 
 addEventHandler("onClientRender", root,
 	function ()
-		--for _, bar in ipairs(ContextBar.entries) do
 		for i = 1, #ContextBar.entries do
-			if i <= 4 then
-			--[[
-			dxDrawRectangle(0, bar.y, sX, ContextBar.height, tocolor(0, 0, 0, math.lerp(0, 170, bar.alpha)), true)
-			
-			dxDrawText(bar.text, 0, bar.y, sX, bar.y + ContextBar.height, tocolor(bar.r, bar.g, bar.b, math.lerp(0, 255, bar.alpha)), 1, "default-bold", "center", "center", true, true, true)
-
-			dxDrawLine(0, bar.y, sX, bar.y, tocolor(ContextBar.lineColour[1], ContextBar.lineColour[2], ContextBar.lineColour[3], math.lerp(0, 255, bar.alpha)), 1, true)
-			--]]
-			
-			--dxDrawRectangle(sX / 4, bar.y, sX / 2, ContextBar.height, tocolor(0, 0, 0, 63), false)			
-			dxDrawText(ContextBar.entries[i].text, sX / 4 + 1, ContextBar.entries[i].y + 1, (sX / 4) * 3 + 1, (ContextBar.height + ContextBar.entries[i].y) + 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
-			dxDrawText(ContextBar.entries[i].text, sX / 4 + 1, ContextBar.entries[i].y - 1, (sX / 4) * 3 + 1, (ContextBar.height + ContextBar.entries[i].y) - 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
-			dxDrawText(ContextBar.entries[i].text, sX / 4 - 1, ContextBar.entries[i].y + 1, (sX / 4) * 3 - 1, (ContextBar.height + ContextBar.entries[i].y) + 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
-			dxDrawText(ContextBar.entries[i].text, sX / 4 - 1, ContextBar.entries[i].y - 1, (sX / 4) * 3 - 1, (ContextBar.height + ContextBar.entries[i].y) - 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
-			dxDrawText(ContextBar.entries[i].text, sX / 4, ContextBar.entries[i].y, (sX / 4) * 3, ContextBar.height + ContextBar.entries[i].y, tocolor(ContextBar.entries[i].r, ContextBar.entries[i].g, ContextBar.entries[i].b, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
-			
-			-- default
-			--[[
-			dxDrawRectangle(480, 0, 960, 23, tocolor(0, 0, 0, 63), false)
-			dxDrawText(bar.text, 480, 0, 1440, 23, tocolor(255, 255, 255, 255), 1.00, "default-bold", "center", "center", false, false, false, false, false)
-			]]
+			if i <= 4 then	
+				dxDrawText(ContextBar.entries[i].text, sX / 4 + 1, ContextBar.entries[i].y + 1, (sX / 4) * 3 + 1, (ContextBar.height + ContextBar.entries[i].y) + 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
+				dxDrawText(ContextBar.entries[i].text, sX / 4 + 1, ContextBar.entries[i].y - 1, (sX / 4) * 3 + 1, (ContextBar.height + ContextBar.entries[i].y) - 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
+				dxDrawText(ContextBar.entries[i].text, sX / 4 - 1, ContextBar.entries[i].y + 1, (sX / 4) * 3 - 1, (ContextBar.height + ContextBar.entries[i].y) + 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
+				dxDrawText(ContextBar.entries[i].text, sX / 4 - 1, ContextBar.entries[i].y - 1, (sX / 4) * 3 - 1, (ContextBar.height + ContextBar.entries[i].y) - 1, tocolor(0, 0, 0, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
+				dxDrawText(ContextBar.entries[i].text, sX / 4, ContextBar.entries[i].y, (sX / 4) * 3, ContextBar.height + ContextBar.entries[i].y, tocolor(ContextBar.entries[i].r, ContextBar.entries[i].g, ContextBar.entries[i].b, 255), 1.25, "default-bold", "center", "center", false, false, false, false, false)
 			end
 		end
 		
-		--outputDebugString(tostring(#ContextBar.entries))
-
 		local tick = getTickCount()
-
 		if tick > (ContextBar.update + ContextBar.speed) then
 			ContextBar.update = tick
 
