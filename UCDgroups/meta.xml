@@ -3,7 +3,7 @@
     <info author="Noki" type="script" name="UCDgroups" />
 	
 	<script src="core.lua" type="server"/>
-	<script src="client.luac" type="client"/>
+	<script src="client.lua" type="client"/>
 	
 	<script src="utils_c.lua" type="client"/>
 	<script src="utils.lua" type="server"/>
