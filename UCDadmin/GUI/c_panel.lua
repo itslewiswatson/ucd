@@ -656,7 +656,7 @@ function adminAction()
 		elseif (action == "interior") then
 			createInputBox("UCD | Admin - Interior", "Enter the desired interior", 0, "UCDadmin.setInterior", localPlayer, plr)
 		elseif (action == "last logins") then
-
+			triggerServerEvent("UCDlastLogins.onRequestLogins", resourceRoot, plr)
 		elseif (action == "set job") then
 			openGUI(plr)
 		-- elseif (action == "give wep") then handled #328
