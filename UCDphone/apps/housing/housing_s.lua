@@ -4,12 +4,10 @@ db = exports.UCDsql:getConnection()
 
 addEventHandler("onPlayerLogin", root,
 	function ()
-		if (not exports.UCDaccounts:isPlayerLoggedIn(source)) then
-			return false
-		end
 		if (not Housing.cache[source.account.name]) then
 			cacheFor(source.account.name)
 		end
+		triggerEvent("UCDphone.housing.requestHouses", source)
 	end
 )
 
