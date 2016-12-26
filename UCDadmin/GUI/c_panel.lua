@@ -640,7 +640,7 @@ function adminAction()
 		elseif (action == "rename") then
 			createInputBox("UCD | Admin - Rename", "Enter the desired name", exports.UCDutil:randomstring(8), "UCDadmin.rename", localPlayer, plr)
 		elseif (action == "screenshot") then
-			-- read actions_s.lua pls
+			triggerServerEvent("UCDadmin.takeScreenshot", resourceRoot, plr)
 		elseif (action == "set money") then
 			createInputBox("UCD | Admin - Set Money", "Enter the desired amount of money", "", "UCDadmin.setMoney", localPlayer, plr)
 		elseif (action == "set model") then

@@ -217,22 +217,44 @@ function renamePlayer(plr, newName)
 		exports.UCDlogging:adminLog(client.account.name, client.name.." has changed "..plr.name.."'s name to "..newName)
 		plr:setName(tostring(newName)) -- Set max edit length on client GUI
 		exports.UCDdx:new(plr, "You name has been changed to "..newName.." by "..client.name, 0, 255, 0)
-		
 	end
 end
 addEvent("UCDadmin.rename", true)
 addEventHandler("UCDadmin.rename", root, renamePlayer)
 
 function takeScreenshotOfPlayer(plr)
-	-- This one will take a while
-	-- If this'd be spammed we'd get rekt...
+	-- if (plr == client) then return end
+	local time = getRealTime()
+	local tag = string.format("%4d-%02d-%02d_%02d-%02d-%02d_%s_%s",
+	time.year + 1900,
+	time.month + 1,
+	time.monthday,
+	time.hour,
+	time.minute,
+	time.second,
+	plr.account.name,
+	client.account.name
+	)
+	plr:takeScreenShot(1366, 768, tag)
+	local xml = XML.load("screenshots/screenshots.xml")
+	if (not xml) then
+		xml = XML.create("screenshots/screenshots.xml", "screenshots")
+	end
+	local child = xml:createChild("screenshot")
+	child:setAttribute("path", tag..".png")
+	child:setAttribute("adminAccount", client.account.name)
+	child:setAttribute("playerAccount", plr.account.name)
+	child:setAttribute("adminName", client.name)
+	child:setAttribute("playerName", plr.name)
+	xml:saveFile()
+	xml:unload()
 end
 addEvent("UCDadmin.takeScreenshot", true)
 addEventHandler("UCDadmin.takeScreenshot", root, takeScreenshotOfPlayer)
 
 function setPlayerMoney_(plr, newAmount)
 	if (not newAmount or not tonumber(newAmount) or tonumber(newAmount) == plr.money) then return end
-	-- if (plr == client) then return end for further use
+	-- if (plr == client) then return end
 	plr.money = newAmount
 	exports.UCDlogging:adminLog(client.account.name, client.name.." has set "..plr.name.."'s money from $"..exports.UCDutil:tocomma(plr.money).." to $"..exports.UCDutil:tocomma(newAmount))
 end
@@ -242,7 +264,7 @@ addEventHandler("UCDadmin.setMoney", root, setPlayerMoney_)
 function setPlayerModel(plr, model)
 	if (plr and client and model and isPlayerAdmin(client)) then
 		local model_ = tonumber(model)
-		if model_ >= 0 and model_ <= 311 then
+		if (model_ >= 0 and model_ <= 311) then
 			plr:setModel(model_)
 			exports.UCDdx:new(client, "You have set the model of "..plr.name.." to "..model_, 0, 255, 0)
 			exports.UCDdx:new(plr, "Your model has been set to "..model_.." by "..client.name, 0, 255, 0)
@@ -256,8 +278,8 @@ addEventHandler("UCDadmin.setModel", root, setPlayerModel)
 function setPlayerHealth(plr, health)
 	if (plr and client and isPlayerAdmin(client)) then
 		local health_ = tonumber(health)
-		if health_ then
-			if health_ >= 0 and health_ <= 200 then
+		if (health_) then
+			if (health_ >= 0 and health_ <= 200) then
 				plr:setHealth(health_)
 				exports.UCDdx:new(client, "You have set the health of "..plr.name.." to "..health_, 0, 255, 0)
 				exports.UCDdx:new(plr, "Your health has been set to "..health_.." by "..client.name, 0, 255, 0)
@@ -272,8 +294,8 @@ addEventHandler("UCDadmin.setHealth", root, setPlayerHealth)
 function setPlayerArmour(plr, armour)
 	if (plr and client and isPlayerAdmin(client)) then
 		local armour_ = tonumber(armour)
-		if armour_ then
-			if armour_ >= 0 and armour_ <= 100 then
+		if (armour_) then
+			if (armour_ >= 0 and armour_ <= 100) then
 				plr.armor = armour_
 				exports.UCDdx:new(client, "You have set the armour of "..plr.name.." to "..armour_, 0, 255, 0)
 				exports.UCDdx:new(plr, "Your armour has been set to "..armour_.." by "..client.name, 0, 255, 0)

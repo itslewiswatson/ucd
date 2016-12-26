@@ -25,3 +25,12 @@ function fetchResources()
 end
 --addEvent("UCDadmin.getResources", true)
 --addEventHandler("UCDadmin.getResources", root, fetchResources)
+
+function saveScreenshot(theResource, status, imageData, _, tag)
+	if (theResource ~= resource) then return end -- Screenshots taken here only
+	if (status ~= "ok") then return end
+	local file = File.new("screenshots/"..tag..".png")
+	file:write(imageData)
+	file:close()
+end
+addEventHandler("onPlayerScreenShot", root, saveScreenshot)
