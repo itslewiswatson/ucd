@@ -1,4 +1,4 @@
-function requestOpenGUI(player)
+function openGUI(player)
 	if (isElement(player)) then
 		client = player
 	end
@@ -6,7 +6,7 @@ function requestOpenGUI(player)
 		triggerLatentClientEvent(client, "UCDadmin.setjob.openGUI", resourceRoot)
 	end
 end
-addCommandHandler("setjob", requestOpenGUI)
+addCommandHandler("setjob", openGUI)
 
 addEvent("UCDadmin.setjob.setJob", true)
 addEventHandler("UCDadmin.setjob.setJob", root, 

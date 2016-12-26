@@ -1,20 +1,28 @@
-local jobs = exports.UCDjobsTable:getJobTable()
+local jobs
 
-for name, data in pairs(jobs) do -- Insert all jobs into gridlist
-	if (#name > 0) then
-		local row = setJob.jobsGrid:addRow()
-		local r, g, b = 255, 255, 255
-		if (data.colour and type(data.colour) == "table") then
-			r, g, b = data.colour.r, data.colour.g, data.colour.b
-		else
-			if (data.team and Team.getFromName(data.team)) then
-				r, g, b = Team.getFromName(data.team):getColor()
+function getJobs()
+	if (not Resource.getFromName("UCDjobsTable")) then
+		Timer(getJobs, 5000, 1)
+		return
+	end
+	jobs = exports.UCDjobsTable:getJobTable()
+	for name, data in pairs(jobs) do -- Insert all jobs into gridlist
+		if (#name > 0) then
+			local row = setJob.jobsGrid:addRow()
+			local r, g, b = 255, 255, 255
+			if (data.colour and type(data.colour) == "table") then
+				r, g, b = data.colour.r, data.colour.g, data.colour.b
+			else
+				if (data.team and Team.getFromName(data.team)) then
+					r, g, b = Team.getFromName(data.team):getColor()
+				end
 			end
+			setJob.jobsGrid:setItemText(row, 1, name, false, false)
+			setJob.jobsGrid:setItemColor(row, 1, r, g, b)
 		end
-		setJob.jobsGrid:setItemText(row, 1, name, false, false)
-		setJob.jobsGrid:setItemColor(row, 1, r, g, b)
 	end
 end
+addEventHandler("onClientResourceStart", resourceRoot, getJobs)
 
 for _, plr in ipairs(Element.getAllByType("player")) do -- Insert all players into gridlist
 	local row = setJob.playersGrid:addRow()
@@ -26,7 +34,7 @@ for _, plr in ipairs(Element.getAllByType("player")) do -- Insert all players in
 	setJob.playersGrid:setItemColor(row, 1, r, g, b)
 end
 
-function connect_quit_change_nick(oldNick, newNick) -- Keep the players gridlist up-to-date
+function updateGrid(oldNick, newNick) -- Keep the players gridlist up-to-date
 	if (eventName == "onClientPlayerJoin") then
 		setJob.playersGrid:setItemText(setJob.playersGrid:addRow(), 1, source.name, false, false)
 	elseif (eventName == "onClientPlayerQuit") then
@@ -43,9 +51,9 @@ function connect_quit_change_nick(oldNick, newNick) -- Keep the players gridlist
 		end
 	end
 end
-addEventHandler("onClientPlayerJoin", root, connect_quit_change_nick)
-addEventHandler("onClientPlayerQuit", root, connect_quit_change_nick)
-addEventHandler("onClientPlayerChangeNick", root, connect_quit_change_nick)
+addEventHandler("onClientPlayerJoin", root, updateGrid)
+addEventHandler("onClientPlayerQuit", root, updateGrid)
+addEventHandler("onClientPlayerChangeNick", root, updateGrid)
 
 addEventHandler("onClientGUIClick", root,
 	function(button, state)
@@ -74,18 +82,18 @@ addEventHandler("onClientGUIClick", root,
 		elseif (source == setJob.setButton or source == setJob.removeButton) then
 			local player = Player(setJob.playersGrid:getItemText(setJob.playersGrid:getSelectedItem()))
 			if (player) then
-				local selected_job, selected_model
+				local job, model
 				if (source == setJob.setButton) then
-					selected_job = setJob.jobsGrid:getItemText(setJob.jobsGrid:getSelectedItem())
-					selected_model = setJob.skinsGrid:getItemText(setJob.skinsGrid:getSelectedItem(), 2)
-					if ((not selected_model or selected_model == "") and guiGridListGetRowCount(setJob.skinsGrid) ~= 0) then
+					job = setJob.jobsGrid:getItemText(setJob.jobsGrid:getSelectedItem())
+					model = setJob.skinsGrid:getItemText(setJob.skinsGrid:getSelectedItem(), 2)
+					if ((not model or model == "") and guiGridListGetRowCount(setJob.skinsGrid) ~= 0) then
 						exports.UCDdx:new("You must select a skin from the list", 255, 0, 0)
 						return
 					end
 				else
-					selected_job = ""
+					job = ""
 				end
-				triggerServerEvent("UCDadmin.setjob.setJob", resourceRoot, player, selected_job, selected_model)
+				triggerServerEvent("UCDadmin.setjob.setJob", resourceRoot, player, job, model)
 			end
 		end
 	end
