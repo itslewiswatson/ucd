@@ -9,10 +9,11 @@ addEventHandler("onResourceStart", resourceRoot,
 )
 
 function cacheBans(qh)
-	local result = qh:poll(-1)
+	local result = qh:poll(0)
 	for _, ent in ipairs(result) do
 		table.insert(bans, {ent.val, ent.reason, ent.banisher, ent.datum, ent.duration})
 	end
+	outputDebugString("["..tostring(getThisResource().name).."] Bans successfully cached!")
 end
 
 function removePlayer(plr)

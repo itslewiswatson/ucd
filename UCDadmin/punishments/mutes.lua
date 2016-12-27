@@ -17,7 +17,7 @@ function cacheMutes(qh)
 			triggerEvent("UCDadmin.onPlayerMute", plr)
 		end
 	end
-	print("Mutes successfully cached!")
+	outputDebugString("["..tostring(getThisResource().name).."] Mutes successfully cached!")
 end
 
 addEventHandler("onPlayerLogin", root,

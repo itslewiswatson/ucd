@@ -22,7 +22,6 @@ function cacheStocks(qh)
 			end
 		end
 	end
-	outputDebugString("Stocks successfully cached!")
 	db:query(cacheShareholders, {}, "SELECT * FROM `stocks__holders`")
 end
 
@@ -44,6 +43,7 @@ function cacheShares(result)
 		end
 		shares[row.account][row.acronym] = row.amount
 	end
+	outputDebugString("["..tostring(getThisResource().name).."] Stocks successfully cached!")
 end
 
 function getStockPrice(stockName)

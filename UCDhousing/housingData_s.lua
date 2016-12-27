@@ -77,7 +77,7 @@ function createHouses(queryHandle)
 		-- Cache first, create later
 		createHouse(v.houseID, v)
 	end
-	outputDebugString("[UCDhousing] Created and cached all houses!")
+	outputDebugString("["..tostring(getThisResource().name).."] Houses successfully cached!")
 end
 
 --[[

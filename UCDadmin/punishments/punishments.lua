@@ -13,7 +13,7 @@ function cachePunishments(qh)
 	for _, data in ipairs(result) do
 		table.insert(punishments, {data.val, data.datum, data.duration, data.serial, data.who, data.reason, data.log, tonumber(data.active)})
 	end
-	print("Punishments successfully cached!")
+	outputDebugString("["..tostring(getThisResource().name).."] Punishments successfully cached!")
 end
 
 addEventHandler("onPlayerLogin", root,

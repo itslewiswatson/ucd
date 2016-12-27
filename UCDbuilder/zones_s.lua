@@ -26,6 +26,7 @@ function cacheZones(qh)
 		
 		authorizedToBuild[i] = fromJSON(data.authorized)
 	end
+	outputDebugString("["..tostring(getThisResource().name).."] Zones successfully cached!")
 end
 
 function onEnterZone(ele, matchingDim)

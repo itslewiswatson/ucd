@@ -17,8 +17,7 @@ addEventHandler("onResourceStart", resourceRoot,
 )
 
 function cacheVehicles(qh)
-	local result = qh:poll(-1)
-	
+	local result = qh:poll(0)
 	for _, row in pairs(result) do
 		vehicles[row.vehicleID] = {}
 		for column, value in pairs(row) do
@@ -27,8 +26,7 @@ function cacheVehicles(qh)
 			end
 		end
 	end
-	
-	outputDebugString("Vehicles successfully cached!")
+	outputDebugString("["..tostring(getThisResource().name).."] Vehicles successfully cached!")
 end
 
 function setVehicleData(vehicleID, column, data)

@@ -17,7 +17,7 @@ function cacheDatabase(qh)
 			end
 		end
 	end
-	outputDebugString("Accounts successfully cached!")
+	outputDebugString("["..tostring(getThisResource().name).."] Accounts successfully cached!")
 end
 
 -- The equivalent of setAccountData

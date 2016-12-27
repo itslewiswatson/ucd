@@ -22,4 +22,5 @@ function createAdminTable(qh)
 			sendPermissions(plr)
 		end
 	end
+	outputDebugString("["..tostring(getThisResource().name).."] Admins successfully cached!")
 end
