@@ -3,11 +3,6 @@ zones = {}
 idToZone = {}
 authorizedToBuild = {}
 
-zoneCoords = {
-	[1] = {-3340.2417, 2054.9397, 0, 50, 30, 20}
-	
-}
-
 addEventHandler("onResourceStart", resourceRoot,
 	function ()
 		db:query(cacheZones, {}, "SELECT * FROM zones")
@@ -27,18 +22,19 @@ function cacheZones(qh)
 		idToZone[i] = z
 		addEventHandler("onColShapeHit", z, onEnterZone)
 		addEventHandler("onColShapeLeave", z, onExitZone)
-		zones[data.zoneID] = {account = data.account, name = data.name}
+		zones[data.zoneID] = {owner = data.owner, name = data.name}
 		
-		authorizedToBuild[i] = {}
 		authorizedToBuild[i] = fromJSON(data.authorized)
 	end
 end
 
 function onEnterZone(ele, matchingDim)
 	if (ele and ele.type == "player" and matchingDim) then
-		local zoneName = zones[source:getData("zoneID")].name
-		local zoneOwner = exports.UCDaccounts:GAD(zones[source:getData("zoneID")].account, "lastUsedName")
-		exports.UCDdx:add(ele, "builderzone", tostring(zoneName).." > "..tostring(zoneOwner), 255, 255, 255)
+		local zoneID = source:getData("zoneID")
+		local zoneName = zones[zoneID].name
+		local zoneOwner = zones[zoneID].owner
+		
+		exports.UCDdx:add(ele, "builderzone", tostring(zoneName).." | "..tostring(zoneOwner), 255, 255, 255)
 	end
 end
 
@@ -54,7 +50,7 @@ function getPlayerZones(plr)
 	end
 	local temp = {}
 	for zoneID, data in ipairs(zones) do
-		if (data.account == plr.account.name) then
+		if (data.owner:sub(1, 4) == "acc:" and data.owner:sub(4) == plr.account.name) then
 			table.insert(temp, zoneID)
 		end
 	end
@@ -92,5 +88,5 @@ function isPositionInZone(x, y, z, zoneID)
 end
 
 function getZoneOwner(zoneID)
-	return zones[zoneID].account
+	return zones[zoneID].owner
 end
