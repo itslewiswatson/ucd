@@ -41,7 +41,7 @@ function cacheMods()
 			end
 		end
 	--end
-	outputDebugString(tostring(bytes / 1000000).."mb")
+	outputDebugString("["..tostring(getThisResource().name).."] Mod size: "..tostring(exports.UCDutil:mathround(bytes / 1000000, 2)).." MB")
 end
 addEventHandler("onResourceStart", resourceRoot, cacheMods)
 
