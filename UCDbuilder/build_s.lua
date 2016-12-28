@@ -8,14 +8,37 @@ end
 addEvent("UCDbuilder.destroy", true)
 addEventHandler("UCDbuilder.destroy", root, destroyObject)
 
+function getCloserPoint(num, point1, point2)
+	if (math.abs(num - point1) > math.abs(num - point2)) then
+		return point2
+	end
+	return point1
+end
+
 function sync(obj, pos)
 	if (client) then
-		--local zones = getPlayerZones(client)
-		--if (zones) then
-			if (not isPositionInZone(pos[1], pos[2], pos[3], 1)) then
-				return
+		local isZone, zoneID = isPlayerInZone(client, "*")
+		if (not zoneID) then
+			outputDebugString("client not in a zone")
+			return
+		end
+		local isWithinZone, offendingAxis = isPositionInZone(pos[1], pos[2], pos[3], zoneID)
+		if (not isWithinZone) then
+			-- Set it to the max of the offending axis
+			if (offendingAxis == "x") then		
+				local newX = getCloserPoint(pos[1], zones[zoneID].position.x, zones[zoneID].position.x + zones[zoneID].dimensions.x)
+				obj.position = Vector3(newX, pos[2], pos[3])
+			elseif (offendingAxis == "y") then
+				local newY = getCloserPoint(pos[2], zones[zoneID].position.y, zones[zoneID].position.y + zones[zoneID].dimensions.y)
+				obj.position = Vector3(pos[1], newY, pos[3])
+			elseif (offendingAxis == "z") then
+				local newZ = getCloserPoint(pos[3], zones[zoneID].position.z, zones[zoneID].position.z + zones[zoneID].dimensions.z)
+				obj.position = Vector3(pos[1], pos[2], newZ)
 			end
-		--end
+			
+			--outputDebugString("not within bounds of zoneID ("..tostring(offendingAxis)..")")
+			return
+		end
 	end
 	
 	obj.position = Vector3(pos[1], pos[2], pos[3])
@@ -28,8 +51,13 @@ function testObject(plr)
 	local isZone, zoneID = isPlayerInZone(plr, "*")
 	if (isZone) then
 		if (idToZone[zoneID]) then
-			local o = Object(1684, plr.matrix.position + plr.matrix.forward * 3)
+			
+			local pos = plr.matrix.position + plr.matrix.forward * 6
+			pos = pos + plr.matrix.up
+			
+			local o = Object(1684, pos)
 			o:setParent(idToZone[zoneID])
+			
 		else
 			outputDebugString("wtf")
 		end
@@ -71,7 +99,25 @@ function toggleBuild(plr)
 		end
 	end
 	--]]
-	triggerClientEvent(plr, "UCDbuilder.toggleBuild", plr)	
+	
+	local _, zoneID = isPlayerInZone(plr, "*")
+	if (zoneID) then
+	
+		local t = 
+		{
+			x = zones[zoneID].position.x,
+			y = zones[zoneID].position.y,
+			z = zones[zoneID].position.z,
+			
+			l = zones[zoneID].dimensions.x,
+			w = zones[zoneID].dimensions.y,
+			h = zones[zoneID].dimensions.z,
+		}
+		
+		triggerClientEvent(plr, "UCDbuilder.toggleBuild", resourceRoot, zoneID, t)
+	end
+	
+	--triggerClientEvent(plr, "UCDbuilder.toggleBuild", plr)
 end
 addCommandHandler("builder", toggleBuild, false, false)
 

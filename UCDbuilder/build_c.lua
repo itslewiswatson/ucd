@@ -6,13 +6,24 @@ local MAX_DISTANCE = 50	--units
 local MIN_DISTANCE = 2	--units
 local prev = {}
 
-function toggleBuild()
+local _currZone
+_zoneData = {} -- Accessible in zones_c.lua
+
+function toggleBuild(zoneID, zoneData)
+	if (zoneData and type(zoneData) == "table") then
+		_zoneData[zoneID] = zoneData
+	end
+	
 	if (cursor == 0) then
+		_currZone = zoneID
+		
 		showCursor(true)
 		cursor = 1
 		exports.UCDdx:add("builder", "Click on an object to edit", 255, 255, 255)
 		toggleAllControls(false, true, false)
 	else
+		_currZone = nil
+		
 		showCursor(false)
 		cursor = 0
 		exports.UCDdx:del("builder")
@@ -31,6 +42,10 @@ function syncObject(obj, p, r)
 			return
 		end
 		
+		if (not isPositionInZone(p.x, p.y, p.z, _currZone)) then
+			--outputDebugString("client: not in zone")
+		end
+		
 		triggerServerEvent("UCDbuilder.sync", resourceRoot, obj, {p.x, p.y, p.z, r.x, r.y, r.z})
 		
 		prev[1] = p.x
@@ -47,6 +62,8 @@ function onBuild(button, state, _, _, wX, wY, wZ, clickEle)
 		-- If an object is selected, deselect it
 		if (obj and clickEle ~= obj and (not clickEle or clickEle)) then
 			obj = nil
+			obj_blip:destroy()
+			obj_blip = nil
 			showGridlines()
 			return
 		end
@@ -78,6 +95,7 @@ function onBuild(button, state, _, _, wX, wY, wZ, clickEle)
 		
 		obj = clickEle
 		showGridlines(obj)
+		obj_blip = Blip.createAttachedTo(obj)
 	end
 end
 addEventHandler("onClientClick", root, onBuild)
