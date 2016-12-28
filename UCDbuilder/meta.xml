@@ -1,11 +1,14 @@
 <meta>
 	<info author="Noki" version="1" name="UCDbuilder" type="script" />
+	
 	<script src="build_s.lua" type="server"/>
 	<script src="build_c.lua" type="client"/>
 	
-	<script src="util_c.lua" type="client"/>
-	<script src="gridlines.lua" type="client"/>
-	<script src="matrix.lua" type="client"/>
 	<script src="zones_s.lua" type="server"/>
+	<script src="zones_c.lua" type="client"/>
+	
+	<script src="util/util_c.lua" type="client"/>
+	<script src="util/gridlines.lua" type="client"/>
+	<script src="util/matrix.lua" type="client"/>
 	<oop>true</oop>
 </meta>
