@@ -5,6 +5,7 @@
 	<script src="bar_c.lua" type="client"/>
 	<script src="bar_s.lua" type="server"/>
 	<script src="setting.lua" type="client"/>
+	<script src="shout.lua" type="client"/>
 
 	<export function="new" type="client"/>
 	<export function="new" type="server"/>

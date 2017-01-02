@@ -3,9 +3,9 @@ function new(p, text, r, g, b)
 	if (p) and (text) then if isElement(text) then e = text else e=p end end
 	if (not isElement(e)) then return end
 	if e == text then
-		triggerClientEvent(e, "UCDdx.createNewDxMessage", e, p, r, g, b)
+		triggerClientEvent(e, "UCDdx.new", e, p, r, g, b)
 	else
-		triggerClientEvent(e, "UCDdx.createNewDxMessage", e, text, r, g, b)
+		triggerClientEvent(e, "UCDdx.new", e, text, r, g, b)
 	end
 end
 
