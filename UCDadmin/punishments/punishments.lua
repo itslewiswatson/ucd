@@ -262,7 +262,7 @@ function punish2(val, duration, type1, who, reason)
 	return true, pureLog, plr
 end
 
-function getPunishmentLog(val, serial, whole)
+function getPunishmentLog(val, serial, whole, active)
 	if (val or serial) then
 		local punishlog = {}
 		if (val and isElement(val) and val.type == "player") then
@@ -270,25 +270,39 @@ function getPunishmentLog(val, serial, whole)
 			serial = val.serial
 			val = val.account.name
 		end
+		if (#punishments == 0) then
+			return false, "all empty"
+		end
 		for i, v in ipairs(punishments) do
 			if (serial and v[4] == serial) then
 				if (not punishlog.serial) then punishlog.serial = {} end
+				local toinsert
 				if (whole) then
-					table.insert(punishlog.serial, v)
+					toinsert = v
 				else
-					table.insert(punishlog.serial, {v[1], v[7], v[8]})
+					toinsert = {v[1], v[7], v[8]}
+				end
+				if (active and v[8] == 0) then toinsert = nil end
+				if (toinsert) then
+					if (not punishlog.serial) then punishlog.serial = {} end
+					table.insert(punishlog.serial, toinsert)
 				end
 			end
 			if (val and v[1] == val) then
-				if (not punishlog.account) then punishlog.account = {} end
+				local toinsert
 				if (whole) then
-					table.insert(punishlog.account, v)
+					toinsert = v
 				else
-					table.insert(punishlog.account, {v[4], v[7], v[8]})
+					toinsert = {v[4], v[7], v[8]}
+				end
+				if (active and v[8] == 0) then toinsert = nil end
+				if (toinsert) then
+					if (not punishlog.account) then punishlog.account = {} end
+					table.insert(punishlog.account, toinsert)
 				end
 			end
 		end
-		if (not punishlog.account and not punishlog.serial) then return false, "empty" end -- for empty punishlogs
+		if (not punishlog.account and not punishlog.serial) then return false, "empty" end
 		return punishlog
 	end
 	return punishments
