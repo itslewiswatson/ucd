@@ -1,5 +1,5 @@
-playerStats = {}
-db = exports.UCDsql:getConnection()
+local playerStats = {}
+local db = exports.UCDsql:getConnection()
 
 addEventHandler("onPlayerLogin", root,
 	function ()
