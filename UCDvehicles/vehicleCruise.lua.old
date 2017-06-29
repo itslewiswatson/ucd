@@ -9,9 +9,9 @@ function togCruise()
 		local v1,v2,v3 = getElementVelocity(veh)
 		local currspeed = (v1^2 + v2^2 + v3^2)^(0.5)
 		if (currspeed < speed) then
-			setPedControlState("accelerate", true)
+			setControlState("accelerate", true)
 		else
-			setPedControlState("accelerate", false)
+			setControlState("accelerate", false)
 		end
 	end
 end
@@ -32,7 +32,7 @@ function cruiseNow()
 		cruise = false
 		killTimer(timer)
 		speed = 0
-		setPedControlState("accelerate", false)
+		setControlState("accelerate", false)
 		exports.UCDdx:del("cruise")
 	end
 end
@@ -43,7 +43,7 @@ function exitVeh(player)
 		cruise = false
 		killTimer(timer)
 		speed = 0
-		setPedControlState("accelerate", false)
+		setControlState("accelerate", false)
 		exports.UCDdx:del("cruise")
 	end
 end
@@ -54,7 +54,7 @@ function diedVeh()
 		cruise = false
 		killTimer(timer)
 		speed = 0
-		setPedControlState("accelerate", false)
+		setControlState("accelerate", false)
 		exports.UCDdx:del("cruise")
 	end
 end

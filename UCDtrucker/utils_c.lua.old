@@ -21,7 +21,6 @@ function isVehicleAccelerating(vehicle)
 	return false
 end
 
---[[
 function stopVehicle(freeze)
 	if (not localPlayer.vehicle) then return end
 	for _, ctrl in ipairs({"accelerate", "brake_reverse"}) do
@@ -45,38 +44,13 @@ function stopVehicle(freeze)
 	end
 	freezeOnStop = freeze
 end
---]]
-
-function stopVehicle(freeze)
-	if (not isPedInVehicle(localPlayer)) then return end
-	for i,ctrl in ipairs({"accelerate", "brake_reverse"}) do
-		toggleControl(ctrl, false)
-		setPedControlState(ctrl, false)
-	end
-	
-	local vehicle = getPedOccupiedVehicle(localPlayer)
-	local x,y,z = getElementVelocity(vehicle)
-	local speed = math.sqrt(x^2 + y^2 + z^2)*100
-	if (speed >= 15) then
-		local div = math.sqrt(x^2 + y^2 + z^2)*100/15
-		setElementVelocity(vehicle, x/div, y/div, z/div)
-	end
-		
-	addEventHandler("onClientRender", root, vehicleBrake)
-	if (isVehicleAccelerating(vehicle)) then
-		setPedControlState("brake_reverse", true)
-	else
-		setPedControlState("accelerate", true)
-	end
-	freezeOnStop = freeze
-end
 
 function vehicleBrake()
-	if (localPlayer:getData("Occupation") ~= "Aviator" or not isPedInVehicle(localPlayer)) then 
+	if (localPlayer:getData("Occupation") ~= "Trucker" or not isPedInVehicle(localPlayer)) then 
 		removeEventHandler("onClientRender", root, vehicleBrake)
 		for i,ctrl in ipairs({"accelerate", "brake_reverse"}) do
 			toggleControl(ctrl, true)
-			setPedControlState(ctrl, false)
+			setControlState(ctrl, false)
 		end
 	return end
 	
@@ -88,7 +62,7 @@ function vehicleBrake()
 			if (not freezeOnStop) then
 				toggleControl(ctrl, true)
 			end
-			setPedControlState(ctrl, false)
+			setControlState(ctrl, false)
 		end
 		setElementVelocity(vehicle, 0, 0, 0)
 		removeEventHandler("onClientRender", root, vehicleBrake)

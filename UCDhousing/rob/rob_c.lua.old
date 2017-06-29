@@ -264,7 +264,7 @@ function onEnterHouse(houseID, interiorID, rob)
 		for _, v in ipairs(disabledControls) do
 			toggleControl(v, false)
 		end
-		setPedControlState("walk", true)
+		setControlState("walk", true)
 		local i = math.random(1, #houseMarkers[interiorID])
 		for k = 1, #houseMarkers[interiorID][i] do
 			robMarkers[k] = Marker(houseMarkers[interiorID][i][k][1], houseMarkers[interiorID][i][k][2], houseMarkers[interiorID][i][k][3] - 1, "cylinder", 1, 32, 208, 11, 150)
@@ -291,7 +291,7 @@ function onLeaveHouse(houseID)
 	for _, v in ipairs(disabledControls) do
 		toggleControl(v, true)
 	end
-	setPedControlState("walk", false)
+	setControlState("walk", false)
 	
 	robMarkers = {}
 	removeEventHandler("onClientRender", root, manageRendering)

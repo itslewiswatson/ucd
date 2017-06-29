@@ -51,7 +51,7 @@ function stopVehicle(freeze)
 	if (not isPedInVehicle(localPlayer)) then return end
 	for i,ctrl in ipairs({"accelerate", "brake_reverse"}) do
 		toggleControl(ctrl, false)
-		setPedControlState(ctrl, false)
+		setControlState(ctrl, false)
 	end
 	
 	local vehicle = getPedOccupiedVehicle(localPlayer)
@@ -64,9 +64,9 @@ function stopVehicle(freeze)
 		
 	addEventHandler("onClientRender", root, vehicleBrake)
 	if (isVehicleAccelerating(vehicle)) then
-		setPedControlState("brake_reverse", true)
+		setControlState("brake_reverse", true)
 	else
-		setPedControlState("accelerate", true)
+		setControlState("accelerate", true)
 	end
 	freezeOnStop = freeze
 end
@@ -76,7 +76,7 @@ function vehicleBrake()
 		removeEventHandler("onClientRender", root, vehicleBrake)
 		for i,ctrl in ipairs({"accelerate", "brake_reverse"}) do
 			toggleControl(ctrl, true)
-			setPedControlState(ctrl, false)
+			setControlState(ctrl, false)
 		end
 	return end
 	
@@ -88,7 +88,7 @@ function vehicleBrake()
 			if (not freezeOnStop) then
 				toggleControl(ctrl, true)
 			end
-			setPedControlState(ctrl, false)
+			setControlState(ctrl, false)
 		end
 		setElementVelocity(vehicle, 0, 0, 0)
 		removeEventHandler("onClientRender", root, vehicleBrake)

@@ -37,7 +37,7 @@ function fireCheck(button, state)
 			return
 		end
 		--outputDebugString("fire")
-		if (not getPedControlState("aim_weapon")) then
+		if (not getControlState("aim_weapon")) then
 			toggleControl("fire", false)
 			--outputDebugString("not aiming")
 		end
@@ -75,7 +75,7 @@ addEventHandler("onClientKey", root, aimCheck)
 --addEventHandler("onClientRender", root,
 Timer(
 	function ()
-		if (getPedControlState("fire") and not getPedControlState("aim_weapon") and (not exceptedSlots[localPlayer.weaponSlot] and not exceptedWeapons[localPlayer:getWeapon()])) then
+		if (getControlState("fire") and not getControlState("aim_weapon") and (not exceptedSlots[localPlayer.weaponSlot] and not exceptedWeapons[localPlayer:getWeapon()])) then
 			toggleControl("fire", false)
 		end
 	end, 100, 0
