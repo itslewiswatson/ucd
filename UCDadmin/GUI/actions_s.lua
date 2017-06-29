@@ -347,7 +347,7 @@ function giveVehicle(plr, vehicle)
 			return false
 		end
 		
-		if (tostring(vehicle):match("%d") and tonumber(vehicle) ~= false and tonumber(vehicle) ~= nil) then
+		if (tostring(vehicle):match("%d") and tonumber(vehicle)) then
 			if (not Vehicle.getNameFromModel(vehicle) or Vehicle.getNameFromModel(vehicle) == "" or Vehicle.getNameFromModel(vehicle) == " ") then
 				exports.UCDdx:new(client, "You must specify a valid vehicle name or ID", 255, 0, 0)
 				return

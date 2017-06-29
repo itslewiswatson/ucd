@@ -185,7 +185,6 @@ addCommandHandler("forcepayout",
 function getTurfGroupMembers(col, group)
 	local groupMembers = {}
 	for i, v in ipairs(col:getElementsWithin("player")) do
-	--for i, v in ipairs(getElementsWithinColShape(col, "player")) do
 		if (not v.dead and allowedToTurf[v.team.name] and exports.UCDgroups:getPlayerGroup(v) == group) then
 			table.insert(groupMembers, v)
 		end

@@ -58,6 +58,7 @@ function setPlayerJob(plr, jobName, skinID)
 	if (jobName == "Admin") then
 		exports.UCDteams:setPlayerTeam(plr, "Admins")
 		plr:setModel(skinID)
+		plr:setData("job", jobName)
 		exports.UCDaccounts:SAD(plr, "jobModel", skinID)
 		triggerEvent("onPlayerGetJob", plr, jobName)
 		triggerClientEvent(plr, "onClientPlayerGetJob", plr, jobName)
