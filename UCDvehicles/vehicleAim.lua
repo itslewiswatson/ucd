@@ -11,14 +11,14 @@ local resX, resY = guiGetScreenSize()
 
 function draw()
 	local target = localPlayer:getTarget()
-	if (target and target.type == "vehicle" and localPlayer:getControlState("aim_weapon")) then
+	if (target and target.type == "vehicle" and localPlayer:getControlState("aim_weapon") and not localPlayer.inWater and not localPlayer.vehicle) then
 		if (not target:getData("owner")) then return end
 		if (not ((localPlayer:getWeaponSlot() ~= 0 and localPlayer:getWeaponSlot() ~= 1) and
 		(localPlayer:getWeaponSlot() ~= 7) and (localPlayer:getWeaponSlot() ~= 8) and
 		(localPlayer:getWeaponSlot() ~= 9) and (localPlayer:getWeaponSlot() ~= 11) and
 		(localPlayer:getWeaponSlot() ~= 12))) then return end
-		local v = target:getPosition()
-		local p = localPlayer:getPosition()
+		local v = target.position
+		local p = localPlayer.position
 		
 		if isElementOnScreen(target) then
 			--local dist = getDistanceBetweenPoints3D(vX, vY, vZ, pX, pX, pX)
