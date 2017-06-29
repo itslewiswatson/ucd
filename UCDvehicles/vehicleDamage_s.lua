@@ -3,7 +3,7 @@
 --// RESOURCE: UCDvehicles
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 04/01/2016
---// PURPOSE: Handling server-sided damage.
+--// PURPOSE: Handling server-sided vehicle damage.
 --// FILE: \vehicleDamage_s.lua [server]
 -------------------------------------------------------------------
 

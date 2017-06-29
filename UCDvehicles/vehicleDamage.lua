@@ -3,7 +3,7 @@
 --// RESOURCE: UCDvehicles
 --// DEVELOPER(S): Lewis Watson (Noki)
 --// DATE: 04/01/2016
---// PURPOSE: Handling client-sided damage.
+--// PURPOSE: Handling client-sided vehicle damage.
 --// FILE: \vehicleDamage.lua [client]
 -------------------------------------------------------------------
 
@@ -17,10 +17,28 @@ function isVehicleBrokenDown(vehicle)
 end
 
 addEventHandler("onClientVehicleDamage", root,
-	function (_, _, loss)
+	function (attacker, weapon, loss)
 		if (isElement(source) and source.type == "vehicle") then
 			if (wasEventCancelled()) then
 				return
+			end
+			if (exports.UCDsafeZones:isElementWithinSafeZone(source)) then
+				if (attacker and attacker.type == "player") then
+					if (attacker:getData("job") ~= "Admin" and not source.occupants[0]) then
+						cancelEvent()
+					end
+				end
+				if (attacker and attacker.type == "vehicle") then
+					local driver = attacker.occupants[0]
+					if (driver) then
+						if (attacker:getData("job") ~= "Admin") then
+							cancelEvent()
+						end
+					else
+						-- Rogue vehicle
+						cancelEvent()
+					end
+				end
 			end
 			local r  = source.rotation
 			if (source.blown) then
