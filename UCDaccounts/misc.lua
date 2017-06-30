@@ -2,7 +2,7 @@ function isNickAllowed(plr, nick)
 	if (nick:match("#%x%x%x%x%x%x")) then
 		return false
 	end
-	if (type(plr.name:lower():find("[ucd]", 1, true)) == "number") then
+	if (type(nick:lower():find("[ucd]", 1, true)) == "number") then
 		if (exports.UCDadmin:isPlayerAdmin(plr)) then
 			return true
 		end
