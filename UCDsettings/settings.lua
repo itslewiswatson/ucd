@@ -28,8 +28,8 @@ local settings = {
 		},
 		["fpslimit"] = {
 			name = "FPS Limit",
-			desc = "Set FPS limit(numbers only)\nIf your PC performance is good, increase it\nup to 60.\nATTENTION: More than 60 would cause\nsync bugs that's why max is 60.\nMin: 25 | Max: 60 | Default: 45",
-			default = 45,
+			desc = "Set FPS limit(numbers only)\nIf your PC performance is good, increase it\nup to 60.\nATTENTION: More than 60 would cause\nsync bugs that's why max is 60.\nMin: 25 | Max: 60 | Default: 60",
+			default = 60,
 			len = 2,
 			chars = {{48, 57}},
 			min = 25,
