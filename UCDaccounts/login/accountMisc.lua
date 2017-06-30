@@ -21,7 +21,7 @@ function registerAccount(plr, usr, passwd, email)
 		blankJSON
 	)
 	accountData[usr] = {x = 1519.616, y = -1675.9303, z = 13.5469, rot = 270, dim = 0, interior = 0, playtime = 1, team = "Citizens", money = 25000, model = 0, walkstyle = 0, wp = 0, health = 200, armour = 0, occupation = "", nametag = toJSON({Team.getFromName("Citizens"):getColor()}), lastUsedName = plr.name, ownedWeapons = toJSON({}), weaponString = toJSON({}), sms_friends = toJSON({}), aviator = 0, trucker = 0, crimXP = 0, bankbalance = 10000}
-	db:exec("INSERT INTO `playerStats` SET `account`=?", usr)
+	db:exec("INSERT INTO `playerStats` SET `account`=?, `timesArrested`=0", usr)
 	db:exec("INSERT INTO `accounts` (`account`, `ip`, `serial`, `email`) VALUES (?, ?, ?, ?) ", usr, plr.ip, plr.serial, email)
 
 	return true
