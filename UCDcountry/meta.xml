@@ -4,6 +4,7 @@
 	<script src="server.lua" type="server"/>
 	<export function="getCountry" type="server"/>
 	<oop>true</oop>
+	<file src="flags/fj.png"/>
 	<file src="flags/hr.png"/>
 	<file src="flags/ma.png"/>
 	<file src="flags/mk.png"/>
