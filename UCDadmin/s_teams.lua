@@ -80,6 +80,7 @@ function gg(client)
 end
 addCommandHandler("admin", gg, false, false)
 
+--[[
 addEventHandler("onPlayerChangeNick", root,
 	function (old, new)
 		if (new:lower():find("[ucd]") and not isPlayerAdmin(source)) then
@@ -88,3 +89,4 @@ addEventHandler("onPlayerChangeNick", root,
 		end
 	end
 )
+]]--
