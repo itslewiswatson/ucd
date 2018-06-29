@@ -55,7 +55,7 @@ If you would like to run this server yourself, you are more than free to do so. 
 1. Clone or download the repository
 	- `git clone https://github.com/nokizorque/ucd.git`
 	- From the repository's main page:
-		- ![](https://noki.zorque.xyz/i/7b02a.png)
+		- ![](https://noki.zorque.xyz/i/78a2111.png)
 		- Download as a ZIP or clone, and place into your server directory (`C:\Program Files (x86)\MTA San Andreas 1.5.3\server\mods\deathmatch\resources`)
 2. Rename the folder to be a carpet (signified by the surrounding square brackets)
 	 -
@@ -65,9 +65,10 @@ If you would like to run this server yourself, you are more than free to do so. 
 	 	+-- [editor]
 	 	+-- [gamemodes]
 	 	..
-	    +-- [ucd]
-	 	|   +-- UCDadmin
+	 	+-- [ucd]
+	 	|	+-- UCDadmin
 	 	|	+-- UCDactions
+			|	...
 	 ```
 	 - You may also rename it to anything else, as long as its surrounded by square brackets.
 
