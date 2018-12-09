@@ -69,7 +69,7 @@ phone =
 	--]]
 }
 
-phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, 310, 600, ":UCDphone/iphone3.png", false)
+phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, 310, 600, ":UCDphone/iphone4.png", false)
 phone.image["phone_window"].visible = false
 
 phone.label["banner"] = GuiLabel(20, 71, 60, 17, " UCDphone", false, phone.image["phone_window"])
