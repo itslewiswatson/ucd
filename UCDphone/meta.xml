@@ -1,8 +1,8 @@
 <meta>
 	<min_mta_version server="1.5.1"></min_mta_version>
-    <info author="Noki" type="" name="" />
+	<info author="Noki" type="" name="" />
 	
-	<file src="iphone3.png"/>
+	<file src="iphone4.png"/>
 	<file src="images/background.png"/>
 	<file src="images/im.png"/>
 	<file src="images/browser.png"/>
