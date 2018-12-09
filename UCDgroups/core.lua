@@ -111,7 +111,7 @@ function cacheGroupMembers(qh)
 			end
 			table.insert(groupMembers[row.groupName], row.account)
 			if (Account(row.account)) then
-				local member = Account(row.account).player --exports.UCDaccounts:getPlayerFromID(row.account)
+				local member = Account(row.account).player
 				if (member) then
 					db:exec("UPDATE `groups_members` SET `lastOnline`=? WHERE `account`=?", getRealTime().yearday, row.account)
 				end
@@ -153,8 +153,8 @@ function cacheGroupInvites(qh)
 		table.insert(playerInvites[row.account], {row.groupName, row.by})
 	end
 	-- Resource should be fully loaded by now, let's load things for existing players
-	for _, plr in pairs(Element.getAllByType("player")) do -- Maybe exports.UCDaccounts:getLoggedInPlayers()
-		if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
+	for _, plr in pairs(Element.getAllByType("player")) do
+		if (not plr.account.guest) then
 			handleLogin(plr)
 		end
 	end
@@ -226,10 +226,6 @@ function createGroup(name)
 				end
 			end
 		end
-		--local playtime = math.floor(exports.UCDaccounts:GAD(client, "playtime") / (60 * 60)) or 0 -- Gets the playtime in hours
-		--if (playtime < 5) then
-			--exports.UCDdx:new(client, "You need at least 5 hours in-game to be able to create a group", 255, 255, 0)
-		--end
 		
 		local d, t = exports.UCDutil:getTimeStamp()
 		db:exec("INSERT INTO `groups_` SET `groupName` = ?, `colour` = ?, `chatColour` = ?, `info` = ?, `created` = ?, `gmotd` = ?, `gmotd_setter` = ?", groupName, toJSON(settings.default_colour), toJSON(settings.default_chat_colour), settings.default_info_text, d.." "..t, "", "") -- Perform the inital group creation	
@@ -272,10 +268,8 @@ function leaveGroup(reason)
 			createGroupLog(group_, client.name.." ("..client.account.name..") has left "..group_.." ("..reason..")")
 			
 			for k, v in pairs(groupMembers[group_]) do
-				--outputDebugString(tostring(k).." || "..tostring(v))
 				if (v == client.account.name) then
 					table.remove(groupMembers[group_], k)
-					--outputDebugString("Removed "..tostring(v).." at index "..tostring(k))
 					break
 				end	
 			end
@@ -371,7 +365,6 @@ function joinGroup(group_)
 	if (source and group_) then
 		if (groupTable[group_]) then
 			if (not exports.UCDaccounts:isPlayerLoggedIn(source) or getPlayerGroup(source)) then
-				outputDebugString("You're in a group")
 				return
 			end
 			local account = source.account.name
@@ -442,7 +435,6 @@ function sendInvite(plr)
 				for index, row in pairs(playerInvites[plr.account.name]) do
 					for _, data in pairs(row) do
 						if (data == group_) then
-							outputDebugString("already has invite")
 							exports.UCDdx:new(client, "This player has already been invited to this group", 255, 255, 0)
 							return
 						end
@@ -594,7 +586,7 @@ function demoteMember(accName, newRank, reason)
 					exports.UCDdx:new(client, "You are not allowed to demote players with the same rank as you", 255, 0, 0)
 					return
 				end
-				if (isRankHigherThan(group_, clientRank, newRank) == false) then outputDebugString("lmao") return end
+				if (isRankHigherThan(group_, clientRank, newRank) == false) then return end
 				if (plrRank == getGroupFirstRank(group_)) then
 					exports.UCDdx:new(client, "You cannot demote this player as they have the lowest rank already", 255, 0, 0)
 					return
@@ -616,11 +608,7 @@ function demoteMember(accName, newRank, reason)
 			else
 				exports.UCDdx:new(client, "You can't demote players with a higher rank than you", 255, 0, 0)
 			end
-		else
-			outputDebugString("lmao")
 		end
-	else
-		outputDebugString("lmao")
 	end
 end
 addEvent("UCDgroups.demoteMember", true)
@@ -630,7 +618,6 @@ function kickMember(accName, reason)
 	if (client and accName and reason) then
 		local group_ = getPlayerGroup(client)
 		local acc = Account(accName)
-		outputDebugString("kickMember > accName = "..tostring(accName))
 		local clientRank = getPlayerGroupRank(client)
 		local plrRank = playerGroupCache[accName][3]
 		if (reason:gsub(" ", "") == "") then reason = "No Reason" end
@@ -648,11 +635,9 @@ function kickMember(accName, reason)
 				end
 				
 				for k, v in pairs(groupMembers[group_]) do
-					outputDebugString(tostring(k).." || "..tostring(v))
 					if v == accName then
 						table.remove(groupMembers[group_], k)
 						--groupMembers[group_][k] = nil
-						outputDebugString("Removed "..tostring(v).." at index "..tostring(k))
 						break
 					end	
 				end
@@ -775,7 +760,6 @@ function requestBalance()
 	if (client or source) then
 		local group_ = getPlayerGroup(source)
 		if (group_) then
-			outputDebugString(tostring(groupTable[group_].balance))
 			triggerClientEvent(source, "UCDgroups.balanceWindow", source, "toggle", tonumber(groupTable[group_].balance))
 		end
 	end
@@ -1023,9 +1007,7 @@ addCommandHandler("gschat", groupStaffChat, false, false)
 addCommandHandler("gstaff", groupStaffChat, false, false)
 
 function handleLogin(plr)
-	--local accountID = exports.UCDaccounts:getPlayerAccountID(plr)
 	local account = plr.account.name
-	outputDebugString("handleLogin - account = "..tostring(account))
 	if (not playerGroupCache[account]) then
 		playerGroupCache[account] = {}
 		db:query(handleLogin2, {plr, account}, "SELECT `groupName`, `rank`, `joined`, `timeOnline`, `warningLevel` FROM `groups_members` WHERE `account`=? LIMIT 1", account)
@@ -1050,13 +1032,11 @@ function handleLogin2(qh, plr, account)
 	local r, g, b = getGroupChatColour(group_)
 	local gmotd = (groupTable[group_] and groupTable[group_].gmotd) or ""
 	
-	outputDebugString("handleLogin2: groupName = "..tostring(group_))
 	plr:setData("group", group_)
 	group[plr] = group_
 	
 	if (gmotd and gmotd ~= "" and gmotd:gsub(" ", "") ~= "" and gmotd:len() > 1) then
 		local LUN = exports.UCDaccounts:GAD(groupTable[group_].gmotd_setter, "lastUsedName") or groupTable[group_].gmotd_setter
-		--outputDebugString(tostring(r).." "..tostring(g).." "..tostring(b))
 		outputChatBox("GMOTD "..LUN.." #FFFFFF"..gmotd, plr, r, g, b, true)
 	end
 end
@@ -1088,17 +1068,15 @@ addEventHandler("onResourceStop", resourceRoot,
 )
 
 function toggleGUI(update)
-	--if (source.type == "player" and not plr) then plr = source end
+
 	local groupName = getPlayerGroup(source) or ""
-	--if (groupName == "") then return end
 	local groupInfo = getGroupInfo(groupName) or ""
 	local rank = getPlayerGroupRank(source)
 	local permissions = getRankPermissions(groupName, rank)
 	local ranks = {}
-	--local memberCount = #groupMembers[groupName] --or "N"
 	local memberCount
 	local groupSlots = 50
-	local created-- = groupTable[groupName].created or "N/A"
+	local created
 	
 	if (groupName == "" or not groupName) then
 		created = "N/A"
@@ -1241,7 +1219,6 @@ function deleteRank(rankName)
 					end
 				end
 				for _, ent in pairs(groupRanks[group_]) do
-					--outputDebugString("ent[2] = "..tostring(ent[2]).." | rankIndex = "..tostring(rankIndex))
 					if (ent[2] > rankIndex) then
 						ent[2] = ent[2] - 1
 					end
@@ -1349,7 +1326,6 @@ function requestGroupsForPD(demote, account)
 				exports.UCDdx:new(client, "Ranks are currently being edited - you cannot warn, promote, demote or kick right now", 255, 0, 0)
 				return
 			end
-			outputDebugString(account)
 			local rank = playerGroupCache[tostring(account)][3]
 			if (demote == true) then
 				if (not canPlayerDoActionInGroup(client, "demote")) then
@@ -1358,7 +1334,6 @@ function requestGroupsForPD(demote, account)
 				end
 				if (rank == getGroupFirstRank(group_)) then return end
 				if (isRankHigherThan(group_, rank, getPlayerGroupRank(client)) and getPlayerGroupRank(client) ~= getGroupLastRank(group_)) then
-					outputDebugString("kek")
 					return
 				end
 				if (isRankHigherThan(group_, rank, getPlayerGroupRank(client)) == "equal" and not canPlayerDoActionInGroup(client, "demoteWithSameRank")) then
@@ -1387,10 +1362,9 @@ function requestGroupsForPD(demote, account)
 				local clientRankIndex = getRankIndex(group_, clientRank)
 				local accountRankIndex = getRankIndex(group_, rank)
 				if (rank == getGroupLastRank(group_)) then return end		
-				if (accountRankIndex > clientRankIndex and clientRankIndex ~= -1) then outputDebugString("hh") return end
+				if (accountRankIndex > clientRankIndex and clientRankIndex ~= -1) then return end
 				
 				local temp = {}
-				outputDebugString(accountRankIndex.."/"..getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))))
 				for i = accountRankIndex, getRankIndex(group_, getPreviousRank(group_, getGroupLastRank(group_))) do
 					for k, v in pairs(groupRanks[group_]) do
 						-- 
@@ -1563,16 +1537,14 @@ function joinAlliance(alliance)
 	if (source and source.type == "player" and alliance) then
 		local groupName = getPlayerGroup(source)
 		if (not groupName) then
-			outputDebugString("1")
-			return false
+			return
 		end
 		if (getGroupAlliance(groupName)) then
-			outputDebugString("2")
-			return false
+			return
 		end
 		if (not canPlayerDoActionInGroup(source, "alliance")) then
 			exports.UCDdx:new(source, "You do not have permission to manage alliances in your group", 255, 0, 0)
-			return false
+			return
 		end
 		
 		db:exec("INSERT INTO `groups_alliances_members` (`alliance`, `groupName`, `rank`) VALUES (?, ?, ?)", alliance, groupName, "Member")
@@ -1825,7 +1797,6 @@ function toggleAllianceGUI(update)
 	local alliance, info, created
 	local alliancePerms = {}
 	alliance = getGroupAlliance(groupName) or false
-	--outputDebugString(tostring(alliance))
 	
 	if (alliance ~= false and allianceTable[alliance]) then
 		created = allianceTable[alliance][4]
