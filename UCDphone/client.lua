@@ -4,8 +4,6 @@
 	- Row -1 is the dock
 --]]
 
-
-
 -- Phone positioning
 local sX, sY = guiGetScreenSize()
 local pX, pY = sX - 320, sY - 622
@@ -16,29 +14,28 @@ end
 
 -- Apps
 local app = {width = 54, height = 54}
-local baseX, baseY = 31, 95--100
-local offX, offY = 64, 76--79
+local baseX, baseY = 32, 50
+local offX, offY = 64, 76
 
 local bX, bY, bW, bH = sX + 10, pY + 30, pW - 20, pH - 40
 function hhhh()
-	dxDrawRectangle(bX, bY, bW, bH, tocolor(0, 0, 0, 100), false, false)
+	dxDrawRectangle(bX + 5, bY - 5, bW - 10, bH + 10, tocolor(0, 0, 0, 100), false, false)
 	
 	-- Update the time on the phone
 	if (phone and phone.label and phone.label["time"] and isElement(phone.label["time"])) then
 		
 		local t = getRealTime()
-		local h, m, m2 = t.hour, t.minute, "AM"
+		local h, m = t.hour, t.minute
 		if (h > 12) then
 			h = h - 12
-			m2 = "PM"
 		end
 		if m < 10 then
-		m = "0"..m
+			m = "0"..m
 		end
 		if h < 10 then
 			h = "0"..h
 		end
-		phone.label["time"].text = tostring(h)..":"..tostring(m).." "..tostring(m2)
+		phone.label["time"].text = tostring(h)..":"..tostring(m)
 	else
 		outputDebugString("D:")
 	end
@@ -69,16 +66,16 @@ phone =
 	--]]
 }
 
-phone.image["phone_window"] = GuiStaticImage(sX + 10 --[[abs = 1600]], pY, 310, 600, ":UCDphone/iphone4.png", false)
+phone.image["phone_window"] = GuiStaticImage(sX + 10, pY, 310, 600, ":UCDphone/iphone4.png", false)
 phone.image["phone_window"].visible = false
 
-phone.label["banner"] = GuiLabel(20, 71, 60, 17, " UCDphone", false, phone.image["phone_window"])
+phone.label["banner"] = GuiLabel(45, 20, 60, 17, "UCD", false, phone.image["phone_window"])
 phone.label["banner"].font = "default-bold-small"
-phone.label["time"] = GuiLabel((310 / 2) - 15, 71, 60, 17, "zyzz brah", false, phone.image["phone_window"])
+phone.label["time"] = GuiLabel(250 - 15, 20, 60, 17, "[time]", false, phone.image["phone_window"])
 phone.label["time"].font = "default-bold-small"
 
-phone.button["home"] = GuiButton(130, 535, 50, 50, "", false, phone.image["phone_window"])
-phone.button["home"].alpha = 0
+phone.button["home"] = GuiButton(95, 565, 125, 10, "", false, phone.image["phone_window"])
+phone.button["home"].alpha = 255
 
 addEventHandler("onClientGUIClick", phone.button["home"], 
 	function ()
@@ -134,7 +131,7 @@ for i, info in ipairs(apps) do
 	
 	-- If it's a docked row
 	if (info[3][1] == -1) then
-		y = 455
+		y = 490
 	else
 		y = baseY + (offY * info[3][1])
 	end
