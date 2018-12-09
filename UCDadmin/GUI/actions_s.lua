@@ -340,13 +340,7 @@ addEventHandler("UCDadmin.setInterior", root, setPlayerInterior)
 function giveVehicle(plr, vehicle)
 	if (plr and client and vehicle and isPlayerAdmin(client)) then
 		local spawnedVehicle
-		
-		-- We're dealing with a vehicle ID
-		if (vehicle:gsub(" ", "") == "" or not Vehicle.getNameFromModel(vehicle)) then
-			exports.UCDdx:new(client, "You must specify a valid vehicle name or ID", 255, 0, 0)
-			return false
-		end
-		
+
 		if (tostring(vehicle):match("%d") and tonumber(vehicle)) then
 			if (not Vehicle.getNameFromModel(vehicle) or Vehicle.getNameFromModel(vehicle) == "" or Vehicle.getNameFromModel(vehicle) == " ") then
 				exports.UCDdx:new(client, "You must specify a valid vehicle name or ID", 255, 0, 0)
