@@ -48,8 +48,8 @@ function createGUI()
 			{"deagle", "Deagle", prices[23][1], prices[23][2]},
 			{"silenced", "Silenced", prices[24][1], prices[24][2]},
 			{"shotgun", "Shotgun", prices[25][1], prices[25][2]},
-			{"combat shotgun", "SPAS-12", prices[26][1], prices[26][2]},
-			{"sawed-off", "Sawn-off\nShotgun", prices[27][1], prices[27][2]},
+			{"combat shotgun", "SPAS-12", prices[27][1], prices[27][2]},
+			{"sawed-off", "Sawn-off\nShotgun", prices[26][1], prices[26][2]},
 			{"uzi", "Uzi", prices[28][1], prices[28][2]},
 			{"mp5", "MP5", prices[29][1], prices[29][2]},
 			{"tec-9", "Tec-9", prices[32][1], prices[32][2]},
@@ -61,8 +61,8 @@ function createGUI()
 			
 			{"grenade", "Grenade", prices[16][2]},
 			{"molotov", "Molotov", prices[18][2]},
-			{"satchel", "Satchel", prices[17][2]},
-			{"teargas", "Teargas", prices[39][2]},
+			{"satchel", "Satchel", prices[39][2]},
+			{"teargas", "Teargas", prices[17][2]},
 		}
 		
 		for i = 1, #all do
