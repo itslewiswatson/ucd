@@ -1,7 +1,0 @@
-<meta>
-	<script src="client.luac" type="client"/>
-	<script src="server.lua" type="server"/>
-	
-	<file src="jihad.mp3"/>
-	<file src="akbar.mp3"/>
-</meta>
