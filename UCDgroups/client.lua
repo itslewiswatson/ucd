@@ -116,7 +116,7 @@ function toggleGroupUI(updateOnly, groupName, groupInfo, permissions, rank, rank
 		mainGUI.button[9].enabled = true
 		mainGUI.button[10].enabled = true
 		mainGUI.button[11].enabled = boolean(permissions[9])
-		mainGUI.button[12].enabled = boolean(permissions[8])
+		mainGUI.button[12].enabled = false -- boolean(permissions[8])
 		mainGUI.button[13].enabled = boolean(permissions[12]) or boolean(permissions[13])
 		mainGUI.button[14].enabled = boolean(permissions[16]) or boolean(permissions[14]) or boolean(permissions[19])
 		mainGUI.button[15].enabled = true -- boolean(permissions[15]) -- Alliances, so you should be able to open it regardless
