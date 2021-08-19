@@ -1,4 +1,5 @@
 db = exports.UCDsql:getConnection()
+local ownerAccounts = {["Noki"] = true}
 
 function getOnlineAdmins()
 	local onlineAdmins = {}
@@ -14,7 +15,7 @@ function getPlayerAdminRank(plr)
 	if (not plr) then return end
 	if (plr.type ~= "player") then return false end
 	
-	if isPlayerOwner(plr) then return 1337 end
+	if isPlayerOwner(plr) then return 5 end
 	if (adminTable and adminTable[plr.account.name]) then
 		return adminTable[plr.account.name].rank 
 	end
@@ -22,8 +23,7 @@ function getPlayerAdminRank(plr)
 end
 
 function isPlayerOwner(plr)
-	if (not plr) then return end
-	if plr.account.name == "Noki" then return true else return false end
+	return ownerAccounts[plr.account.name] or false
 end
 
 function isPlayerDeveloper(plr)

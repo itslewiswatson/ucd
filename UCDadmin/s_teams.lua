@@ -52,7 +52,6 @@ local adminRanks = {
 	[3] = "L3 Admin",
 	[4] = "L4 Admin",
 	[5] = "L5 Admin",
-	[1337] = "L1337 Admin",
 }
 
 addEventHandler("onResourceStart", resourceRoot,
