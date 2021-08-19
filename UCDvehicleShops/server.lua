@@ -10,6 +10,7 @@ addEventHandler("UCDvehicleShops.purchase", root,
 		end
 		
 		local vehicle = exports.UCDvehicles:purchase(client, model, pos, rot, colour, price)
+		exports.UCDdx:new(client, "Congratulations on your newly purchased "..vehicle.name..". Take care of her!", 255, 255, 0)
 		if (vehicle) then
 			client:warpIntoVehicle(vehicle)
 		else
