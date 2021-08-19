@@ -39,6 +39,7 @@ function glue()
 			triggerServerEvent("gluePlayer", resourceRoot, slot, vehicle, x, y, z, rotX, rotY, rotZ)
 			
 			bindKey("jump", "down", unglue)
+			exports.UCDdx:add("glue", "Glued to "..vehicle.name..". Jump to unglue.", 255, 255, 255)
 		end
 	end
 end
@@ -49,5 +50,6 @@ addEventHandler("UCDglue.glue", root, glue)
 function unglue()
 	triggerServerEvent("ungluePlayer", localPlayer)
 	unbindKey("jump", "down", unglue)
+	exports.UCDdx:del("glue")
 end
 addCommandHandler("unglue", unglue)
