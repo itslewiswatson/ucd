@@ -20,7 +20,7 @@ function getPlayerStats(plr)
 		elseif (kills == 0 and deaths == 0) then
 			kdr = 0
 		end
-		local totalguns = "$"..exports.UCDutil:tocomma(getPlayerAccountStat(plr, "totalguns")) or "$"..tostring(0)
+		local totalguns = "$"..exports.UCDutil:tocomma(getPlayerAccountStat(plr, "totalguns") or 0) or "$"..tostring(0)
 		local totalfired = getPlayerAccountStat(plr, "totalfired")
 		local ap = getPlayerAccountStat(plr, "AP") or 0
 		local arrests = getPlayerAccountStat(plr, "arrests") or 0

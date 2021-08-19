@@ -3,6 +3,7 @@
     <info author="Noki" type="" name="" />
 	<script src="stats.lua" type="server"/>
 	<script src="server.lua" type="server"/>
+	<script src="defaultStats.lua" type="server"/>
 	<script src="client.lua" type="client"/>
 	<script src="weaponFire.lua" type="client"/>
 	<export function="getPlayerAccountStat" type="server"/>

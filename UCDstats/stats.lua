@@ -41,7 +41,8 @@ function getPlayerAccountStat(plr, stat)
 	if (not plr or not stat) then return nil end
 	if (not isElement(plr) or plr:getType() ~= "player" or type(stat) ~= "string") then return false end
 	if (not playerStats[plr] or playerStats[plr] == nil or playerStats[plr][stat] == nil) then
-		return nil
+		setPlayerAccountStat(plr, stat, 0)
+		return 0
 	end
 	if (stat == "*") then
 		return playerStats[plr]
@@ -52,8 +53,8 @@ end
 function setPlayerAccountStat(plr, stat, value)
 	if (not plr or not stat or not value or not db) then return nil end
 	if (not isElement(plr) or plr:getType() ~= "player" or type(stat) ~= "string") then return false end	
-	if (not playerStats[plr] or playerStats[plr] == nil or playerStats[plr][stat] == nil) then
-		return nil
+	if (not playerStats[plr]) then
+		playerStats[plr] = {}
 	end
 	playerStats[plr][stat] = value
 	db:exec("UPDATE `playerStats` SET `??`=? WHERE `account`=?", stat, value, plr.account.name)
