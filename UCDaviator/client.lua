@@ -34,6 +34,7 @@ addEventHandler("UCDaviator.startItinerary", root, startItinerary)
 
 function cancelItinerary()
 	if (isItinerary()) then
+		removeEventHandler("onClientRender", root, displayDistance)
 		exports.UCDdx:del("aviatordist")
 		outputDebugString("cancelling")
 		if (pending and isTimer(pending)) then
@@ -49,7 +50,6 @@ function cancelItinerary()
 		markings.marker = nil
 		markings.blip = nil
 		hasHit = nil
-		removeEventHandler("onClientRender", root, displayDistance)
 	end
 end
 addEventHandler("onClientPlayerWasted", localPlayer, cancelItinerary)

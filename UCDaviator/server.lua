@@ -34,7 +34,6 @@ function processFlight(flightData, vehicle)
 			local x1, y1, z1 = start[1], start[2], start[3]
 			local x2, y2, z2 = finish[1], finish[2], finish[3]
 			distance = getDistanceBetweenPoints3D(x1, y1, z1, x2, y2, z2)
-			--outputDebugString("Distance: "..distance)
 			
 			if (sml[model]) then
 				base = math.random((distance * 1.2) - 250, (distance * 1.2) + 250)
@@ -52,7 +51,6 @@ function processFlight(flightData, vehicle)
 			local x1, y1, z1 = start[1], start[2], start[3]
 			local x2, y2, z2 = finish[1], finish[2], finish[3]
 			distance = getDistanceBetweenPoints3D(x1, y1, z1, x2, y2, z2)
-			--outputDebugString("Distance: "..distance)
 			
 			-- You should earn slightly more with a helicopter
 			base = math.random(distance * 1.5, (distance * 1.5) + 350)
@@ -62,11 +60,6 @@ function processFlight(flightData, vehicle)
 		
 		local newAmount = math.floor((base * (bonus / 100)) + base)
 		local formattedAmount = exports.UCDutil:tocomma(newAmount)
-		
-		outputDebugString("Base = "..base)
-		outputDebugString("Bonus = "..bonus.."%")
-		outputDebugString("New amount = "..newAmount)
-		
 		local roundedDist = exports.UCDutil:mathround(distance / 1000, 2)
 		
 		if (vehicle.vehicleType == "Plane") then
@@ -80,7 +73,6 @@ function processFlight(flightData, vehicle)
 		exports.UCDaccounts:SAD(client.account.name, "aviator", exports.UCDaccounts:GAD(client.account.name, "aviator") + roundedDist)
 		
 		if (client.vehicle) then
-			--client.vehicle.frozen = false
 			local health = math.floor(client.vehicle.health / 10)
 			if (health >= 95) then
 				exports.UCDdx:new(client, "ATC: 5% bonus for minimal damage to the "..tostring(vehicle.vehicleType == "Plane" and "plane" or "helicopter").." and its cargo", 255, 215, 0)
