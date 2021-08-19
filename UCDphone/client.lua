@@ -119,7 +119,7 @@ local apps =
 	[13] = {"Housing", "housing.png", {2, 0}},
 	[14] = {"Friends", "friends.png", {2, 1}},
 	[15] = {"Mail", "mail.png", {2, 2}},
-	[16] = {"Anims", "", {2, 3}},
+	-- [16] = {"Anims", "", {2, 3}},
 }
 
 -- Home screen

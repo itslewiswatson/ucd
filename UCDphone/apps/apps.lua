@@ -27,7 +27,7 @@ end
 
 function t(state)
 	for x, y in pairs({phone.home.image, phone.home.label}) do
-		for i, ele in pairs(y) do
+		for i, ele in ipairs(y) do
 			ele.visible = state
 		end
 	end
