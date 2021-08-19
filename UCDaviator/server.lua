@@ -65,9 +65,9 @@ function processFlight(flightData, vehicle)
 		if (vehicle.vehicleType == "Plane") then
 			local fA = airports[flightData[1]]
 			local sA = airports[flightData[3]]
-			exports.UCDdx:new(client, "ATC: Flight from "..sA.." to "..fA.." complete ("..tostring(roundedDist).." km). You have been paid $"..formattedAmount..".", 255, 215, 0)
+			exports.UCDdx:new(client, "ATC: Flight from "..tostring(sA).." to "..tostring(fA).." complete ("..tostring(roundedDist).." km). You have been paid $"..tostring(formattedAmount)..".", 255, 215, 0)
 		else
-			exports.UCDdx:new(client, "ATC: Flight complete ("..tostring(roundedDist).."km). You have been paid $"..formattedAmount..".", 255, 215, 0)
+			exports.UCDdx:new(client, "ATC: Flight complete ("..tostring(roundedDist).."km). You have been paid $"..tostring(formattedAmount)..".", 255, 215, 0)
 		end
 		
 		exports.UCDaccounts:SAD(client.account.name, "aviator", exports.UCDaccounts:GAD(client.account.name, "aviator") + roundedDist)

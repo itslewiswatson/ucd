@@ -1,7 +1,7 @@
 
 -- Settings
-local MARKER_SIZE = 8 -- Size of the markers
-local HELI_MARKER_DIST = 10 -- Max Z distance of a marker hit registering for a helicopter
+local MARKER_SIZE = 10 -- Size of the markers
+local HELI_MARKER_DIST = 12 -- Max Z distance of a marker hit registering for a helicopter
 local WAIT_TIME = 2000
 
 -- Utility tables
