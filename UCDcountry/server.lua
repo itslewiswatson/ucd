@@ -328,9 +328,7 @@ function cacheCountry(response, errorNo, ip, plr)
 end
 
 manual = {
-	--["Noki"] = "AU",
-	["Noki2"] = "AU",
-	["Dustin"] = "EG",
+	["Noki"] = "AU",
 }
 
 function setPlayerCountry(plr)
