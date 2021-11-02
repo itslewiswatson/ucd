@@ -24,10 +24,11 @@ end
 
 function adminLog(admin, log_)
 	local t = getRealTime().timestamp
-	db:exec("INSERT INTO `adminlog` (`name`, `log_`, `datum`) VALUES (?, ?, ?)",
-		admin,
+	db:exec("INSERT INTO `adminlog` (`name`, `log_`, `datum`, `serial`) VALUES (?, ?, ?, ?)",
+		admin.account.name,
 		log_,
-		t
+		t,
+		admin.serial
 	)
 end
 

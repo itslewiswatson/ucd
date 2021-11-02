@@ -7,11 +7,14 @@
 	<script src="c_hacks.lua" type="client"/>
 	<script src="s_hacks.lua" type="server"/>
 	
+	<script src="GUI/s_admin_log.lua" type="server"/>
+
 	<script src="GUI/s_panel.lua" type="server"/>
 	<script src="GUI/actions_s.lua" type="server"/>
 	<script src="GUI/resources.lua" type="server"/>
 	<script src="GUI/c_panel.lua" type="client"/>
 	<script src="GUI/c_input_box.lua" type="client"/>
+	<script src="GUI/c_admin_log.lua" type="client"/>
 	
 	<script src="permissions/permissions.lua" type="server"/>
 	<script src="permissions/permissions_c.lua" type="client"/>

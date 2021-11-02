@@ -15,7 +15,7 @@ addEventHandler("UCDadmin.setjob.setJob", root,
 			exports.UCDjobs:setPlayerJob(plr, job or "", skin)
 			exports.UCDdx:new(client, "You have set "..tostring(plr.name).."'s job to "..tostring((job == "" and "Unoccupied") or job), 0, 255, 0)
 			exports.UCDdx:new(plr, client.name.." has set your job to "..tostring((job == "" and "Unoccupied") or job), 0, 255, 0)
-			exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has set the job of "..plr.name.." to "..tostring((job == "" and "Unoccupied") or job))
+			exports.UCDlogging:adminLog(client, tostring(client.name).." has set the job of "..plr.name.." to "..tostring((job == "" and "Unoccupied") or job))
 		else
 			exports.UCDdx:new(client, "This player is not logged in, you can't change their job", 0, 255, 0)
 		end

@@ -263,7 +263,7 @@ adminPanel.tab["bans"] = guiCreateTab("Bans", adminPanel.tabpanel)
 	adminPanel.label["bannedReason"] = GuiLabel(31, 356, 293, 15, "Reason:", false, adminPanel.tab["bans"])
 	adminPanel.label["bannedBanisher"] = GuiLabel(31, 371, 293, 15, "Banisher:", false, adminPanel.tab["bans"])
 
-adminPanel.tab["adminLog"] = guiCreateTab("Admin Log", adminPanel.tabpanel)
+adminPanel.tab["adminLog"] = guiCreateTab("Admin Log", adminPanel.tabpanel) 
 
 windows = {adminPanel.window, giveWeapon_.window[1], WPT.window[1], punish.window, setJob.window, viewPunish.window}
 for _, gui in ipairs(windows) do

@@ -65,14 +65,14 @@ function punish(val, duration, type1, who, reason)
 					return
 				end
 				triggerEvent("UCDjail.releasePlayer", val)
-				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unjailed "..tostring(val.name))
+				exports.UCDlogging:adminLog(client, tostring(client.name).." has unjailed "..tostring(val.name))
 			else
 				if (not val.muted) then
 					exports.UCDdx:new(client, "This player is not muted", 255, 0, 0)
 					return
 				end
 				triggerEvent("UCDadmin.onPlayerUnmuted", val)
-				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unmuted "..tostring(val.name))
+				exports.UCDlogging:adminLog(client, tostring(client.name).." has unmuted "..tostring(val.name))
 			end
 		else
 			if (val:sub(1, 4) ~= "acc:") then
@@ -83,13 +83,13 @@ function punish(val, duration, type1, who, reason)
 				-- There really isn't a way around this
 				db:exec("DELETE FROM `jails` WHERE `account` = ?", val:sub(5))
 				db:query(exports.UCDjail:cacheJails(), {}, "SELECT * FROM `jails`")
-				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unjailed "..tostring(val))
+				exports.UCDlogging:adminLog(client, tostring(client.name).." has unjailed "..tostring(val))
 			else
 				-- Unmute offline
 				db:exec("DELETE FROM `mutes` WHERE `account` = ?", val:sub(5))
 				mutes[val:sub(5)] = nil
 				TL[val:sub(5)] = nil
-				exports.UCDlogging:adminLog(client.account.name, tostring(client.name).." has unmuted "..tostring(val))
+				exports.UCDlogging:adminLog(client, tostring(client.name).." has unmuted "..tostring(val))
 			end
 		end
 		return

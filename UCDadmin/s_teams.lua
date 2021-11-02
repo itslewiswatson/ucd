@@ -66,7 +66,7 @@ addEventHandler("onResourceStart", resourceRoot,
 function gg(client)
 	if (isPlayerAdmin(client)) then
 		if (client:getWantedLevel() > 0) then
-			exports.UCDlogging:adminLog(client.account.name, client.name.." did /admin with "..tostring(client:getWantedLevel()).." stars")
+			exports.UCDlogging:adminLog(client, client.name.." did /admin with "..tostring(client:getWantedLevel()).." stars")
 		end
 
 		client:setData("Occupation", adminRanks[getPlayerAdminRank(client)])

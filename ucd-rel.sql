@@ -82,7 +82,8 @@ CREATE TABLE IF NOT EXISTS `adminlog` (
 `logID` int(10) unsigned NOT NULL,
   `datum` int(11) NOT NULL,
   `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `log_` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL
+  `log_` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `serial` varchar(255) COLLATE utf8mb4_unicode_ci NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=3305 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
