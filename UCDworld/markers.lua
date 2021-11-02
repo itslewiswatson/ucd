@@ -14,17 +14,15 @@ end
 function _cacheMarker(i)
 	local m = _markers[i]
 	
-	--outputDebugString("_cacheMarker for i = "..tostring(i))
-	
 	if (m:getData("displayText")) then
-		if (isMarkerCached(m)) then
+		local markerCacheId = isMarkerCached(m)
+		if (markerCacheId) then
 			-- We can safely do this, I think
-			markerData[isMarkerCached(m)] = {m:getData("displayText"), m}
+			markerData[markerCacheId] = {m:getData("displayText"), m}
 		else
 			table.insert(markerData, {m:getData("displayText"), m})
 		end
 	end
-	outputDebugString("#markerData = "..tostring(#markerData))
 	
 	if (not _markers[i + 1]) then
 		_markers = nil
