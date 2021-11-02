@@ -48,6 +48,7 @@ for _, info in ipairs(markers) do
 		local m = Marker(info.x, info.y, info.z - 1, "cylinder", 2, 150, 150, 255, 170)
 		m.dimension = i
 		m.interior = info.interior
+		m:setData("displayText", "Skin Selection")
 		addEventHandler("onClientMarkerHit", m, onMarkerHit)
 	end
 end
