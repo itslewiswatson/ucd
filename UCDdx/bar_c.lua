@@ -15,7 +15,7 @@ function add(key, text, red, green, blue, ind)
 			table.remove(bar, i)
 			table.insert(bar, ind, {k = key, t = text, r = red, g = green, b = blue})
 			
-			return
+			return true
 		end
 	end
 	if (not ind) then

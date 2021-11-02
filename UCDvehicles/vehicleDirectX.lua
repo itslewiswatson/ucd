@@ -241,7 +241,8 @@ function addVehicleHelperText()
 			ownerText = owner.."'s "..vehicle.name
 		end
 
-		exports.UCDdx:add("vehicleInfo", ownerText, 255, 255, 255)
+		local r, g, b = vehicle:getColor(true)
+		exports.UCDdx:add("vehicleInfo", ownerText, r, g, b)
 	end
 end
 addEventHandler("onClientVehicleEnter", root, addVehicleHelperText)
