@@ -320,7 +320,10 @@ function getClosestRecoveryLocation(vehicleType, x, y, z)
 	return points[distances[1]]
 end
 
-function recoverVehicle(vehicleID)
+function recoverVehicle(spawnOptions)
+	local vehicleID = spawnOptions[1]
+	local premiumRecovery = spawnOptions[2]
+
 	local vehicleEle
 	local vehicleType = _getVehicleType(vehicleID)
 	local smallest
@@ -336,9 +339,14 @@ function recoverVehicle(vehicleID)
 		end
 
 		--if (exports.UCDadmin:isPlayerOwner(client)) then
-			--[[
+		if (premiumRecovery) then	
 			if (client.vehicle) then
 				exports.UCDdx:new(client, "You can't recover a vehicle to yourself while you're already in one", 255, 0, 0)
+				return
+			end
+
+			if (client.money < 25000) then
+				exports.UCDdx:new(client, "You don't have enough money to recover this vehicle to you", 255, 0, 0)
 				return
 			end
 			
@@ -351,20 +359,21 @@ function recoverVehicle(vehicleID)
 			smallest = Vector4(vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z, r + 90)
 			
 			exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered just in front of you!", 0, 255, 0)
-			-]]
 			
-		-- else
+			client.money = client.money - 25000
+		else
 			-- Loop through to find the smallest distance
 			smallest = getClosestRecoveryLocation(vehicleType, vehicleEle.position.x, vehicleEle.position.y, vehicleEle.position.z)
 			vehicleEle:setPosition(smallest.x, smallest.y, smallest.z + 2)
 			vehicleEle:setRotation(Vector3(0, 0, smallest.w))
 			exports.UCDdx:new(client, "Your "..vehicleEle.name.." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
-		-- end
+		end
 	else
 		local last = Vector3(unpack(fromJSON(getVehicleData(vehicleID, "xyz"))))
 		smallest = getClosestRecoveryLocation(vehicleType, last.x, last.y, last.z)
 		exports.UCDdx:new(client, "Your "..getVehicleNameFromModel(getVehicleData(vehicleID, "model")).." has been recovered to "..getZoneName(smallest.x, smallest.y, smallest.z).."!", 0, 255, 0)
 	end
+
 	syncSpecific(client, vehicleID, vehicles[vehicleID])
 	setVehicleData(vehicleID, "xyz", toJSON({smallest.x, smallest.y, smallest.z + 1}))
 	setVehicleData(vehicleID, "rotation", smallest.w)
