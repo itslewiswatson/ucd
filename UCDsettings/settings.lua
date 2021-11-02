@@ -57,9 +57,9 @@ local settings = {
 		},
 		["speedunit"] = {
 			name = "Set Speed Unit",
-			desc = "Choose the unit that you want to appear in the vehicle HUD.\nDefault: kph",
-			default = "kph",
-			values = {"kph", "mph"}
+			desc = "Choose the unit that you want to appear in the vehicle HUD.\nDefault: km/h",
+			default = "km/h",
+			values = {"km/h", "mph"}
 		},
 		["vehicleownerdx"] = {
 			name = "Vehicle Owner + Type DX",

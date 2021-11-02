@@ -1,4 +1,4 @@
-unit = "kph" -- DEFAULT
+unit = "km/h" -- DEFAULT
 
 function updateUnit(setting, oldValue, newValue, retry)
 	if (eventName == "onClientLoadSettings") then
