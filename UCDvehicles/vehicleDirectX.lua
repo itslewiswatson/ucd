@@ -227,3 +227,49 @@ function renderVehicleHUD()
 	--dxDrawRectangle(dial, sY - 77, 3, 17, tocolor(255, 255, 255, 255), false) -- Speed thing
 end
 addEventHandler("onClientHUDRender", root, renderVehicleHUD)
+
+function addVehicleHelperText()
+	local vehicle = localPlayer.vehicle
+	if (not vehicle) then return end
+
+	local owner = vehicle:getData("owner")
+	if (owner) then
+		local ownerText
+		if (owner:lower():sub(owner:len()) == "s") then
+			ownerText = owner.."' "..vehicle.name
+		else 
+			ownerText = owner.."'s "..vehicle.name
+		end
+
+		exports.UCDdx:add("vehicleInfo", ownerText, 255, 255, 255)
+	end
+end
+addEventHandler("onClientVehicleEnter", root, addVehicleHelperText)
+local dxHelperTimer = Timer(addVehicleHelperText, 5000, 0)
+
+function removeVehicleHelperText()
+	exports.UCDdx:del("vehicleInfo")
+end
+addEventHandler("onClientPlayerVehicleExit", root, removeVehicleHelperText)
+addEventHandler("onClientPlayerWasted", root, removeVehicleHelperText)
+addEventHandler("onClientElementDestroy", root,
+	function ()
+		if (localPlayer.vehicle and source == localPlayer.vehicle) then
+			removeVehicleHelperText()
+		end
+	end
+)
+
+function toggleVehicleOwnerDX(new)
+	removeEventHandler("onClientVehicleEnter", root, addVehicleHelperText)
+	if (dxHelperTimer and isTimer(dxHelperTimer)) then
+		dxHelperTimer:destroy()
+	end
+	removeVehicleHelperText()
+	if (new == "Yes") then
+		addVehicleHelperText()
+		addEventHandler("onClientVehicleEnter", root, addVehicleHelperText)
+		dxHelperTimer = Timer(addVehicleHelperText, 5000, 0)
+	end
+end
+toggleVehicleOwnerDX(exports.UCDsettings:getSetting("vehicleownerdx"))

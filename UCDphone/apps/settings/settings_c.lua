@@ -6,8 +6,8 @@ function Settings.create()
 	
 	phone.settings.gridlist = GuiGridList(19, 90, 272, 275, false, phone.image["phone_window"])
 	phone.settings.gridlist.sortingEnabled = false
-	phone.settings.gridlist:addColumn("Setting/category name", 0.55)
-	phone.settings.gridlist:addColumn("Setting value", 0.35)
+	phone.settings.gridlist:addColumn("Setting", 0.70)
+	phone.settings.gridlist:addColumn("Value", 0.20)
 	
 	phone.settings.memo = GuiMemo(19, 370, 272, 60, "Select a setting to view its description here", false, phone.image["phone_window"])
 	phone.settings.memo.readOnly = true
@@ -18,7 +18,7 @@ function Settings.create()
 	phone.settings.editbox = GuiEdit(19, 457.5, 272, 25, "Select a setting first", false, phone.image["phone_window"])
 	phone.settings.editbox.enabled = false
 	
-	phone.settings.button = GuiButton(19, 485, 272, 25, "Set setting value(right click = default)", false, phone.image["phone_window"])
+	phone.settings.button = GuiButton(19, 485, 272, 25, "Set setting value (right click = default)", false, phone.image["phone_window"])
 	phone.settings.button.enabled = false
 	
 	phone.settings.label = GuiLabel(19, 510, 272, 25, "Info goes here", false, phone.image["phone_window"])

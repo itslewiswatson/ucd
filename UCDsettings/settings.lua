@@ -61,6 +61,12 @@ local settings = {
 			default = "kph",
 			values = {"kph", "mph"}
 		},
+		["vehicleownerdx"] = {
+			name = "Vehicle Owner + Type DX",
+			desc = "Display the vehicle owner and vehicle in the bottom right DX panel.\nDefault: Yes",
+			default = "Yes",
+			values = {"Yes", "No"}
+		},
 	},
 }
 local loadedSettings = {}

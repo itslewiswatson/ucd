@@ -10,6 +10,8 @@ function effects(setting, old, new)
 			exports.UCDworld:enable(new)
 		-- elseif (setting == "saferadarareas") then
 			-- exports.UCDsafeZones:enable(new)
+		elseif (setting == "vehicleownerdx") then
+			exports.UCDvehicles:toggleVehicleOwnerDX(new)
 		end
 		return
 	end
