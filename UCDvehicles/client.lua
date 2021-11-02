@@ -244,7 +244,7 @@ function handleInput(button, state)
 					exports.UCDdx:new("You cannot recover this vehicle to you as it is not spawned in", 255, 0, 0)
 					return
 				end
-				exports.UCDutil:createConfirmationWindow("UCDvehicles.recoverVehicle", {vehicleID, true}, true, "UCD Vehicle | Spawn Confirmation", "Are you sure you want to spawn this vehicle in front of you for $50,000?")
+				exports.UCDutil:createConfirmationWindow("UCDvehicles.recoverVehicle", {vehicleID, true}, true, "UCD Vehicle | Spawn Confirmation", "Are you sure you want to spawn this vehicle in front of you for $25,000?")
 			end
 		elseif (source == GUIEditor.button[2]) then
 			if (button == "left" and state == "up") then
