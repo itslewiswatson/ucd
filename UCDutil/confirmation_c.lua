@@ -2,7 +2,7 @@ confirmation = {window={}, label={}, button={}}
 
 confirmation.window[1] = nil
 
-function createConfirmationWindow(event, arugment, serverOrClient, title, text)
+function createConfirmationWindow(event, argument, serverOrClient, title, text)
 	calledResource = tostring(Resource.getName(sourceResource))
 	-- Replace 'UCD' with blank and capitalise the first letter
 	if (not title) then
@@ -18,7 +18,7 @@ function createConfirmationWindow(event, arugment, serverOrClient, title, text)
 		guiWindowSetSizable(confirmation.window[1], false)
 		
 		confirmation.label[1] = guiCreateLabel(10, 26, 262, 44, tostring(text), false, confirmation.window[1])
-		guiLabelSetHorizontalAlign(confirmation.label[1], "center", false)
+		guiLabelSetHorizontalAlign(confirmation.label[1], "center", true)
 		confirmation.button[1] = guiCreateButton(47, 85, 76, 36, "Yes", false, confirmation.window[1])
 		confirmation.button[2] = guiCreateButton(164, 85, 76, 36, "No", false, confirmation.window[1])
 	end
