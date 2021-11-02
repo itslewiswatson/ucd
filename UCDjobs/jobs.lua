@@ -42,6 +42,7 @@ function onClientResourceStart()
 				markers[jobName][i]:setData("job", jobName)
 				markers[jobName][i].interior = v.interior
 				markers[jobName][i].dimension = v.dimension
+				markers[jobName][i]:setData("displayText", jobName.." Job")
 				
 				if (v.interior == 0 and info.blipID) then
 					blips[jobName][i] = Blip.createAttachedTo(markers[jobName][i], info.blipID, nil, nil, nil, nil, nil, 5, 255)

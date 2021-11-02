@@ -1,4 +1,3 @@
---[[
 local markerData = {}
 local _markers
 local viewDistance = 75 -- Possibly create a setting for this
@@ -76,11 +75,11 @@ function renderMarkerText()
 				return
 			end
 			local cX, cY, cZ = getCameraMatrix()
-			if (isLineOfSightClear(cX, cY, cZ, x, y, z + 1, _, _, _, _, _, _, _, localPlayer)) then
+			if (isLineOfSightClear(cX, cY, cZ, x, y, z + 1, true, true, true, true, true, false, false, localPlayer)) then
 				local sX, sY = getScreenFromWorldPosition(x, y, z + 1, 0.06)
 				if (sX and sY) then
 					local msg = dat[1]
-					local scale = math.min(0.4 * (viewDistance / distance) * 1.4, 4)
+					local scale = math.min(0.3 * (viewDistance / distance) * 1.4, 4)
 					dxDrawText(tostring(msg), sX + 1, sY - 30 + 1, sX + 1, sY - 30 + 1, tocolor(0, 0, 0, 255), scale, "default-bold", "center", "bottom", false, false, false)
 					dxDrawText(tostring(msg), sX + 1, sY - 30 + 1, sX - 1, sY - 30 + 1, tocolor(0, 0, 0, 255), scale, "default-bold", "center", "bottom", false, false, false)
 					dxDrawText(tostring(msg), sX - 1, sY - 30 - 1, sX + 1, sY - 30 - 1, tocolor(0, 0, 0, 255), scale, "default-bold", "center", "bottom", false, false, false)
@@ -98,5 +97,5 @@ function enable(new)
 		addEventHandler("onClientRender", root, renderMarkerText)
 	end
 end
-enable(exports.UCDsettings:getSetting("indicatetexts"))
---]]
+-- enable(exports.UCDsettings:getSetting("indicatetexts"))
+enable("Yes")
