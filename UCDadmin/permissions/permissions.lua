@@ -48,9 +48,6 @@ local permissions = {
 	[5] = {
 		[14] = true, -- set money
 	},
-	[1337] = {
-		
-	},
 }
 
 function canAdminDoAction(plr, action)

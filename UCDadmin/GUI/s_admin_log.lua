@@ -24,6 +24,7 @@ function cacheDatabase(qh)
 end
 
 function onRequestFetchAdminLog()
+    if (not isPlayerAdmin(client)) then return end
     triggerClientEvent("UCDadmin.populateAdminLog", client, adminLog)
 end
 addEvent("UCDadmin.fetchAdminLog", true)

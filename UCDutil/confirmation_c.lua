@@ -25,7 +25,7 @@ function createConfirmationWindow(event, argument, serverOrClient, title, text)
 	
 	action_ = event
 	isServerEvent = serverOrClient
-	arg = arugment
+	arg = argument
 	
 	confirmation.window[1]:setVisible(true)
 	guiBringToFront(confirmation.window[1])
