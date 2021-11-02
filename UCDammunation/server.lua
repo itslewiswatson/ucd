@@ -18,6 +18,7 @@ for _, info in ipairs(markers) do
 		local m = Marker(info.x, info.y, info.z - 1, "cylinder", 2, 160, 160, 160, 170)
 		m.interior = info.interior
 		m.dimension = i
+		m:setData("displayText", "Ammunation")
 		addEventHandler("onMarkerHit", m, onMarkerHit)
 	end
 end
