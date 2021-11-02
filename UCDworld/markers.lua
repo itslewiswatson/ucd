@@ -70,7 +70,7 @@ function renderMarkerText()
 	for _, dat in ipairs(markerData) do
 		local x, y, z = dat[2].position.x, dat[2].position.y, dat[2].position.z
 		local distance = getDistanceBetweenPoints3D(x, y, z, localPlayer.position)
-		if (distance <= viewDistance) then
+		if (distance <= viewDistance and distance > 2) then
 			if (not Camera.target or (Camera.target.type ~= "vehicle" and Camera.target.type ~= "player")) then
 				return
 			end
