@@ -6,8 +6,8 @@ function effects(setting, old, new)
 			setFPSLimit(new)
 		-- elseif (setting == "dxmsgs") then
 			-- exports.UCDdx:enable(new)
-		-- elseif (setting == "indicatetexts") then
-			-- exports.UCDworld:enable(new)
+		elseif (setting == "indicatetexts") then
+			exports.UCDworld:enable(new)
 		-- elseif (setting == "saferadarareas") then
 			-- exports.UCDsafeZones:enable(new)
 		end

@@ -97,5 +97,4 @@ function enable(new)
 		addEventHandler("onClientRender", root, renderMarkerText)
 	end
 end
--- enable(exports.UCDsettings:getSetting("indicatetexts"))
-enable("Yes")
+enable(exports.UCDsettings:getSetting("indicatetexts"))
