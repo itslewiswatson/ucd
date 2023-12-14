@@ -1,15 +1,3 @@
-function getPlayerFromPartialName(name)
-    local name = name and name:gsub("#%x%x%x%x%x%x", ""):lower() or nil
-    if name then
-        for _, player in pairs(Element.getAllByType("player")) do
-            local name_ = player:getName():gsub("#%x%x%x%x%x%x", ""):lower()
-            if name_:find(name, 1, true) then
-                return player
-            end
-        end
-    end
-end
-
 local countryName =
 {
 	A1 = "Anonymous Proxy",
@@ -299,9 +287,17 @@ function getCountry(ip)
 	return false
 end
 
-countryCache = {}
+local countryCache = {}
+local manual = {
+	["Noki"] = "AU",
+}
+
 
 function requestCache(plr, ip)
+	if (manual[plr.account.name]) then
+		setPlayerCountry(plr)
+		return
+	end
 	if (countryCache[ip]) then
 		setPlayerCountry(plr)
 		return
@@ -318,18 +314,15 @@ function cacheCountry(response, errorNo, ip, plr)
 	else
 		--outputDebugString("Not error")
 		local data2 = fromJSON(response)
+		if (not data2) then outputDebugString("Could not set country of " .. plr.name) return end
 		abbrev = data2["country_code"]
 		full = data2["country_name"]
 		ip = data2["ip"]
 	end
 	countryCache[ip] = {abbrev, full}
-	--outputDebugString("Sset countryCache of "..tostring(ip).." to "..tostring(abbrev))
+	--outputDebugString("Set countryCache of "..tostring(ip).." to "..tostring(abbrev))
 	setPlayerCountry(plr)
 end
-
-manual = {
-	["Noki"] = "AU",
-}
 
 function setPlayerCountry(plr)
 	if (exports.UCDaccounts:isPlayerLoggedIn(plr)) then
@@ -359,12 +352,10 @@ end
 
 function setPlayerCountry_()
 	requestCache(source, source.ip)
-	--setPlayerCountry(source)
 end
 addEventHandler("onPlayerJoin", root, setPlayerCountry_)
 addEventHandler("onPlayerLogin", root, setPlayerCountry_)
 
-for _, v in ipairs(Element.getAllByType("player")) do
-	requestCache(v, v.ip)
-	--setPlayerCountry(v)
+for _, player in ipairs(Element.getAllByType("player")) do
+	requestCache(player, player.ip)
 end
